@@ -1,4 +1,4 @@
-import { Link, useFetcher, useLoaderData, useSearchParams } from "react-router";
+import { Link, useFetcher } from "react-router";
 import { Shell } from "~/shared/components/layout/Shell";
 import { Button } from "~/shared/components/ui/Button";
 import { Input } from "~/shared/components/ui/Input";

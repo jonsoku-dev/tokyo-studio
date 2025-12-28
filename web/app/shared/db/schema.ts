@@ -166,6 +166,9 @@ export const profiles = pgTable("profiles", {
 export const insertProfileSchema = createInsertSchema(profiles);
 export const selectProfileSchema = createSelectSchema(profiles);
 
+export type SelectProfile = typeof profiles.$inferSelect;
+export type InsertProfile = typeof profiles.$inferInsert;
+
 // --- Payments ---
 export const payments = pgTable("payments", {
 	id: uuid("id").primaryKey().defaultRandom(),

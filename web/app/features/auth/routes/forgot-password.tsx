@@ -8,11 +8,11 @@ export function meta() {
 	return [{ title: "Forgot Password - Japan IT Job" }];
 }
 
-export function action({ request }: Route.ActionArgs) {
+export function action(_args: Route.ActionArgs) {
 	return null;
 }
 
-export default function ForgotPassword({ actionData }: Route.ComponentProps) {
+export default function ForgotPassword(_props: Route.ComponentProps) {
 	const { Form: FetcherForm, data, state } = useFetcher();
 	const isApiSubmitting = state === "submitting";
 

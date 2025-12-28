@@ -13,7 +13,7 @@
 
 ### Route type
 example: import type { Route } from "./+types/checkout";
-이런 +types을 사용하려면 반드시 routes.ts를 추가/수정한 후 typegen 스크립트를 실행하고사용한다.
+이런 +types을 사용하려면 반드시 **routes.ts를 추가/수정**한 후 **typegen 스크립트를 실행**하고사용한다.
 ```sh
 pnpm run typegen
 ```
@@ -63,12 +63,16 @@ pnpm run typegen
     *   `app/features/`: Feature-based modules (auth, dashboard, pipeline, etc.)
     *   `app/shared/`: Shared components and utilities
     *   `app/db/`: Database schema and connection
-*   `admin/`: Admin dashboard (separate project, TBD)
+*   `admin/`: Admin dashboard (separate project, TBD, but same tech stack and rules with web project)
 *   `docs/`: Project documentation and specifications
 *   `specs/`: Detailed Feature Specifications (Single Source of Truth for Logic)
 *   `designs/`: Design references and analysis
 *   `.agent/`: AI Agent rules and workflows
 
 ## Development Workflows
-*   **Local Dev**: `pnpm dev` in `web/` directory.
+*   **Web Local Dev**: `pnpm dev` in `web/` directory.
+*   **Admin Local Dev**: `pnpm dev` in `admin/` directory.
 *   **Database**: `docker compose up -d` (Root) -> `pnpm db:push` (Web)
+*   **Web Typegen**: `pnpm typegen` in `web/` directory.
+*   **Admin Typegen**: `pnpm typegen` in `admin/` directory.
+

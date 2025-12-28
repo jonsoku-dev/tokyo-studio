@@ -22,6 +22,7 @@ export default [
 	route("mentoring/schedule", "features/mentoring/routes/schedule.tsx"),
 	route("community", "features/community/routes/community.tsx"),
 	route("community/new", "features/community/routes/new.tsx"),
+	route("settings/profile", "features/users/routes/profile.tsx"),
 	route("diagnosis", "features/diagnosis/routes/diagnosis.tsx"),
 	route("diagnosis/result", "features/diagnosis/routes/result.tsx"),
 	route("payment/checkout", "features/payment/routes/checkout.tsx"),
@@ -39,6 +40,7 @@ export default [
 	route("api/auth/line/callback", "features/auth/apis/line.callback.ts"),
 	route("api/auth/forgot-password", "features/auth/apis/forgot-password.ts"),
 	route("api/auth/reset-password", "features/auth/apis/reset-password.ts"),
+	route("api/users/me/avatar", "features/users/apis/avatar.ts"),
 
 	// Storage APIs
 	route("api/storage/presigned", "features/storage/apis/presigned.ts"),
