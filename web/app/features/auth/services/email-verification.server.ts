@@ -47,15 +47,3 @@ export async function verifyToken(token: string) {
 
 	return { success: true };
 }
-
-export async function sendVerificationEmail(email: string, token: string) {
-	const verificationUrl = `${process.env.ORIGIN || "http://localhost:3000"}/verify-email?token=${token}`;
-
-	// TODO: Integrate with real email provider (Resend, SendGrid, etc.)
-	// For now, log to console for development
-	console.log("==================================================");
-	console.log(`[MOCK EMAIL] To: ${email}`);
-	console.log(`Subject: Verify your email`);
-	console.log(`Body: Click here to verify: ${verificationUrl}`);
-	console.log("==================================================");
-}

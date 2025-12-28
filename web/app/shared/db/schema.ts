@@ -38,6 +38,23 @@ export const insertVerificationTokenSchema =
 export const selectVerificationTokenSchema =
 	createSelectSchema(verificationTokens);
 
+// --- Password Reset Tokens ---
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	token: text("token").notNull().unique(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	expiresAt: timestamp("expires_at").notNull(),
+	ipAddress: text("ip_address"),
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertPasswordResetTokenSchema =
+	createInsertSchema(passwordResetTokens);
+export const selectPasswordResetTokenSchema =
+	createSelectSchema(passwordResetTokens);
+
 // --- Tasks (Dashboard) ---
 export const tasks = pgTable("tasks", {
 	id: uuid("id").primaryKey().defaultRandom(),

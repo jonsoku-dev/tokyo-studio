@@ -2,10 +2,8 @@ import { eq } from "drizzle-orm";
 import { redirect } from "react-router";
 import { db } from "~/shared/db/client.server";
 import { users } from "~/shared/db/schema";
-import {
-	createVerificationToken,
-	sendVerificationEmail,
-} from "../services/email-verification.server";
+import { emailService } from "../services/email.server";
+import { createVerificationToken } from "../services/email-verification.server";
 import { requireUserId } from "../utils/session.server";
 import type { Route } from "./+types/resend-verification";
 
@@ -25,7 +23,7 @@ export async function action({ request }: Route.ActionArgs) {
 
 	// Create new token and send email
 	const token = await createVerificationToken(userId);
-	await sendVerificationEmail(user.email, token);
+	await emailService.sendVerificationEmail(user.email, token);
 
 	return { success: true };
 }

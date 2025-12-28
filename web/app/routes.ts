@@ -10,6 +10,8 @@ export default [
 	route("signup", "features/auth/routes/signup.tsx"),
 	route("verify-email", "features/auth/routes/verify-email.tsx"),
 	route("resend-verification", "features/auth/routes/resend-verification.tsx"),
+	route("forgot-password", "features/auth/routes/forgot-password.tsx"),
+	route("reset-password", "features/auth/routes/reset-password.tsx"),
 
 	// Features
 	route("pipeline", "features/pipeline/routes/pipeline.tsx"),
@@ -35,6 +37,8 @@ export default [
 	route("api/auth/kakao/callback", "features/auth/apis/kakao.callback.ts"),
 	route("api/auth/line", "features/auth/apis/line.ts"),
 	route("api/auth/line/callback", "features/auth/apis/line.callback.ts"),
+	route("api/auth/forgot-password", "features/auth/apis/forgot-password.ts"),
+	route("api/auth/reset-password", "features/auth/apis/reset-password.ts"),
 
 	// Storage APIs
 	route("api/storage/presigned", "features/storage/apis/presigned.ts"),

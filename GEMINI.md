@@ -13,7 +13,7 @@
 
 ### Route type
 example: import type { Route } from "./+types/checkout";
-이런 +types을 사용하려면 반드시 typegen 스크립트를 실행하고사용한다.
+이런 +types을 사용하려면 반드시 routes.ts를 추가/수정한 후 typegen 스크립트를 실행하고사용한다.
 ```sh
 pnpm run typegen
 ```
@@ -65,6 +65,7 @@ pnpm run typegen
     *   `app/db/`: Database schema and connection
 *   `admin/`: Admin dashboard (separate project, TBD)
 *   `docs/`: Project documentation and specifications
+*   `specs/`: Detailed Feature Specifications (Single Source of Truth for Logic)
 *   `designs/`: Design references and analysis
 *   `.agent/`: AI Agent rules and workflows
 

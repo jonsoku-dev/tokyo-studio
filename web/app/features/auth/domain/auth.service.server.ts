@@ -1,9 +1,7 @@
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
-import {
-	createVerificationToken,
-	sendVerificationEmail,
-} from "~/features/auth/services/email-verification.server";
+import { emailService } from "~/features/auth/services/email.server";
+import { createVerificationToken } from "~/features/auth/services/email-verification.server";
 import { db } from "~/shared/db/client.server";
 import { users } from "~/shared/db/schema";
 import type { AuthResponse, LoginDTO, SignupDTO, User } from "./auth.types";
@@ -60,7 +58,7 @@ export const authService = {
 
 		// Trigger email verification
 		const verificationToken = await createVerificationToken(newUser.id);
-		await sendVerificationEmail(newUser.email, verificationToken);
+		await emailService.sendVerificationEmail(newUser.email, verificationToken);
 
 		const token = `mock_jwt_token_${newUser.id}`;
 
