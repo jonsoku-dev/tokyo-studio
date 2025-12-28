@@ -1,4 +1,5 @@
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 // --- Users ---
@@ -158,6 +159,11 @@ export const profiles = pgTable("profiles", {
 	jpLevel: text("jp_level").notNull(), // "N1", "N2", "N3", "None"
 	enLevel: text("en_level").notNull(), // "Business", "Conversational", "Basic"
 	targetCity: text("target_city").default("Tokyo"),
+	bio: text("bio"),
+	slug: text("slug").unique(),
+	website: text("website"),
+	linkedinUrl: text("linkedin_url"),
+	githubUrl: text("github_url"),
 	userId: uuid("user_id").references(() => users.id),
 	createdAt: timestamp("created_at").defaultNow(),
 	updatedAt: timestamp("updated_at").defaultNow(),
@@ -223,3 +229,54 @@ export const insertMentorAvailabilitySchema =
 	createInsertSchema(mentorAvailability);
 export const selectMentorAvailabilitySchema =
 	createSelectSchema(mentorAvailability);
+
+// --- Profile Privacy Settings ---
+export const profilePrivacySettings = pgTable("profile_privacy_settings", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull()
+		.unique(),
+	hideEmail: boolean("hide_email").default(true).notNull(),
+	hideFullName: boolean("hide_full_name").default(false).notNull(),
+	hideActivity: boolean("hide_activity").default(false).notNull(),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertProfilePrivacySettingsSchema = createInsertSchema(
+	profilePrivacySettings,
+);
+export const selectProfilePrivacySettingsSchema = createSelectSchema(
+	profilePrivacySettings,
+);
+
+// --- Relations ---
+
+export const usersRelations = relations(users, ({ one }) => ({
+	profile: one(profiles, {
+		fields: [users.id],
+		references: [profiles.userId],
+	}),
+	profilePrivacySettings: one(profilePrivacySettings, {
+		fields: [users.id],
+		references: [profilePrivacySettings.userId],
+	}),
+}));
+
+export const profilesRelations = relations(profiles, ({ one }) => ({
+	user: one(users, {
+		fields: [profiles.userId],
+		references: [users.id],
+	}),
+}));
+
+export const profilePrivacySettingsRelations = relations(
+	profilePrivacySettings,
+	({ one }) => ({
+		user: one(users, {
+			fields: [profilePrivacySettings.userId],
+			references: [users.id],
+		}),
+	}),
+);

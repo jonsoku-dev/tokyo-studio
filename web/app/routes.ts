@@ -23,6 +23,9 @@ export default [
 	route("community", "features/community/routes/community.tsx"),
 	route("community/new", "features/community/routes/new.tsx"),
 	route("settings/profile", "features/users/routes/profile.tsx"),
+	route("settings/privacy", "features/users/routes/settings/privacy.tsx"),
+	route("profile/:username", "features/users/routes/profile.$username.tsx"),
+
 	route("diagnosis", "features/diagnosis/routes/diagnosis.tsx"),
 	route("diagnosis/result", "features/diagnosis/routes/result.tsx"),
 	route("payment/checkout", "features/payment/routes/checkout.tsx"),
@@ -41,6 +44,8 @@ export default [
 	route("api/auth/forgot-password", "features/auth/apis/forgot-password.ts"),
 	route("api/auth/reset-password", "features/auth/apis/reset-password.ts"),
 	route("api/users/me/avatar", "features/users/apis/avatar.ts"),
+	route("api/users/me/profile", "features/users/apis/profile.ts"),
+	route("api/users/me/privacy", "features/users/apis/privacy.ts"),
 
 	// Storage APIs
 	route("api/storage/presigned", "features/storage/apis/presigned.ts"),
