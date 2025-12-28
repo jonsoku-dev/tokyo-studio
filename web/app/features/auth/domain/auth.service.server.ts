@@ -1,5 +1,9 @@
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
+import {
+	createVerificationToken,
+	sendVerificationEmail,
+} from "~/features/auth/services/email-verification.server";
 import { db } from "~/shared/db/client.server";
 import { users } from "~/shared/db/schema";
 import type { AuthResponse, LoginDTO, SignupDTO, User } from "./auth.types";
@@ -17,7 +21,7 @@ export const authService = {
 		}
 
 		// Mock token for now
-		const token = "mock_jwt_token_" + user.id;
+		const token = `mock_jwt_token_${user.id}`;
 
 		return {
 			user: {
@@ -54,7 +58,11 @@ export const authService = {
 			})
 			.returning();
 
-		const token = "mock_jwt_token_" + newUser.id;
+		// Trigger email verification
+		const verificationToken = await createVerificationToken(newUser.id);
+		await sendVerificationEmail(newUser.email, verificationToken);
+
+		const token = `mock_jwt_token_${newUser.id}`;
 
 		return {
 			user: {
@@ -68,7 +76,7 @@ export const authService = {
 		};
 	},
 
-	me: async (token: string): Promise<User> => {
+	me: async (_token: string): Promise<User> => {
 		return {
 			id: "u_temp",
 			email: "test@example.com",

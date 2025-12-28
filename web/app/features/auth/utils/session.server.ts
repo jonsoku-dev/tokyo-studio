@@ -58,3 +58,23 @@ export async function logout(request: Request) {
 		},
 	});
 }
+
+export async function requireVerifiedUser(request: Request) {
+	const userId = await requireUserId(request);
+	const { db } = await import("~/shared/db/client.server");
+	const { users } = await import("~/shared/db/schema");
+	const { eq } = await import("drizzle-orm");
+
+	const [user] = await db
+		.select()
+		.from(users)
+		.where(eq(users.id, userId))
+		.limit(1);
+
+	// If user verified status is null, they are unverified
+	if (!user || !user.emailVerified) {
+		throw redirect("/dashboard?unverified=true");
+	}
+
+	return userId;
+}

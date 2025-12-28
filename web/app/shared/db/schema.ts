@@ -16,10 +16,27 @@ export const users = pgTable("users", {
 	lineId: text("line_id").unique(),
 	createdAt: timestamp("created_at").defaultNow(),
 	updatedAt: timestamp("updated_at").defaultNow(),
+	emailVerified: timestamp("email_verified"),
 });
 
 export const insertUserSchema = createInsertSchema(users);
 export const selectUserSchema = createSelectSchema(users);
+
+// --- Verification Tokens ---
+export const verificationTokens = pgTable("verification_tokens", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	token: text("token").notNull().unique(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	expiresAt: timestamp("expires_at").notNull(),
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertVerificationTokenSchema =
+	createInsertSchema(verificationTokens);
+export const selectVerificationTokenSchema =
+	createSelectSchema(verificationTokens);
 
 // --- Tasks (Dashboard) ---
 export const tasks = pgTable("tasks", {
@@ -152,7 +169,10 @@ export const selectPaymentSchema = createSelectSchema(payments);
 // --- Mentors ---
 export const mentors = pgTable("mentors", {
 	id: uuid("id").primaryKey().defaultRandom(),
-	userId: uuid("user_id").references(() => users.id).notNull().unique(),
+	userId: uuid("user_id")
+		.references(() => users.id)
+		.notNull()
+		.unique(),
 	title: text("title").notNull(), // e.g., "Senior Frontend Engineer"
 	company: text("company"),
 	bio: text("bio"),
@@ -169,7 +189,9 @@ export const selectMentorSchema = createSelectSchema(mentors);
 // --- Mentor Availability ---
 export const mentorAvailability = pgTable("mentor_availability", {
 	id: uuid("id").primaryKey().defaultRandom(),
-	mentorId: uuid("mentor_id").references(() => mentors.id, { onDelete: 'cascade' }).notNull(),
+	mentorId: uuid("mentor_id")
+		.references(() => mentors.id, { onDelete: "cascade" })
+		.notNull(),
 	dayOfWeek: text("day_of_week").notNull(), // "0" (Sun) - "6" (Sat)
 	startTime: text("start_time").notNull(), // "09:00"
 	endTime: text("end_time").notNull(), // "18:00"
@@ -177,5 +199,7 @@ export const mentorAvailability = pgTable("mentor_availability", {
 	updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertMentorAvailabilitySchema = createInsertSchema(mentorAvailability);
-export const selectMentorAvailabilitySchema = createSelectSchema(mentorAvailability);
+export const insertMentorAvailabilitySchema =
+	createInsertSchema(mentorAvailability);
+export const selectMentorAvailabilitySchema =
+	createSelectSchema(mentorAvailability);

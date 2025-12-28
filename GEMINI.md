@@ -22,6 +22,9 @@ pnpm run typegen
 *   **Zero-Error Policy**: `lint`, `typecheck`, `build` must pass after every significant step.
 *   **Strict Feature Architecture**: Code must be organized by feature (`features/auth`, `features/dashboard`).
 *   **Strict Routing**: Routes must be defined in `routes.ts` pointing to feature directories.
+*   **API/Page Separation**: APIs must be in `features/*/apis`, Pages in `features/*/routes`.
+    *   **Prefix**: API routes must start with `api/` (e.g., `api/auth/google`).
+    *   **Order**: Pages first, APIs second in `routes.ts`.
 
 ### Detailed Rule Files
 *   **General Rules**: [`.agent/rules/general.md`](file:///Users/jongseoklee/Documents/GitHub/itcom/.agent/rules/general.md)

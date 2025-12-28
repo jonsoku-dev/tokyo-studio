@@ -1,4 +1,3 @@
-import { clsx } from "clsx";
 import { motion } from "framer-motion";
 import { Bookmark } from "lucide-react";
 import type { JobRecommendation } from "../domain/dashboard.types";

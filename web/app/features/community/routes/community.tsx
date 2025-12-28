@@ -65,7 +65,7 @@ export default function Community() {
 										{post.title}
 									</h3>
 									<div className="text-sm text-gray-600 line-clamp-3">
-										<PostContent content={post.content.slice(0, 200) + "..."} />
+										<PostContent content={`${post.content.slice(0, 200)}...`} />
 									</div>
 								</div>
 								<div className="flex flex-col items-center justify-center bg-gray-50 p-2 rounded min-w-[60px]">

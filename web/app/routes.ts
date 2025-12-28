@@ -1,10 +1,17 @@
-
 import { index, type RouteConfig, route } from "@react-router/dev/routes";
 
 export default [
+	// --- Pages ---
+	// Dashboard
 	index("features/dashboard/routes/home.tsx"),
+
+	// Auth
 	route("login", "features/auth/routes/login.tsx"),
 	route("signup", "features/auth/routes/signup.tsx"),
+	route("verify-email", "features/auth/routes/verify-email.tsx"),
+	route("resend-verification", "features/auth/routes/resend-verification.tsx"),
+
+	// Features
 	route("pipeline", "features/pipeline/routes/pipeline.tsx"),
 	route("documents", "features/documents/routes/documents.tsx"),
 	route("documents/new", "features/documents/routes/new.tsx"),
@@ -17,13 +24,18 @@ export default [
 	route("diagnosis/result", "features/diagnosis/routes/result.tsx"),
 	route("payment/checkout", "features/payment/routes/checkout.tsx"),
 	route("payment/success", "features/payment/routes/success.tsx"),
-	route("api/storage/presigned", "features/storage/routes/presigned.ts"),
-	route("auth/google", "features/auth/routes/google.ts"),
-	route("auth/google/callback", "features/auth/routes/google.callback.ts"),
-	route("auth/github", "features/auth/routes/github.ts"),
-	route("auth/github/callback", "features/auth/routes/github.callback.ts"),
-	route("auth/kakao", "features/auth/routes/kakao.ts"),
-	route("auth/kakao/callback", "features/auth/routes/kakao.callback.ts"),
-	route("auth/line", "features/auth/routes/line.ts"),
-	route("auth/line/callback", "features/auth/routes/line.callback.ts"),
+
+	// --- APIs ---
+	// Auth APIs
+	route("api/auth/google", "features/auth/apis/google.ts"),
+	route("api/auth/google/callback", "features/auth/apis/google.callback.ts"),
+	route("api/auth/github", "features/auth/apis/github.ts"),
+	route("api/auth/github/callback", "features/auth/apis/github.callback.ts"),
+	route("api/auth/kakao", "features/auth/apis/kakao.ts"),
+	route("api/auth/kakao/callback", "features/auth/apis/kakao.callback.ts"),
+	route("api/auth/line", "features/auth/apis/line.ts"),
+	route("api/auth/line/callback", "features/auth/apis/line.callback.ts"),
+
+	// Storage APIs
+	route("api/storage/presigned", "features/storage/apis/presigned.ts"),
 ] satisfies RouteConfig;
