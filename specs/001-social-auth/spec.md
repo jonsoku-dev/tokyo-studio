@@ -9,16 +9,18 @@
 
 ### User Story 1 - New User Signup with Social Account (Priority: P1)
 
-A new user wants to create an account using their existing Google or GitHub account without manually filling out registration forms. They click "Sign in with Google" or "Sign in with GitHub," authorize the platform to access their basic profile information, and are immediately signed in with a new account created using their social profile data.
+A new user wants to create an account using their existing Google, GitHub, Kakao, or Line account without manually filling out registration forms. They click "Sign in with [Provider]," authorize the platform to access their basic profile information, and are immediately signed in with a new account created using their social profile data.
 
 **Why this priority**: This is the core value proposition of social authentication - reducing friction in the signup process. Without this, the feature provides no value.
 
-**Independent Test**: Can be fully tested by creating a new user account via Google/GitHub OAuth and verifying that the user can access their dashboard with auto-populated profile information.
+**Independent Test**: Can be fully tested by creating a new user account via any supported provider (Google/GitHub/Kakao/Line) OAuth and verifying that the user can access their dashboard with auto-populated profile information.
 
 **Acceptance Scenarios**:
 
 1. **Given** a user is on the login page, **When** they click "Sign in with Google" and authorize access, **Then** a new account is created with their Google email, name, and profile picture, and they are redirected to the dashboard
 2. **Given** a user is on the login page, **When** they click "Sign in with GitHub" and authorize access, **Then** a new account is created with their GitHub email, name, and avatar, and they are redirected to the dashboard
+3. **Given** a user is on the login page, **When** they click "Sign in with Kakao" and authorize access, **Then** a new account is created with their Kakao email (if shared), nickname, and profile image
+4. **Given** a user is on the login page, **When** they click "Sign in with Line" and authorize access, **Then** a new account is created with their Line email (if shared), name, and picture
 3. **Given** a user authorizes social login, **When** their email is retrieved from the provider, **Then** the system verifies email ownership automatically without requiring additional confirmation
 4. **Given** a new user completes social signup, **When** they log out and return, **Then** they can sign in again using the same social provider without creating a duplicate account
 
@@ -26,7 +28,7 @@ A new user wants to create an account using their existing Google or GitHub acco
 
 ### User Story 2 - Link Social Account to Existing Email/Password Account (Priority: P2)
 
-An existing user who originally registered with email/password wants to add the convenience of social login to their account. They navigate to account settings, click "Link Google Account" or "Link GitHub Account," authorize the connection, and can now log in using either method.
+An existing user who originally registered with email/password wants to add the convenience of social login to their account. They navigate to account settings, click "Link [Provider] Account," authorize the connection, and can now log in using either method.
 
 **Why this priority**: Enables existing users to benefit from social login convenience without losing their account history. Critical for user retention and migration to the new auth method.
 
@@ -43,7 +45,7 @@ An existing user who originally registered with email/password wants to add the 
 
 ### User Story 3 - Link Multiple Social Accounts to Single Platform Account (Priority: P3)
 
-A user wants the flexibility to log in using either their Google or GitHub account (or both) and wants these login methods to access the same platform account. They link both providers from account settings and can use either for future logins.
+A user wants the flexibility to log in using any of their social accounts (Google, GitHub, Kakao, Line) and wants these login methods to access the same platform account. They link multiple providers from account settings and can use any for future logins.
 
 **Why this priority**: Provides maximum login flexibility for power users. Less critical than basic social auth but enhances user experience significantly.
 
@@ -91,19 +93,21 @@ A user authorizes social login, but the provider either doesn't share the email 
 
 - **FR-001**: System MUST support user authentication via Google OAuth 2.0
 - **FR-002**: System MUST support user authentication via GitHub OAuth 2.0
-- **FR-003**: System MUST automatically create user accounts upon first successful social authentication with email, name, and profile picture from the provider
-- **FR-004**: System MUST verify email ownership automatically for social logins (no additional email confirmation required)
-- **FR-005**: System MUST prevent duplicate account creation by matching email addresses across social providers and email/password accounts
-- **FR-006**: Users MUST be able to link multiple social authentication providers to a single platform account
-- **FR-007**: System MUST allow users who registered with email/password to link their social accounts
-- **FR-008**: System MUST provide a unified dashboard experience regardless of which authentication method the user employed
-- **FR-009**: System MUST handle cases where social providers do not share email addresses by prompting users to manually provide and verify an email
-- **FR-010**: System MUST allow users to unlink social providers from their account if they have at least one other authentication method available
-- **FR-011**: System MUST securely store social provider tokens for future API calls (e.g., to refresh profile data)
-- **FR-012**: System MUST refresh user profile information (name, picture) from social providers periodically or on each login
-- **FR-013**: System MUST redirect users to an appropriate error page with clear messaging if OAuth authorization is denied or fails
-- **FR-014**: System MUST log all authentication events (successful logins, failed attempts, account linking, unlinking) for security auditing
-- **FR-015**: System MUST expire social authentication sessions according to industry-standard security practices (30 days of inactivity)
+- **FR-003**: System MUST support user authentication via Kakao OAuth 2.0
+- **FR-004**: System MUST support user authentication via Line OAuth 2.0
+- **FR-005**: System MUST automatically create user accounts upon first successful social authentication with email, name, and profile picture from the provider
+- **FR-006**: System MUST verify email ownership automatically for social logins (no additional email confirmation required)
+- **FR-007**: System MUST prevent duplicate account creation by matching email addresses across social providers and email/password accounts
+- **FR-008**: Users MUST be able to link multiple social authentication providers to a single platform account
+- **FR-009**: System MUST allow users who registered with email/password to link their social accounts
+- **FR-010**: System MUST provide a unified dashboard experience regardless of which authentication method the user employed
+- **FR-011**: System MUST handle cases where social providers do not share email addresses by prompting users to manually provide and verify an email
+- **FR-012**: System MUST allow users to unlink social providers from their account if they have at least one other authentication method available
+- **FR-013**: System MUST securely store social provider tokens for future API calls (e.g., to refresh profile data)
+- **FR-014**: System MUST refresh user profile information (name, picture) from social providers periodically or on each login
+- **FR-015**: System MUST redirect users to an appropriate error page with clear messaging if OAuth authorization is denied or fails
+- **FR-016**: System MUST log all authentication events (successful logins, failed attempts, account linking, unlinking) for security auditing
+- **FR-017**: System MUST expire social authentication sessions according to industry-standard security practices (30 days of inactivity)
 
 ### Key Entities
 

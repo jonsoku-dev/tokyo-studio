@@ -1,0 +1,25 @@
+
+> web@ typegen /Users/jongseoklee/Documents/GitHub/itcom/web
+> react-router typegen
+
+Error: Route config in "routes.ts" is invalid.
+
+Error: Unable to define routes with duplicate route id: "features/mentoring/routes/mentoring"
+    at walk (/Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/@react-router+dev@7.10.1_@react-router+serve@7.10.1_react-router@7.10.1_react-dom@19.2._1ec244e67b91535d336d8c48f3196ea0/node_modules/@react-router/dev/dist/vite.js:274:13)
+    at walk (/Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/@react-router+dev@7.10.1_@react-router+serve@7.10.1_react-router@7.10.1_react-dom@19.2._1ec244e67b91535d336d8c48f3196ea0/node_modules/@react-router/dev/dist/vite.js:281:9)
+    at configRoutesToRouteManifest (/Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/@react-router+dev@7.10.1_@react-router+serve@7.10.1_react-router@7.10.1_react-dom@19.2._1ec244e67b91535d336d8c48f3196ea0/node_modules/@react-router/dev/dist/vite.js:286:5)
+    at resolveConfig (/Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/@react-router+dev@7.10.1_@react-router+serve@7.10.1_react-router@7.10.1_react-dom@19.2._1ec244e67b91535d336d8c48f3196ea0/node_modules/@react-router/dev/dist/vite.js:537:16)
+    at createConfigLoader (/Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/@react-router+dev@7.10.1_@react-router+serve@7.10.1_react-router@7.10.1_react-dom@19.2._1ec244e67b91535d336d8c48f3196ea0/node_modules/@react-router/dev/dist/vite.js:621:29)
+    at BasicMinimalPluginContext.config (/Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/@react-router+dev@7.10.1_@react-router+serve@7.10.1_react-router@7.10.1_react-dom@19.2._1ec244e67b91535d336d8c48f3196ea0/node_modules/@react-router/dev/dist/vite.js:3207:35)
+    at runConfigHook (file:///Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/vite@7.3.0_@types+node@22.19.3_jiti@2.6.1_lightningcss@1.30.2/node_modules/vite/dist/node/chunks/config.js:35934:15)
+    at Module.resolveConfig (file:///Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/vite@7.3.0_@types+node@22.19.3_jiti@2.6.1_lightningcss@1.30.2/node_modules/vite/dist/node/chunks/config.js:35436:13)
+    at hasReactRouterRscPlugin (/Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/@react-router+dev@7.10.1_@react-router+serve@7.10.1_react-router@7.10.1_react-dom@19.2._1ec244e67b91535d336d8c48f3196ea0/node_modules/@react-router/dev/dist/cli/index.js:1351:22)
+    at typegen (/Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/@react-router+dev@7.10.1_@react-router+serve@7.10.1_react-router@7.10.1_react-dom@19.2._1ec244e67b91535d336d8c48f3196ea0/node_modules/@react-router/dev/dist/cli/index.js:2391:15)
+    at createConfigLoader (/Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/@react-router+dev@7.10.1_@react-router+serve@7.10.1_react-router@7.10.1_react-dom@19.2._1ec244e67b91535d336d8c48f3196ea0/node_modules/@react-router/dev/dist/vite.js:623:11)
+    at BasicMinimalPluginContext.config (/Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/@react-router+dev@7.10.1_@react-router+serve@7.10.1_react-router@7.10.1_react-dom@19.2._1ec244e67b91535d336d8c48f3196ea0/node_modules/@react-router/dev/dist/vite.js:3207:35)
+    at runConfigHook (file:///Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/vite@7.3.0_@types+node@22.19.3_jiti@2.6.1_lightningcss@1.30.2/node_modules/vite/dist/node/chunks/config.js:35934:15)
+    at Module.resolveConfig (file:///Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/vite@7.3.0_@types+node@22.19.3_jiti@2.6.1_lightningcss@1.30.2/node_modules/vite/dist/node/chunks/config.js:35436:13)
+    at hasReactRouterRscPlugin (/Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/@react-router+dev@7.10.1_@react-router+serve@7.10.1_react-router@7.10.1_react-dom@19.2._1ec244e67b91535d336d8c48f3196ea0/node_modules/@react-router/dev/dist/cli/index.js:1351:22)
+    at typegen (/Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/@react-router+dev@7.10.1_@react-router+serve@7.10.1_react-router@7.10.1_react-dom@19.2._1ec244e67b91535d336d8c48f3196ea0/node_modules/@react-router/dev/dist/cli/index.js:2391:15)
+    at run2 (/Users/jongseoklee/Documents/GitHub/itcom/web/node_modules/.pnpm/@react-router+dev@7.10.1_@react-router+serve@7.10.1_react-router@7.10.1_react-dom@19.2._1ec244e67b91535d336d8c48f3196ea0/node_modules/@react-router/dev/dist/cli/index.js:2574:7)
+ ELIFECYCLE  Command failed with exit code 1.

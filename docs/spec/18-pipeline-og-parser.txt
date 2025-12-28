@@ -1,0 +1,132 @@
+# Feature Specification: Job Posting URL Parser
+
+**Feature Branch**: `018-url-parser`
+**Created**: 2025-12-28
+**Status**: Draft
+**Input**: User description: "Build an automatic job posting parser that extracts company and position information from URLs. When users add a new job application to their pipeline, they can paste a job posting URL from sites like LinkedIn, Indeed, Green, Wantedly, or company career pages. The system fetches the page content and parses Open Graph meta tags and structured data to extract the company name, job title, location, and job description summary. Extracted information auto-populates the application form fields, which users can edit before saving. If parsing fails or the URL is not a job posting, users see a warning and can manually enter the information. The system caches parsed results for 24 hours to avoid re-fetching the same URL. Users can refresh parsed data if the job posting was updated. Parsing works for both Japanese and English job postings with proper character encoding."
+
+## User Scenarios & Testing *(mandatory)*
+
+### User Story 1 - Quick Application Entry via URL (Priority: P1)
+
+A job seeker finds an interesting position on LinkedIn, Indeed, Green, or a company career page. Instead of manually copying and pasting each field (company name, job title, location, description), they simply paste the URL into the application form. The system automatically extracts and populates all relevant fields, allowing them to review and save the application in seconds.
+
+**Why this priority**: This is the core value proposition - reducing manual data entry from 3-5 minutes to under 30 seconds per job application. Users managing multiple applications will immediately see productivity gains.
+
+**Independent Test**: Can be fully tested by pasting a job posting URL from any major job board and verifying that company name, job title, location, and description are correctly populated. Delivers immediate value by eliminating manual data entry.
+
+**Acceptance Scenarios**:
+
+1. **Given** user is on the "Add Job Application" form, **When** they paste a LinkedIn job URL into the URL field, **Then** the system fetches the page, extracts company name, job title, location, and description, and auto-populates the form fields
+2. **Given** user is on the "Add Job Application" form, **When** they paste an Indeed job URL, **Then** all extractable fields are populated with correct data
+3. **Given** user is on the "Add Job Application" form, **When** they paste a Green (Japanese job board) URL, **Then** Japanese text is correctly parsed and displayed with proper character encoding
+4. **Given** the form is auto-populated with parsed data, **When** user edits any field before saving, **Then** the edited values take precedence over auto-populated data
+
+---
+
+### User Story 2 - Handle Parsing Failures Gracefully (Priority: P1)
+
+A user pastes a URL that is not a job posting (e.g., company homepage, blog post) or from an unsupported site. The system detects that parsing failed or returned insufficient data and shows a clear warning message. The user can then manually fill in the fields without losing the URL they pasted.
+
+**Why this priority**: Error handling is critical to prevent user frustration. Without graceful degradation, the feature would create negative experiences when it fails, undermining trust in the platform.
+
+**Independent Test**: Can be tested by pasting non-job URLs (company homepage, news article, etc.) and verifying that the system shows a warning and allows manual entry. Ensures the feature never blocks the user workflow.
+
+**Acceptance Scenarios**:
+
+1. **Given** user pastes a non-job URL (e.g., company homepage), **When** parsing completes, **Then** system displays a warning "Unable to extract job information from this URL" and leaves fields empty for manual entry
+2. **Given** user pastes a URL from an unsupported job site, **When** parsing fails, **Then** the URL is retained in the form and user can proceed with manual data entry
+3. **Given** parsing fails due to network timeout, **When** error occurs, **Then** system shows "Unable to fetch URL. Please check your connection" and allows retry or manual entry
+4. **Given** the page has no Open Graph tags or structured data, **When** parsing completes, **Then** system shows a warning and suggests manual entry
+
+---
+
+### User Story 3 - Avoid Redundant Network Requests (Priority: P2)
+
+A user is managing multiple applications and repeatedly accesses the same job posting URL (e.g., updating their notes, checking status). The system caches the parsed results for 24 hours, so subsequent accesses load instantly without re-fetching the URL.
+
+**Why this priority**: Performance and efficiency optimization. Reduces unnecessary network requests to external sites and improves user experience with instant loading. Secondary to core functionality but important for scale.
+
+**Independent Test**: Can be tested by parsing a URL twice within 24 hours and verifying that the second parse returns cached results instantly. Delivers measurable performance improvement.
+
+**Acceptance Scenarios**:
+
+1. **Given** user has previously parsed a job URL within the last 24 hours, **When** they paste the same URL again, **Then** system returns cached results without making a new network request
+2. **Given** cached data exists for a URL, **When** user clicks "Refresh" button, **Then** system re-fetches the URL and updates the cache with fresh data
+3. **Given** cached data is older than 24 hours, **When** user pastes the URL, **Then** system automatically fetches fresh data and updates the cache
+4. **Given** multiple users paste the same job URL, **When** parsing occurs, **Then** each user benefits from the shared cache (if URL is identical)
+
+---
+
+### User Story 4 - Multi-Platform and Multi-Language Support (Priority: P2)
+
+A user job searching in Japan encounters postings in both English and Japanese across different platforms (LinkedIn, Indeed, Green, Wantedly, company career pages). The system correctly parses both language encodings and handles platform-specific HTML structures.
+
+**Why this priority**: Critical for the Japan IT job market context where bilingual job postings are common. Without this, the feature would only work for English jobs, limiting usefulness for the target market.
+
+**Independent Test**: Can be tested by parsing job URLs from each supported platform in both English and Japanese, verifying correct character encoding and field extraction for each.
+
+**Acceptance Scenarios**:
+
+1. **Given** user pastes a Japanese job posting from Green (グリーン), **When** parsing completes, **Then** all Japanese characters are correctly displayed without mojibake (文字化け)
+2. **Given** user pastes a bilingual job posting (English/Japanese mixed), **When** parsing completes, **Then** both languages are preserved correctly in the extracted description
+3. **Given** user pastes a Wantedly job URL, **When** parsing completes, **Then** company name and job title are extracted from Wantedly's specific HTML structure
+4. **Given** user pastes a company career page URL (non-standard format), **When** parsing completes, **Then** system attempts to extract from common HTML patterns (Open Graph tags, structured data) and shows partial results if available
+
+---
+
+### Edge Cases
+
+- What happens when a job posting URL returns a 404 (job has been removed)?
+- How does the system handle URLs that require authentication or CAPTCHA?
+- What happens when Open Graph tags are malformed or inconsistent?
+- How does the system handle very long descriptions (10,000+ characters)?
+- What happens when the job posting is behind a paywall or requires JavaScript rendering?
+- How does the system handle redirects (e.g., shortened URLs like bit.ly)?
+- What happens when the same company posts multiple jobs with slight variations in company name?
+- How does the system detect and handle non-UTF-8 character encodings?
+
+## Requirements *(mandatory)*
+
+### Functional Requirements
+
+- **FR-001**: System MUST accept a URL input from user in the job application form
+- **FR-002**: System MUST fetch the HTML content of the provided URL within a reasonable timeout (5-10 seconds)
+- **FR-003**: System MUST parse Open Graph meta tags (og:title, og:description, og:site_name, og:type, etc.) from the fetched HTML
+- **FR-004**: System MUST parse JSON-LD structured data (JobPosting schema) if available
+- **FR-005**: System MUST extract company name from available metadata (og:site_name, JobPosting.hiringOrganization, or fallback heuristics)
+- **FR-006**: System MUST extract job title from available metadata (og:title, JobPosting.title)
+- **FR-007**: System MUST extract location from available metadata (JobPosting.jobLocation)
+- **FR-008**: System MUST extract job description summary from available metadata (og:description, JobPosting.description)
+- **FR-009**: System MUST auto-populate form fields with extracted data without requiring user interaction
+- **FR-010**: Users MUST be able to edit any auto-populated field before saving
+- **FR-011**: System MUST display a clear warning message when parsing fails or returns no results
+- **FR-012**: System MUST allow users to proceed with manual entry even when parsing fails
+- **FR-013**: System MUST cache parsed results for each unique URL for 24 hours to avoid redundant fetches
+- **FR-014**: Users MUST be able to refresh cached data to get the latest version of a job posting
+- **FR-015**: System MUST handle both UTF-8 (English) and Japanese character encodings (Shift-JIS, EUC-JP, UTF-8) correctly
+- **FR-016**: System MUST support parsing from major job platforms: LinkedIn, Indeed, Green, Wantedly, and generic company career pages
+- **FR-017**: System MUST handle HTTP redirects and follow them to the final destination URL
+- **FR-018**: System MUST validate that the URL is accessible before attempting to parse
+- **FR-019**: System MUST handle network timeouts and errors gracefully with user-friendly messages
+- **FR-020**: System MUST retain the original URL in the form even when parsing fails
+
+### Key Entities
+
+- **Job Posting URL**: The web address of a job posting. Contains the source of truth for job information.
+- **Parsed Job Data**: Extracted information from the URL including company name, job title, location, description summary. May be incomplete if parsing is partial.
+- **Cache Entry**: Stored parsed results associated with a URL, timestamp of when cached, and expiration time (24 hours from cache time).
+- **Parse Result**: The outcome of a parsing attempt - success with data, partial success with warnings, or failure with error message.
+
+## Success Criteria *(mandatory)*
+
+### Measurable Outcomes
+
+- **SC-001**: Users can add a job application via URL paste in under 30 seconds (compared to 3-5 minutes manual entry)
+- **SC-002**: System successfully parses and extracts at least 3 out of 4 key fields (company, title, location, description) for 80%+ of URLs from LinkedIn, Indeed, Green, and Wantedly
+- **SC-003**: Cache hit rate is above 30% after first week of usage (indicating users frequently access the same job postings)
+- **SC-004**: Zero mojibake (character encoding errors) reported for Japanese job postings
+- **SC-005**: Parsing failures gracefully degrade to manual entry without blocking user workflow in 100% of cases
+- **SC-006**: 90%+ of users who use the URL parser feature complete the "Add Job Application" flow (indicating the feature adds value rather than creating friction)
+- **SC-007**: Average response time for parsing (cache miss) is under 5 seconds
+- **SC-008**: Average response time for parsing (cache hit) is under 200ms

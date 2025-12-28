@@ -1,0 +1,158 @@
+# Feature Specification: Community Image Upload
+
+**Feature Branch**: `009-image-upload`
+**Created**: 2025-12-28
+**Status**: Draft
+**Input**: Build an image upload system for community posts and comments where users can embed images directly in their Markdown content. Users can upload images via drag-and-drop, paste from clipboard, or file picker while writing a post. Uploaded images are automatically resized for web optimization (max 1920px width, 80% quality) while preserving aspect ratio. Supported formats are JPG, PNG, GIF, and WebP with a maximum size of 5MB per image and 10 images per post. The Markdown editor shows live image previews inline. Users can add alt text for accessibility and delete uploaded images. The system prevents hotlinking by validating referrer headers and generates responsive image URLs for different screen sizes.
+
+## User Scenarios & Testing
+
+### User Story 1 - Upload Images While Writing Posts (Priority: P1)
+
+Users need to enrich their community posts and comments with visual content like screenshots, diagrams, or photos to better explain technical concepts, share achievements, or provide visual context for discussions.
+
+**Why this priority**: Visual content is essential for modern community engagement. Without basic image upload, users cannot effectively communicate technical issues, share screenshots, or create engaging content, making this the foundational capability.
+
+**Independent Test**: Can be fully tested by creating a new post, uploading an image via file picker, and verifying the image appears in both the editor preview and published post. Delivers immediate value by enabling visual content in posts.
+
+**Acceptance Scenarios**:
+
+1. **Given** a user is writing a new community post, **When** they click the image upload button and select a JPG file under 5MB, **Then** the image uploads successfully and appears as a Markdown image tag in the editor
+2. **Given** a user is editing a post with an uploaded image, **When** they view the editor, **Then** they see a live preview of the image inline
+3. **Given** a user uploads a 3000px wide image, **When** the upload completes, **Then** the system automatically resizes it to 1920px width while maintaining aspect ratio at 80% quality
+
+---
+
+### User Story 2 - Drag-and-Drop and Clipboard Support (Priority: P2)
+
+Users want faster, more intuitive ways to add images without navigating file dialogs, especially when they already have screenshots in their clipboard or files ready to drag from their desktop.
+
+**Why this priority**: Significantly improves user experience and reduces friction in the content creation workflow, but posts can still be created with images using the basic file picker from P1.
+
+**Independent Test**: Can be tested by dragging an image file from the desktop into the editor and verifying it uploads and previews correctly. Works independently of P1's file picker method.
+
+**Acceptance Scenarios**:
+
+1. **Given** a user has copied a screenshot to their clipboard, **When** they paste (Ctrl+V/Cmd+V) in the editor, **Then** the image uploads and is inserted at the cursor position
+2. **Given** a user drags a PNG file from their desktop, **When** they drop it onto the editor area, **Then** the image uploads and appears inline with a loading indicator
+3. **Given** a user drags multiple image files, **When** they attempt to upload more than 10 images, **Then** the system prevents upload and shows an error message "Maximum 10 images per post"
+
+---
+
+### User Story 3 - Accessibility and Image Management (Priority: P2)
+
+Users need to add alt text for accessibility compliance, manage uploaded images, and ensure their content is accessible to screen reader users and provides good UX when images fail to load.
+
+**Why this priority**: Critical for accessibility and WCAG compliance, but the core upload functionality works without it. Image deletion is important for correcting mistakes.
+
+**Independent Test**: Can be tested by uploading an image, adding alt text via a prompt/dialog, and verifying the alt text appears in the generated Markdown. Works independently with any uploaded image.
+
+**Acceptance Scenarios**:
+
+1. **Given** a user has uploaded an image, **When** they click on the image preview, **Then** they see an option to add/edit alt text
+2. **Given** a user adds alt text "Dashboard screenshot showing error", **When** the post is published, **Then** the Markdown image includes alt="Dashboard screenshot showing error"
+3. **Given** a user uploaded an unwanted image, **When** they click the delete icon on the image preview, **Then** the system prompts for confirmation and removes both the file and Markdown reference upon confirmation
+
+---
+
+### User Story 4 - Responsive Image Delivery (Priority: P3)
+
+Users on mobile devices or slower connections need appropriately sized images that load quickly without sacrificing quality on larger screens, improving page load times and reducing bandwidth usage.
+
+**Why this priority**: Enhances performance and mobile experience but doesn't affect core functionality. The resized 1920px images from P1 already work reasonably well across devices.
+
+**Independent Test**: Can be tested by viewing a post with images on different screen sizes (mobile, tablet, desktop) and verifying different image sizes are loaded using browser DevTools network panel.
+
+**Acceptance Scenarios**:
+
+1. **Given** an image is uploaded, **When** the system processes it, **Then** it generates multiple sizes (320w, 640w, 1280w, 1920w) for responsive delivery
+2. **Given** a user views a post on mobile (375px width), **When** the page loads, **Then** the browser requests the 640w version instead of the full 1920w
+3. **Given** a high-DPI device displays an image, **When** rendering, **Then** the system serves an appropriate higher resolution variant
+
+---
+
+### User Story 5 - Hotlink Prevention and Security (Priority: P3)
+
+The platform needs to prevent external sites from embedding our images directly (hotlinking) to protect bandwidth, prevent abuse, and maintain control over content distribution.
+
+**Why this priority**: Important for operational costs and abuse prevention, but not critical for initial launch. Can be added after monitoring actual usage patterns.
+
+**Independent Test**: Can be tested by attempting to embed an uploaded image URL on an external website and verifying the request is blocked with a 403 Forbidden response when the referrer is not from the allowed domain.
+
+**Acceptance Scenarios**:
+
+1. **Given** an image is hosted on the platform, **When** an external website tries to embed it using an img tag, **Then** the server validates the referrer header and returns 403 if not from allowed domains
+2. **Given** a user views an image on the platform, **When** the image request includes a valid referrer, **Then** the image loads normally
+3. **Given** direct image URL access (no referrer), **When** the request is from a browser, **Then** the system allows access to support legitimate sharing while blocking automated scrapers
+
+---
+
+### Edge Cases
+
+- What happens when a user uploads an unsupported image format (e.g., TIFF, BMP)?
+  → System rejects upload immediately and shows error message "Unsupported format. Please use JPG, PNG, GIF, or WebP"
+
+- How does the system handle corrupted or malformed image files?
+  → Server-side validation detects corruption during processing and returns error "Unable to process image file"
+
+- What happens when a user attempts to upload an image larger than 5MB?
+  → Client-side validation prevents upload and shows "Image too large. Maximum size is 5MB"
+
+- How does the system handle concurrent uploads of multiple images?
+  → Uploads are processed in parallel with individual progress indicators, up to 10 simultaneous uploads
+
+- What happens when a user deletes a post with embedded images?
+  → Images are marked for deletion but retained for 30 days to allow post recovery, then permanently deleted
+
+- How does the editor handle image uploads during network failures?
+  → Shows retry button with error message "Upload failed. Check connection and try again"
+
+- What happens when a user tries to paste non-image clipboard content?
+  → System ignores paste event or handles text content normally without attempting image upload
+
+- How are animated GIFs handled during resize/optimization?
+  → System preserves animation while optimizing file size, maintaining all frames
+
+## Requirements
+
+### Functional Requirements
+
+- **FR-001**: System MUST accept image uploads in JPG, PNG, GIF, and WebP formats only
+- **FR-002**: System MUST enforce maximum file size of 5MB per image at client-side before upload
+- **FR-003**: System MUST enforce maximum of 10 images per post/comment
+- **FR-004**: System MUST automatically resize uploaded images to maximum 1920px width while preserving aspect ratio
+- **FR-005**: System MUST compress resized images to 80% quality for web optimization
+- **FR-006**: System MUST support three upload methods: file picker, drag-and-drop, and clipboard paste
+- **FR-007**: System MUST display live image previews inline within the Markdown editor
+- **FR-008**: System MUST generate valid Markdown image syntax with image URLs
+- **FR-009**: System MUST allow users to add and edit alt text for each uploaded image
+- **FR-010**: System MUST allow users to delete uploaded images before post publication
+- **FR-011**: System MUST show upload progress indicators for each image during upload
+- **FR-012**: System MUST validate image files server-side to prevent malicious uploads
+- **FR-013**: System MUST generate responsive image variants (320w, 640w, 1280w, 1920w) for different screen sizes
+- **FR-014**: System MUST validate referrer headers to prevent hotlinking from external domains
+- **FR-015**: System MUST store images in S3-compatible storage with unique, non-guessable URLs
+- **FR-016**: System MUST maintain association between uploaded images and posts/comments for cleanup
+- **FR-017**: System MUST handle upload errors gracefully with user-friendly error messages
+- **FR-018**: System MUST preserve animated GIFs during resize/optimization
+
+### Key Entities
+
+- **UploadedImage**: Represents an uploaded image file with metadata including original filename, file size, upload timestamp, uploader user ID, storage URL, dimensions, format, and associated post/comment ID. Links to User and Post/Comment entities.
+
+- **ImageVariant**: Represents different sizes of a single uploaded image for responsive delivery, including width, height, file size, and storage URL. Multiple variants belong to one UploadedImage.
+
+- **Post/Comment**: Extended to reference multiple UploadedImage entities, tracking which images are embedded in content for deletion cascade and orphan cleanup.
+
+## Success Criteria
+
+### Measurable Outcomes
+
+- **SC-001**: Users can upload an image and see it in their post preview within 3 seconds for files under 2MB
+- **SC-002**: 95% of image uploads complete successfully on first attempt without errors
+- **SC-003**: Uploaded images are automatically optimized, reducing average file size by 40-60% while maintaining visual quality
+- **SC-004**: Mobile users experience 50% faster image load times compared to serving full-resolution images
+- **SC-005**: Zero successful hotlinking attempts from external domains after referrer validation is enabled
+- **SC-006**: All uploaded images include alt text or have accessible fallback descriptions, achieving WCAG 2.1 Level AA compliance
+- **SC-007**: Users can drag-and-drop or paste images successfully 100% of the time in supported browsers (Chrome, Firefox, Safari, Edge latest versions)
+- **SC-008**: Image uploads do not block the UI, allowing users to continue writing while uploads process in background
