@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import { tasks } from "@itcom/db/schema";
+import { eq } from "drizzle-orm";
 import type { DashboardTask, JobRecommendation } from "./dashboard.types";
 
 const MOCK_JOBS: JobRecommendation[] = [

@@ -19,8 +19,16 @@ export const COMMON_TIMEZONES = [
 	{ value: "Asia/Bangkok", label: "Indochina Time (ICT)", offset: 7 },
 	{ value: "Asia/Shanghai", label: "China Standard Time (CST)", offset: 8 },
 	{ value: "Asia/Tokyo", label: "Japan Standard Time (JST)", offset: 9 },
-	{ value: "Australia/Sydney", label: "Australian Eastern Time (AEST)", offset: 10 },
-	{ value: "Pacific/Auckland", label: "New Zealand Standard Time (NZST)", offset: 12 },
+	{
+		value: "Australia/Sydney",
+		label: "Australian Eastern Time (AEST)",
+		offset: 10,
+	},
+	{
+		value: "Pacific/Auckland",
+		label: "New Zealand Standard Time (NZST)",
+		offset: 12,
+	},
 ];
 
 /**
@@ -109,7 +117,11 @@ export function convertTimezone(
 
 		// Now format in target timezone to verify conversion
 		// This is a workaround since JavaScript doesn't have direct timezone conversion
-		const formattedInTarget = formatDateInTimezone(utcDate, toTimezone, "short");
+		const formattedInTarget = formatDateInTimezone(
+			utcDate,
+			toTimezone,
+			"short",
+		);
 
 		return utcDate;
 	} catch (error) {

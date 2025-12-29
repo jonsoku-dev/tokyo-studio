@@ -1,14 +1,14 @@
-import { eq, and, inArray, isNull, or } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import {
-	roadmapTemplates,
-	roadmapTasks,
-	userRoadmaps,
+	type InsertRoadmapTask,
 	profiles,
 	type RoadmapTask,
 	type RoadmapTemplate,
-	type InsertRoadmapTask,
+	roadmapTasks,
+	roadmapTemplates,
+	userRoadmaps,
 } from "@itcom/db/schema";
+import { and, eq } from "drizzle-orm";
 
 export type KanbanColumn = "todo" | "in_progress" | "completed";
 export type RoadmapCategory =
@@ -73,7 +73,10 @@ export async function getMatchingTemplates(
 		}
 
 		// Check level
-		if (template.targetLevels && !template.targetLevels.includes(profile.level)) {
+		if (
+			template.targetLevels &&
+			!template.targetLevels.includes(profile.level)
+		) {
 			return false;
 		}
 
@@ -189,7 +192,10 @@ function calculateProgress(tasks: RoadmapTask[]): RoadmapProgress {
 		byCategory[cat] = {
 			total: catTasks.length,
 			completed,
-			percent: catTasks.length > 0 ? Math.round((completed / catTasks.length) * 100) : 0,
+			percent:
+				catTasks.length > 0
+					? Math.round((completed / catTasks.length) * 100)
+					: 0,
 		};
 	}
 
@@ -206,21 +212,57 @@ function calculateProgress(tasks: RoadmapTask[]): RoadmapProgress {
 
 /**
  * Update task column (drag-and-drop)
+ *
+ * @deprecated Use updateTaskPosition instead for full control over column and orderIndex
  */
 export async function updateTaskColumn(
 	taskId: string,
 	userId: string,
 	column: KanbanColumn,
 ): Promise<RoadmapTask> {
+	return updateTaskPosition(taskId, userId, {
+		kanbanColumn: column,
+	});
+}
+
+/**
+ * Update task position (column and/or orderIndex)
+ *
+ * This function handles both column changes and task reordering within columns.
+ * It supports partial updates - only provided fields will be updated.
+ */
+export async function updateTaskPosition(
+	taskId: string,
+	userId: string,
+	updates: {
+		kanbanColumn?: KanbanColumn;
+		orderIndex?: number;
+	},
+): Promise<RoadmapTask> {
+	if (!updates.kanbanColumn && updates.orderIndex === undefined) {
+		throw new Error("Must provide at least kanbanColumn or orderIndex");
+	}
+
 	const now = new Date();
+	const updateData: Record<string, unknown> = {
+		updatedAt: now,
+	};
+
+	// Update kanbanColumn if provided
+	if (updates.kanbanColumn) {
+		updateData.kanbanColumn = updates.kanbanColumn;
+		// Set completedAt timestamp when moving to completed
+		updateData.completedAt = updates.kanbanColumn === "completed" ? now : null;
+	}
+
+	// Update orderIndex if provided
+	if (updates.orderIndex !== undefined) {
+		updateData.orderIndex = updates.orderIndex;
+	}
 
 	const [updated] = await db
 		.update(roadmapTasks)
-		.set({
-			kanbanColumn: column,
-			completedAt: column === "completed" ? now : null,
-			updatedAt: now,
-		})
+		.set(updateData)
 		.where(and(eq(roadmapTasks.id, taskId), eq(roadmapTasks.userId, userId)))
 		.returning();
 

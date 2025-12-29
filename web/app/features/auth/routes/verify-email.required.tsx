@@ -1,4 +1,6 @@
 import crypto from "node:crypto";
+import { db } from "@itcom/db/client";
+import { verificationTokens } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import {
@@ -8,8 +10,6 @@ import {
 	useLoaderData,
 	useNavigation,
 } from "react-router";
-import { db } from "@itcom/db/client";
-import { verificationTokens } from "@itcom/db/schema";
 
 /**
  * SPEC 002: Email Verification Required Page

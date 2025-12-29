@@ -4,13 +4,13 @@
  * Retrieves real activity counts from database
  */
 
-import { and, count, eq, isNull } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import {
 	communityComments,
 	communityPosts,
 	mentoringSessions,
 } from "@itcom/db/schema";
+import { and, count, eq, isNull } from "drizzle-orm";
 export interface UserActivityStats {
 	mentoringSessions: number;
 	communityPosts: number;

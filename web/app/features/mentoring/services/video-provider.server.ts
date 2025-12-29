@@ -58,13 +58,20 @@ export async function generateMeetingLink(params: {
  */
 export function generateJitsiLink(sessionId: string): GeneratedLink {
 	// Validate session ID format (UUID)
-	if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(sessionId)) {
+	if (
+		!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+			sessionId,
+		)
+	) {
 		throw new Error("Invalid session ID format");
 	}
 
 	// Create room name: lowercase, alphanumeric + hyphen
 	// Remove hyphens from UUID and use first 16 chars
-	const roomNameSuffix = sessionId.replace(/-/g, "").substring(0, 16).toLowerCase();
+	const roomNameSuffix = sessionId
+		.replace(/-/g, "")
+		.substring(0, 16)
+		.toLowerCase();
 	const roomName = `itcom-session-${roomNameSuffix}`;
 
 	// Build URL with recommended parameters
@@ -155,16 +162,12 @@ export function generateJoinToken(params: {
 /**
  * Verify and decode join token
  */
-export function verifyJoinToken(
-	token: string,
-): {
+export function verifyJoinToken(token: string): {
 	sessionId: string;
 	userId: string;
 } | null {
 	try {
-		const decoded = JSON.parse(
-			Buffer.from(token, "base64").toString("utf-8"),
-		);
+		const decoded = JSON.parse(Buffer.from(token, "base64").toString("utf-8"));
 
 		// Check expiration
 		if (decoded.exp < Math.floor(Date.now() / 1000)) {

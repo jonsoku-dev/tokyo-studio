@@ -1,6 +1,6 @@
-import { Link } from "react-router";
-import { CheckCircle2, Clock, AlertCircle, ArrowRight } from "lucide-react";
 import type { SelectMentorApplication } from "@itcom/db/schema";
+import { AlertCircle, ArrowRight, CheckCircle2, Clock } from "lucide-react";
+import { Link } from "react-router";
 
 interface MentorApplicationStatusProps {
 	application?: SelectMentorApplication | null;
@@ -77,12 +77,12 @@ export function MentorApplicationStatus({
 	const Icon = config.icon;
 
 	return (
-		<div
-			className={`p-4 rounded-xl border ${config.color} space-y-3`}
-		>
+		<div className={`p-4 rounded-xl border ${config.color} space-y-3`}>
 			<div className="flex items-start justify-between">
 				<div className="flex items-start gap-3">
-					<Icon className={`h-5 w-5 mt-0.5 ${config.textColor} flex-shrink-0`} />
+					<Icon
+						className={`h-5 w-5 mt-0.5 ${config.textColor} flex-shrink-0`}
+					/>
 					<div>
 						<h3 className={`font-semibold ${config.textColor}`}>
 							Mentor Application

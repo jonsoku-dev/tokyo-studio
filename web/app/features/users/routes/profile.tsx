@@ -1,11 +1,11 @@
+import { db } from "@itcom/db/client";
+import { profiles, users } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import { Link, redirect, useFetcher } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { Shell } from "~/shared/components/layout/Shell";
 import { Button } from "~/shared/components/ui/Button";
 import { Input } from "~/shared/components/ui/Input";
-import { db } from "@itcom/db/client";
-import { profiles, users } from "@itcom/db/schema";
 import { AvatarUpload } from "../components/AvatarUpload";
 import type { Route } from "./+types/profile";
 

@@ -83,7 +83,7 @@ export async function logPasswordResetEvent({
 export async function getUserPasswordResetLogs(
 	userId: string,
 	limit = 50,
-): Promise<typeof passwordResetLogs.$inferSelect[]> {
+): Promise<(typeof passwordResetLogs.$inferSelect)[]> {
 	return db.query.passwordResetLogs.findMany({
 		where: (logs, { eq }) => eq(logs.userId, userId),
 		orderBy: (logs, { desc }) => [desc(logs.timestamp)],
@@ -98,7 +98,7 @@ export async function getUserPasswordResetLogs(
 export async function getEmailPasswordResetLogs(
 	email: string,
 	limit = 50,
-): Promise<typeof passwordResetLogs.$inferSelect[]> {
+): Promise<(typeof passwordResetLogs.$inferSelect)[]> {
 	return db.query.passwordResetLogs.findMany({
 		where: (logs, { eq }) => eq(logs.email, email),
 		orderBy: (logs, { desc }) => [desc(logs.timestamp)],
@@ -112,7 +112,7 @@ export async function getEmailPasswordResetLogs(
  */
 export async function getRecentPasswordResetLogs(
 	limit = 100,
-): Promise<typeof passwordResetLogs.$inferSelect[]> {
+): Promise<(typeof passwordResetLogs.$inferSelect)[]> {
 	return db.query.passwordResetLogs.findMany({
 		orderBy: (logs, { desc }) => [desc(logs.timestamp)],
 		limit,
@@ -123,9 +123,7 @@ export async function getRecentPasswordResetLogs(
  * Get password reset statistics
  * Useful for analytics dashboards
  */
-export async function getPasswordResetStats(
-	email?: string,
-): Promise<{
+export async function getPasswordResetStats(email?: string): Promise<{
 	totalEvents: number;
 	requestedCount: number;
 	completedCount: number;

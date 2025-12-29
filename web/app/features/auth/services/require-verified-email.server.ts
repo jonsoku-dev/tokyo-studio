@@ -1,9 +1,9 @@
-import { eq } from "drizzle-orm";
-import { redirect } from "react-router";
-import { getUserId } from "~/features/auth/utils/session.server";
 import { db } from "@itcom/db/client";
 import type { User } from "@itcom/db/schema";
 import { users } from "@itcom/db/schema";
+import { eq } from "drizzle-orm";
+import { redirect } from "react-router";
+import { getUserId } from "~/features/auth/utils/session.server";
 
 /**
  * Email Verification Middleware

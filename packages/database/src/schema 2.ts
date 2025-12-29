@@ -1,0 +1,1016 @@
+import { type InferSelectModel, relations } from "drizzle-orm";
+import {
+	boolean,
+	customType,
+	integer,
+	jsonb,
+	pgTable,
+	text,
+	timestamp,
+	uuid,
+} from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+
+const tsvector = customType<{ data: string }>({
+	dataType() {
+		return "tsvector";
+	},
+});
+
+// --- Users ---
+export const users = pgTable("users", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	email: text("email").notNull().unique(),
+	password: text("password"), // Nullable for social auth users
+	name: text("name").notNull(),
+	displayName: text("display_name"),
+	role: text("role").default("user"), // "user" | "admin"
+	status: text("status").default("active"), // "active" | "suspended"
+	avatarUrl: text("avatar_url"),
+	avatarThumbnailUrl: text("avatar_thumbnail_url"),
+	urlSlug: text("url_slug").unique(),
+	googleId: text("google_id").unique(),
+	githubId: text("github_id").unique(),
+	kakaoId: text("kakao_id").unique(),
+	lineId: text("line_id").unique(),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+	emailVerified: timestamp("email_verified"),
+	reputation: integer("reputation").default(0).notNull(),
+});
+
+export const insertUserSchema = createInsertSchema(users);
+export const selectUserSchema = createSelectSchema(users);
+export type User = InferSelectModel<typeof users>;
+
+// --- Verification Tokens ---
+export const verificationTokens = pgTable("verification_tokens", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	token: text("token").notNull().unique(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	expiresAt: timestamp("expires_at").notNull(),
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertVerificationTokenSchema =
+	createInsertSchema(verificationTokens);
+export const selectVerificationTokenSchema =
+	createSelectSchema(verificationTokens);
+
+// --- Password Reset Tokens ---
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	token: text("token").notNull().unique(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	expiresAt: timestamp("expires_at").notNull(),
+	ipAddress: text("ip_address"),
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertPasswordResetTokenSchema =
+	createInsertSchema(passwordResetTokens);
+export const selectPasswordResetTokenSchema =
+	createSelectSchema(passwordResetTokens);
+
+// --- Tasks (Dashboard) ---
+export const tasks = pgTable("tasks", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	title: text("title").notNull(),
+	description: text("description").notNull(),
+	category: text("category").notNull(), // "Roadmap" | "Settle Tokyo" | "Job Hunt"
+	status: text("status").default("pending"), // "pending" | "completed"
+	priority: text("priority").default("normal"), // "urgent" | "normal"
+	dueDate: text("due_date"),
+	userId: uuid("user_id").references(() => users.id),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertTaskSchema = createInsertSchema(tasks);
+export const selectTaskSchema = createSelectSchema(tasks);
+
+// --- Pipeline Items ---
+export const pipelineItems = pgTable("pipeline_items", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	company: text("company").notNull(),
+	position: text("position").notNull(),
+	stage: text("stage").notNull(), // "applied" | "interview" | "offer" | "rejected"
+	date: text("date").notNull(),
+	nextAction: text("next_action"),
+	userId: uuid("user_id").references(() => users.id),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertPipelineItemSchema = createInsertSchema(pipelineItems);
+export const selectPipelineItemSchema = createSelectSchema(pipelineItems);
+
+// --- Documents ---
+export const documents = pgTable("documents", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	title: text("title").notNull(), // User-friendly name
+	type: text("type").notNull(), // "Resume" | "CV" | "Portfolio" | "Cover Letter"
+	status: text("status").default("draft"), // "draft" | "final" | "pending" | "uploaded" | "deleted"
+	url: text("url"), // Public/Presigned URL
+
+	// File Metadata
+	storageKey: text("storage_key"), // S3 Key / Local Path
+	s3Key: text("s3_key"), // S3 specific key
+	thumbnailS3Key: text("thumbnail_s3_key"), // S3 thumbnail key
+	originalName: text("original_name"),
+	mimeType: text("mime_type"),
+	size: text("size"), // Storing as text to avoid BigInt issues, convert to number in app
+	thumbnailUrl: text("thumbnail_url"),
+	downloadCount: text("download_count").default("0"),
+
+	userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+	uploadedAt: timestamp("uploaded_at"),
+	deletedAt: timestamp("deleted_at"),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertDocumentSchema = createInsertSchema(documents);
+export const selectDocumentSchema = createSelectSchema(documents);
+
+// --- Document Versions ---
+export const documentVersions = pgTable("document_versions", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	documentId: uuid("document_id")
+		.references(() => documents.id, { onDelete: "cascade" })
+		.notNull(),
+	changeType: text("change_type").notNull(), // "upload", "rename", "status_change"
+	oldValue: text("old_value"),
+	newValue: text("new_value"),
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertDocumentVersionSchema = createInsertSchema(documentVersions);
+export const selectDocumentVersionSchema = createSelectSchema(documentVersions);
+
+// --- Mentoring ---
+export const mentoringSessions = pgTable("mentoring_sessions", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	mentorId: uuid("mentor_id")
+		.references(() => users.id)
+		.notNull(),
+	userId: uuid("user_id") // Mentee
+		.references(() => users.id)
+		.notNull(),
+	topic: text("topic").notNull(), // Used as "description" in spec
+	date: text("date").notNull(), // Start time (ISO string)
+	duration: integer("duration").notNull(), // in minutes
+	status: text("status").default("pending"), // "pending" (locked), "confirmed", "completed", "canceled"
+	price: integer("price").notNull(), // in cents
+	currency: text("currency").default("USD").notNull(),
+	meetingUrl: text("meeting_url"),
+	lockedAt: timestamp("locked_at"),
+	expiresAt: timestamp("expires_at"),
+	reminderSentAt: timestamp("reminder_sent_at"),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertMentoringSessionSchema =
+	createInsertSchema(mentoringSessions);
+export const selectMentoringSessionSchema =
+	createSelectSchema(mentoringSessions);
+
+export const mentorAvailabilitySlots = pgTable("mentor_availability_slots", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	mentorId: uuid("mentor_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	startTime: timestamp("start_time").notNull(),
+	endTime: timestamp("end_time").notNull(),
+	isBooked: boolean("is_booked").default(false).notNull(),
+	holdExpiresAt: timestamp("hold_expires_at"),
+	version: integer("version").default(1).notNull(), // Optimistic locking
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	bookingId: uuid("booking_id").references(() => mentoringSessions.id),
+});
+
+export const insertMentorAvailabilitySlotSchema = createInsertSchema(
+	mentorAvailabilitySlots,
+);
+export const selectMentorAvailabilitySlotSchema = createSelectSchema(
+	mentorAvailabilitySlots,
+);
+
+// --- Community ---
+export const communityPosts = pgTable("community_posts", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	title: text("title").notNull(),
+	content: text("content").notNull(),
+	category: text("category").notNull().default("general"), // "review" | "qna" | "general"
+	authorId: uuid("author_id").references(() => users.id),
+	// Full-text search vector (managed by trigger, but defined here for querying)
+	searchVector: tsvector("search_vector"),
+	upvotes: integer("upvotes").default(0).notNull(),
+	downvotes: integer("downvotes").default(0).notNull(),
+	score: integer("score").default(0).notNull(),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertCommunityPostSchema = createInsertSchema(communityPosts);
+export const selectCommunityPostSchema = createSelectSchema(communityPosts);
+
+export const communityComments = pgTable("community_comments", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	postId: uuid("post_id").references(() => communityPosts.id, {
+		onDelete: "cascade",
+	}),
+	content: text("content").notNull(),
+	authorId: uuid("author_id").references(() => users.id),
+
+	parentId: uuid("parent_id"),
+	depth: integer("depth").default(0).notNull(),
+
+	isEdited: boolean("is_edited").default(false).notNull(),
+	deletedAt: timestamp("deleted_at"),
+
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+	upvotes: integer("upvotes").default(0).notNull(),
+	downvotes: integer("downvotes").default(0).notNull(),
+	score: integer("score").default(0).notNull(),
+});
+
+// Self-reference FK needs to be separate usually or handled if circular.
+// For simplicty in Drizzle: references(() => communityComments.id) works inside relations or via separate Foreign Key api if needed.
+// But standard pgTable definition allows referencing tables defined BEFORE. Self referencing inside same table definition:
+// `parentId: uuid("parent_id").references((): AnyPgColumn => communityComments.id)` requires strict typing or lazy eval.
+// Simplest is to just define column and add relation in `relations`.
+
+export const insertCommunityCommentSchema =
+	createInsertSchema(communityComments);
+export const selectCommunityCommentSchema =
+	createSelectSchema(communityComments);
+
+export const commentVotes = pgTable("comment_votes", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	commentId: uuid("comment_id")
+		.references(() => communityComments.id, { onDelete: "cascade" })
+		.notNull(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	voteType: integer("vote_type").notNull(), // 1 or -1
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertCommentVoteSchema = createInsertSchema(commentVotes);
+export const selectCommentVoteSchema = createSelectSchema(commentVotes);
+
+export const postVotes = pgTable("post_votes", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	postId: uuid("post_id")
+		.references(() => communityPosts.id, { onDelete: "cascade" })
+		.notNull(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	voteType: integer("vote_type").notNull(), // 1 or -1
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertPostVoteSchema = createInsertSchema(postVotes);
+export const selectPostVoteSchema = createSelectSchema(postVotes);
+
+export const reputationLogs = pgTable("reputation_logs", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	amount: integer("amount").notNull(),
+	reason: text("reason").notNull(), // "post_upvote", etc.
+	targetId: uuid("target_id").notNull(), // Generic ID reference
+	targetType: text("target_type").notNull(), // "post" | "comment"
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const voteAuditLogs = pgTable("vote_audit_logs", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	targetId: uuid("target_id").notNull(),
+	targetType: text("target_type").notNull(), // "post" | "comment"
+	voteType: integer("vote_type").notNull(),
+	ipAddress: text("ip_address"),
+	userAgent: text("user_agent"),
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertReputationLogSchema = createInsertSchema(reputationLogs);
+export const selectReputationLogSchema = createSelectSchema(reputationLogs);
+
+export const commentNotifications = pgTable("comment_notifications", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id") // Recipient
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	actorId: uuid("actor_id") // Who triggered it
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	commentId: uuid("comment_id")
+		.references(() => communityComments.id, { onDelete: "cascade" })
+		.notNull(),
+	type: text("type").notNull(), // "reply" | "mention"
+	read: boolean("read").default(false).notNull(),
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertCommentNotificationSchema =
+	createInsertSchema(commentNotifications);
+export const selectCommentNotificationSchema =
+	createSelectSchema(commentNotifications);
+
+export const commentReports = pgTable("comment_reports", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	commentId: uuid("comment_id")
+		.references(() => communityComments.id, { onDelete: "cascade" })
+		.notNull(),
+	reporterId: uuid("reporter_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	reason: text("reason").notNull(), // "spam", "harassment", "inappropriate", "other"
+	status: text("status").default("pending").notNull(), // "pending", "resolved", "dismissed"
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertCommentReportSchema = createInsertSchema(commentReports);
+export const selectCommentReportSchema = createSelectSchema(commentReports);
+
+// --- Push Notifications ---
+export const pushSubscriptions = pgTable("push_subscriptions", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	endpoint: text("endpoint").notNull().unique(),
+	p256dh: text("p256dh").notNull(),
+	auth: text("auth").notNull(),
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertPushSubscriptionSchema =
+	createInsertSchema(pushSubscriptions);
+export const selectPushSubscriptionSchema =
+	createSelectSchema(pushSubscriptions);
+
+export const notificationPreferences = pgTable("notification_preferences", {
+	userId: uuid("user_id")
+		.primaryKey()
+		.references(() => users.id, { onDelete: "cascade" }),
+	enabledTypes: jsonb("enabled_types").$type<string[]>().default([]),
+	quietHoursStart: text("quiet_hours_start"), // "HH:mm"
+	quietHoursEnd: text("quiet_hours_end"), // "HH:mm"
+	timezone: text("timezone").default("UTC"),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertNotificationPreferenceSchema = createInsertSchema(
+	notificationPreferences,
+);
+export const selectNotificationPreferenceSchema = createSelectSchema(
+	notificationPreferences,
+);
+
+export const notificationQueue = pgTable("notification_queue", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	payload: jsonb("payload").notNull(), // { title, body, icon, url }
+	scheduledAt: timestamp("scheduled_at").defaultNow(),
+	status: text("status").default("pending").notNull(), // "pending" | "failed" | "stale"
+	retryCount: integer("retry_count").default(0).notNull(),
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertNotificationQueueSchema =
+	createInsertSchema(notificationQueue);
+export const selectNotificationQueueSchema =
+	createSelectSchema(notificationQueue);
+
+// --- Profiles (Diagnosis) ---
+export const profiles = pgTable("profiles", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	jobFamily: text("job_family").notNull(), // "frontend", "backend", "mobile", etc.
+	level: text("level").notNull(), // "junior", "mid", "senior"
+	jpLevel: text("jp_level").notNull(), // "N1", "N2", "N3", "None"
+	enLevel: text("en_level").notNull(), // "Business", "Conversational", "Basic"
+	targetCity: text("target_city").default("Tokyo"),
+	bio: text("bio"),
+	slug: text("slug").unique(),
+	website: text("website"),
+	linkedinUrl: text("linkedin_url"),
+	githubUrl: text("github_url"),
+	userId: uuid("user_id").references(() => users.id),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertProfileSchema = createInsertSchema(profiles);
+export const selectProfileSchema = createSelectSchema(profiles);
+
+export type SelectProfile = typeof profiles.$inferSelect;
+export type InsertProfile = typeof profiles.$inferInsert;
+
+// --- Payments ---
+export const payments = pgTable("payments", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	orderId: text("order_id").notNull().unique(),
+	paymentKey: text("payment_key").unique(),
+	amount: text("amount").notNull(),
+	currency: text("currency").default("KRW"),
+	status: text("status").notNull(), // "READY", "IN_PROGRESS", "DONE", "CANCELED", "ABORTED"
+	method: text("method"),
+	userId: uuid("user_id").references(() => users.id),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertPaymentSchema = createInsertSchema(payments);
+export const selectPaymentSchema = createSelectSchema(payments);
+
+// --- Mentors ---
+export const mentors = pgTable("mentors", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id)
+		.notNull()
+		.unique(),
+	title: text("title").notNull(), // e.g., "Senior Frontend Engineer"
+	company: text("company"),
+	bio: text("bio"),
+	yearsOfExperience: text("years_of_experience"),
+	hourlyRate: text("hourly_rate").notNull().default("0"),
+	isApproved: text("is_approved").default("false"), // "true" | "false" (using text for simplicity or boolean)
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertMentorSchema = createInsertSchema(mentors);
+export const selectMentorSchema = createSelectSchema(mentors);
+
+// --- Mentor Availability ---
+export const mentorAvailability = pgTable("mentor_availability", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	mentorId: uuid("mentor_id")
+		.references(() => mentors.id, { onDelete: "cascade" })
+		.notNull(),
+	dayOfWeek: text("day_of_week").notNull(), // "0" (Sun) - "6" (Sat)
+	startTime: text("start_time").notNull(), // "09:00"
+	endTime: text("end_time").notNull(), // "18:00"
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertMentorAvailabilitySchema =
+	createInsertSchema(mentorAvailability);
+export const selectMentorAvailabilitySchema =
+	createSelectSchema(mentorAvailability);
+
+// --- SPEC 013: Video Integrations ---
+export const userIntegrations = pgTable("user_integrations", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	provider: text("provider").notNull(), // "google" | "zoom"
+	accessToken: text("access_token"), // Encrypted
+	refreshToken: text("refresh_token"), // Encrypted
+	expiresAt: timestamp("expires_at"),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertUserIntegrationSchema = createInsertSchema(userIntegrations);
+export const selectUserIntegrationSchema = createSelectSchema(userIntegrations);
+
+// --- Profile Privacy Settings ---
+export const profilePrivacySettings = pgTable("profile_privacy_settings", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull()
+		.unique(),
+	hideEmail: boolean("hide_email").default(true).notNull(),
+	hideFullName: boolean("hide_full_name").default(false).notNull(),
+	hideActivity: boolean("hide_activity").default(false).notNull(),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertProfilePrivacySettingsSchema = createInsertSchema(
+	profilePrivacySettings,
+);
+export const selectProfilePrivacySettingsSchema = createSelectSchema(
+	profilePrivacySettings,
+);
+
+// --- Relations ---
+
+export const usersRelations = relations(users, ({ one, many }) => ({
+	profile: one(profiles, {
+		fields: [users.id],
+		references: [profiles.userId],
+	}),
+	profilePrivacySettings: one(profilePrivacySettings, {
+		fields: [users.id],
+		references: [profilePrivacySettings.userId],
+	}),
+	documents: many(documents),
+}));
+
+export const documentsRelations = relations(documents, ({ one, many }) => ({
+	user: one(users, {
+		fields: [documents.userId],
+		references: [users.id],
+	}),
+	versions: many(documentVersions),
+}));
+
+export const documentVersionsRelations = relations(
+	documentVersions,
+	({ one }) => ({
+		document: one(documents, {
+			fields: [documentVersions.documentId],
+			references: [documents.id],
+		}),
+	}),
+);
+
+export const profilesRelations = relations(profiles, ({ one }) => ({
+	user: one(users, {
+		fields: [profiles.userId],
+		references: [users.id],
+	}),
+}));
+
+export const profilePrivacySettingsRelations = relations(
+	profilePrivacySettings,
+	({ one }) => ({
+		user: one(users, {
+			fields: [profilePrivacySettings.userId],
+			references: [users.id],
+		}),
+	}),
+);
+
+export const communityCommentsRelations = relations(
+	communityComments,
+	({ one, many }) => ({
+		post: one(communityPosts, {
+			fields: [communityComments.postId],
+			references: [communityPosts.id],
+		}),
+		author: one(users, {
+			fields: [communityComments.authorId],
+			references: [users.id],
+		}),
+		votes: many(commentVotes),
+	}),
+);
+
+export const commentVotesRelations = relations(commentVotes, ({ one }) => ({
+	comment: one(communityComments, {
+		fields: [commentVotes.commentId],
+		references: [communityComments.id],
+	}),
+	user: one(users, {
+		fields: [commentVotes.userId],
+		references: [users.id],
+	}),
+}));
+
+export const commentNotificationsRelations = relations(
+	commentNotifications,
+	({ one }) => ({
+		user: one(users, {
+			fields: [commentNotifications.userId],
+			references: [users.id],
+		}),
+		actor: one(users, {
+			fields: [commentNotifications.actorId],
+			references: [users.id],
+		}),
+		comment: one(communityComments, {
+			fields: [commentNotifications.commentId],
+			references: [communityComments.id],
+		}),
+	}),
+);
+
+export const commentReportsRelations = relations(commentReports, ({ one }) => ({
+	comment: one(communityComments, {
+		fields: [commentReports.commentId],
+		references: [communityComments.id],
+	}),
+	reporter: one(users, {
+		fields: [commentReports.reporterId],
+		references: [users.id],
+	}),
+}));
+
+export const pushSubscriptionsRelations = relations(
+	pushSubscriptions,
+	({ one }) => ({
+		user: one(users, {
+			fields: [pushSubscriptions.userId],
+			references: [users.id],
+		}),
+	}),
+);
+
+export const notificationPreferencesRelations = relations(
+	notificationPreferences,
+	({ one }) => ({
+		user: one(users, {
+			fields: [notificationPreferences.userId],
+			references: [users.id],
+		}),
+	}),
+);
+
+export const notificationQueueRelations = relations(
+	notificationQueue,
+	({ one }) => ({
+		user: one(users, {
+			fields: [notificationQueue.userId],
+			references: [users.id],
+		}),
+	}),
+);
+
+// --- SPEC 001: Social Auth - Account Providers ---
+export const accountProviders = pgTable("account_providers", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	provider: text("provider").notNull(), // "google" | "github" | "kakao" | "line"
+	providerAccountId: text("provider_account_id").notNull(),
+	accessToken: text("access_token"), // Encrypted
+	refreshToken: text("refresh_token"), // Encrypted
+	tokenExpiresAt: timestamp("token_expires_at"),
+	linkedAt: timestamp("linked_at").defaultNow().notNull(),
+	lastUsedAt: timestamp("last_used_at"),
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertAccountProviderSchema = createInsertSchema(accountProviders);
+export const selectAccountProviderSchema = createSelectSchema(accountProviders);
+
+// --- SPEC 001: Authentication Event Logging ---
+export const authenticationLogs = pgTable("authentication_logs", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+	eventType: text("event_type").notNull(), // "login_success" | "login_failed" | "account_linked" | "account_unlinked" | "logout"
+	provider: text("provider"), // "google" | "github" | "kakao" | "line" | "email"
+	ipAddress: text("ip_address"),
+	userAgent: text("user_agent"),
+	metadata: jsonb("metadata"),
+	timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
+export const insertAuthenticationLogSchema =
+	createInsertSchema(authenticationLogs);
+export const selectAuthenticationLogSchema =
+	createSelectSchema(authenticationLogs);
+
+// --- SPEC 003: Password Reset Rate Limiting ---
+export const passwordResetAttempts = pgTable("password_reset_attempts", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	email: text("email").notNull(),
+	ipAddress: text("ip_address").notNull(),
+	attemptedAt: timestamp("attempted_at").defaultNow().notNull(),
+});
+
+export const insertPasswordResetAttemptSchema = createInsertSchema(
+	passwordResetAttempts,
+);
+export const selectPasswordResetAttemptSchema = createSelectSchema(
+	passwordResetAttempts,
+);
+
+// --- SPEC 003: Password Reset Event Logging ---
+export const passwordResetLogs = pgTable("password_reset_logs", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+	email: text("email").notNull(),
+	eventType: text("event_type").notNull(), // "requested" | "completed" | "failed_invalid_token" | "failed_expired_token"
+	ipAddress: text("ip_address"),
+	userAgent: text("user_agent"),
+	timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
+export const insertPasswordResetLogSchema =
+	createInsertSchema(passwordResetLogs);
+export const selectPasswordResetLogSchema =
+	createSelectSchema(passwordResetLogs);
+
+// --- SPEC 004: Avatar Upload Rate Limiting ---
+export const avatarUploadAttempts = pgTable("avatar_upload_attempts", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+});
+
+export const insertAvatarUploadAttemptSchema =
+	createInsertSchema(avatarUploadAttempts);
+export const selectAvatarUploadAttemptSchema =
+	createSelectSchema(avatarUploadAttempts);
+
+// --- SPEC 004: Avatar Audit Logging ---
+export const avatarLogs = pgTable("avatar_logs", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	action: text("action").notNull(), // "uploaded" | "deleted"
+	previousUrl: text("previous_url"),
+	newUrl: text("new_url"),
+	fileSize: integer("file_size"),
+	timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
+export const insertAvatarLogSchema = createInsertSchema(avatarLogs);
+export const selectAvatarLogSchema = createSelectSchema(avatarLogs);
+
+// --- SPEC 005: Badge System ---
+export const badges = pgTable("badges", {
+	id: text("id").primaryKey(), // "mentor", "top-contributor", etc.
+	name: text("name").notNull(),
+	description: text("description").notNull(),
+	icon: text("icon").notNull(),
+	color: text("color").notNull(),
+	criteria: jsonb("criteria").notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertBadgeSchema = createInsertSchema(badges);
+export const selectBadgeSchema = createSelectSchema(badges);
+
+export const userBadges = pgTable("user_badges", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	badgeId: text("badge_id")
+		.references(() => badges.id, { onDelete: "cascade" })
+		.notNull(),
+	awardedAt: timestamp("awarded_at").defaultNow().notNull(),
+	displayOrder: integer("display_order").default(0),
+});
+
+export const insertUserBadgeSchema = createInsertSchema(userBadges);
+export const selectUserBadgeSchema = createSelectSchema(userBadges);
+
+// --- SPEC 005: URL Slug History ---
+export const userSlugHistory = pgTable("user_slug_history", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	slug: text("slug").notNull().unique(),
+	isPrimary: boolean("is_primary").default(false).notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertUserSlugHistorySchema = createInsertSchema(userSlugHistory);
+export const selectUserSlugHistorySchema = createSelectSchema(userSlugHistory);
+
+// --- SPEC 005: Mentor Profiles (Extended) ---
+export const mentorProfiles = pgTable("mentor_profiles", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull()
+		.unique(),
+	company: text("company"),
+	jobTitle: text("job_title"),
+	yearsOfExperience: integer("years_of_experience"),
+	hourlyRate: integer("hourly_rate"), // in cents
+	currency: text("currency").default("USD").notNull(),
+	bio: text("bio"),
+	specialties: jsonb("specialties").$type<string[]>(),
+	availability: jsonb("availability"),
+	languages: jsonb("languages").$type<string[]>(),
+	timezone: text("timezone"),
+	isActive: boolean("is_active").default(true).notNull(),
+	averageRating: integer("average_rating").default(0), // Store as integer (rating * 100)
+	totalReviews: integer("total_reviews").default(0),
+	totalSessions: integer("total_sessions").default(0).notNull(),
+	preferredVideoProvider: text("preferred_video_provider").default("jitsi"), // "jitsi" | "google" | "zoom" | "manual"
+	manualMeetingUrl: text("manual_meeting_url"),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertMentorProfileSchema = createInsertSchema(mentorProfiles);
+export const selectMentorProfileSchema = createSelectSchema(mentorProfiles);
+
+// --- SPEC 005: Mentor Reviews ---
+export const mentorReviews = pgTable("mentor_reviews", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	mentorId: uuid("mentor_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	menteeId: uuid("mentee_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	sessionId: uuid("session_id").references(() => mentoringSessions.id, {
+		onDelete: "set null",
+	}),
+	rating: integer("rating").notNull(), // 1-5
+	comment: text("comment"),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type InsertMentorReview = typeof mentorReviews.$inferInsert;
+
+export const insertMentorReviewSchema = createInsertSchema(mentorReviews);
+export const selectMentorReviewSchema = createSelectSchema(mentorReviews);
+
+// --- SPEC 006: S3 Upload Tokens ---
+export const uploadTokens = pgTable("upload_tokens", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	token: text("token").notNull().unique(),
+	expiresAt: timestamp("expires_at").notNull(),
+	createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertUploadTokenSchema = createInsertSchema(uploadTokens);
+export const selectUploadTokenSchema = createSelectSchema(uploadTokens);
+
+// --- SPEC 006: File Operation Logging ---
+export const fileOperationLogs = pgTable("file_operation_logs", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	documentId: uuid("document_id").references(() => documents.id, {
+		onDelete: "set null",
+	}),
+	operation: text("operation").notNull(), // "upload" | "download" | "delete" | "upload_failed"
+	storageKey: text("storage_key"),
+	ipAddress: text("ip_address"),
+	userAgent: text("user_agent"),
+	metadata: jsonb("metadata"),
+	timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
+export const insertFileOperationLogSchema =
+	createInsertSchema(fileOperationLogs);
+export const selectFileOperationLogSchema =
+	createSelectSchema(fileOperationLogs);
+
+// --- Additional Relations ---
+
+export const accountProvidersRelations = relations(
+	accountProviders,
+	({ one }) => ({
+		user: one(users, {
+			fields: [accountProviders.userId],
+			references: [users.id],
+		}),
+	}),
+);
+
+export const badgesRelations = relations(badges, ({ many }) => ({
+	userBadges: many(userBadges),
+}));
+
+export const userBadgesRelations = relations(userBadges, ({ one }) => ({
+	user: one(users, {
+		fields: [userBadges.userId],
+		references: [users.id],
+	}),
+	badge: one(badges, {
+		fields: [userBadges.badgeId],
+		references: [badges.id],
+	}),
+}));
+
+export const mentorProfilesRelations = relations(mentorProfiles, ({ one }) => ({
+	user: one(users, {
+		fields: [mentorProfiles.userId],
+		references: [users.id],
+	}),
+}));
+
+export const mentoringSessionsRelations = relations(
+	mentoringSessions,
+	({ one }) => ({
+		mentor: one(users, {
+			fields: [mentoringSessions.mentorId],
+			references: [users.id],
+			relationName: "mentoringSessions_mentor",
+		}),
+		mentee: one(users, {
+			fields: [mentoringSessions.userId],
+			references: [users.id],
+			relationName: "mentoringSessions_mentee",
+		}),
+	}),
+);
+
+export const mentorReviewsRelations = relations(mentorReviews, ({ one }) => ({
+	mentor: one(users, {
+		fields: [mentorReviews.mentorId],
+		references: [users.id],
+	}),
+	mentee: one(users, {
+		fields: [mentorReviews.menteeId],
+		references: [users.id],
+	}),
+	session: one(mentoringSessions, {
+		fields: [mentorReviews.sessionId],
+		references: [mentoringSessions.id],
+	}),
+}));
+
+export const mentorApplications = pgTable("mentor_applications", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id)
+		.notNull(),
+
+	// Professional Info
+	jobTitle: text("job_title").notNull(),
+	company: text("company").notNull(),
+	yearsOfExperience: integer("years_of_experience").notNull(),
+	linkedinUrl: text("linkedin_url"),
+	bio: text("bio").notNull(),
+
+	// JSON Fields
+	expertise: jsonb("expertise").$type<string[]>().notNull(), // e.g. ["Frontend", "React"]
+	languages: jsonb("languages").$type<string[]>().notNull(), // e.g. ["Korean", "Japanese"]
+
+	// Verification
+	verificationFileUrl: text("verification_file_url").notNull(), // S3 Key (Private)
+
+	// Status
+	status: text("status").default("pending").notNull(), // "pending", "approved", "rejected"
+	rejectionReason: text("rejection_reason"),
+	reviewedBy: uuid("reviewed_by").references(() => users.id),
+	reviewedAt: timestamp("reviewed_at"),
+
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertMentorApplicationSchema =
+	createInsertSchema(mentorApplications);
+export const selectMentorApplicationSchema =
+	createSelectSchema(mentorApplications);
+
+export type InsertMentorApplication = typeof mentorApplications.$inferInsert;
+export type SelectMentorApplication = typeof mentorApplications.$inferSelect;
+
+export const mentorApplicationsRelations = relations(mentorApplications, ({ one }) => ({
+	user: one(users, {
+		fields: [mentorApplications.userId],
+		references: [users.id],
+	}),
+	reviewer: one(users, {
+		fields: [mentorApplications.reviewedBy],
+		references: [users.id],
+	}),
+}));
+
+export const adminAuditLogs = pgTable("admin_audit_logs", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	adminId: uuid("admin_id")
+		.references(() => users.id)
+		.notNull(),
+	action: text("action").notNull(), // "mentor_approve", "mentor_reject"
+	targetId: uuid("target_id").notNull(), // Application ID or other entity
+	metadata: jsonb("metadata"), // Extra info
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertAdminAuditLogSchema = createInsertSchema(adminAuditLogs);
+export const selectAdminAuditLogSchema = createSelectSchema(adminAuditLogs);
+
+export const adminAuditLogsRelations = relations(adminAuditLogs, ({ one }) => ({
+	admin: one(users, {
+		fields: [adminAuditLogs.adminId],
+		references: [users.id],
+	}),
+}));

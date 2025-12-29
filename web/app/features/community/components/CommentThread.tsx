@@ -138,7 +138,7 @@ function CommentNode({
 								viewBox="0 0 24 24"
 								stroke="currentColor"
 							>
-                                <title>Hide replies</title>
+								<title>Hide replies</title>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"
@@ -156,7 +156,7 @@ function CommentNode({
 								viewBox="0 0 24 24"
 								stroke="currentColor"
 							>
-                                <title>Show replies</title>
+								<title>Show replies</title>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"
@@ -172,7 +172,7 @@ function CommentNode({
 			{/* Children */}
 			{hasReplies && showReplies && (
 				<div className="mt-3 ml-4 pl-4 border-l-2 border-gray-100 space-y-3">
-					{/* biome-ignore lint/suspicious/noExplicitAny: Recursive type structure difficult to type perfectly here */ }
+					{/* biome-ignore lint/suspicious/noExplicitAny: Recursive type structure difficult to type perfectly here */}
 					{(comment as any).children.map((child: any) => (
 						<CommentNode
 							key={child.id}

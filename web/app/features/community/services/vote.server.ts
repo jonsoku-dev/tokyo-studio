@@ -1,4 +1,3 @@
-import { and, eq, gte, sql } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import {
 	commentVotes,
@@ -8,6 +7,7 @@ import {
 	reputationLogs,
 	voteAuditLogs,
 } from "@itcom/db/schema";
+import { and, eq, gte, sql } from "drizzle-orm";
 
 export async function handleVote(
 	userId: string,

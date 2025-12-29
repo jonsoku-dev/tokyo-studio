@@ -1,4 +1,3 @@
-import { desc, eq, sql } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import {
 	communityComments,
@@ -6,6 +5,7 @@ import {
 	postVotes,
 	users,
 } from "@itcom/db/schema";
+import { desc, eq, sql } from "drizzle-orm";
 import type { CommunityPost, CreateCommunityPostDTO } from "./community.types";
 
 export const communityService = {

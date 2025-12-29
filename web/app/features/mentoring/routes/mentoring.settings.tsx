@@ -1,11 +1,11 @@
+import { db } from "@itcom/db/client";
+import { mentorProfiles } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import { Form, useLoaderData, useNavigation } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { Shell } from "~/shared/components/layout/Shell";
 import { Button } from "~/shared/components/ui/Button";
 import { Input } from "~/shared/components/ui/Input";
-import { db } from "@itcom/db/client";
-import { mentorProfiles } from "@itcom/db/schema";
 import type { Route } from "./+types/mentoring.settings";
 
 export function meta() {

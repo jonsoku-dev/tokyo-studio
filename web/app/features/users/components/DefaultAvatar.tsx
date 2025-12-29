@@ -1,4 +1,7 @@
-import { getAvatarColorForUser, getInitials } from "~/shared/utils/avatar-color";
+import {
+	getAvatarColorForUser,
+	getInitials,
+} from "~/shared/utils/avatar-color";
 
 interface DefaultAvatarProps {
 	userId: string;

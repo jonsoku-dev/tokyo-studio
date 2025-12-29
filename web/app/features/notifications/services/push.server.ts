@@ -1,7 +1,7 @@
-import { eq } from "drizzle-orm";
-import webpush from "web-push";
 import { db } from "@itcom/db/client";
 import { notificationQueue, pushSubscriptions } from "@itcom/db/schema";
+import { eq } from "drizzle-orm";
+import webpush from "web-push";
 
 // Initialize web-push
 // In a real app, these should be securely loaded from process.env

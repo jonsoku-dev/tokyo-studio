@@ -1,4 +1,4 @@
-import { json, type ActionFunctionArgs } from "@remix-run/node";
+import { data, type ActionFunctionArgs } from "react-router";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { db } from "@itcom/db/client";
@@ -32,13 +32,13 @@ async function requireAdmin(request: Request) {
 
 export async function action({ request, params }: ActionFunctionArgs) {
 	if (request.method !== "POST") {
-		return json({ error: "Method not allowed" }, { status: 405 });
+		return data({ error: "Method not allowed" }, { status: 405 });
 	}
 
 	const adminId = await requireAdmin(request);
 
 	if (!params.reviewId) {
-		return json({ error: "Review ID is required" }, { status: 400 });
+		return data({ error: "Review ID is required" }, { status: 400 });
 	}
 
 	try {
@@ -46,7 +46,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		const validationResult = moderationSchema.safeParse(body);
 
 		if (!validationResult.success) {
-			return json(
+			return data(
 				{
 					error: "Invalid request data",
 					details: validationResult.error.flatten(),
@@ -63,7 +63,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		});
 
 		if (!review) {
-			return json({ error: "Review not found" }, { status: 404 });
+			return data({ error: "Review not found" }, { status: 404 });
 		}
 
 		// Update review status based on action
@@ -95,14 +95,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
 			reason,
 		});
 
-		return json({
+		return data({
 			success: true,
 			reviewId: params.reviewId,
 			newStatus,
 		});
 	} catch (error) {
 		console.error("Review moderation error:", error);
-		return json(
+		return data(
 			{
 				error:
 					error instanceof Error

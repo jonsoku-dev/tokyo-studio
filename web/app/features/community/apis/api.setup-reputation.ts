@@ -1,6 +1,5 @@
-import { sql } from "drizzle-orm";
-
 import { db } from "@itcom/db/client";
+import { sql } from "drizzle-orm";
 
 export async function loader() {
 	try {

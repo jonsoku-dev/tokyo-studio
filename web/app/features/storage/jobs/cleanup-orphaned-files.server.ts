@@ -11,13 +11,13 @@
  * Schedule: Runs daily at 2 AM
  */
 
-import { and, eq, lte } from "drizzle-orm";
-import { db } from "@itcom/db/client";
-import { documents } from "@itcom/db/schema";
-import { isS3Configured } from "~/shared/services/s3-client.server";
-import { deleteFromS3 } from "../services/presigned-urls.server";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { db } from "@itcom/db/client";
+import { documents } from "@itcom/db/schema";
+import { and, eq, lte } from "drizzle-orm";
+import { isS3Configured } from "~/shared/services/s3-client.server";
+import { deleteFromS3 } from "../services/presigned-urls.server";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public/uploads/documents");
 
@@ -30,11 +30,16 @@ const UPLOAD_DIR = path.join(process.cwd(), "public/uploads/documents");
 export async function cleanupOrphanedFiles(): Promise<number> {
 	const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000); // 24 hours ago
 
-	console.log(`[CLEANUP] Starting orphaned file cleanup (cutoff: ${cutoff.toISOString()})`);
+	console.log(
+		`[CLEANUP] Starting orphaned file cleanup (cutoff: ${cutoff.toISOString()})`,
+	);
 
 	// Find pending documents older than cutoff
 	const orphanedDocs = await db.query.documents.findMany({
-		where: and(eq(documents.status, "pending"), lte(documents.createdAt, cutoff)),
+		where: and(
+			eq(documents.status, "pending"),
+			lte(documents.createdAt, cutoff),
+		),
 	});
 
 	console.log(`[CLEANUP] Found ${orphanedDocs.length} orphaned documents`);
@@ -69,7 +74,9 @@ export async function cleanupOrphanedFiles(): Promise<number> {
 			await db.delete(documents).where(eq(documents.id, doc.id));
 
 			cleanedCount++;
-			console.log(`[CLEANUP] Cleaned up orphaned document: ${doc.id} (${doc.title})`);
+			console.log(
+				`[CLEANUP] Cleaned up orphaned document: ${doc.id} (${doc.title})`,
+			);
 		} catch (error) {
 			console.error(`[CLEANUP] Failed to cleanup document ${doc.id}:`, error);
 			// Continue with next document
@@ -90,7 +97,9 @@ export async function cleanupOrphanedFiles(): Promise<number> {
 export async function cleanupDeletedDocuments(): Promise<number> {
 	const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000); // 30 days ago
 
-	console.log(`[CLEANUP] Starting deleted documents cleanup (cutoff: ${cutoff.toISOString()})`);
+	console.log(
+		`[CLEANUP] Starting deleted documents cleanup (cutoff: ${cutoff.toISOString()})`,
+	);
 
 	// Find deleted documents older than cutoff
 	const deletedDocs = await db.query.documents.findMany({
@@ -145,7 +154,9 @@ export async function cleanupDeletedDocuments(): Promise<number> {
 						await fs.unlink(thumbnailPath);
 						console.log(`[CLEANUP] Deleted local thumbnail: ${thumbnailKey}`);
 					} catch (error) {
-						console.warn(`[CLEANUP] Local thumbnail not found: ${thumbnailKey}`);
+						console.warn(
+							`[CLEANUP] Local thumbnail not found: ${thumbnailKey}`,
+						);
 					}
 				}
 			}
@@ -154,14 +165,18 @@ export async function cleanupDeletedDocuments(): Promise<number> {
 			await db.delete(documents).where(eq(documents.id, doc.id));
 
 			cleanedCount++;
-			console.log(`[CLEANUP] Permanently deleted document: ${doc.id} (${doc.title})`);
+			console.log(
+				`[CLEANUP] Permanently deleted document: ${doc.id} (${doc.title})`,
+			);
 		} catch (error) {
 			console.error(`[CLEANUP] Failed to delete document ${doc.id}:`, error);
 			// Continue with next document
 		}
 	}
 
-	console.log(`[CLEANUP] Completed. Permanently deleted ${cleanedCount} documents`);
+	console.log(
+		`[CLEANUP] Completed. Permanently deleted ${cleanedCount} documents`,
+	);
 
 	return cleanedCount;
 }

@@ -1,6 +1,6 @@
-import { and, desc, eq } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import { commentNotifications } from "@itcom/db/schema";
+import { and, desc, eq } from "drizzle-orm";
 import type { NotificationWithData } from "./types";
 
 export const notificationsService = {

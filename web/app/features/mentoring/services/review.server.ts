@@ -1,4 +1,3 @@
-import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import type { InsertMentorReview } from "@itcom/db/schema";
 import {
@@ -7,6 +6,7 @@ import {
 	mentorReviews,
 	users,
 } from "@itcom/db/schema";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { pushService } from "~/features/notifications/services/push.server";
 
 export const reviewService = {
@@ -69,7 +69,7 @@ export const reviewService = {
 
 			// 4. Send Push Notification (Side Effect - do after TX or inside? Inside is fine for now, or returns info to do outside)
 			// Ideally outside TX to avoid slowing it down, but for simplicity here:
-			// actually we can't await it inside TX easily comfortably without slowing. 
+			// actually we can't await it inside TX easily comfortably without slowing.
 			// Let's return the info and do it outside.
 			return { info: review };
 		});
@@ -80,7 +80,7 @@ export const reviewService = {
 				where: eq(users.id, data.menteeId),
 				columns: { name: true },
 			});
-			
+
 			if (mentee) {
 				await pushService.sendPushNotification(data.mentorId, {
 					title: "New Review Received",

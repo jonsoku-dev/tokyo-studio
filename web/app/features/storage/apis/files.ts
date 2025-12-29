@@ -1,9 +1,9 @@
+import { db } from "@itcom/db/client";
+import { documents } from "@itcom/db/schema";
 import { desc, eq } from "drizzle-orm";
 import { data } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { storageService } from "~/features/storage/services/storage.server";
-import { db } from "@itcom/db/client";
-import { documents } from "@itcom/db/schema";
 import type { Route } from "./+types/files";
 
 export async function loader({ request }: Route.LoaderArgs) {

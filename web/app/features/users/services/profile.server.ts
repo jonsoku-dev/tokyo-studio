@@ -1,7 +1,7 @@
-import { eq } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import type { InsertProfile } from "@itcom/db/schema";
 import { profilePrivacySettings, profiles } from "@itcom/db/schema";
+import { eq } from "drizzle-orm";
 
 export const profileService = {
 	async getPublicProfile(slug: string) {

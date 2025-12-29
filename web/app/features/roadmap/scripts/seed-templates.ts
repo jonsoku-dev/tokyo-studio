@@ -1,7 +1,33 @@
 import "dotenv/config";
 import { drizzle } from "drizzle-orm/node-postgres";
+import {
+	boolean,
+	integer,
+	jsonb,
+	pgTable,
+	text,
+	timestamp,
+	uuid,
+} from "drizzle-orm/pg-core";
 import pg from "pg";
-import { roadmapTemplates } from "@itcom/db/schema";
+
+// Define table inline to avoid ESM import issues
+const roadmapTemplates = pgTable("roadmap_templates", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	title: text("title").notNull(),
+	description: text("description").notNull(),
+	category: text("category").notNull(),
+	estimatedMinutes: integer("estimated_minutes").notNull().default(60),
+	priority: text("priority").notNull().default("normal"),
+	orderIndex: integer("order_index").notNull().default(0),
+	targetJobFamilies: jsonb("target_job_families").$type<string[] | null>(),
+	targetLevels: jsonb("target_levels").$type<string[] | null>(),
+	targetJpLevels: jsonb("target_jp_levels").$type<string[] | null>(),
+	targetCities: jsonb("target_cities").$type<string[] | null>(),
+	isActive: boolean("is_active").notNull().default(true),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
 
 const { Pool } = pg;
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -235,6 +261,7 @@ async function seedTemplates() {
 	}
 
 	console.log(`✅ Seeded ${templates.length} roadmap templates`);
+	await pool.end();
 }
 
 seedTemplates()
@@ -243,5 +270,3 @@ seedTemplates()
 		console.error("❌ Seed failed:", err);
 		process.exit(1);
 	});
-
-    

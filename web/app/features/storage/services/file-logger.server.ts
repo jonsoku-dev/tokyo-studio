@@ -60,7 +60,8 @@ export async function logFileOperation({
 		// Extract IP address (handle proxies)
 		const forwardedFor = request.headers.get("x-forwarded-for");
 		const realIp = request.headers.get("x-real-ip");
-		const ipAddress = forwardedFor?.split(",")[0]?.trim() || realIp || "unknown";
+		const ipAddress =
+			forwardedFor?.split(",")[0]?.trim() || realIp || "unknown";
 
 		// Extract user agent
 		const userAgent = request.headers.get("user-agent") || "unknown";
@@ -94,7 +95,7 @@ export async function logFileOperation({
 export async function getUserFileOperationLogs(
 	userId: string,
 	limit = 50,
-): Promise<typeof fileOperationLogs.$inferSelect[]> {
+): Promise<(typeof fileOperationLogs.$inferSelect)[]> {
 	return db.query.fileOperationLogs.findMany({
 		where: (logs, { eq }) => eq(logs.userId, userId),
 		orderBy: (logs, { desc }) => [desc(logs.timestamp)],
@@ -108,7 +109,7 @@ export async function getUserFileOperationLogs(
  */
 export async function getDocumentFileOperationLogs(
 	documentId: string,
-): Promise<typeof fileOperationLogs.$inferSelect[]> {
+): Promise<(typeof fileOperationLogs.$inferSelect)[]> {
 	return db.query.fileOperationLogs.findMany({
 		where: (logs, { eq }) => eq(logs.documentId, documentId),
 		orderBy: (logs, { desc }) => [desc(logs.timestamp)],
@@ -121,7 +122,7 @@ export async function getDocumentFileOperationLogs(
  */
 export async function getRecentFileOperationLogs(
 	limit = 100,
-): Promise<typeof fileOperationLogs.$inferSelect[]> {
+): Promise<(typeof fileOperationLogs.$inferSelect)[]> {
 	return db.query.fileOperationLogs.findMany({
 		orderBy: (logs, { desc }) => [desc(logs.timestamp)],
 		limit,

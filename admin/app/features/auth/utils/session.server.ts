@@ -81,3 +81,21 @@ export async function requireVerifiedUser(request: Request) {
 	return userId;
 }
 
+
+export async function requireAdmin(request: Request) {
+	const userId = await requireUserId(request);
+	const { db } = await import("@itcom/db/client");
+	const { users } = await import("@itcom/db/schema");
+	const { eq } = await import("drizzle-orm");
+
+	const [user] = await db
+		.select()
+		.from(users)
+		.where(eq(users.id, userId))
+		.limit(1);
+
+	if (username || user.role !== "admin") {
+		throw new Response("Unauthorized", { status: 403 });
+	}
+	return userId;
+}

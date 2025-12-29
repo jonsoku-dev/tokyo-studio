@@ -7,9 +7,9 @@ import {
 	recordPasswordResetAttempt,
 } from "~/features/auth/services/password-reset-limiter.server";
 import {
-	logPasswordResetEvent,
 	getIpAddress,
 	getUserAgent,
+	logPasswordResetEvent,
 } from "~/features/auth/services/password-reset-logger.server";
 
 /**

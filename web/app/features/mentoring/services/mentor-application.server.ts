@@ -3,11 +3,21 @@
  * Handles mentor application workflow: submission → review → approval/rejection
  */
 
-import { and, eq, gte, desc, isNull } from "drizzle-orm";
 import { db } from "@itcom/db/client";
-import { mentorApplications, users, mentors, adminAuditLogs } from "@itcom/db/schema";
+import {
+	adminAuditLogs,
+	mentorApplications,
+	mentors,
+	users,
+} from "@itcom/db/schema";
+import { and, desc, eq, gte, isNull } from "drizzle-orm";
 
-export type ApplicationStatus = "pending" | "under_review" | "approved" | "rejected" | "cancelled";
+export type ApplicationStatus =
+	| "pending"
+	| "under_review"
+	| "approved"
+	| "rejected"
+	| "cancelled";
 
 export interface MentorApplicationInput {
 	userId: string;
@@ -38,10 +48,14 @@ export async function canUserApply(userId: string): Promise<{
 		),
 	});
 
-	if (existing && (existing.status === "pending" || existing.status === "under_review")) {
+	if (
+		existing &&
+		(existing.status === "pending" || existing.status === "under_review")
+	) {
 		return {
 			allowed: false,
-			reason: "You already have a pending application. Please wait for a decision.",
+			reason:
+				"You already have a pending application. Please wait for a decision.",
 		};
 	}
 

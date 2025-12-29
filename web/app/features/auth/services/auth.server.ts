@@ -8,11 +8,11 @@
  */
 
 import crypto from "node:crypto";
+import { db } from "@itcom/db/client";
+import { accountProviders, users } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import { Authenticator } from "remix-auth";
 import { OAuth2Strategy } from "remix-auth-oauth2";
-import { db } from "@itcom/db/client";
-import { accountProviders, users } from "@itcom/db/schema";
 import { encryptToken } from "~/shared/utils/token-encryption.server";
 
 // Re-export authenticator

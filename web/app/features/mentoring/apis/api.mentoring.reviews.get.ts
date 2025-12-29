@@ -1,7 +1,7 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { db } from "@itcom/db/client";
 import { mentorReviews, users } from "@itcom/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { count, desc, eq, sql } from "drizzle-orm";
+import { data, type LoaderFunctionArgs } from "react-router";
 
 /**
  * GET /api/mentoring/mentor/:mentorId/reviews
@@ -11,37 +11,37 @@ import { eq, desc } from "drizzle-orm";
  */
 export async function loader({ request, params }: LoaderFunctionArgs) {
 	if (!params.mentorId) {
-		return json({ error: "Mentor ID is required" }, { status: 400 });
+		return data({ error: "Mentor ID is required" }, { status: 400 });
 	}
 
 	const url = new URL(request.url);
-	const limit = Math.min(parseInt(url.searchParams.get("limit") || "10"), 50);
-	const offset = parseInt(url.searchParams.get("offset") || "0");
+	const limit = Math.min(
+		Number.parseInt(url.searchParams.get("limit") || "10", 10),
+		50,
+	);
+	const offset = Number.parseInt(url.searchParams.get("offset") || "0", 10);
 	const sortBy = url.searchParams.get("sortBy") || "recent"; // recent, highest, lowest
 
 	try {
 		// Get total count
 		const countResult = await db
-			.select({ count: db.$count })
+			.select({ value: count() })
 			.from(mentorReviews)
 			.where(eq(mentorReviews.mentorId, params.mentorId));
 
-		const total = countResult[0]?.count || 0;
+		const total = countResult[0]?.value || 0;
 
 		// Build order by based on sortBy
-		let orderBy;
-		switch (sortBy) {
-			case "highest":
-				orderBy = [desc(mentorReviews.rating), desc(mentorReviews.createdAt)];
-				break;
-			case "lowest":
-				orderBy = [mentorReviews.rating, desc(mentorReviews.createdAt)];
-				break;
-			case "recent":
-			default:
-				orderBy = [desc(mentorReviews.createdAt)];
-				break;
-		}
+		const getOrderBy = () => {
+			switch (sortBy) {
+				case "highest":
+					return [desc(mentorReviews.rating), desc(mentorReviews.createdAt)];
+				case "lowest":
+					return [mentorReviews.rating, desc(mentorReviews.createdAt)];
+				default:
+					return [desc(mentorReviews.createdAt)];
+			}
+		};
 
 		// Get reviews with user info
 		const reviews = await db
@@ -59,15 +59,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 				},
 			})
 			.from(mentorReviews)
-			.leftJoin(
-				users,
-				eq(
-					mentorReviews.menteeId,
-					users.id,
-				),
-			)
+			.leftJoin(users, eq(mentorReviews.menteeId, users.id))
 			.where(eq(mentorReviews.mentorId, params.mentorId))
-			.orderBy(...orderBy)
+			.orderBy(...getOrderBy())
 			.limit(limit)
 			.offset(offset);
 
@@ -80,28 +74,18 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 		// Calculate stats
 		const statsResult = await db
 			.select({
-				count: db.$count,
-				avgRating:
-					db.sql`AVG(${mentorReviews.rating})`.as("avg_rating"),
-				distribution: db.sql`
-					json_object_agg(
-						${mentorReviews.rating}::text,
-						count(*)
-					)
-				`.as("distribution"),
+				totalCount: count(),
+				avgRating: sql<number>`AVG(${mentorReviews.rating})`.as("avg_rating"),
 			})
 			.from(mentorReviews)
 			.where(eq(mentorReviews.mentorId, params.mentorId));
 
 		const stats = {
-			totalReviews: statsResult[0]?.count || 0,
-			averageRating: parseFloat(
-				(statsResult[0]?.avgRating || 0).toString(),
-			).toFixed(2),
-			distribution: statsResult[0]?.distribution || {},
+			totalReviews: statsResult[0]?.totalCount || 0,
+			averageRating: (statsResult[0]?.avgRating || 0).toFixed(2),
 		};
 
-		return json({
+		return data({
 			reviews: filteredReviews,
 			pagination: {
 				total,
@@ -113,7 +97,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 		});
 	} catch (error) {
 		console.error("Error fetching reviews:", error);
-		return json(
+		return data(
 			{
 				error: "Failed to fetch reviews",
 			},

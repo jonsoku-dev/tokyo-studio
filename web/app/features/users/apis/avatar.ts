@@ -1,12 +1,12 @@
 import { data } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { avatarService } from "../services/avatar.server";
-import { checkAvatarUploadRateLimit } from "../services/avatar-rate-limiter.server";
 import {
-	logAvatarChange,
 	getIpAddressFromRequest,
 	getUserAgentFromRequest,
+	logAvatarChange,
 } from "../services/avatar-logger.server";
+import { checkAvatarUploadRateLimit } from "../services/avatar-rate-limiter.server";
 import type { Route } from "./+types/avatar";
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB

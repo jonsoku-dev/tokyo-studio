@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
-import { eq } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import { users, verificationTokens } from "@itcom/db/schema";
+import { eq } from "drizzle-orm";
 
 export async function createVerificationToken(userId: string) {
 	// Generate a secure random token

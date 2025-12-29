@@ -2,6 +2,11 @@
 import { db } from "@itcom/db/client";
 import { users, payments, mentoringSessions, profiles, mentors } from "@itcom/db/schema";
 import { eq, desc } from "drizzle-orm";
+import {
+	requireAdmin,
+	requireUserId,
+} from "~/features/auth/utils/session.server";
+import { resetUserRoadmap } from "~/features/roadmap/services/admin-roadmap.server";
 import type { Route } from "./+types/detail";
 import { Form, redirect } from "react-router";
 // import { Button } from "~/shared/components/ui/Button"; // Removed to fix build error
@@ -61,6 +66,12 @@ export async function action({ request, params }: Route.ActionArgs) {
         });
     }
 
+    if (intent === "reset_roadmap") {
+        const adminId = await requireAdmin(request);
+		const reason = "Manual Reset by Admin via Dashboard";
+		await resetUserRoadmap(userId, adminId, reason);
+    }
+
     return null;
 }
 
@@ -97,6 +108,20 @@ export default function UserDetail({ loaderData }: Route.ComponentProps) {
                                 className={`px-4 py-2 rounded-lg font-medium text-white shadow-sm ${user.status === 'suspended' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}
                             >
                                 {user.status === 'suspended' ? 'Activate Account' : 'Suspend Account'}
+                            </button>
+                        </Form>
+                        
+                        <Form method="post" onSubmit={(e) => {
+                            if (!confirm("This will delete all current roadmap tasks and progress for this user. Are you sure?")) {
+                                e.preventDefault();
+                            }
+                        }}>
+                            <input type="hidden" name="intent" value="reset_roadmap" />
+                            <button 
+                                type="submit"
+                                className="px-4 py-2 rounded-lg font-medium text-white shadow-sm bg-yellow-600 hover:bg-yellow-700"
+                            >
+                                Reset Roadmap
                             </button>
                         </Form>
                     </div>

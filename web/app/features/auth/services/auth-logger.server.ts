@@ -52,18 +52,9 @@ export interface LogAuthEventParams {
  *   userAgent: getUserAgent(request),
  * });
  */
-export async function logAuthEvent(
-	params: LogAuthEventParams,
-): Promise<void> {
-	const {
-		userId,
-		email,
-		eventType,
-		provider,
-		ipAddress,
-		userAgent,
-		metadata,
-	} = params;
+export async function logAuthEvent(params: LogAuthEventParams): Promise<void> {
+	const { userId, email, eventType, provider, ipAddress, userAgent, metadata } =
+		params;
 
 	try {
 		await db.insert(authenticationLogs).values({
@@ -97,7 +88,7 @@ export async function logAuthEvent(
 export async function getUserAuthLogs(
 	userId: string,
 	limit = 50,
-): Promise<typeof authenticationLogs.$inferSelect[]> {
+): Promise<(typeof authenticationLogs.$inferSelect)[]> {
 	return db.query.authenticationLogs.findMany({
 		where: (logs, { eq }) => eq(logs.userId, userId),
 		orderBy: (logs, { desc }) => [desc(logs.timestamp)],
@@ -112,7 +103,7 @@ export async function getUserAuthLogs(
 export async function getFailedLoginAttempts(
 	email: string,
 	since: Date,
-): Promise<typeof authenticationLogs.$inferSelect[]> {
+): Promise<(typeof authenticationLogs.$inferSelect)[]> {
 	return db.query.authenticationLogs.findMany({
 		where: (logs, { eq, and, gte, sql }) =>
 			and(
@@ -130,7 +121,7 @@ export async function getFailedLoginAttempts(
  */
 export async function getRecentAuthLogs(
 	limit = 100,
-): Promise<typeof authenticationLogs.$inferSelect[]> {
+): Promise<(typeof authenticationLogs.$inferSelect)[]> {
 	return db.query.authenticationLogs.findMany({
 		orderBy: (logs, { desc }) => [desc(logs.timestamp)],
 		limit,
@@ -160,8 +151,7 @@ export async function getAuthStats(userId?: string): Promise<{
 	return {
 		totalLogins: logs.filter((log) => log.eventType === "login_success").length,
 		totalLogouts: logs.filter((log) => log.eventType === "logout").length,
-		failedLogins: logs.filter((log) => log.eventType === "login_failed")
-			.length,
+		failedLogins: logs.filter((log) => log.eventType === "login_failed").length,
 		providersUsed: Array.from(providers) as string[],
 	};
 }

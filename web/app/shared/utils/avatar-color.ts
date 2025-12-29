@@ -44,7 +44,9 @@ export function getInitials(name?: string | null): string {
 
 	const parts = name.trim().split(/\s+/);
 	if (parts.length >= 2) {
-		return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+		return (
+			parts[0].charAt(0) + parts[parts.length - 1].charAt(0)
+		).toUpperCase();
 	}
 
 	return name.slice(0, 2).toUpperCase();
@@ -53,10 +55,7 @@ export function getInitials(name?: string | null): string {
 /**
  * Generate a styled avatar element as HTML string (for email templates, etc.)
  */
-export function generateAvatarHTML(
-	name: string,
-	size = 40,
-): string {
+export function generateAvatarHTML(name: string, size = 40): string {
 	const initials = getInitials(name);
 	const colors = getAvatarColorForUser(name);
 	const fontSize = Math.round(size * 0.35);

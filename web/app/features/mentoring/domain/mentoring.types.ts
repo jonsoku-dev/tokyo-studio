@@ -1,10 +1,10 @@
-import type { InferSelectModel } from "drizzle-orm";
 import type {
 	mentorAvailabilitySlots,
 	mentoringSessions,
 	mentorProfiles,
 	users,
 } from "@itcom/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
 
 export type MentorProfile = InferSelectModel<typeof mentorProfiles>;
 export type User = InferSelectModel<typeof users>;

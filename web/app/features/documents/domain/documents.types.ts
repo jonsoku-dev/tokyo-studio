@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { insertDocumentSchema, selectDocumentSchema } from "@itcom/db/schema";
+import { z } from "zod";
 
 export const DocumentSchema = selectDocumentSchema
 	.pick({

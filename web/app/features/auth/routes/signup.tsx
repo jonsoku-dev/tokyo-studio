@@ -1,5 +1,4 @@
 import { Form, Link } from "react-router";
-import { Shell } from "~/shared/components/layout/Shell";
 import { Button } from "~/shared/components/ui/Button";
 import { Input } from "~/shared/components/ui/Input";
 import { authService } from "../domain/auth.service.server";
@@ -25,7 +24,7 @@ export async function action({ request }: Route.ActionArgs) {
 
 	try {
 		const response = await authService.signup(result.data);
-		return createUserSession(response.user.id, "/");
+		return createUserSession(response.user.id, "/roadmap");
 	} catch (error) {
 		return { error: (error as Error).message };
 	}
@@ -33,8 +32,8 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function Signup({ actionData }: Route.ComponentProps) {
 	return (
-		<Shell>
-			<div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+		<div className="flex min-h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+			<div className="w-full max-w-md space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
 				<div className="text-center mb-6">
 					<h1 className="text-2xl font-bold text-gray-900">
 						Create an account
@@ -89,6 +88,6 @@ export default function Signup({ actionData }: Route.ComponentProps) {
 					</Button>
 				</Form>
 			</div>
-		</Shell>
+		</div>
 	);
 }

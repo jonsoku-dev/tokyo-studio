@@ -4,7 +4,6 @@
  * Handles badge awarding, checking criteria, and retrieving user badges
  */
 
-import { and, count, eq, sql } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import {
 	badges,
@@ -14,6 +13,7 @@ import {
 	userBadges,
 	users,
 } from "@itcom/db/schema";
+import { and, count, eq, sql } from "drizzle-orm";
 import {
 	BADGE_DEFINITIONS,
 	type BadgeCriteria,

@@ -1,5 +1,5 @@
+import { Search, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
-import { TrendingUp, Search } from "lucide-react";
 import type { TrendingTopic } from "../services/search-analytics.server";
 
 interface TrendingTopicsProps {
@@ -31,9 +31,7 @@ export function TrendingTopics({
 			} catch (err) {
 				console.error("Error fetching trending topics:", err);
 				setError(
-					err instanceof Error
-						? err.message
-						: "Failed to load trending topics",
+					err instanceof Error ? err.message : "Failed to load trending topics",
 				);
 			} finally {
 				setLoading(false);

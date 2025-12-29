@@ -1,5 +1,3 @@
-import { and, asc, desc, eq, sql } from "drizzle-orm";
-import { pushService } from "~/features/notifications/services/push.server";
 import { db } from "@itcom/db/client";
 import {
 	commentNotifications,
@@ -8,6 +6,8 @@ import {
 	communityComments,
 	users,
 } from "@itcom/db/schema";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { pushService } from "~/features/notifications/services/push.server";
 
 import type { CommentWithAuthor, InsertComment } from "./types";
 

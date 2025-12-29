@@ -80,4 +80,3 @@ export async function requireVerifiedUser(request: Request) {
 
 	return userId;
 }
-

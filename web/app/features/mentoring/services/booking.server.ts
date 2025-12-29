@@ -1,6 +1,6 @@
-import { and, eq, lt, sql } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import { mentoringSessions } from "@itcom/db/schema";
+import { and, eq, lt, sql } from "drizzle-orm";
 
 export const BookingService = {
 	// Lock a slot with 5 min expiration

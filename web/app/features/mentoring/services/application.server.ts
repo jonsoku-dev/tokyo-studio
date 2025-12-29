@@ -1,9 +1,9 @@
-import { eq } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import {
 	type InsertMentorApplication,
 	mentorApplications,
 } from "@itcom/db/schema";
+import { eq } from "drizzle-orm";
 import { storageService } from "~/shared/services/storage.server";
 
 export const applicationService = {
@@ -38,12 +38,8 @@ export const applicationService = {
 		}
 
 		// Insert
-		const [app] = await db
-			.insert(mentorApplications)
-			.values(data)
-			.returning();
+		const [app] = await db.insert(mentorApplications).values(data).returning();
 
 		return app;
 	},
-
 };

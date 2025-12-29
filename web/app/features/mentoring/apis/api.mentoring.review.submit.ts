@@ -1,5 +1,6 @@
-import { json, type ActionFunctionArgs } from "@remix-run/node";
+import { type ActionFunctionArgs, data } from "react-router";
 import { z } from "zod";
+
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { reviewService } from "../services/review.server";
 
@@ -11,9 +12,9 @@ const submitReviewSchema = z.object({
 	isAnonymous: z.boolean().default(false),
 });
 
-export async function action({ request, params }: ActionFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
 	if (request.method !== "POST") {
-		return json({ error: "Method not allowed" }, { status: 405 });
+		return data({ error: "Method not allowed" }, { status: 405 });
 	}
 
 	const userId = await requireUserId(request);
@@ -23,7 +24,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		const validationResult = submitReviewSchema.safeParse(body);
 
 		if (!validationResult.success) {
-			return json(
+			return data(
 				{
 					error: "Invalid request data",
 					details: validationResult.error.flatten(),
@@ -37,7 +38,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		// Verify user can review this session
 		const canReview = await reviewService.canReview(sessionId, userId);
 		if (!canReview) {
-			return json(
+			return data(
 				{
 					error:
 						"You cannot review this session. Either the session is not completed or you already reviewed it.",
@@ -56,7 +57,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		});
 
 		if (!session) {
-			return json({ error: "Session not found" }, { status: 404 });
+			return data({ error: "Session not found" }, { status: 404 });
 		}
 
 		// Create review
@@ -70,7 +71,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 			status: "published", // Default status
 		});
 
-		return json(
+		return data(
 			{
 				success: true,
 				reviewId: review.id,
@@ -79,12 +80,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		);
 	} catch (error) {
 		console.error("Review submission error:", error);
-		return json(
+		return data(
 			{
 				error:
-					error instanceof Error
-						? error.message
-						: "Failed to submit review",
+					error instanceof Error ? error.message : "Failed to submit review",
 			},
 			{ status: 500 },
 		);

@@ -1,6 +1,6 @@
+import { db } from "@itcom/db/client";
 import { sql } from "drizzle-orm";
 import { data } from "react-router";
-import { db } from "@itcom/db/client";
 
 export async function loader() {
 	try {

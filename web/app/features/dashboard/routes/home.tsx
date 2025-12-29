@@ -1,18 +1,18 @@
+import type { SelectMentorApplication } from "@itcom/db/schema";
 import { AnimatePresence } from "framer-motion";
 import { useLoaderData } from "react-router";
 import { Shell } from "~/shared/components/layout/Shell";
 import { requireUserId } from "../../auth/utils/session.server";
+import { applicationService } from "../../mentoring/services/application.server";
 import { JobCard } from "../components/JobCard";
+import { MentorApplicationStatus } from "../components/MentorApplicationStatus";
 import { TaskCard } from "../components/TaskCard";
 import { WelcomeHero } from "../components/WelcomeHero";
-import { MentorApplicationStatus } from "../components/MentorApplicationStatus";
 import { dashboardService } from "../domain/dashboard.service.server";
-import { applicationService } from "../../mentoring/services/application.server";
 import type {
 	DashboardTask,
 	JobRecommendation,
 } from "../domain/dashboard.types";
-import type { SelectMentorApplication } from "@itcom/db/schema";
 
 export function meta() {
 	return [
@@ -25,7 +25,8 @@ export async function loader({ request }: { request: Request }) {
 	const userId = await requireUserId(request);
 	const tasks = await dashboardService.getTasks();
 	const jobs = await dashboardService.getRecommendedJobs();
-	const mentorApplication = await applicationService.getApplicationStatus(userId);
+	const mentorApplication =
+		await applicationService.getApplicationStatus(userId);
 	return { tasks, jobs, mentorApplication };
 }
 

@@ -9,13 +9,9 @@
  */
 
 import crypto from "node:crypto";
-import { and, eq } from "drizzle-orm";
 import { db } from "@itcom/db/client";
-import {
-	accountProviders,
-	authenticationLogs,
-	users,
-} from "@itcom/db/schema";
+import { accountProviders, authenticationLogs, users } from "@itcom/db/schema";
+import { and, eq } from "drizzle-orm";
 
 export type SocialProvider = "google" | "github" | "kakao" | "line";
 

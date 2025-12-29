@@ -1,13 +1,12 @@
+import { db } from "@itcom/db/client";
+import { profiles, userSlugHistory } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import { Github, Globe, Languages, Linkedin, MapPin } from "lucide-react";
 import type { LoaderFunctionArgs } from "react-router";
 import { redirect } from "react-router";
-
 import { MentorService } from "~/features/mentoring/services/mentor.server";
 import type { Slot } from "~/features/mentoring/types";
 import { Shell } from "~/shared/components/layout/Shell";
-import { db } from "@itcom/db/client";
-import { profiles, userSlugHistory } from "@itcom/db/schema";
 import { ProfileBadges } from "../components/ProfileBadges";
 import { getUserActivityStats } from "../services/activity-stats.server";
 import { getUserBadges } from "../services/badge-system.server";

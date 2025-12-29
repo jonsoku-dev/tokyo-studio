@@ -1,10 +1,10 @@
-import type { z } from "zod";
 import {
 	insertCommunityPostSchema,
 	selectCommunityCommentSchema,
 	selectCommunityPostSchema,
 	selectUserSchema,
 } from "@itcom/db/schema";
+import type { z } from "zod";
 
 export const CommunityPostSchema = selectCommunityPostSchema.pick({
 	id: true,

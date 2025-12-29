@@ -1,8 +1,8 @@
+import { db } from "@itcom/db/client";
+import { pushSubscriptions } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import { type ActionFunction, data } from "react-router"; // or json
 import { requireUserId } from "~/features/auth/utils/session.server";
-import { db } from "@itcom/db/client";
-import { pushSubscriptions } from "@itcom/db/schema";
 
 export const action: ActionFunction = async ({ request }) => {
 	const userId = await requireUserId(request);

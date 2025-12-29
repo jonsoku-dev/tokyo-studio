@@ -6,9 +6,25 @@ import {
 	Scripts,
 	ScrollRestoration,
 } from "react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { Toaster } from "sonner";
+
+// Create a client for the app
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			staleTime: 1000 * 60 * 5, // 5 minutes
+			retry: 1,
+		},
+		mutations: {
+			retry: 1,
+		},
+	},
+});
 
 export const links: Route.LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -25,19 +41,22 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en">
-			<head>
-				<meta charSet="utf-8" />
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<Meta />
-				<Links />
-			</head>
-			<body>
-				{children}
-				<ScrollRestoration />
-				<Scripts />
-			</body>
-		</html>
+		<QueryClientProvider client={queryClient}>
+			<html lang="en" suppressHydrationWarning>
+				<head>
+					<meta charSet="utf-8" />
+					<meta name="viewport" content="width=device-width, initial-scale=1" />
+					<Meta />
+					<Links />
+				</head>
+				<body suppressHydrationWarning>
+					{children}
+					<ScrollRestoration />
+					<Scripts />
+					{process.env.NODE_ENV === "development" && <ReactQueryDevtools />}
+				</body>
+			</html>
+		</QueryClientProvider>
 	);
 }
 
@@ -64,6 +83,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
 			{user && <VerificationBanner user={user} />}
 			<Outlet />
 			<NotificationPermissionPrompt />
+			<Toaster richColors position="top-center" />
 		</>
 	);
 }

@@ -1,5 +1,5 @@
-import { json } from "@remix-run/node";
-import type { ActionFunction } from "@remix-run/node";
+import { type ActionFunctionArgs, data } from "react-router";
+
 import { weeklyDigestCronHandler } from "../services/weekly-digest.server";
 
 /**
@@ -21,29 +21,26 @@ import { weeklyDigestCronHandler } from "../services/weekly-digest.server";
  *
  * Security: Add authorization header check if exposing publicly
  */
-export const action: ActionFunction = async ({ request }) => {
+export async function action({ request }: ActionFunctionArgs) {
 	// Only allow POST requests
 	if (request.method !== "POST") {
-		return json(
-			{ error: "Method not allowed" },
-			{ status: 405 },
-		);
+		return data({ error: "Method not allowed" }, { status: 405 });
 	}
 
 	// Security check: Verify cron secret (if running on Vercel or similar)
 	const cronSecret = request.headers.get("authorization");
-	if (process.env.CRON_SECRET && cronSecret !== `Bearer ${process.env.CRON_SECRET}`) {
-		return json(
-			{ error: "Unauthorized" },
-			{ status: 401 },
-		);
+	if (
+		process.env.CRON_SECRET &&
+		cronSecret !== `Bearer ${process.env.CRON_SECRET}`
+	) {
+		return data({ error: "Unauthorized" }, { status: 401 });
 	}
 
 	try {
 		console.log("[API] Weekly digest cron triggered");
 		await weeklyDigestCronHandler();
 
-		return json(
+		return data(
 			{
 				success: true,
 				message: "Weekly digest cron completed successfully",
@@ -54,7 +51,7 @@ export const action: ActionFunction = async ({ request }) => {
 	} catch (error) {
 		console.error("[API] Weekly digest cron failed:", error);
 
-		return json(
+		return data(
 			{
 				success: false,
 				error: error instanceof Error ? error.message : "Unknown error",
@@ -63,4 +60,4 @@ export const action: ActionFunction = async ({ request }) => {
 			{ status: 500 },
 		);
 	}
-};
+}

@@ -1,10 +1,8 @@
-import { redirect, data } from "@remix-run/node";
-import { eq } from "drizzle-orm";
-import type { LoaderFunction } from "@remix-run/node";
 import { db } from "@itcom/db/client";
-import { mentoringSessions, users } from "@itcom/db/schema";
+import { mentoringSessions } from "@itcom/db/schema";
+import { eq } from "drizzle-orm";
+import { data, type LoaderFunctionArgs, redirect } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
-import { verifyJoinToken } from "../services/video-provider.server";
 
 /**
  * SPEC 013: Secure Join Proxy Endpoint
@@ -20,15 +18,12 @@ import { verifyJoinToken } from "../services/video-provider.server";
  *
  * Then: Redirect to actual meeting URL
  */
-export const loader: LoaderFunction = async ({ params, request }) => {
+export async function loader({ params, request }: LoaderFunctionArgs) {
 	// 1. Authenticate user
 	const userId = await requireUserId(request);
 
 	if (!params.sessionId) {
-		return data(
-			{ error: "Session ID is required" },
-			{ status: 400 },
-		);
+		return data({ error: "Session ID is required" }, { status: 400 });
 	}
 
 	try {
@@ -47,18 +42,14 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 			.limit(1);
 
 		if (!session || session.length === 0) {
-			return data(
-				{ error: "Session not found" },
-				{ status: 404 },
-			);
+			return data({ error: "Session not found" }, { status: 404 });
 		}
 
 		const sessionRecord = session[0];
 
 		// 3. Check user is participant (mentor or mentee)
 		const isParticipant =
-			sessionRecord.mentorId === userId ||
-			sessionRecord.userId === userId;
+			sessionRecord.mentorId === userId || sessionRecord.userId === userId;
 
 		if (!isParticipant) {
 			return data(
@@ -104,9 +95,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
 		// 6. Get meeting URL
 		if (!sessionRecord.meetingUrl) {
-			console.error(
-				`[Join] No meeting URL for session ${params.sessionId}`,
-			);
+			console.error(`[Join] No meeting URL for session ${params.sessionId}`);
 			return data(
 				{
 					error: "Meeting URL is not yet available. Please contact support.",
@@ -134,7 +123,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 			{ status: 500 },
 		);
 	}
-};
+}
 
 /**
  * Extract provider name from meeting URL for logging

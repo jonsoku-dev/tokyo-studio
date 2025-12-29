@@ -1,8 +1,9 @@
 import { data } from "react-router";
-import type { Route } from "./+types/task.$id";
+
 import { requireUserId } from "~/features/auth/utils/session.server";
-import { updateTaskColumn } from "../services/roadmap.server";
 import type { KanbanColumn } from "../services/roadmap.server";
+import { updateTaskColumn } from "../services/roadmap.server";
+import type { Route } from "./+types/task.$id";
 
 export async function action({ request, params }: Route.ActionArgs) {
 	const userId = await requireUserId(request);
@@ -16,7 +17,10 @@ export async function action({ request, params }: Route.ActionArgs) {
 		const body = await request.json();
 		const { kanbanColumn } = body as { kanbanColumn: KanbanColumn };
 
-		if (!kanbanColumn || !["todo", "in_progress", "completed"].includes(kanbanColumn)) {
+		if (
+			!kanbanColumn ||
+			!["todo", "in_progress", "completed"].includes(kanbanColumn)
+		) {
 			return data({ error: "Invalid kanban column" }, { status: 400 });
 		}
 

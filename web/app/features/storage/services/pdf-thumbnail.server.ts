@@ -11,11 +11,11 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { db } from "@itcom/db/client";
+import { documents } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import { PDFDocument } from "pdf-lib";
 import sharp from "sharp";
-import { db } from "@itcom/db/client";
-import { documents } from "@itcom/db/schema";
 import {
 	generateThumbnailS3Key,
 	isS3Configured,

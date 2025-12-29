@@ -93,7 +93,6 @@ export function SearchBar() {
 				</div>
 			)}
 
-
 			{isOpen && suggestions.length > 0 && (
 				<div className="absolute top-full mt-1 w-full bg-white rounded-md border shadow-lg z-50 overflow-hidden">
 					<ul className="py-1">

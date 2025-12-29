@@ -1,10 +1,10 @@
+import { db } from "@itcom/db/client";
+import { mentoringSessions, users } from "@itcom/db/schema";
 import { format } from "date-fns";
 import { desc, eq } from "drizzle-orm";
 import { Link, useLoaderData } from "react-router";
 import { requireVerifiedUser } from "~/features/auth/utils/session.server";
 import { Shell } from "~/shared/components/layout/Shell";
-import { db } from "@itcom/db/client";
-import { mentoringSessions, users } from "@itcom/db/schema";
 
 export function meta() {
 	return [{ title: "My Sessions - Japan IT Job" }];

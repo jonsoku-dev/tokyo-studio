@@ -311,6 +311,8 @@ export const voteAuditLogs = pgTable("vote_audit_logs", {
 export const insertReputationLogSchema = createInsertSchema(reputationLogs);
 export const selectReputationLogSchema = createSelectSchema(reputationLogs);
 
+
+
 export const commentNotifications = pgTable("comment_notifications", {
 	id: uuid("id").primaryKey().defaultRandom(),
 	userId: uuid("user_id") // Recipient
@@ -651,6 +653,24 @@ export const notificationQueueRelations = relations(
 		}),
 	}),
 );
+
+// --- Job Posting Parser Cache ---
+export const jobPostingCache = pgTable("job_posting_cache", {
+	url: text("url").primaryKey(),
+	urlHash: text("url_hash").notNull(),
+	data: jsonb("data").$type<{
+		company: string;
+		position: string;
+		location: string;
+		description: string;
+		logoUrl: string | null;
+	}>().notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertJobPostingCacheSchema = createInsertSchema(jobPostingCache);
+export const selectJobPostingCacheSchema = createSelectSchema(jobPostingCache);
 
 // --- SPEC 001: Social Auth - Account Providers ---
 export const accountProviders = pgTable("account_providers", {
@@ -1214,5 +1234,86 @@ export const roadmapTasksRelations = relations(roadmapTasks, ({ one }) => ({
 	template: one(roadmapTemplates, {
 		fields: [roadmapTasks.templateId],
 		references: [roadmapTemplates.id],
+	}),
+}));
+
+// ============================================================
+// SPEC 019: Settlement Checklist
+// ============================================================
+
+// --- Settlement Tasks (Static task definitions) ---
+export const settlementTasks = pgTable("settlement_tasks", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	slug: text("slug").notNull().unique(), // e.g., "register-city-hall"
+	titleKo: text("title_ko").notNull(),
+	titleJa: text("title_ja").notNull(),
+	instructionsKo: text("instructions_ko").notNull(),
+	instructionsJa: text("instructions_ja").notNull(),
+	requiredDocuments: jsonb("required_documents").$type<string[]>().default([]),
+	estimatedMinutes: integer("estimated_minutes").default(60),
+	category: text("category").notNull(), // "government" | "housing" | "finance" | "utilities" | "other"
+	timePhase: text("time_phase").notNull(), // "before_arrival" | "first_week" | "first_month" | "first_3_months"
+	deadlineType: text("deadline_type").notNull().default("relative"), // "relative" | "absolute"
+	deadlineDays: integer("deadline_days"), // Days after arrival (for relative)
+	tips: text("tips"),
+	formTemplateUrl: text("form_template_url"),
+	officialUrl: text("official_url"),
+	orderIndex: integer("order_index").notNull().default(0),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertSettlementTaskSchema = createInsertSchema(settlementTasks);
+export const selectSettlementTaskSchema = createSelectSchema(settlementTasks);
+export type SettlementTask = InferSelectModel<typeof settlementTasks>;
+
+// --- User Settlements (User's arrival date and progress) ---
+export const userSettlements = pgTable("user_settlements", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull()
+		.unique(),
+	arrivalDate: timestamp("arrival_date"),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertUserSettlementSchema = createInsertSchema(userSettlements);
+export const selectUserSettlementSchema = createSelectSchema(userSettlements);
+export type UserSettlement = InferSelectModel<typeof userSettlements>;
+
+// --- User Task Completions (Junction table) ---
+export const userTaskCompletions = pgTable("user_task_completions", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	taskId: uuid("task_id")
+		.references(() => settlementTasks.id, { onDelete: "cascade" })
+		.notNull(),
+	completedAt: timestamp("completed_at").defaultNow().notNull(),
+});
+
+export const insertUserTaskCompletionSchema = createInsertSchema(userTaskCompletions);
+export const selectUserTaskCompletionSchema = createSelectSchema(userTaskCompletions);
+export type UserTaskCompletion = InferSelectModel<typeof userTaskCompletions>;
+
+// --- Settlement Relations ---
+export const userSettlementsRelations = relations(userSettlements, ({ one }) => ({
+	user: one(users, {
+		fields: [userSettlements.userId],
+		references: [users.id],
+	}),
+}));
+
+export const userTaskCompletionsRelations = relations(userTaskCompletions, ({ one }) => ({
+	user: one(users, {
+		fields: [userTaskCompletions.userId],
+		references: [users.id],
+	}),
+	task: one(settlementTasks, {
+		fields: [userTaskCompletions.taskId],
+		references: [settlementTasks.id],
 	}),
 }));

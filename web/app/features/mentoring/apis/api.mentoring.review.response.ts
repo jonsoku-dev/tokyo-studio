@@ -1,8 +1,8 @@
-import { json, type ActionFunctionArgs } from "@remix-run/node";
-import { z } from "zod";
-import { eq } from "drizzle-orm";
 import { db } from "@itcom/db/client";
-import { mentorReviews, mentorReviewResponses, users } from "@itcom/db/schema";
+import { mentorReviewResponses, mentorReviews } from "@itcom/db/schema";
+import { eq } from "drizzle-orm";
+import { type ActionFunctionArgs, data } from "react-router";
+import { z } from "zod";
 import { requireUserId } from "~/features/auth/utils/session.server";
 
 /**
@@ -16,13 +16,13 @@ const responseSchema = z.object({
 
 export async function action({ request, params }: ActionFunctionArgs) {
 	if (request.method !== "POST") {
-		return json({ error: "Method not allowed" }, { status: 405 });
+		return data({ error: "Method not allowed" }, { status: 405 });
 	}
 
 	const mentorId = await requireUserId(request);
 
 	if (!params.reviewId) {
-		return json({ error: "Review ID is required" }, { status: 400 });
+		return data({ error: "Review ID is required" }, { status: 400 });
 	}
 
 	try {
@@ -30,7 +30,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		const validationResult = responseSchema.safeParse(body);
 
 		if (!validationResult.success) {
-			return json(
+			return data(
 				{
 					error: "Invalid request data",
 					details: validationResult.error.flatten(),
@@ -47,11 +47,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		});
 
 		if (!review) {
-			return json({ error: "Review not found" }, { status: 404 });
+			return data({ error: "Review not found" }, { status: 404 });
 		}
 
 		if (review.mentorId !== mentorId) {
-			return json(
+			return data(
 				{ error: "You are not authorized to respond to this review" },
 				{ status: 403 },
 			);
@@ -63,7 +63,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		});
 
 		if (existingResponse) {
-			return json(
+			return data(
 				{ error: "You have already responded to this review" },
 				{ status: 400 },
 			);
@@ -81,7 +81,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
 		// TODO: Send notification to mentee
 
-		return json(
+		return data(
 			{
 				success: true,
 				responseId: response.id,
@@ -90,12 +90,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		);
 	} catch (error) {
 		console.error("Review response error:", error);
-		return json(
+		return data(
 			{
 				error:
-					error instanceof Error
-						? error.message
-						: "Failed to submit response",
+					error instanceof Error ? error.message : "Failed to submit response",
 			},
 			{ status: 500 },
 		);

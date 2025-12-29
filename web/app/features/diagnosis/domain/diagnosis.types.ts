@@ -1,6 +1,6 @@
+import { profiles } from "@itcom/db/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { profiles } from "@itcom/db/schema";
 
 export const InsertProfileSchema = createInsertSchema(profiles);
 export const SelectProfileSchema = createSelectSchema(profiles);

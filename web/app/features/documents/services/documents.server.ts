@@ -1,6 +1,6 @@
-import { and, desc, eq, ilike } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import { documents, documentVersions } from "@itcom/db/schema";
+import { and, desc, eq, ilike } from "drizzle-orm";
 import type { InsertDocumentVersion } from "./types";
 
 class DocumentsService {

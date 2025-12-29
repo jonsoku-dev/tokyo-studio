@@ -1,9 +1,9 @@
+import { db } from "@itcom/db/client";
+import { mentoringSessions } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import type { LoaderFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
-import { db } from "@itcom/db/client";
-import { mentoringSessions } from "@itcom/db/schema";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
 	const userId = await requireUserId(request);

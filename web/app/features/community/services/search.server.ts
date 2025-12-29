@@ -1,6 +1,6 @@
-import { sql } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import { communityPosts, users } from "@itcom/db/schema";
+import { sql } from "drizzle-orm";
 import { logSearch } from "./search-analytics.server";
 
 // Execute full-text search

@@ -1,12 +1,12 @@
-import { eq, gte, and, desc } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import {
-	users,
-	notificationPreferences,
 	commentNotifications,
-	communityPosts,
 	communityComments,
+	communityPosts,
+	notificationPreferences,
+	users,
 } from "@itcom/db/schema";
+import { and, desc, eq, gte } from "drizzle-orm";
 import { pushService } from "./push.server";
 
 export interface WeeklyDigestStats {
@@ -113,7 +113,10 @@ export async function generateWeeklyDigest(
 
 		return stats;
 	} catch (error) {
-		console.error(`[Weekly Digest] Error generating digest for ${userId}:`, error);
+		console.error(
+			`[Weekly Digest] Error generating digest for ${userId}:`,
+			error,
+		);
 		return null;
 	}
 }
@@ -189,7 +192,10 @@ export async function sendWeeklyDigests(): Promise<{
 					userId: user.id,
 					error: error instanceof Error ? error.message : "Unknown error",
 				});
-				console.error(`[Weekly Digest] Error sending digest to ${user.id}:`, error);
+				console.error(
+					`[Weekly Digest] Error sending digest to ${user.id}:`,
+					error,
+				);
 			}
 		}
 
@@ -209,7 +215,9 @@ export async function weeklyDigestCronHandler(): Promise<void> {
 
 	const result = await sendWeeklyDigests();
 
-	console.log(`[Weekly Digest] Completed: ${result.sent} sent, ${result.failed} failed`);
+	console.log(
+		`[Weekly Digest] Completed: ${result.sent} sent, ${result.failed} failed`,
+	);
 
 	if (result.errors.length > 0) {
 		console.error("[Weekly Digest] Errors:", result.errors);

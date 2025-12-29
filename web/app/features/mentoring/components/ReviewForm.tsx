@@ -1,6 +1,6 @@
-import { Form, useNavigation, useActionData } from "react-router";
 import { Star } from "lucide-react";
 import { useState } from "react";
+import { Form, useActionData, useNavigation } from "react-router";
 
 interface ReviewFormProps {
 	sessionId: string;
@@ -83,7 +83,8 @@ export function ReviewForm({
 						))}
 					</div>
 					<p className="text-sm text-gray-500 mt-2">
-						{rating > 0 && `You rated: ${rating} star${rating !== 1 ? "s" : ""}`}
+						{rating > 0 &&
+							`You rated: ${rating} star${rating !== 1 ? "s" : ""}`}
 					</p>
 				</div>
 
@@ -103,9 +104,7 @@ export function ReviewForm({
 						className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
 						maxLength={2000}
 					/>
-					<p className="text-xs text-gray-500 mt-1">
-						Max 2000 characters
-					</p>
+					<p className="text-xs text-gray-500 mt-1">Max 2000 characters</p>
 				</div>
 
 				{/* Anonymous Option */}

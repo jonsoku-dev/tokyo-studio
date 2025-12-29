@@ -88,7 +88,7 @@ export const storageService = {
 			const filePath = path.join(PRIVATE_STORAGE_DIR, uniqueKey);
 			const writable = fs.createWriteStream(filePath);
 
-			// @ts-ignore - native stream piping
+			// @ts-expect-error - native stream piping
 			await finished(Readable.from(fileStream).pipe(writable));
 
 			return uniqueKey;
@@ -126,6 +126,8 @@ export const storageService = {
 		// but to satisfy the interface "getStream", we can use GetObject.
 		// However, standard practice for private S3 files is Presigned URL.
 		// Let's implement stream for now or throw.
-		throw new Error("S3 private stream not fully implemented - use Presigned URL strategy for S3");
+		throw new Error(
+			"S3 private stream not fully implemented - use Presigned URL strategy for S3",
+		);
 	},
 };

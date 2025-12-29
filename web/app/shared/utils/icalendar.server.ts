@@ -81,9 +81,7 @@ export function generateICalendar(event: ICalendarEvent): string {
 	const endDate = formatICalDate(event.endDate);
 	const createdDate = formatICalDate(now);
 
-	const vTimezone = event.timezone
-		? generateVTimezone(event.timezone)
-		: "";
+	const vTimezone = event.timezone ? generateVTimezone(event.timezone) : "";
 
 	const ics = `BEGIN:VCALENDAR
 VERSION:2.0

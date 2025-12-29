@@ -1,6 +1,10 @@
-import { json } from "@remix-run/node";
-import type { LoaderFunction } from "@remix-run/node";
-import { getTrendingTopics, getZeroResultSearches, getSearchAnalyticsSummary } from "../services/search-analytics.server";
+import { data, type LoaderFunctionArgs } from "react-router";
+
+import {
+	getSearchAnalyticsSummary,
+	getTrendingTopics,
+	getZeroResultSearches,
+} from "../services/search-analytics.server";
 
 /**
  * GET /api/community/trending-topics
@@ -11,15 +15,15 @@ import { getTrendingTopics, getZeroResultSearches, getSearchAnalyticsSummary } f
  * - include_summary: Include analytics summary (true/false)
  * - include_gaps: Include zero-result searches (true/false)
  */
-export const loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderFunctionArgs) {
 	if (request.method !== "GET") {
-		return json({ error: "Method not allowed" }, { status: 405 });
+		return data({ error: "Method not allowed" }, { status: 405 });
 	}
 
 	try {
 		const url = new URL(request.url);
 		const limit = Math.min(
-			parseInt(url.searchParams.get("limit") || "5"),
+			Number.parseInt(url.searchParams.get("limit") || "5", 10),
 			20,
 		); // Cap at 20
 		const includeSummary = url.searchParams.get("include_summary") === "true";
@@ -40,7 +44,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 			response.gaps = await getZeroResultSearches(5);
 		}
 
-		return json(response, {
+		return data(response, {
 			headers: {
 				"Cache-Control": "public, max-age=300", // Cache for 5 minutes
 			},
@@ -48,7 +52,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	} catch (error) {
 		console.error("[API] Trending topics error:", error);
 
-		return json(
+		return data(
 			{
 				error: "Failed to fetch trending topics",
 				topics: [],
@@ -56,4 +60,4 @@ export const loader: LoaderFunction = async ({ request }) => {
 			{ status: 500 },
 		);
 	}
-};
+}

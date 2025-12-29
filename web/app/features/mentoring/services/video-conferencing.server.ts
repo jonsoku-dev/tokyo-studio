@@ -1,6 +1,6 @@
-import { and, eq } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import { userIntegrations } from "@itcom/db/schema";
+import { and, eq } from "drizzle-orm";
 
 export interface VideoProvider {
 	generateLink(session: {

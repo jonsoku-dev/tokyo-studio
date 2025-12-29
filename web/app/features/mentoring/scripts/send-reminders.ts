@@ -1,7 +1,7 @@
-import { and, eq, gte, isNull, lte } from "drizzle-orm";
-import { emailService } from "~/features/auth/services/email.server";
 import { db } from "@itcom/db/client";
 import { mentoringSessions, users } from "@itcom/db/schema";
+import { and, eq, gte, isNull, lte } from "drizzle-orm";
+import { emailService } from "~/features/auth/services/email.server";
 
 async function main() {
 	console.log("Checking for upcoming sessions...");

@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
-import { eq } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import { passwordResetTokens, users } from "@itcom/db/schema";
+import { eq } from "drizzle-orm";
 import { emailService } from "./email.server";
 import { logPasswordResetEvent } from "./password-reset-logger.server";
 
@@ -52,10 +52,10 @@ export const passwordResetService = {
 		if (!storedToken) {
 			// Log invalid token attempt if metadata provided
 			if (metadata) {
-                // If token is not found, we can't get the user ID from it easily unless we passed strict email.
-                // But here we rely on token. If token invalid, we just log 'unknown' or skip user lookup if we rely on token for userId.
-                // Actually if storedToken is null, we CANNOT get userId from it. 
-                // We'll log as "unknown" user.
+				// If token is not found, we can't get the user ID from it easily unless we passed strict email.
+				// But here we rely on token. If token invalid, we just log 'unknown' or skip user lookup if we rely on token for userId.
+				// Actually if storedToken is null, we CANNOT get userId from it.
+				// We'll log as "unknown" user.
 				await logPasswordResetEvent({
 					userId: undefined, // Unknown user
 					email: "unknown",

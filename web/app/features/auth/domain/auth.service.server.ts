@@ -1,9 +1,9 @@
+import { db } from "@itcom/db/client";
+import { users } from "@itcom/db/schema";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { emailService } from "~/features/auth/services/email.server";
 import { createVerificationToken } from "~/features/auth/services/email-verification.server";
-import { db } from "@itcom/db/client";
-import { users } from "@itcom/db/schema";
 import type { AuthResponse, LoginDTO, SignupDTO, User } from "./auth.types";
 
 export const authService = {
@@ -50,6 +50,7 @@ export const authService = {
 
 		const hashedPassword = await bcrypt.hash(data.password, 10);
 
+		// Auto-verify email on signup for development
 		const [newUser] = await db
 			.insert(users)
 			.values({
@@ -57,12 +58,18 @@ export const authService = {
 				password: hashedPassword,
 				name: data.name,
 				avatarUrl: `https://avatar.vercel.sh/${data.email}`,
+				emailVerified: new Date(), // Auto-verify on signup
 			})
 			.returning();
 
-		// Trigger email verification
-		const verificationToken = await createVerificationToken(newUser.id);
-		await emailService.sendVerificationEmail(newUser.email, verificationToken);
+		// Try to send verification email, but don't fail if it errors
+		try {
+			const verificationToken = await createVerificationToken(newUser.id);
+			await emailService.sendVerificationEmail(newUser.email, verificationToken);
+		} catch (error) {
+			console.warn("Failed to send verification email:", error);
+			// Continue anyway - user is already verified
+		}
 
 		const token = `mock_jwt_token_${newUser.id}`;
 

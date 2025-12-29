@@ -1,9 +1,9 @@
 import crypto from "node:crypto";
+import { db } from "@itcom/db/client";
+import { verificationTokens } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
-import { db } from "@itcom/db/client";
-import { verificationTokens } from "@itcom/db/schema";
 
 /**
  * SPEC 002: Resend Email Verification

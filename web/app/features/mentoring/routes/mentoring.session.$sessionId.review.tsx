@@ -1,3 +1,5 @@
+import { db } from "@itcom/db/client";
+import { mentoringSessions } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import { Star } from "lucide-react";
 import { useState } from "react";
@@ -13,8 +15,6 @@ import {
 } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { Button } from "~/shared/components/ui/Button";
-import { db } from "@itcom/db/client";
-import { mentoringSessions } from "@itcom/db/schema";
 import { reviewService } from "../services/review.server";
 
 // Loader: Check if session exists and is reviewable

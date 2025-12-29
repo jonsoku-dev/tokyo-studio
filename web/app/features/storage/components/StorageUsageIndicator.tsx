@@ -23,32 +23,37 @@ export function StorageUsageIndicator({
 	storageLimit = 100 * 1024 * 1024, // 100MB default
 	detailed = false,
 }: StorageUsageIndicatorProps) {
-	const { usagePercentage, usedMB, limitMB, remainingMB, color } = useMemo(() => {
-		const percentage = Math.min((storageUsed / storageLimit) * 100, 100);
-		const usedMB = (storageUsed / (1024 * 1024)).toFixed(1);
-		const limitMB = (storageLimit / (1024 * 1024)).toFixed(0);
-		const remainingMB = Math.max(
-			(storageLimit - storageUsed) / (1024 * 1024),
-			0,
-		).toFixed(1);
+	const { usagePercentage, usedMB, limitMB, remainingMB, color } =
+		useMemo(() => {
+			const percentage = Math.min((storageUsed / storageLimit) * 100, 100);
+			const usedMB = (storageUsed / (1024 * 1024)).toFixed(1);
+			const limitMB = (storageLimit / (1024 * 1024)).toFixed(0);
+			const remainingMB = Math.max(
+				(storageLimit - storageUsed) / (1024 * 1024),
+				0,
+			).toFixed(1);
 
-		// Determine color based on usage
-		let color = "bg-blue-500";
-		if (percentage >= 90) {
-			color = "bg-red-500";
-		} else if (percentage >= 75) {
-			color = "bg-yellow-500";
-		}
+			// Determine color based on usage
+			let color = "bg-blue-500";
+			if (percentage >= 90) {
+				color = "bg-red-500";
+			} else if (percentage >= 75) {
+				color = "bg-yellow-500";
+			}
 
-		return { usagePercentage: percentage, usedMB, limitMB, remainingMB, color };
-	}, [storageUsed, storageLimit]);
+			return {
+				usagePercentage: percentage,
+				usedMB,
+				limitMB,
+				remainingMB,
+				color,
+			};
+		}, [storageUsed, storageLimit]);
 
 	return (
 		<div className="rounded-lg bg-gray-50 p-4">
 			<div className="mb-2 flex items-center justify-between">
-				<span className="text-sm font-medium text-gray-700">
-					Storage Used
-				</span>
+				<span className="text-sm font-medium text-gray-700">Storage Used</span>
 				<span className="text-sm text-gray-600">
 					{usedMB} / {limitMB} MB
 				</span>
@@ -142,5 +147,5 @@ export function formatFileSize(bytes: number): string {
 	const sizes = ["Bytes", "KB", "MB", "GB"];
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-	return `${Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+	return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
 }

@@ -1,12 +1,12 @@
 import "dotenv/config";
 import { faker } from "@faker-js/faker";
-import { eq } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import {
 	mentorAvailabilitySlots,
 	mentorProfiles,
 	users,
 } from "@itcom/db/schema";
+import { eq } from "drizzle-orm";
 
 async function seedMentors() {
 	console.log("🌱 Seeding Mentors...");

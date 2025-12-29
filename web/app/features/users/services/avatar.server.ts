@@ -1,9 +1,9 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { db } from "@itcom/db/client";
+import { users } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import sharp from "sharp";
 import { deleteFromS3 } from "~/features/storage/services/presigned-urls.server";
-import { db } from "@itcom/db/client";
-import { users } from "@itcom/db/schema";
 import { S3_BUCKET, s3Client } from "~/shared/services/s3-client.server";
 
 /**
@@ -159,9 +159,10 @@ export const avatarService = {
 		return { avatarUrl, avatarThumbnailUrl };
 	},
 
-	async deleteAvatar(
-		userId: string,
-	): Promise<{ avatarUrl?: string | null; avatarThumbnailUrl?: string | null }> {
+	async deleteAvatar(userId: string): Promise<{
+		avatarUrl?: string | null;
+		avatarThumbnailUrl?: string | null;
+	}> {
 		const [currentUser] = await db
 			.select({
 				avatarUrl: users.avatarUrl,

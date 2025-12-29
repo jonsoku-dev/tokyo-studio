@@ -7,13 +7,13 @@
  * - Configure timezone
  */
 
+import { db } from "@itcom/db/client";
+import { notificationPreferences } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import { Clock, Moon } from "lucide-react";
 import { Form, useLoaderData } from "react-router";
 import { requireVerifiedEmail } from "~/features/auth/services/require-verified-email.server";
 import { Button } from "~/shared/components/ui/Button";
-import { db } from "@itcom/db/client";
-import { notificationPreferences } from "@itcom/db/schema";
 import type { Route } from "./+types/settings";
 
 export async function loader({ request }: Route.LoaderArgs) {
