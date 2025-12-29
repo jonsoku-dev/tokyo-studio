@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { redirect } from "react-router";
-import { db } from "~/shared/db/client.server";
-import { users } from "~/shared/db/schema";
+import { db } from "@itcom/db/client";
+import { users } from "@itcom/db/schema";
 import { emailService } from "../services/email.server";
 import { createVerificationToken } from "../services/email-verification.server";
 import { requireUserId } from "../utils/session.server";

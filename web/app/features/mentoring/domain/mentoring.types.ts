@@ -1,29 +1,41 @@
-import { z } from "zod";
-import {
-	insertMentoringSessionSchema,
-	selectMentoringSessionSchema,
-} from "~/shared/db/schema";
+import type { InferSelectModel } from "drizzle-orm";
+import type {
+	mentorAvailabilitySlots,
+	mentoringSessions,
+	mentorProfiles,
+	users,
+} from "@itcom/db/schema";
 
-export const MentoringSessionSchema = selectMentoringSessionSchema
-	.pick({
-		id: true,
-		mentorName: true,
-		topic: true,
-		date: true,
-		status: true,
-	})
-	.extend({
-		status: z.enum(["scheduled", "completed", "canceled"]),
-	});
+export type MentorProfile = InferSelectModel<typeof mentorProfiles>;
+export type User = InferSelectModel<typeof users>;
+export type AvailabilitySlot = InferSelectModel<typeof mentorAvailabilitySlots>;
+export type MentoringSession = InferSelectModel<typeof mentoringSessions>;
 
-export const CreateMentoringSessionSchema = insertMentoringSessionSchema.pick({
-	mentorName: true,
-	topic: true,
-	date: true,
-	userId: true,
-});
+export type MentorReview = {
+	id: string;
+	rating: number; // 1-5
+	comment: string | null;
+	createdAt: Date;
+	menteeName: string | null;
+};
 
-export type MentoringSession = z.infer<typeof MentoringSessionSchema>;
-export type CreateMentoringSessionDTO = z.infer<
-	typeof CreateMentoringSessionSchema
->;
+export interface Mentor extends User {
+	profile: MentorProfile | null;
+	reviews?: MentorReview[];
+}
+
+export interface MentorFilters {
+	jobFamily?: string;
+	experienceLevel?: string;
+	minPrice?: number;
+	maxPrice?: number;
+	availability?: "today" | "week" | "month";
+}
+
+export interface CreateBookingDTO {
+	mentorId: string;
+	slotId: string;
+	duration: 30 | 60 | 90;
+	topic: string;
+	price: number;
+}

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { selectUserSchema } from "~/shared/db/schema";
+import { selectUserSchema } from "@itcom/db/schema";
 
 // Extend generated schema or pick fields as needed
 export const UserSchema = selectUserSchema.pick({

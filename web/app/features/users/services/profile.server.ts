@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
-import { db } from "~/shared/db/client.server";
-import type { InsertProfile } from "~/shared/db/schema";
-import { profilePrivacySettings, profiles } from "~/shared/db/schema";
+import { db } from "@itcom/db/client";
+import type { InsertProfile } from "@itcom/db/schema";
+import { profilePrivacySettings, profiles } from "@itcom/db/schema";
 
 export const profileService = {
 	async getPublicProfile(slug: string) {
@@ -10,6 +10,7 @@ export const profileService = {
 			with: {
 				user: {
 					columns: {
+						id: true,
 						name: true,
 						avatarUrl: true,
 						email: true,
@@ -34,6 +35,7 @@ export const profileService = {
 		return {
 			...profile,
 			user: {
+				id: user.id,
 				name: privacy.hideFullName ? profile.slug : user.name, // Use slug/username if name hidden
 				avatarUrl: user.avatarUrl,
 				email: privacy.hideEmail ? null : user.email,

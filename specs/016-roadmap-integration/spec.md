@@ -2,8 +2,97 @@
 
 **Feature Branch**: `016-roadmap-integration`
 **Created**: 2025-12-28
-**Status**: Draft
-**Input**: User description: "Build a personalized roadmap generator that creates a customized action plan based on user diagnosis results. When users complete the career diagnosis, the system analyzes their job family, experience level, language proficiency, and target city to generate a tailored roadmap with 10-15 actionable tasks. Tasks are categorized into Learning (skill development), Application (resume, job search), Preparation (interviews, language), and Settlement (visa, relocation). Each task includes a title, description, estimated time to complete, priority level, and recommended completion order. The roadmap displays as a Kanban board with columns for To Do, In Progress, and Completed. Users can drag-and-drop tasks between columns, add custom tasks, edit task details, and mark tasks complete with a checkbox. The system tracks progress percentage and suggests next steps when users complete milestones."
+**Status**: **Ready for Development**
+**Priority**: High (Core User Journey)
+**Estimated Effort**: 5-7 days
+
+---
+
+## 0. Executive Summary
+
+### 0.1 이 기능은 무엇인가?
+
+**Personalized Roadmap Generator**는 한국 IT 개발자가 일본 취업을 준비하는 전 과정을 **구조화된 액션 플랜**으로 제공하는 기능입니다.
+
+사용자가 Career Diagnosis(자가 진단)를 완료하면, 시스템이 해당 사용자의 **직무(Frontend/Backend 등)**, **경력 수준(Junior/Senior)**, **일본어 능력(N1~None)**, **목표 도시(Tokyo/Osaka)** 를 분석하여 **맞춤형 10-15개의 실행 과제(Task)**를 자동 생성합니다.
+
+생성된 과제는 **Kanban 보드** 형태로 시각화되어, 사용자가 직관적으로 진행 상황을 추적하고 관리할 수 있습니다.
+
+### 0.2 왜 이 기능이 필요한가? (Problem Statement)
+
+| 문제 | 현재 상태 | 영향 |
+|------|----------|------|
+| **정보 과부하** | 인터넷에 일본 취업 정보가 파편화되어 있음 | 사용자가 무엇부터 해야 할지 모름 → 이탈 |
+| **개인화 부재** | 대부분의 가이드가 일반적임 | 시니어와 주니어가 같은 조언을 받음 → 비효율 |
+| **진행 추적 어려움** | 할 일 목록이 없거나 수동 관리 | 동기 부여 상실 → 중도 포기 |
+| **다음 단계 불명확** | "이력서 쓰기" 다음에 뭘 해야 하는지 모름 | 병목 발생 → 취업 지연 |
+
+### 0.3 이 기능은 어떻게 문제를 해결하는가? (Solution)
+
+```
+[Career Diagnosis] → [Profile Analysis] → [Template Matching] → [Personalized Roadmap]
+                                                                      ↓
+                                                              [Kanban Board UI]
+                                                                      ↓
+                                                        [Progress Tracking + Milestones]
+```
+
+1. **개인화된 Task 생성**: 사용자 프로필에 맞는 Task만 필터링하여 제공
+2. **카테고리별 구조화**: Learning → Application → Preparation → Settlement 단계별 안내
+3. **시각적 진행 관리**: Kanban 보드로 To Do / In Progress / Completed 명확히 구분
+4. **마일스톤 동기 부여**: 50% 달성, 카테고리 완료 시 축하 메시지 및 다음 단계 추천
+
+### 0.4 기대 효과 (Expected Impact)
+
+#### 사용자 가치 (User Value)
+| 효과 | 설명 | 측정 지표 |
+|------|------|----------|
+| **명확한 방향성** | "다음에 뭘 해야 하지?"가 사라짐 | Task 완료율 |
+| **동기 부여 향상** | 진행률 시각화로 성취감 제공 | 재방문율 (DAU/MAU) |
+| **시간 절약** | 정보 검색 시간 감소 | 로드맵 생성 후 첫 Task 시작까지 시간 |
+| **개인 맞춤** | 불필요한 조언 제외 | 사용자 만족도 설문 |
+
+#### 비즈니스 가치 (Business Value)
+| 효과 | 설명 | 측정 지표 |
+|------|------|----------|
+| **Retention 증가** | 매일 Task 확인하러 재방문 | 주간 활성 사용자 수 |
+| **Engagement 심화** | 플랫폼 내 다른 기능으로 연결 | 멘토링 예약, 커뮤니티 참여율 |
+| **전환율 향상** | 무료 사용자 → 유료 서비스 (멘토링) | 로드맵 사용자의 멘토링 전환율 |
+| **차별화 포인트** | 경쟁 플랫폼 대비 핵심 기능 | 신규 가입 채널에서 "Roadmap" 언급 비율 |
+
+### 0.5 타겟 사용자 (Target Users)
+
+| 페르소나 | 특징 | 니즈 |
+|---------|------|------|
+| **신입 개발자 (주니어)** | 경력 1-3년, 일본어 N3-N5, 해외 취업 처음 | 기초부터 차근차근 안내 필요 |
+| **경력 개발자 (시니어)** | 경력 5년+, 일본어 N2+, 빠른 이직 희망 | 불필요한 단계 스킵, 핵심만 |
+| **비일본어권 개발자** | 영어 가능, 일본어 초보 | 영어 환경 회사 중심 + 일본어 학습 Task |
+| **귀국 준비자** | 일본 경험 있음, 재취업 | Settlement 스킵, Application 집중 |
+
+### 0.6 성공 기준 (Success Metrics)
+
+#### 핵심 지표 (North Star Metric)
+> **로드맵 생성 후 30일 내 3개 이상 Task 완료율**
+
+#### 세부 지표
+| 지표 | 목표 | 현재 (예상) |
+|------|------|------------|
+| 로드맵 생성률 | Diagnosis 완료 후 70%+ | N/A (신규) |
+| 첫 Task 완료율 | 생성 후 24h 내 50%+ | N/A |
+| 전체 완료율 | 30일 내 30%+ | N/A |
+| 재방문율 | 주 3회 이상 방문 40%+ | N/A |
+| NPS | 50+ | N/A |
+
+### 0.7 경쟁 분석
+
+| 서비스 | Roadmap 기능 | 개인화 | Kanban | 우리의 차별점 |
+|--------|-------------|--------|--------|--------------|
+| Wantedly | ❌ 없음 | - | - | 취업 준비 전 과정 커버 |
+| LinkedIn Learning | 🟡 코스 추천 | Skill 기반 | ❌ | 취업 + 정착까지 통합 |
+| Notion 템플릿 | 🟡 수동 | 없음 | ✅ | 자동 생성 + 진행 추적 |
+| **Japan IT Job** | ✅ 자동 생성 | ✅ Diagnosis 기반 | ✅ | **통합 플랫폼** |
+
+---
 
 ## User Scenarios & Testing *(mandatory)*
 

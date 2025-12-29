@@ -1,14 +1,19 @@
 import crypto from "node:crypto";
 import { eq } from "drizzle-orm";
-import { db } from "~/shared/db/client.server";
-import { users, verificationTokens } from "~/shared/db/schema";
+import { db } from "@itcom/db/client";
+import { users, verificationTokens } from "@itcom/db/schema";
 
 export async function createVerificationToken(userId: string) {
 	// Generate a secure random token
 	const token = crypto.randomBytes(32).toString("hex");
 	const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-	// Store in DB
+	// Delete old tokens for this user (Token Invalidation - SPEC 002 FR-004)
+	await db
+		.delete(verificationTokens)
+		.where(eq(verificationTokens.userId, userId));
+
+	// Store new token in DB
 	await db.insert(verificationTokens).values({
 		token,
 		userId,
@@ -40,10 +45,10 @@ export async function verifyToken(token: string) {
 		.set({ emailVerified: new Date() })
 		.where(eq(users.id, storedToken.userId));
 
-	// Delete token (single use)
+	// Delete all tokens for this user (Token Invalidation - SPEC 002 FR-004)
 	await db
 		.delete(verificationTokens)
-		.where(eq(verificationTokens.id, storedToken.id));
+		.where(eq(verificationTokens.userId, storedToken.userId));
 
 	return { success: true };
 }

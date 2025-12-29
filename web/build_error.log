@@ -8,12 +8,12 @@ transforming...
 ✗ Build failed in 164ms
 [commonjs--resolver] Server-only module referenced by client
 
-    '~/shared/db/client.server' imported by route 'app/features/mentoring/routes/schedule.tsx'
+    '@itcom/db/client' imported by route 'app/features/mentoring/routes/schedule.tsx'
 
   React Router automatically removes server-code from these exports:
     `loader`, `action`, `middleware`, `headers`
 
-  But other route exports in 'app/features/mentoring/routes/schedule.tsx' depend on '~/shared/db/client.server'.
+  But other route exports in 'app/features/mentoring/routes/schedule.tsx' depend on '@itcom/db/client'.
 
   See https://reactrouter.com/explanation/code-splitting#removal-of-server-code
 

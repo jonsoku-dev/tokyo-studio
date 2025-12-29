@@ -181,3 +181,60 @@ The community needs protection from vote manipulation to maintain trust in the v
 - **SC-010**: Vote data remains accurate with 0% vote count discrepancies under load testing
 - **SC-011**: Users with flagged voting patterns are reviewed within 24 hours
 - **SC-012**: Reputation system encourages quality contributions (80% of top-voted content comes from repeat contributors)
+
+## Technical Implementation Details
+
+### Database Schema
+
+#### `post_votes`
+- `id`: uuid (PK)
+- `post_id`: uuid (FK -> community_posts.id)
+- `user_id`: uuid (FK -> users.id)
+- `vote_type`: integer (1 for upvote, -1 for downvote)
+- `created_at`: timestamp
+
+#### `comment_votes`
+- `id`: uuid (PK)
+- `comment_id`: uuid (FK -> community_comments.id)
+- `user_id`: uuid (FK -> users.id)
+- `vote_type`: integer (1 for upvote, -1 for downvote)
+- `created_at`: timestamp
+
+#### `community_posts` (Update)
+- Add `upvotes`: integer (default 0)
+- Add `downvotes`: integer (default 0)
+- Add `score`: integer generated always as (upvotes - downvotes) stored (or standard integer column updated via triggers) => Use standard integer `score` for sorting efficiency.
+
+#### `community_comments` (Update)
+- Add `upvotes`: integer (default 0)
+- Add `downvotes`: integer (default 0)
+- Add `score`: integer (default 0)
+
+#### `reputation_logs`
+- `id`: uuid (PK)
+- `user_id`: uuid (FK -> users.id)
+- `amount`: integer
+- `reason`: text (e.g. "post_upvote", "comment_downvote")
+- `target_id`: uuid (polymorphic or text reference)
+- `target_type`: text ("post", "comment")
+- `created_at`: timestamp
+
+### API Design
+
+#### `POST /api/vote`
+- **Auth**: Required
+- **Body**: `{ type: "post" | "comment", id: string, value: 1 | -1 | 0 }` (0 for removing vote)
+- **Response**: `{ success: true, score: number, userVote: number }`
+
+### UI Components
+
+#### `VoteControl.tsx`
+- Props: `initialScore`, `initialVote`, `id`, `type`
+- Features:
+    - Optimistic UI updates
+    - Debounced API calls (optional, but good for spam prevention)
+    - Error rollback
+
+### Logic
+- **Vote Limits**: Check `vote_limits` (or simple count query for MVP) before inserting.
+- **Triggers**: Use PostgreSQL triggers to update `upvotes`, `downvotes`, and `score` columns on `community_posts` and `community_comments` automatically when `*_votes` tables change. This ensures 100% data integrity and race condition handling at DB level.

@@ -1,5 +1,5 @@
-import { db } from "~/shared/db/client.server";
-import { documents } from "~/shared/db/schema";
+import { db } from "@itcom/db/client";
+import { documents } from "@itcom/db/schema";
 import type { CreateDocumentDTO, Document } from "./documents.types";
 
 export const documentService = {

@@ -1,0 +1,26 @@
+{
+    "name": "@itcom/db",
+    "version": "1.0.0",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "exports": {
+        "./schema": "./src/schema.ts",
+        "./client": "./src/client.ts"
+    },
+    "scripts": {
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "drizzle-orm": "^0.45.1",
+        "drizzle-zod": "^0.8.3",
+        "pg": "^8.16.3",
+        "zod": "^4.2.1",
+        "dotenv": "^17.2.3"
+    },
+    "devDependencies": {
+        "drizzle-kit": "^0.31.8",
+        "@types/node": "^22",
+        "@types/pg": "^8.16.0",
+        "typescript": "^5.9.2"
+    }
+}

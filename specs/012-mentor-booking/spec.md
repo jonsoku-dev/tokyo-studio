@@ -164,10 +164,10 @@ Users in different timezones need to schedule sessions without confusion about m
 - **FR-016**: System MUST send reminder notifications 10 minutes before session start time
 - **FR-017**: System MUST store all session times in UTC and convert to local timezone for display
 - **FR-018**: System MUST prevent users from booking overlapping sessions at the same time
-- **FR-019**: Confirmation emails MUST include .ics calendar file attachment with proper timezone information [NEEDS CLARIFICATION: Which calendar format versions to support - iCalendar 2.0, older versions?]
-- **FR-020**: System MUST [NEEDS CLARIFICATION: What payment provider integration is required? Stripe, PayPal, other? What payment methods - credit card, digital wallets?]
-- **FR-021**: System MUST [NEEDS CLARIFICATION: What video call platform integration? Zoom, Google Meet, custom solution? How are call links generated?]
-- **FR-022**: System MUST [NEEDS CLARIFICATION: How are mentors onboarded? Is there an application/approval process? Who sets availability?]
+- **FR-019**: Confirmation emails MUST include .ics calendar file attachment (iCalendar 2.0 format) with proper timezone information.
+- **FR-020**: System MUST provide a mock payment gateway for MVP (simulating Stripe) accepting test credit card numbers.
+- **FR-021**: System MUST generate a unique video call link for each session (using a placeholder Google Meet URL format `https://meet.google.com/abc-def-ghi` for MVP).
+- **FR-022**: System MUST seed initial mentor data via a script. Mentor onboarding workflow is out of scope for this feature; focus is on User Booking flow.
 
 ### Key Entities
 

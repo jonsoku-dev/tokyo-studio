@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "~/shared/db/client.server";
-import { tasks } from "~/shared/db/schema";
+import { db } from "@itcom/db/client";
+import { tasks } from "@itcom/db/schema";
 import type { DashboardTask, JobRecommendation } from "./dashboard.types";
 
 const MOCK_JOBS: JobRecommendation[] = [
@@ -30,8 +30,11 @@ export const dashboardService = {
 			id: t.id,
 			title: t.title,
 			description: t.description,
+			// biome-ignore lint/suspicious/noExplicitAny: Temporary cast
 			category: t.category as any, // In real app, validate enum
+			// biome-ignore lint/suspicious/noExplicitAny: Temporary cast
 			status: t.status as any,
+			// biome-ignore lint/suspicious/noExplicitAny: Temporary cast
 			priority: t.priority as any,
 			dueDate: t.dueDate || undefined,
 		}));

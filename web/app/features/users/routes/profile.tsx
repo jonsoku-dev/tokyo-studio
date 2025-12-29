@@ -4,8 +4,8 @@ import { requireUserId } from "~/features/auth/utils/session.server";
 import { Shell } from "~/shared/components/layout/Shell";
 import { Button } from "~/shared/components/ui/Button";
 import { Input } from "~/shared/components/ui/Input";
-import { db } from "~/shared/db/client.server";
-import { profiles, users } from "~/shared/db/schema";
+import { db } from "@itcom/db/client";
+import { profiles, users } from "@itcom/db/schema";
 import { AvatarUpload } from "../components/AvatarUpload";
 import type { Route } from "./+types/profile";
 
@@ -170,6 +170,14 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 										className="text-sm font-medium text-orange-600 hover:text-orange-500"
 									>
 										Manage Privacy Settings &rarr;
+									</Link>
+								</div>
+								<div className="sm:col-span-2">
+									<Link
+										to="/mentoring/settings"
+										className="text-sm font-medium text-orange-600 hover:text-orange-500"
+									>
+										Manage Mentor Settings &rarr;
 									</Link>
 								</div>
 							</dl>

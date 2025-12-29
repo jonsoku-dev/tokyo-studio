@@ -1,7 +1,7 @@
 import { ArrowRight, Award, Briefcase, CheckCircle, Globe } from "lucide-react";
 import { Link } from "react-router";
 import { Shell } from "~/shared/components/layout/Shell";
-import type { SelectProfile } from "~/shared/db/schema";
+import type { SelectProfile } from "@itcom/db/schema";
 import { requireUserId } from "../../auth/utils/session.server";
 import { diagnosisService } from "../domain/diagnosis.service.server";
 import type { Route } from "./+types/result";

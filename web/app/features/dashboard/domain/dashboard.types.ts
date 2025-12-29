@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { selectTaskSchema } from "~/shared/db/schema";
+import { selectTaskSchema } from "@itcom/db/schema";
 
 // Extend or pick fields from generated schema
 export const DashboardTaskSchema = selectTaskSchema

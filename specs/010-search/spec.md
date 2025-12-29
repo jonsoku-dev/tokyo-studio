@@ -161,3 +161,42 @@ Users benefit from improved search relevance over time as the system learns from
 - **SC-010**: Zero SQL injection or XSS vulnerabilities in search functionality (verified through security testing)
 - **SC-011**: Search index stays synchronized with database changes with less than 2 seconds of lag
 - **SC-012**: System handles at least 100 concurrent search requests without performance degradation
+
+## Technical Specifications
+
+### Database Schema
+- **Table**: `community_posts`
+- **New Column**: `search_vector` (type: `tsvector`) - Stores lexemes from `title` and `content`.
+- **Index**: `idx_community_posts_search` (type: `GIN`) on `search_vector` for fast full-text search.
+- **Trigger**: `tsvector_update_trigger` to automatically update `search_vector` when `title` or `content` changes.
+    - Configuration: `pg_catalog.english` (or simple/combined if multilingual support is prioritized later).
+
+### API Design
+- **GET /api/search**
+    - **Query Params**:
+        - `q` (string): The search query.
+        - `category` (optional enum): Filter by category (`review`, `qna`, `general`).
+        - `time` (optional enum): Filter by time range (`week`, `month`, `year`, `all`).
+        - `sort` (optional enum): `relevance` (default) or `newest`.
+    - **Response**: JSON list of `SearchResult` (id, title, excerpt, author, date, category).
+
+- **GET /api/search/suggestions**
+    - **Query Params**:
+        - `q` (string): Partial query (min 2 chars).
+    - **Response**: JSON list of strings (suggested titles or phrases).
+
+### UI Architecture
+- **Components**:
+    - `SearchBar`: Client component with debounced text input and popover for suggestions.
+    - `SearchResults`: List component to display matching posts with highlighted excerpts.
+    - `SearchFilters`: Faceted filter controls (sidebar or toolbar).
+- **Route**:
+    - `app/features/community/routes/community.search.tsx`: Dedicated search results page (or modal overlay).
+- **Libraries**:
+    - `cmdk` or custom simple list for autocomplete.
+    - `useFetcher` for search execution without navigation (for suggestions).
+
+### Search Logic
+- **Ranking**: `ts_rank(search_vector, query)` to order by relevance.
+- **Highlighting**: `ts_headline` to generate snippets with `<b>` tags around match terms.
+- **Language**: Default to 'english' configuration for MVP; consider 'simple' for mixed CJK/English content if Postgres parsers allow.

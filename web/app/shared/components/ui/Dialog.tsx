@@ -99,3 +99,34 @@ export function DialogTitle({
 		</HeadlessDialogTitle>
 	);
 }
+
+export function DialogDescription({
+	className,
+	children,
+}: {
+	className?: string;
+	children: ReactNode;
+}) {
+	return (
+		<div className={cn("text-sm text-gray-500", className)}>{children}</div>
+	);
+}
+
+export function DialogFooter({
+	className,
+	children,
+}: {
+	className?: string;
+	children: ReactNode;
+}) {
+	return (
+		<div
+			className={cn(
+				"mt-6 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+				className,
+			)}
+		>
+			{children}
+		</div>
+	);
+}

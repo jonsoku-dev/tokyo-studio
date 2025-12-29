@@ -26,9 +26,21 @@ export async function action({ request }: Route.ActionArgs) {
 
 	try {
 		const hashedPassword = await bcrypt.hash(result.data.password, 10);
+
+		// Extract request metadata for security notification (SPEC 003 FR-010)
+		const ipAddress =
+			request.headers.get("x-forwarded-for") ||
+			request.headers.get("x-real-ip") ||
+			"Unknown";
+		const userAgent = request.headers.get("user-agent") || "";
+
 		await passwordResetService.completePasswordReset(
 			result.data.token,
 			hashedPassword,
+			{
+				ipAddress,
+				userAgent,
+			},
 		);
 		return { success: true };
 	} catch (error: unknown) {

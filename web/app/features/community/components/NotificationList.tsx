@@ -1,0 +1,132 @@
+import { formatDistanceToNow } from "date-fns";
+import { Bell } from "lucide-react";
+import { Link, useFetcher } from "react-router";
+import { Avatar } from "~/shared/components/ui/Avatar";
+import { Button } from "~/shared/components/ui/Button";
+import { cn } from "~/shared/utils/cn";
+import type { NotificationWithData } from "../services/types";
+
+interface NotificationListProps {
+	notifications: NotificationWithData[];
+}
+
+export function NotificationList({ notifications }: NotificationListProps) {
+	const fetcher = useFetcher();
+
+	if (notifications.length === 0) {
+		return (
+			<div className="text-center py-8 text-gray-500">
+				<Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
+				No notifications
+			</div>
+		);
+	}
+
+	return (
+		<div className="space-y-4">
+			<div className="flex justify-between items-center mb-2 px-2">
+				<h3 className="font-semibold text-gray-900">Notifications</h3>
+				<fetcher.Form method="POST" action="/api/notifications">
+					<input type="hidden" name="intent" value="markAllRead" />
+					<Button
+						variant="ghost"
+						size="sm"
+						type="submit"
+						className="text-xs h-7"
+					>
+						Mark all read
+					</Button>
+				</fetcher.Form>
+			</div>
+
+			<div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
+				{notifications.map((notification) => (
+					<NotificationItem key={notification.id} notification={notification} />
+				))}
+			</div>
+		</div>
+	);
+}
+
+function NotificationItem({
+	notification,
+}: {
+	notification: NotificationWithData;
+}) {
+	const fetcher = useFetcher();
+	const isRead = notification.read; // Optimistic update if needed via fetcher.submission but complex for list
+
+	// Construct link
+	let href = "#";
+	let text = "";
+
+	if (notification.type === "reply") {
+		href = `/community/${notification.comment.postId}#comment-${notification.commentId}`; // Need anchor support in CommentItem
+		text = `replied to your comment: "${notification.comment.content.slice(0, 30)}..."`;
+	} else if (notification.type === "mention") {
+		href = `/community/${notification.comment.postId}#comment-${notification.commentId}`;
+		text = `mentioned you: "${notification.comment.content.slice(0, 30)}..."`;
+	}
+
+	const handleRead = () => {
+		if (!isRead) {
+			fetcher.submit(
+				{ intent: "markRead", id: notification.id },
+				{ method: "POST", action: "/api/notifications" },
+			);
+		}
+	};
+
+	return (
+		<div
+			className={cn(
+				"p-3 rounded-lg flex gap-3 text-sm transition-colors",
+				isRead ? "bg-white" : "bg-orange-50",
+			)}
+		>
+			<Avatar
+				src={
+					notification.actor.avatarThumbnailUrl ||
+					notification.actor.avatarUrl ||
+					undefined
+				}
+				alt={notification.actor.name}
+				className="h-8 w-8 flex-shrink-0"
+			/>
+			<div className="flex-1 min-w-0">
+				<p className="text-gray-900">
+					<span className="font-semibold">{notification.actor.name}</span>{" "}
+					{text}
+				</p>
+				<div className="flex justify-between items-center mt-1">
+					<span className="text-xs text-gray-500">
+						{notification.createdAt
+							? formatDistanceToNow(new Date(notification.createdAt), {
+									addSuffix: true,
+								})
+							: ""}
+					</span>
+					<Link
+						to={href}
+						onClick={handleRead}
+						className="text-xs font-medium text-orange-600 hover:text-orange-700"
+					>
+						View
+					</Link>
+				</div>
+			</div>
+			{!isRead && (
+				<div className="flex flex-col justify-center">
+					<button
+						type="button"
+						onClick={handleRead}
+						title="Mark as read"
+						className="text-orange-400 hover:text-orange-600"
+					>
+						<div className="h-2 w-2 rounded-full bg-orange-500" />
+					</button>
+				</div>
+			)}
+		</div>
+	);
+}

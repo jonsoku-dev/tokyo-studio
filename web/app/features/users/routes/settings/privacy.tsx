@@ -3,8 +3,8 @@ import { useFetcher } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { Shell } from "~/shared/components/layout/Shell";
 import { Button } from "~/shared/components/ui/Button";
-import { db } from "~/shared/db/client.server";
-import { profilePrivacySettings } from "~/shared/db/schema";
+import { db } from "@itcom/db/client";
+import { profilePrivacySettings } from "@itcom/db/schema";
 import type { Route } from "./+types/privacy";
 
 export async function loader({ request }: Route.LoaderArgs) {

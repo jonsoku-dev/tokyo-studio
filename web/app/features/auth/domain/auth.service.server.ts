@@ -2,8 +2,8 @@ import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { emailService } from "~/features/auth/services/email.server";
 import { createVerificationToken } from "~/features/auth/services/email-verification.server";
-import { db } from "~/shared/db/client.server";
-import { users } from "~/shared/db/schema";
+import { db } from "@itcom/db/client";
+import { users } from "@itcom/db/schema";
 import type { AuthResponse, LoginDTO, SignupDTO, User } from "./auth.types";
 
 export const authService = {
@@ -14,7 +14,11 @@ export const authService = {
 			.where(eq(users.email, credentials.email))
 			.limit(1);
 
-		if (!user || !(await bcrypt.compare(credentials.password, user.password))) {
+		if (
+			!user ||
+			!user.password ||
+			!(await bcrypt.compare(credentials.password, user.password))
+		) {
 			throw new Error("Invalid credentials");
 		}
 

@@ -1,5 +1,6 @@
 import { Menu, Search, User } from "lucide-react";
 import { Link } from "react-router";
+import { NotificationsPopover } from "~/features/community/components/NotificationsPopover";
 import { Button } from "~/shared/components/ui/Button";
 
 export function Navbar() {
@@ -37,6 +38,11 @@ export function Navbar() {
 				</div>
 
 				<div className="flex items-center gap-2">
+					{/* Notifications (Desktop) */}
+					<div className="hidden md:block">
+						<NotificationsPopover />
+					</div>
+
 					<Link to="/login">
 						<Button
 							variant="secondary"
@@ -54,6 +60,7 @@ export function Navbar() {
 					<button type="button" className="md:hidden p-1 text-gray-700">
 						<Search className="w-6 h-6" />
 					</button>
+					{/* Mobile Notification potentially or just in menu */}
 					<button type="button" className="md:hidden p-1 text-gray-700">
 						<User className="w-6 h-6" />
 					</button>

@@ -41,8 +41,31 @@ export function Layout({ children }: { children: React.ReactNode }) {
 	);
 }
 
-export default function App() {
-	return <Outlet />;
+import { VerificationBanner } from "~/features/auth/components/VerificationBanner";
+import { getUserFromRequest } from "~/features/auth/services/require-verified-email.server";
+import { NotificationPermissionPrompt } from "~/features/notifications/components/NotificationPermissionPrompt";
+
+export async function loader({ request }: Route.LoaderArgs) {
+	const user = await getUserFromRequest(request);
+
+	return {
+		ENV: {
+			VAPID_PUBLIC_KEY: process.env.VAPID_PUBLIC_KEY,
+		},
+		user,
+	};
+}
+
+export default function App({ loaderData }: Route.ComponentProps) {
+	const { user } = loaderData;
+
+	return (
+		<>
+			{user && <VerificationBanner user={user} />}
+			<Outlet />
+			<NotificationPermissionPrompt />
+		</>
+	);
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

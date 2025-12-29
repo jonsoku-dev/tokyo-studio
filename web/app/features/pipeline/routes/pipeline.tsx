@@ -22,6 +22,7 @@ export async function action({ request }: { request: Request }) {
 	const stage = String(formData.get("stage"));
 
 	// Validation could go here
+	// biome-ignore lint/suspicious/noExplicitAny: Temporary cast until types are aligned
 	await pipelineService.updateItemStatus(id, stage as any);
 	return null;
 }

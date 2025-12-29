@@ -11,24 +11,54 @@ export function meta() {
 
 export async function loader({ request }: { request: Request }) {
 	await requireUserId(request);
-	const posts = await communityService.getPosts();
-	return { posts };
+	const url = new URL(request.url);
+	const sortBy =
+		(url.searchParams.get("sort") as "best" | "recent") || "recent";
+	const posts = await communityService.getPosts(undefined, sortBy);
+	return { posts, sortBy };
 }
 
 export default function Community() {
-	const { posts } = useLoaderData<{ posts: CommunityPost[] }>();
+	const { posts, sortBy } = useLoaderData<{
+		posts: CommunityPost[];
+		sortBy: "best" | "recent";
+	}>();
 
 	return (
 		<Shell>
 			<div className="space-y-4">
 				<div className="flex items-center justify-between">
 					<h1 className="text-2xl font-bold text-gray-900">Community</h1>
-					<Link
-						to="/community/new"
-						className="px-4 py-2 bg-orange-600 text-white rounded-md text-sm font-medium hover:bg-orange-700"
-					>
-						Write Post
-					</Link>
+					<div className="flex items-center space-x-4">
+						<div className="flex bg-gray-100 rounded-lg p-1">
+							<Link
+								to="?sort=recent"
+								className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
+									sortBy === "recent"
+										? "bg-white text-gray-900 shadow-sm"
+										: "text-gray-500 hover:text-gray-700"
+								}`}
+							>
+								Recent
+							</Link>
+							<Link
+								to="?sort=best"
+								className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
+									sortBy === "best"
+										? "bg-white text-gray-900 shadow-sm"
+										: "text-gray-500 hover:text-gray-700"
+								}`}
+							>
+								Best
+							</Link>
+						</div>
+						<Link
+							to="/community/new"
+							className="px-4 py-2 bg-orange-600 text-white rounded-md text-sm font-medium hover:bg-orange-700"
+						>
+							Write Post
+						</Link>
+					</div>
 				</div>
 
 				<div className="space-y-4">

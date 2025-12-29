@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "~/shared/db/client.server";
-import { profiles } from "~/shared/db/schema";
+import { db } from "@itcom/db/client";
+import { profiles } from "@itcom/db/schema";
 import type { InsertProfile } from "./diagnosis.types";
 
 export const diagnosisService = {

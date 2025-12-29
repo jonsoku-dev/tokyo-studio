@@ -2,39 +2,45 @@
 
 **Feature Branch**: `013-video-links`
 **Created**: 2025-12-28
-**Status**: Draft
-**Input**: User description: "Automatically generate video meeting links (Google Meet, Zoom) for confirmed mentoring sessions. When a session is booked and confirmed, the system should generate a unique meeting link and associate it with the session appointment. Mentors should be able to connect their preferred video conferencing accounts or selection a default option. Both mentor and mentee should receive the link in their confirmation details and calendar invites."
+**Status**: Final
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Google Meet Link Generation (Priority: P1)
+### User Story 1 - Secure Join Proxy (Priority: P0)
 
-When a mentoring session is confirmed, the system automatically generates a unique Google Meet link and saves it to the session record. This removes the manual work of creating and sharing links.
+To ensure safety and analytics, users join meetings through a platform-hosted link (e.g., `/mentoring/session/:id/join`) rather than a direct raw URL.
 
-**Why this priority**: Use frequency for Google Meet is high and API is accessible. Core automation feature.
-
-**Independent Test**: Can be tested by confirming a booking and verifying a `meet.google.com/xxx-xxxx-xxx` link appears in the session details.
-
-**Acceptance Scenarios**:
-
-1. **Given** a mentor has selected Google Meet as preference, **When** a session is confirmed, **Then** a valid Google Meet link is generated
-2. **Given** the link is generated, **When** the scheduled time arrives, **Then** both users can join via the link
-3. **Given** an error generating the link, **When** it fails, **Then** the system falls back to a placeholder and notifies the mentor to provide one manually
-
----
-
-### User Story 2 - Zoom Link Generation (Priority: P2)
-
-Allows mentors who prefer Zoom to have unique Zoom meeting links generated automatically for each session.
-
-**Why this priority**: Platform flexibility for mentors who prefer Zoom's features.
-
-**Independent Test**: Can be tested by connecting a Zoom account and confirming a booking triggers a Zoom link creation.
+**Why this priority**:
+- **Security**: Prevents unauthorized sharing of links (URL is hidden/dynamic until join).
+- **Control**: Allows simple access revocation if session is cancelled.
+- **Analytics**: Tracks "Join" events and attendance.
 
 **Acceptance Scenarios**:
+1. **Given** a confirmed session, **When** user clicks "Join", **Then** system validates user identity and session time.
+2. **Given** validation passes, **Then** system redirects to the actual provider URL (Meet/Zoom/Jitsi).
+3. **Given** session is cancelled, **When** user clicks "Join", **Then** system shows "Session Cancelled" error.
 
-1. **Given** a mentor connected Zoom, **When** booking confirmed, **Then** a Zoom link is created
-2. **Given** Zoom token is expired, **When** booking confirmed, **Then** system prompts mentor to reconnect Zoom
+### User Story 2 - Jitsi Meet Integration (Priority: P1)
+
+As a robust default provider without external API keys, the system supports Jitsi Meet.
+
+**Acceptance Scenarios**:
+1. **Given** no external provider configured, **When** session is booked, **Then** a unique Jitsi link (`meet.jit.si/<uuid>`) is generated.
+
+### User Story 3 - Google Meet / Zoom Links (Priority: P2)
+
+Support for external providers via OAuth integration (Architecture only for MVP).
+
+**Acceptance Scenarios**:
+1. **Given** mentor connected Google, **When** session booked, **Then** Google Meet link is generated (Mocked for now).
+
+### User Story 4 - Manual Meeting URL (Priority: P1)
+
+Mentors can provide a static personal meeting link (e.g., personal Zoom room) if they prefer not to use auto-generation.
+
+**Acceptance Scenarios**:
+1. **Given** mentor selected "Manual" provider and entered a URL, **When** session is booked, **Then** that static URL is used.
+2. **Given** mentor manages settings, **Then** they can toggle between Jitsi, Manual, and other providers.
 
 ---
 
@@ -42,20 +48,28 @@ Allows mentors who prefer Zoom to have unique Zoom meeting links generated autom
 
 ### Functional Requirements
 
-- **FR-001**: System MUST automatically generate a video meeting link upon session confirmation
-- **FR-002**: System MUST support generating links for both Google Meet and Zoom platforms [NEEDS CLARIFICATION: Should mentors choose their preferred platform in their profile, or should the system default to one platform?]
-- **FR-003**: System MUST store the meeting link and associate it with the booking record
-- **FR-004**: System MUST display the meeting link to both mentor and mentee in the session dashboard
-- **FR-005**: System MUST include the meeting link in email/calendar notifications
+- **FR-001**: System MUST support pluggable video providers.
+- **FR-002**: System MUST default to **Jitsi Meet** (free, no-auth) if no other provider is configured.
+- **FR-003**: System MUST provide a secure Proxy Redirect URL (`/join`) instead of exposing raw meeting tokens in the UI.
+- **FR-004**: System MUST validate User ID and Session Status before redirecting.
+- **FR-005**: System MUST store OAuth tokens for external providers (Google/Zoom) securely encrypted (Structure only for MVP).
 
-### Key Entities
+### Database Schema (Additions)
 
-- **MeetingLink**: URL, Platform (Google/Zoom), SessionID, CreatorID
+- **mentor_profiles**:
+    - `preferredVideoProvider`: enum('jitsi', 'google', 'zoom', 'manual') default 'jitsi'
+    - `manualMeetingUrl`: text (optional)
+
+- **user_integrations` (New Table)**:
+    - `userId`: FK users
+    - `provider`: string ('google', 'zoom')
+    - `accessToken`: text (encrypted)
+    - `refreshToken`: text (encrypted)
+    - `expiresAt`: timestamp
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-- **SC-001**: 99% of bookings have a valid video link generated within 5 seconds of confirmation
-- **SC-002**: 30% decrease in "where is the link" support queries
-- **SC-003**: Mentors can connect their video provider account in under 2 minutes
+- **SC-001**: "Join" button works for 100% of confirmed sessions via Redirect.
+- **SC-002**: Default Jitsi links generation success rate > 99%.

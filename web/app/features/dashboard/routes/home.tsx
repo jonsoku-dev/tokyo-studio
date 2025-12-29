@@ -5,11 +5,14 @@ import { requireUserId } from "../../auth/utils/session.server";
 import { JobCard } from "../components/JobCard";
 import { TaskCard } from "../components/TaskCard";
 import { WelcomeHero } from "../components/WelcomeHero";
+import { MentorApplicationStatus } from "../components/MentorApplicationStatus";
 import { dashboardService } from "../domain/dashboard.service.server";
+import { applicationService } from "../../mentoring/services/application.server";
 import type {
 	DashboardTask,
 	JobRecommendation,
 } from "../domain/dashboard.types";
+import type { SelectMentorApplication } from "@itcom/db/schema";
 
 export function meta() {
 	return [
@@ -19,10 +22,11 @@ export function meta() {
 }
 
 export async function loader({ request }: { request: Request }) {
-	await requireUserId(request);
+	const userId = await requireUserId(request);
 	const tasks = await dashboardService.getTasks();
 	const jobs = await dashboardService.getRecommendedJobs();
-	return { tasks, jobs };
+	const mentorApplication = await applicationService.getApplicationStatus(userId);
+	return { tasks, jobs, mentorApplication };
 }
 
 export async function action({ request }: { request: Request }) {
@@ -36,9 +40,10 @@ export async function action({ request }: { request: Request }) {
 }
 
 export default function Home() {
-	const { tasks, jobs } = useLoaderData<{
+	const { tasks, jobs, mentorApplication } = useLoaderData<{
 		tasks: DashboardTask[];
 		jobs: JobRecommendation[];
+		mentorApplication?: SelectMentorApplication | null;
 	}>();
 
 	return (
@@ -46,6 +51,9 @@ export default function Home() {
 			<div className="space-y-6">
 				{/* 3D Welcome Hero */}
 				<WelcomeHero />
+
+				{/* Mentor Application Status Widget */}
+				<MentorApplicationStatus application={mentorApplication} />
 
 				{/* Create Post / Action Bar */}
 				<div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center gap-4">

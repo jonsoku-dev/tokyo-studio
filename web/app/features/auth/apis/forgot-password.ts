@@ -1,12 +1,12 @@
+import type { ActionFunctionArgs } from "react-router";
 import { z } from "zod";
 import { passwordResetService } from "../services/password-reset.server";
-import type { Route } from "./+types/forgot-password";
 
 const ForgotPasswordSchema = z.object({
 	email: z.string().email("Invalid email address"),
 });
 
-export async function action({ request }: Route.ActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
 	const formData = await request.formData();
 	const email = String(formData.get("email"));
 

@@ -1,26 +1,29 @@
-import { nanoid } from "nanoid";
+import { data } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
-import { storageService } from "~/shared/services/storage.server";
+import { storageService } from "~/features/storage/services/storage.server";
 import type { Route } from "./+types/presigned";
 
 export async function loader({ request }: Route.LoaderArgs) {
-	await requireUserId(request); // Protect route
-
+	const userId = await requireUserId(request);
 	const url = new URL(request.url);
 	const filename = url.searchParams.get("filename");
-	const contentType = url.searchParams.get("contentType");
+	const mimeType = url.searchParams.get("type");
+	const size = Number(url.searchParams.get("size"));
 
-	if (!filename || !contentType) {
-		throw new Response("Missing filename or contentType", { status: 400 });
+	if (!filename || !mimeType || !size) {
+		throw data({ error: "Missing parameters" }, { status: 400 });
 	}
 
-	const ext = filename.split(".").pop();
-	const key = `uploads/${nanoid()}.${ext}`;
-
-	const { uploadUrl, publicUrl } = await storageService.getPresignedUrl(
-		key,
-		contentType,
-	);
-
-	return { uploadUrl, publicUrl, key };
+	try {
+		const presigned = await storageService.generatePresignedUrl(
+			userId,
+			filename,
+			mimeType,
+			size,
+		);
+		return presigned;
+	} catch (error: unknown) {
+		const message = error instanceof Error ? error.message : "Unknown error";
+		throw data({ error: message }, { status: 400 });
+	}
 }

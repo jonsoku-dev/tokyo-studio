@@ -4,7 +4,7 @@ import { Form, Link, redirect, useNavigation } from "react-router";
 import { Shell } from "~/shared/components/layout/Shell";
 import { Button } from "~/shared/components/ui/Button";
 import { Input } from "~/shared/components/ui/Input";
-import { requireUserId } from "../../auth/utils/session.server";
+import { requireVerifiedEmail } from "../../auth/services/require-verified-email.server";
 import { MarkdownEditor } from "../components/MarkdownEditor";
 import { communityService } from "../domain/community.service.server";
 import { CreateCommunityPostSchema } from "../domain/community.types";
@@ -15,12 +15,12 @@ export function meta() {
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
-	await requireUserId(request);
+	await requireVerifiedEmail(request);
 	return {};
 }
 
 export async function action({ request }: Route.ActionArgs) {
-	const userId = await requireUserId(request);
+	const user = await requireVerifiedEmail(request);
 	const formData = await request.formData();
 	const title = String(formData.get("title"));
 	const content = String(formData.get("content"));
@@ -30,7 +30,7 @@ export async function action({ request }: Route.ActionArgs) {
 		title,
 		content,
 		category,
-		authorId: userId,
+		authorId: user.id,
 	});
 
 	if (!result.success) {

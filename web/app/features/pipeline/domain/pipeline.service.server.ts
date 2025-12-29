@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "~/shared/db/client.server";
-import { pipelineItems } from "~/shared/db/schema";
+import { db } from "@itcom/db/client";
+import { pipelineItems } from "@itcom/db/schema";
 import type { PipelineItem, PipelineStatus } from "./pipeline.types";
 
 export const pipelineService = {

@@ -22,6 +22,7 @@ pnpm run typegen
 *   **Zero-Error Policy**: `lint`, `typecheck`, `build` must pass after every significant step.
 *   **Strict Feature Architecture**: Code must be organized by feature (`features/auth`, `features/dashboard`).
 *   **Strict Routing**: Routes must be defined in `routes.ts` pointing to feature directories.
+    *   **NO FILES IN `app/routes/`**: Do NOT create files in `app/routes/` directory. All route files must be located in `features/*/routes` or `features/*/apis`.
 *   **API/Page Separation**: APIs must be in `features/*/apis`, Pages in `features/*/routes`.
     *   **Prefix**: API routes must start with `api/` (e.g., `api/auth/google`).
     *   **Order**: Pages first, APIs second in `routes.ts`.
@@ -62,8 +63,11 @@ pnpm run typegen
 *   `web/`: User-facing application (Remix/RR7)
     *   `app/features/`: Feature-based modules (auth, dashboard, pipeline, etc.)
     *   `app/shared/`: Shared components and utilities
-    *   `app/db/`: Database schema and connection
-*   `admin/`: Admin dashboard (separate project, TBD, but same tech stack and rules with web project)
+*   `admin/`: Admin dashboard (Remix/RR7)
+    *   `app/features/`: Feature-based modules (aligned with web)
+    *   `app/shared/`: Shared components and utilities
+*   `packages/`: Shared Workspace Packages
+    *   `database/`: Drizzle Schema & Client (`@itcom/db`)
 *   `docs/`: Project documentation and specifications
 *   `specs/`: Detailed Feature Specifications (Single Source of Truth for Logic)
 *   `designs/`: Design references and analysis

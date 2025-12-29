@@ -1,5 +1,127 @@
-# Feature Specification: Mentor Application Workflow
+# Feature Specification: Mentor Application Workflow (Production Level)
 
+**Feature Branch**: `015-mentor-application`
+**Status**: **Approved**
+**Priority**: High
+
+## 1. Overview
+Allows users to apply to become mentors. This is a critical funnel for platform supply.
+The workflow includes: **Application Submission -> Admin Review (Queue) -> Approve/Reject -> Role Update**.
+
+### Production Improvements
+- **Secure Storage**: Verification documents (ID/Payslip) must be stored in private S3 buckets (not public `public/` folder).
+- **Audit Logging**: All admin actions (Approve/Reject) must be logged in `admin_audit_logs`.
+- **Role-Based Access**: Strict middleware protection for Admin routes.
+- **Email Reliability**: Transactional emails for status changes.
+
+## 2. User Stories
+
+### Story 1: Applicant Submission
+**As a** User,
+**I want to** apply to be a mentor,
+**So that** I can share my expertise and earn money.
+
+**Acceptance Criteria**:
+- [ ] Complete profile check (Avatar, Name must exist).
+- [ ] Form: Job Title, Company, Experience (Years), Expertise (Tags), Bio, Links.
+- [ ] **Document Upload**: Secure upload of ID/Proof.
+- [ ] Validation: Prevents duplicate pending applications.
+
+### Story 2: Admin Review Queue
+**As an** Admin,
+**I want to** view pending applications,
+**So that** I can vet reliability.
+
+**Acceptance Criteria**:
+- [ ] Dashboard Route: `/admin/mentors/applications`.
+- [ ] List View: Sort by Date, Status filter.
+- [ ] Detail View: View Profile + Secure Document Link (Signed URL).
+- [ ] Action: Approve (Promote to Mentor) / Reject (Reason required).
+
+### Story 3: Approval/Rejection Flow
+**As a** System,
+**I want to** process decisions atomically,
+**So that** user roles and data remain consistent.
+
+**Acceptance Criteria**:
+- [ ] **Approve**: atomic transaction (Update App Status -> Update User Role -> Create Mentor Profile -> Send Email).
+- [ ] **Reject**: atomic transaction (Update App Status -> Log Reason -> Send Email).
+
+## 3. Technical Specs
+
+### Database Schema (PostgreSQL)
+
+```typescript
+// app/shared/db/schema.ts
+
+export const mentorApplications = pgTable("mentor_applications", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").references(() => users.id).notNull(),
+  
+  // Professional Info
+  jobTitle: text("job_title").notNull(),
+  company: text("company").notNull(),
+  yearsOfExperience: integer("years_of_experience").notNull(),
+  linkedinUrl: text("linkedin_url"),
+  bio: text("bio").notNull(),
+  
+  // JSON Fields
+  expertise: jsonb("expertise").$type<string[]>().notNull(), // e.g. ["Frontend", "React"]
+  languages: jsonb("languages").$type<string[]>().notNull(), // e.g. ["Korean", "Japanese"]
+  
+  // Verification
+  verificationFileUrl: text("verification_file_url").notNull(), // S3 Key (Private)
+  
+  // Status
+  status: text("status").default("pending").notNull(), // "pending", "approved", "rejected"
+  rejectionReason: text("rejection_reason"),
+  reviewedBy: uuid("reviewed_by").references(() => users.id),
+  reviewedAt: timestamp("reviewed_at"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Admin Audit Log (Reuse or Create New)
+export const adminAuditLogs = pgTable("admin_audit_logs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  adminId: uuid("admin_id").references(() => users.id).notNull(),
+  action: text("action").notNull(), // "mentor_approve", "mentor_reject"
+  targetId: uuid("target_id").notNull(), // Application ID
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+```
+
+### API Routes & Logic
+
+1.  **POST /api/upload/verification**
+    *   Use `Presigned URL` upload or direct server upload to **Private** bucket.
+    *   Start with `FileAPI` (Server stores to `storage/private` if local, S3 if prod).
+    *   **Rule**: Files must NOT be accessible via public URL.
+
+2.  **POST /mentoring/apply**
+    *   Form submission.
+    *   Validate input (Zod).
+
+3.  **GET /admin/applications**
+    *   Require `user.role === 'admin'`.
+
+4.  **POST /admin/applications/:id/decision**
+    *   Action: `approve` | `reject`.
+    *   Transactional update.
+
+### Security
+- **RBAC**: `requireAdmin(request)` middleware.
+- **Rate Limit**: 1 application per user per 30 days (if rejected).
+
+## 4. Work Breakdown
+
+1.  **Schema & DB**: Add tables.
+2.  **Admin Layout**: Create `/admin` root layout with role check.
+3.  **Application Form**: `/mentoring/apply` (User facing).
+4.  **Admin Dashboard**: `/admin/applications` (List & Detail).
+5.  **Actions**: Approval/Rejection logic + Email.
 **Feature Branch**: `015-mentor-application`
 **Created**: 2025-12-28
 **Status**: Draft

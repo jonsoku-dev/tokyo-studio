@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "~/shared/db/client.server";
-import { mentorAvailability, mentors } from "~/shared/db/schema";
+import { db } from "@itcom/db/client";
+import { mentorAvailability, mentors } from "@itcom/db/schema";
 
 export const mentorService = {
 	async getMentorByUserId(userId: string) {

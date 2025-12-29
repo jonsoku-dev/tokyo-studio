@@ -1,6 +1,6 @@
 # Feature Specification: Tokyo Settlement Checklist
 
-**Feature Branch**: `007-settlement-checklist`
+**Feature Branch**: `019-settlement-checklist`
 **Created**: 2025-12-28
 **Status**: Draft
 **Input**: Build a Tokyo settlement guide with a personalized checklist based on arrival date. Users enter their planned arrival date in Tokyo and the system generates a timeline with tasks organized into Before Arrival (1-3 months before), First Week, First Month, and First 3 Months. Each task includes a title, detailed instructions in both Korean and Japanese, required documents, estimated time to complete, and important deadlines. Example tasks include applying for visa, booking temporary housing, registering at city hall, opening a bank account, getting a phone number, applying for residence card, joining national health insurance, and setting up utilities. The system displays a countdown showing days until arrival and highlights urgent tasks in red. Users check off completed tasks and the system calculates progress percentage. Tasks include helpful tips like "Bring your passport, residence card application, and employment contract" with links to downloadable form templates.

@@ -1,6 +1,12 @@
 import { data } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { avatarService } from "../services/avatar.server";
+import { checkAvatarUploadRateLimit } from "../services/avatar-rate-limiter.server";
+import {
+	logAvatarChange,
+	getIpAddressFromRequest,
+	getUserAgentFromRequest,
+} from "../services/avatar-logger.server";
 import type { Route } from "./+types/avatar";
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -9,12 +15,38 @@ export async function action({ request }: Route.ActionArgs) {
 	const userId = await requireUserId(request);
 
 	if (request.method === "DELETE") {
-		await avatarService.deleteAvatar(userId);
-		return { success: true };
+		try {
+			const currentUser = await avatarService.deleteAvatar(userId);
+			logAvatarChange(
+				{
+					userId,
+					action: "deleted",
+					previousUrl: currentUser?.avatarUrl || undefined,
+				},
+				request,
+			);
+			return { success: true };
+		} catch (error: unknown) {
+			console.error("Avatar deletion error:", error);
+			const message =
+				error instanceof Error ? error.message : "Failed to delete avatar";
+			return data({ error: message }, { status: 500 });
+		}
 	}
 
 	if (request.method === "POST") {
 		try {
+			// Check rate limit
+			const rateLimitCheck = checkAvatarUploadRateLimit(userId);
+			if (!rateLimitCheck.allowed) {
+				return data(
+					{
+						error: `Rate limit exceeded. Please try again in ${rateLimitCheck.retryAfter} seconds.`,
+					},
+					{ status: 429 },
+				);
+			}
+
 			const formData = await request.formData();
 			const file = formData.get("file") as File;
 
@@ -27,9 +59,26 @@ export async function action({ request }: Route.ActionArgs) {
 			}
 
 			const buffer = Buffer.from(await file.arrayBuffer());
-			const avatarUrl = await avatarService.uploadAvatar(userId, buffer);
+			const { avatarUrl, avatarThumbnailUrl } =
+				await avatarService.uploadAvatar(userId, buffer);
 
-			return { success: true, avatarUrl };
+			// Log the successful upload
+			logAvatarChange(
+				{
+					userId,
+					action: "uploaded",
+					newUrl: avatarUrl,
+					fileSize: file.size,
+				},
+				request,
+			);
+
+			return {
+				success: true,
+				avatarUrl,
+				avatarThumbnailUrl,
+				remaining: rateLimitCheck.remaining,
+			};
 		} catch (error: unknown) {
 			console.error("Avatar upload error:", error);
 			const message =

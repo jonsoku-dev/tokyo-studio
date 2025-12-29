@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { selectPipelineItemSchema } from "~/shared/db/schema";
+import { selectPipelineItemSchema } from "@itcom/db/schema";
 
 // MVP Statuses
 export const PipelineStatusEnum = z.enum([

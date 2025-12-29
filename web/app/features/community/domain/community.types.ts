@@ -4,7 +4,7 @@ import {
 	selectCommunityCommentSchema,
 	selectCommunityPostSchema,
 	selectUserSchema,
-} from "~/shared/db/schema";
+} from "@itcom/db/schema";
 
 export const CommunityPostSchema = selectCommunityPostSchema.pick({
 	id: true,
@@ -42,10 +42,16 @@ export type CommunityPost = z.infer<typeof CommunityPostSchema> & {
 	_count?: {
 		comments: number;
 	};
+	score?: number;
+	upvotes?: number;
+	downvotes?: number;
+	userVote?: number; // 0, 1, -1
 };
 
 export type CreateCommunityPostDTO = z.infer<typeof CreateCommunityPostSchema>;
 
 export type CommunityComment = z.infer<typeof CommunityCommentSchema> & {
 	author?: Author | null;
+	score?: number;
+	userVote?: number;
 };

@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Link, useFetcher } from "react-router";
 import { Shell } from "~/shared/components/layout/Shell";
 import { Button } from "~/shared/components/ui/Button";
 import { Input } from "~/shared/components/ui/Input";
+import { PasswordStrengthIndicator } from "../components/PasswordStrengthIndicator";
 import { passwordResetService } from "../services/password-reset.server";
 import type { Route } from "./+types/reset-password";
 
@@ -26,6 +28,7 @@ export default function ResetPassword({ loaderData }: Route.ComponentProps) {
 	const { valid, error, token } = loaderData;
 	const { Form: FetcherForm, data, state } = useFetcher();
 	const isSubmitting = state === "submitting";
+	const [password, setPassword] = useState("");
 
 	// If token is invalid from basic checks
 	if (!valid) {
@@ -89,18 +92,20 @@ export default function ResetPassword({ loaderData }: Route.ComponentProps) {
 							)}
 
 							<div className="space-y-4">
-								<Input
-									id="password"
-									name="password"
-									type="password"
-									label="New Password"
-									autoComplete="new-password"
-									required
-									className="h-11"
-								/>
-								<p className="text-xs text-gray-500 mt-1">
-									Min 8 chars, 1 uppercase, 1 lowercase, 1 number
-								</p>
+								<div>
+									<Input
+										id="password"
+										name="password"
+										type="password"
+										label="New Password"
+										autoComplete="new-password"
+										required
+										className="h-11"
+										value={password}
+										onChange={(e) => setPassword(e.target.value)}
+									/>
+									<PasswordStrengthIndicator password={password} />
+								</div>
 								{/* Could add confirm password for UX, but spec FR-005 strictly lists strength requirements */}
 							</div>
 

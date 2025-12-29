@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
-import { db } from "~/shared/db/client.server";
-import { payments } from "~/shared/db/schema";
+import { db } from "@itcom/db/client";
+import { payments } from "@itcom/db/schema";
 
 const TOSS_SECRET_KEY =
 	process.env.TOSS_SECRET_KEY || "test_sk_zRKbsKXchNyxdOQ1yL338ygwPVGv"; // Fallback to Test Key

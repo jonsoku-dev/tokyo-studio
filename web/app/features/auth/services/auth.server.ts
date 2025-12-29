@@ -1,11 +1,77 @@
+/**
+ * SPEC 001: Social Authentication with Token Storage
+ *
+ * Implements OAuth authentication for Google, GitHub, Kakao, Line
+ * - Stores encrypted access/refresh tokens
+ * - Links accounts by email
+ * - Updates user profile from provider data
+ */
+
+import crypto from "node:crypto";
 import { eq } from "drizzle-orm";
 import { Authenticator } from "remix-auth";
 import { OAuth2Strategy } from "remix-auth-oauth2";
-import { db } from "~/shared/db/client.server";
-import { users } from "~/shared/db/schema";
+import { db } from "@itcom/db/client";
+import { accountProviders, users } from "@itcom/db/schema";
+import { encryptToken } from "~/shared/utils/token-encryption.server";
 
 // Re-export authenticator
 export const authenticator = new Authenticator<string>();
+
+/**
+ * Helper function to store OAuth tokens
+ */
+async function storeOAuthTokens(
+	userId: string,
+	provider: string,
+	providerAccountId: string,
+	tokens: {
+		accessToken: string;
+		refreshToken?: string;
+		expiresIn?: number;
+	},
+) {
+	const expiresAt = tokens.expiresIn
+		? new Date(Date.now() + tokens.expiresIn * 1000)
+		: null;
+
+	// Encrypt tokens before storage
+	const encryptedAccessToken = encryptToken(tokens.accessToken);
+	const encryptedRefreshToken = tokens.refreshToken
+		? encryptToken(tokens.refreshToken)
+		: null;
+
+	// Check if account provider already exists
+	const existing = await db.query.accountProviders.findFirst({
+		where: eq(accountProviders.userId, userId),
+	});
+
+	if (existing) {
+		// Update existing
+		await db
+			.update(accountProviders)
+			.set({
+				accessToken: encryptedAccessToken,
+				refreshToken: encryptedRefreshToken,
+				tokenExpiresAt: expiresAt,
+				lastUsedAt: new Date(),
+			})
+			.where(eq(accountProviders.id, existing.id));
+	} else {
+		// Create new
+		await db.insert(accountProviders).values({
+			id: crypto.randomUUID(),
+			userId,
+			provider,
+			providerAccountId,
+			accessToken: encryptedAccessToken,
+			refreshToken: encryptedRefreshToken,
+			tokenExpiresAt: expiresAt,
+			linkedAt: new Date(),
+			lastUsedAt: new Date(),
+		});
+	}
+}
 
 // --- Google ---
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
@@ -32,17 +98,33 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
 					.select()
 					.from(users)
 					.where(eq(users.googleId, profile.id));
-				if (existingUser) return existingUser.id;
+
+				if (existingUser) {
+					// Store/update tokens
+					await storeOAuthTokens(existingUser.id, "google", profile.id, {
+						accessToken: tokens.accessToken(),
+						refreshToken: tokens.refreshToken?.() || undefined,
+					});
+					return existingUser.id;
+				}
 
 				const [userByEmail] = await db
 					.select()
 					.from(users)
 					.where(eq(users.email, profile.email));
+
 				if (userByEmail) {
 					await db
 						.update(users)
 						.set({ googleId: profile.id })
 						.where(eq(users.id, userByEmail.id));
+
+					// Store tokens
+					await storeOAuthTokens(userByEmail.id, "google", profile.id, {
+						accessToken: tokens.accessToken(),
+						refreshToken: tokens.refreshToken?.() || undefined,
+					});
+
 					return userByEmail.id;
 				}
 
@@ -57,6 +139,13 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
 						emailVerified: new Date(), // Google emails are implicitly verified
 					})
 					.returning();
+
+				// Store tokens
+				await storeOAuthTokens(newUser.id, "google", profile.id, {
+					accessToken: tokens.accessToken(),
+					refreshToken: tokens.refreshToken?.() || undefined,
+				});
+
 				return newUser.id;
 			},
 		),

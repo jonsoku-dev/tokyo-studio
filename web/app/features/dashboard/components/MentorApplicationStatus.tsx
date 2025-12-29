@@ -1,0 +1,144 @@
+import { Link } from "react-router";
+import { CheckCircle2, Clock, AlertCircle, ArrowRight } from "lucide-react";
+import type { SelectMentorApplication } from "@itcom/db/schema";
+
+interface MentorApplicationStatusProps {
+	application?: SelectMentorApplication | null;
+}
+
+export function MentorApplicationStatus({
+	application,
+}: MentorApplicationStatusProps) {
+	if (!application) {
+		return (
+			<Link
+				to="/mentoring/apply"
+				className="block p-4 rounded-xl border border-dashed border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors"
+			>
+				<div className="flex items-center justify-between">
+					<div>
+						<h3 className="font-semibold text-blue-900">Become a Mentor</h3>
+						<p className="text-sm text-blue-700 mt-1">
+							Share your expertise and earn by mentoring others
+						</p>
+					</div>
+					<ArrowRight className="h-5 w-5 text-blue-600 flex-shrink-0" />
+				</div>
+			</Link>
+		);
+	}
+
+	const statusConfig = {
+		pending: {
+			icon: Clock,
+			color: "bg-yellow-50 border-yellow-200",
+			textColor: "text-yellow-900",
+			subColor: "text-yellow-700",
+			badge: "bg-yellow-100 text-yellow-800",
+			message: "Your application is being reviewed",
+		},
+		under_review: {
+			icon: Clock,
+			color: "bg-blue-50 border-blue-200",
+			textColor: "text-blue-900",
+			subColor: "text-blue-700",
+			badge: "bg-blue-100 text-blue-800",
+			message: "Our team is actively reviewing your application",
+		},
+		approved: {
+			icon: CheckCircle2,
+			color: "bg-green-50 border-green-200",
+			textColor: "text-green-900",
+			subColor: "text-green-700",
+			badge: "bg-green-100 text-green-800",
+			message: "Congratulations! You are now a mentor",
+		},
+		rejected: {
+			icon: AlertCircle,
+			color: "bg-red-50 border-red-200",
+			textColor: "text-red-900",
+			subColor: "text-red-700",
+			badge: "bg-red-100 text-red-800",
+			message: application.rejectionReason
+				? `Application rejected: ${application.rejectionReason.substring(0, 100)}...`
+				: "Your application was not approved",
+		},
+		cancelled: {
+			icon: AlertCircle,
+			color: "bg-gray-50 border-gray-200",
+			textColor: "text-gray-900",
+			subColor: "text-gray-700",
+			badge: "bg-gray-100 text-gray-800",
+			message: "Your application was cancelled",
+		},
+	};
+
+	const config = statusConfig[application.status as keyof typeof statusConfig];
+	const Icon = config.icon;
+
+	return (
+		<div
+			className={`p-4 rounded-xl border ${config.color} space-y-3`}
+		>
+			<div className="flex items-start justify-between">
+				<div className="flex items-start gap-3">
+					<Icon className={`h-5 w-5 mt-0.5 ${config.textColor} flex-shrink-0`} />
+					<div>
+						<h3 className={`font-semibold ${config.textColor}`}>
+							Mentor Application
+						</h3>
+						<p className={`text-sm ${config.subColor} mt-1`}>
+							{config.message}
+						</p>
+					</div>
+				</div>
+				<span
+					className={`px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${config.badge}`}
+				>
+					{application.status.replace("_", " ")}
+				</span>
+			</div>
+
+			{application.status === "pending" ||
+			application.status === "under_review" ? (
+				<p className={`text-xs ${config.subColor}`}>
+					Submitted on {new Date(application.createdAt).toLocaleDateString()}
+				</p>
+			) : application.status === "approved" ? (
+				<div className="flex gap-2 pt-2">
+					<Link
+						to="/mentoring/settings"
+						className="text-sm font-medium px-3 py-1.5 rounded-lg bg-green-100 text-green-700 hover:bg-green-200 transition-colors"
+					>
+						Complete Profile
+					</Link>
+				</div>
+			) : application.status === "rejected" ? (
+				(() => {
+					const rejectedDate = new Date(application.rejectedAt || Date.now());
+					const reapplyDate = new Date(
+						rejectedDate.getTime() + 30 * 24 * 60 * 60 * 1000,
+					);
+					const canReapply = new Date() >= reapplyDate;
+
+					return (
+						<div className="space-y-2 pt-2">
+							<p className={`text-xs ${config.subColor}`}>
+								You can reapply on{" "}
+								<strong>{reapplyDate.toLocaleDateString()}</strong>
+							</p>
+							{canReapply && (
+								<Link
+									to="/mentoring/apply"
+									className="text-sm font-medium px-3 py-1.5 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 transition-colors inline-block"
+								>
+									Reapply Now
+								</Link>
+							)}
+						</div>
+					);
+				})()
+			) : null}
+		</div>
+	);
+}

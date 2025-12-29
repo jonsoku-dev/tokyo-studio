@@ -5,6 +5,7 @@ import { useNavigation, useSubmit } from "react-router";
 import { Button } from "~/shared/components/ui/Button";
 
 interface DiagnosisWizardProps {
+	// biome-ignore lint/suspicious/noExplicitAny: Legacy component
 	defaultValues?: any;
 }
 
@@ -23,6 +24,7 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 		targetCity: defaultValues?.targetCity || "Tokyo",
 	});
 
+	// biome-ignore lint/suspicious/noExplicitAny: Legacy component
 	const updateField = (field: string, value: any) => {
 		setFormData((prev) => ({ ...prev, [field]: value }));
 	};
