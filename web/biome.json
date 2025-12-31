@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
@@ -15,7 +15,10 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"nursery": {
+				"useSortedClasses": "warn"
+			}
 		}
 	},
 	"javascript": {
@@ -26,7 +29,8 @@
 	"css": {
 		"parser": {
 			"cssModules": true,
-			"tailwindDirectives": true
+			"tailwindDirectives": true,
+			"allowWrongLineComments": true
 		}
 	},
 	"assist": {

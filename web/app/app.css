@@ -1,16 +1,116 @@
 @import "tailwindcss";
 
+/*
+  =============================================================================
+  Japan IT Job Platform - Design System
+  =============================================================================
+  
+  Brand Identity:
+  - Primary: Professional Blue (Trust, Stability, Tech Industry)
+  - Secondary: Deep Indigo (Sophistication, Premium feel)
+  - Accent: Vibrant Teal (Growth, Fresh start, New opportunities)
+  
+  Philosophy: Extend Tailwind defaults, never reset.
+*/
+
 @theme {
+	/* ==========================================================================
+	   Typography - Font Families
+	   ========================================================================== */
 	--font-sans:
 		"Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
 		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--font-display: "Red Hat Display", "Inter", sans-serif;
+
+	/* ==========================================================================
+	   Brand Colors - Primary (Professional Blue)
+	   Usage: Main CTAs, links, navigation highlights
+	   ========================================================================== */
+	--color-primary-50: oklch(0.97 0.014 243);
+	--color-primary-100: oklch(0.93 0.032 243);
+	--color-primary-200: oklch(0.87 0.065 243);
+	--color-primary-300: oklch(0.79 0.107 243);
+	--color-primary-400: oklch(0.70 0.155 243);
+	--color-primary-500: oklch(0.60 0.190 243);
+	--color-primary-600: oklch(0.52 0.190 243);
+	--color-primary-700: oklch(0.45 0.170 243);
+	--color-primary-800: oklch(0.38 0.140 243);
+	--color-primary-900: oklch(0.32 0.110 243);
+	--color-primary-950: oklch(0.24 0.080 243);
+
+	/* ==========================================================================
+	   Brand Colors - Secondary (Deep Indigo)
+	   Usage: Secondary actions, subtle highlights, headers
+	   ========================================================================== */
+	--color-secondary-50: oklch(0.96 0.018 270);
+	--color-secondary-100: oklch(0.91 0.038 270);
+	--color-secondary-200: oklch(0.84 0.072 270);
+	--color-secondary-300: oklch(0.75 0.110 270);
+	--color-secondary-400: oklch(0.65 0.150 270);
+	--color-secondary-500: oklch(0.55 0.175 270);
+	--color-secondary-600: oklch(0.47 0.175 270);
+	--color-secondary-700: oklch(0.40 0.155 270);
+	--color-secondary-800: oklch(0.34 0.125 270);
+	--color-secondary-900: oklch(0.28 0.095 270);
+	--color-secondary-950: oklch(0.20 0.065 270);
+
+	/* ==========================================================================
+	   Brand Colors - Accent (Vibrant Teal)
+	   Usage: Success states, progress indicators, positive feedback
+	   ========================================================================== */
+	--color-accent-50: oklch(0.96 0.025 175);
+	--color-accent-100: oklch(0.91 0.055 175);
+	--color-accent-200: oklch(0.84 0.095 175);
+	--color-accent-300: oklch(0.75 0.135 175);
+	--color-accent-400: oklch(0.65 0.165 175);
+	--color-accent-500: oklch(0.55 0.180 175);
+	--color-accent-600: oklch(0.47 0.170 175);
+	--color-accent-700: oklch(0.40 0.150 175);
+	--color-accent-800: oklch(0.34 0.120 175);
+	--color-accent-900: oklch(0.28 0.090 175);
+	--color-accent-950: oklch(0.20 0.060 175);
+
+	/* ==========================================================================
+	   Extended Radius Tokens
+	   ========================================================================== */
+	--radius-xl: 0.75rem;
+	--radius-2xl: 1rem;
+	--radius-3xl: 1.5rem;
 }
 
+/* =============================================================================
+   Base Layer - Document Defaults & Dark Mode
+   ============================================================================= */
 html,
 body {
-	@apply bg-white dark:bg-gray-950;
+	@apply bg-white text-gray-950 antialiased;
+	@apply dark:bg-gray-950 dark:text-gray-50;
 
 	@media (prefers-color-scheme: dark) {
 		color-scheme: dark;
+	}
+}
+
+/* =============================================================================
+   Utility Layer - Brand-specific utilities
+   ============================================================================= */
+@layer utilities {
+	/* Focus ring for accessibility */
+	.focus-ring {
+		@apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+		@apply dark:focus:ring-offset-gray-950;
+	}
+
+	/* Brand gradient backgrounds */
+	.bg-brand-gradient {
+		background: linear-gradient(135deg, var(--color-primary-500), var(--color-secondary-500));
+	}
+
+	/* Text gradient for headings */
+	.text-brand-gradient {
+		background: linear-gradient(135deg, var(--color-primary-500), var(--color-accent-500));
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
 	}
 }
