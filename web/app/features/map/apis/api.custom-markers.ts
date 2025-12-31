@@ -72,7 +72,11 @@ export async function getUserCustomMarkers(userId: string) {
 		};
 	} catch (error) {
 		console.error("[Custom Markers API] Get error:", error);
-		return { success: false, error: "커스텀 마커 조회에 실패했습니다", markers: [] };
+		return {
+			success: false,
+			error: "커스텀 마커 조회에 실패했습니다",
+			markers: [],
+		};
 	}
 }
 
@@ -93,8 +97,10 @@ export async function updateCustomMarker(input: UpdateCustomMarkerInput) {
 		const updates: any = {};
 		if (input.name !== undefined) updates.name = input.name;
 		if (input.category !== undefined) updates.category = input.category;
-		if (input.latitude !== undefined) updates.latitude = input.latitude.toString();
-		if (input.longitude !== undefined) updates.longitude = input.longitude.toString();
+		if (input.latitude !== undefined)
+			updates.latitude = input.latitude.toString();
+		if (input.longitude !== undefined)
+			updates.longitude = input.longitude.toString();
 		if (input.notes !== undefined) updates.notes = input.notes;
 
 		const result = await db

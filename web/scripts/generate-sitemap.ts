@@ -20,7 +20,14 @@ const OUTPUT_PATH = join(process.cwd(), "public", "sitemap.xml");
 interface SitemapUrl {
 	loc: string;
 	lastmod?: string;
-	changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
+	changefreq?:
+		| "always"
+		| "hourly"
+		| "daily"
+		| "weekly"
+		| "monthly"
+		| "yearly"
+		| "never";
 	priority?: number;
 }
 
@@ -38,8 +45,13 @@ function generateSitemapXml(urls: SitemapUrl[]): string {
 		.map((url) => {
 			const loc = `<loc>${SITE_URL}${url.loc}</loc>`;
 			const lastmod = url.lastmod ? `<lastmod>${url.lastmod}</lastmod>` : "";
-			const changefreq = url.changefreq ? `<changefreq>${url.changefreq}</changefreq>` : "";
-			const priority = url.priority !== undefined ? `<priority>${url.priority.toFixed(1)}</priority>` : "";
+			const changefreq = url.changefreq
+				? `<changefreq>${url.changefreq}</changefreq>`
+				: "";
+			const priority =
+				url.priority !== undefined
+					? `<priority>${url.priority.toFixed(1)}</priority>`
+					: "";
 
 			return `  <url>
     ${loc}

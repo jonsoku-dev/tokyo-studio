@@ -6,11 +6,7 @@ interface TaskCardProps {
 	isOverlay?: boolean;
 }
 
-export function TaskCard({
-	task,
-	isDragging,
-	isOverlay,
-}: TaskCardProps) {
+export function TaskCard({ task, isDragging, isOverlay }: TaskCardProps) {
 	return (
 		<div
 			className={`

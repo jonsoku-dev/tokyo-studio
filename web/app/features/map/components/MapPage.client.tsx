@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useCallback, useState } from "react";
-import { useMapStore, type MapLocationData } from "../store/map.store";
+import { useCallback, useEffect, useState } from "react";
+import { useUser } from "~/features/auth/hooks/useUser";
+import { type MapLocationData, useMapStore } from "../store/map.store";
+import { LocationPopup } from "./LocationPopup";
 import MapComponent from "./Map.client";
 import MapControls from "./MapControls.client";
-import { LocationPopup } from "./LocationPopup";
-import { useUser } from "~/features/auth/hooks/useUser";
 
 /**
  * 지도 페이지 메인 컴포넌트
@@ -27,9 +27,8 @@ export function MapPage() {
 		getSelectedCategories,
 	} = useMapStore();
 
-	const [filteredLocations, setFilteredLocations] = useState<MapLocationData[]>(
-		locations,
-	);
+	const [filteredLocations, setFilteredLocations] =
+		useState<MapLocationData[]>(locations);
 	const selectedLocation =
 		locations.find((loc) => loc.id === selectedLocationId) || null;
 
@@ -43,13 +42,11 @@ export function MapPage() {
 
 				if (response.ok) {
 					// numeric 타입을 number로 변환
-					const converted = (data.locations || []).map(
-						(loc: any) => ({
-							...loc,
-							latitude: Number(loc.latitude),
-							longitude: Number(loc.longitude),
-						}),
-					);
+					const converted = (data.locations || []).map((loc: any) => ({
+						...loc,
+						latitude: Number(loc.latitude),
+						longitude: Number(loc.longitude),
+					}));
 					setLocations(converted);
 				} else {
 					setError(data.error || "위치 데이터 로드 실패");
@@ -101,9 +98,7 @@ export function MapPage() {
 
 		const categories = getSelectedCategories();
 		if (categories.length > 0) {
-			filtered = filtered.filter((loc) =>
-				categories.includes(loc.category),
-			);
+			filtered = filtered.filter((loc) => categories.includes(loc.category));
 		}
 
 		if (searchQuery) {
@@ -139,10 +134,7 @@ export function MapPage() {
 
 			{/* 지도 */}
 			<div className="flex-1 min-h-0">
-				<MapComponent
-					locations={filteredLocations}
-					isLoading={isLoading}
-				/>
+				<MapComponent locations={filteredLocations} isLoading={isLoading} />
 			</div>
 
 			{/* 마커 정보 팝업 */}

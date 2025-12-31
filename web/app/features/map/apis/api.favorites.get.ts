@@ -1,4 +1,8 @@
-import { data, type LoaderFunctionArgs, type ActionFunctionArgs } from "react-router";
+import {
+	type ActionFunctionArgs,
+	data,
+	type LoaderFunctionArgs,
+} from "react-router";
 import { addFavorite, getUserFavorites, removeFavorite } from "./api.favorites";
 
 export async function loader({ request }: LoaderFunctionArgs) {

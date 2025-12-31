@@ -1,6 +1,6 @@
 import { db } from "@itcom/db/client";
 import { mapLocations } from "@itcom/db/schema";
-import { eq, ilike, and } from "drizzle-orm";
+import { and, eq, ilike } from "drizzle-orm";
 
 export type GetLocationsQuery = {
 	categories?: string[];
@@ -17,7 +17,7 @@ export type GetLocationsQuery = {
 export async function getLocations(query: GetLocationsQuery) {
 	const { categories, area = "tokyo", search } = query;
 
-	let whereConditions: any[] = [eq(mapLocations.area, area)];
+	const whereConditions: any[] = [eq(mapLocations.area, area)];
 
 	if (categories && categories.length > 0) {
 		whereConditions.push(
@@ -40,7 +40,7 @@ export async function getLocations(query: GetLocationsQuery) {
 				? and(
 						eq(mapLocations.area, area),
 						// 카테고리 필터는 메모리에서 처리
-				  )
+					)
 				: eq(mapLocations.area, area),
 		limit: 500, // 한 번에 최대 500개 반환
 	});

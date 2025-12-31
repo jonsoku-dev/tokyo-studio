@@ -1,5 +1,5 @@
-import { data } from "react-router";
 import type { ActionFunctionArgs } from "react-router";
+import { data } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { getRoadmap } from "../services/roadmap.server";
 
@@ -21,7 +21,8 @@ export async function action({ request }: ActionFunctionArgs) {
 		return data(roadmapData);
 	} catch (error) {
 		console.error("[API] Get roadmap error:", error);
-		const message = error instanceof Error ? error.message : "Failed to fetch roadmap";
+		const message =
+			error instanceof Error ? error.message : "Failed to fetch roadmap";
 		return data({ error: message }, { status: 500 });
 	}
 }

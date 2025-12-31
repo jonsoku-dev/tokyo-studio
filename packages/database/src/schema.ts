@@ -1023,6 +1023,15 @@ export const mentorReviews = pgTable("mentor_reviews", {
 	text: text("text"), // Optional review text
 	isAnonymous: boolean("is_anonymous").default(false).notNull(),
 
+	// FR-008: Mentor response
+	mentorResponse: text("mentor_response"),
+	mentorRespondedAt: timestamp("mentor_responded_at"),
+
+	// FR-009-010: Moderation
+	isHidden: boolean("is_hidden").default(false).notNull(),
+	moderationReason: text("moderation_reason"),
+	moderatedAt: timestamp("moderated_at"),
+
 	status: text("status").default("published").notNull(), // published, flagged, hidden, deleted
 
 	createdAt: timestamp("created_at").defaultNow().notNull(),

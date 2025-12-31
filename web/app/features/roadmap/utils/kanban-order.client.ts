@@ -58,6 +58,9 @@ export function calculateNewOrderIndex(
  * @param newIndex - New orderIndex
  * @returns true if change is significant
  */
-export function hasOrderIndexChanged(oldIndex: number, newIndex: number): boolean {
+export function hasOrderIndexChanged(
+	oldIndex: number,
+	newIndex: number,
+): boolean {
 	return Math.abs(newIndex - oldIndex) > 0.1;
 }

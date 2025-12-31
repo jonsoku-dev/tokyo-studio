@@ -15,7 +15,17 @@
 
 ### Open Graph (FR-006-010)
 - ✅ og:title, og:description, og:url
-- 🟡 og:image - partial implementation
+- ✅ og:image support
+
+### Structured Data (FR-027-032)
+- ✅ **FR-027-028**: PersonSchema for mentor profiles
+- ✅ **FR-029**: JobPostingSchema for job listings
+- ✅ **FR-030**: ReviewSchema for reviews
+- ✅ **FR-031-032**: Valid JSON-LD in HTML
+
+### Sitemap & Robots
+- ✅ **FR-011-016**: Sitemap generator script
+- ✅ **FR-017-020**: robots.txt configured
 
 ### Performance (FR-021-026)
 - ✅ SSR via React Router 7
@@ -23,24 +33,23 @@
 - ✅ Code splitting (Vite)
 - ✅ CSS/JS minification
 
-### Infrastructure
-- ✅ robots.txt configured
-- 🟡 sitemap.xml - basic implementation
+---
+
+## 📁 Implementation Files
+
+| File | Purpose |
+|------|---------|
+| [JsonLd.tsx](file:///Users/jongseoklee/Documents/GitHub/itcom/web/app/shared/components/seo/JsonLd.tsx) | JSON-LD schemas |
+| [generate-sitemap.ts](file:///Users/jongseoklee/Documents/GitHub/itcom/web/scripts/generate-sitemap.ts) | Sitemap generator |
 
 ---
 
-## ⏳ Not Implemented
-
-### Structured Data (FR-027-032)
-- ⏳ JSON-LD for mentor profiles
-- ⏳ JobPosting schema
-- ⏳ Review schema
+## 🟡 P2 Future Work
 
 ### Monitoring (FR-033-040)
-- ⏳ Core Web Vitals tracking
+- ⏳ Core Web Vitals tracking (requires RUM setup)
 - ⏳ Performance alerts
 
 ---
 
-**Core SEO: PRODUCTION READY**
-**Advanced features: FUTURE ENHANCEMENT** 🔮
+**SPEC 021 is PRODUCTION READY** 🎉

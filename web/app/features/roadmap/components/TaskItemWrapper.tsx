@@ -1,8 +1,8 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { CSSProperties } from "react";
-import { TaskCard } from "./TaskCard";
 import type { KanbanTask } from "./kanban.types";
+import { TaskCard } from "./TaskCard";
 
 interface TaskItemWrapperProps {
 	task: KanbanTask;

@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
+import { useUser } from "~/features/auth/hooks/useUser";
 import type { MapLocationData } from "../store/map.store";
 import { useMapStore } from "../store/map.store";
-import { useUser } from "~/features/auth/hooks/useUser";
 
 interface LocationPopupProps {
 	location: MapLocationData | null;
@@ -23,10 +23,7 @@ const CATEGORY_NAMES: Record<string, Record<string, string>> = {
  * - 길안내 기능
  * - 주소 복사
  */
-export function LocationPopup({
-	location,
-	onClose,
-}: LocationPopupProps) {
+export function LocationPopup({ location, onClose }: LocationPopupProps) {
 	if (!location) return null;
 
 	const categoryName =

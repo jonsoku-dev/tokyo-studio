@@ -1,7 +1,7 @@
-import { Outlet, type LoaderFunctionArgs } from "react-router";
+import { type LoaderFunctionArgs, Outlet } from "react-router";
+import { requireUserId } from "~/features/auth/utils/session.server";
 import { Navbar } from "../components/layout/Navbar";
 import { Sidebar } from "../components/layout/Sidebar";
-import { requireUserId } from "~/features/auth/utils/session.server";
 
 /**
  * ProtectedLayout - For pages that require authentication

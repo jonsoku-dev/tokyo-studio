@@ -1,13 +1,7 @@
 import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { drizzle } from "drizzle-orm/node-postgres";
-import {
-	integer,
-	pgTable,
-	text,
-	timestamp,
-	uuid,
-} from "drizzle-orm/pg-core";
+import { integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import pg from "pg";
 
 // Define tables matching actual schema

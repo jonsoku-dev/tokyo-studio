@@ -12,7 +12,9 @@ export default function MapRoute() {
 		<div className="h-screen flex flex-col bg-gray-50">
 			{/* 헤더 */}
 			<div className="bg-white border-b px-4 py-4 shadow-sm">
-				<h1 className="text-2xl font-bold text-gray-900">도쿄 정착 가이드 지도</h1>
+				<h1 className="text-2xl font-bold text-gray-900">
+					도쿄 정착 가이드 지도
+				</h1>
 				<p className="text-sm text-gray-600 mt-1">
 					구청, 은행, 이민국 등 필수 위치를 지도에서 확인하세요
 				</p>

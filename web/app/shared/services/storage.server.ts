@@ -88,7 +88,9 @@ export const storageService = {
 			const filePath = path.join(PRIVATE_STORAGE_DIR, uniqueKey);
 			const writable = fs.createWriteStream(filePath);
 
-			await finished(Readable.from(fileStream as AsyncIterable<Uint8Array>).pipe(writable));
+			await finished(
+				Readable.from(fileStream as AsyncIterable<Uint8Array>).pipe(writable),
+			);
 
 			return uniqueKey;
 		}

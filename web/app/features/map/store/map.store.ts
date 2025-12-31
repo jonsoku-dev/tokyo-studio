@@ -42,7 +42,9 @@ interface MapState {
 
 	// 검색 관련
 	setSearchQuery: (query: string) => void;
-	setSuggestions: (suggestions: Array<{ id: string; name: string; category: string }>) => void;
+	setSuggestions: (
+		suggestions: Array<{ id: string; name: string; category: string }>,
+	) => void;
 	setShowSuggestions: (show: boolean) => void;
 
 	// 마커 선택

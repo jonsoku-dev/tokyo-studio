@@ -254,7 +254,9 @@ async function seedLocations() {
 			})),
 		);
 
-		console.log(`✅ ${tokyoLocations.length}개의 위치 데이터가 성공적으로 삽입되었습니다.`);
+		console.log(
+			`✅ ${tokyoLocations.length}개의 위치 데이터가 성공적으로 삽입되었습니다.`,
+		);
 	} catch (error) {
 		console.error("❌ 시드 데이터 삽입 실패:", error);
 		process.exit(1);

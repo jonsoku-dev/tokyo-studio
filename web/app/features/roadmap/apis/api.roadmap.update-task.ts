@@ -1,8 +1,8 @@
-import { data } from "react-router";
 import type { ActionFunctionArgs } from "react-router";
+import { data } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
-import { updateTaskPosition } from "../services/roadmap.server";
 import type { KanbanColumn } from "../components/kanban.types";
+import { updateTaskPosition } from "../services/roadmap.server";
 
 /**
  * PATCH /api/roadmap/tasks/update
@@ -21,7 +21,10 @@ export async function action({ request }: ActionFunctionArgs) {
 		const { taskId, kanbanColumn, orderIndex } = body;
 
 		if (!taskId || !kanbanColumn) {
-			return data({ error: "Missing required fields: taskId, kanbanColumn" }, { status: 400 });
+			return data(
+				{ error: "Missing required fields: taskId, kanbanColumn" },
+				{ status: 400 },
+			);
 		}
 
 		const updatedTask = await updateTaskPosition(taskId, userId, {
@@ -32,7 +35,8 @@ export async function action({ request }: ActionFunctionArgs) {
 		return data({ success: true, task: updatedTask });
 	} catch (error) {
 		console.error("[API] Update task error:", error);
-		const message = error instanceof Error ? error.message : "Failed to update task";
+		const message =
+			error instanceof Error ? error.message : "Failed to update task";
 		return data({ error: message }, { status: 500 });
 	}
 }

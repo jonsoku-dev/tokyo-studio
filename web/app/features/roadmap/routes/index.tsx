@@ -1,17 +1,14 @@
 import { useCallback } from "react";
 import { data, redirect } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
-import {
-	KanbanBoard,
-	type KanbanColumnConfig,
-} from "../components";
+import { KanbanBoard, type KanbanColumnConfig } from "../components";
+import { useRoadmapQuery } from "../hooks/useRoadmapQuery";
 import {
 	generateRoadmap,
 	getRoadmap,
 	getUserProfile,
 	hasRoadmap,
 } from "../services/roadmap.server";
-import { useRoadmapQuery } from "../hooks/useRoadmapQuery";
 import type { Route } from "./+types/index";
 
 // ============================================
@@ -93,16 +90,13 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 								나의 로드맵
 							</h1>
 							<p className="text-xs sm:text-sm text-gray-500 mt-1 font-medium">
-								{profile.jobFamily} · {profile.level} · 일본어{" "}
-								{profile.jpLevel}
+								{profile.jobFamily} · {profile.level} · 일본어 {profile.jpLevel}
 							</p>
 						</div>
 						<div className="flex items-center gap-4">
 							{/* Progress */}
 							<div className="text-right hidden sm:block">
-								<p className="text-xs text-gray-500 font-medium">
-									전체 진행률
-								</p>
+								<p className="text-xs text-gray-500 font-medium">전체 진행률</p>
 								<p className="text-xl font-bold text-indigo-600">
 									{displayProgress.percent}%
 								</p>
@@ -119,12 +113,7 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 					{/* Category Progress */}
 					<div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
 						{(
-							[
-								"Learning",
-								"Application",
-								"Preparation",
-								"Settlement",
-							] as const
+							["Learning", "Application", "Preparation", "Settlement"] as const
 						).map((cat) => (
 							<div
 								key={cat}

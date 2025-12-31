@@ -1,9 +1,13 @@
-import { data, type LoaderFunctionArgs, type ActionFunctionArgs } from "react-router";
+import {
+	type ActionFunctionArgs,
+	data,
+	type LoaderFunctionArgs,
+} from "react-router";
 import {
 	createCustomMarker,
+	deleteCustomMarker,
 	getUserCustomMarkers,
 	updateCustomMarker,
-	deleteCustomMarker,
 } from "./api.custom-markers";
 
 export async function loader({ request }: LoaderFunctionArgs) {

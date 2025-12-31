@@ -34,12 +34,20 @@ const applicationSchema = z.object({
 	),
 	languages: z.string().transform((str) => {
 		// Convert comma-separated "language:level" pairs to Record
-		const entries = str.split(",").map((s) => s.trim()).filter(Boolean);
-		return entries.reduce((acc, entry) => {
-			const [lang, level] = entry.includes(":") ? entry.split(":") : [entry, "Conversational"];
-			acc[lang.trim()] = (level || "Conversational").trim();
-			return acc;
-		}, {} as Record<string, string>);
+		const entries = str
+			.split(",")
+			.map((s) => s.trim())
+			.filter(Boolean);
+		return entries.reduce(
+			(acc, entry) => {
+				const [lang, level] = entry.includes(":")
+					? entry.split(":")
+					: [entry, "Conversational"];
+				acc[lang.trim()] = (level || "Conversational").trim();
+				return acc;
+			},
+			{} as Record<string, string>,
+		);
 	}),
 	// verificationFile handled separately
 });
@@ -82,7 +90,9 @@ export async function action({ request }: ActionFunctionArgs) {
 
 	const verificationFileUrl = formData.get("verificationFile") as string;
 	if (!verificationFileUrl) {
-		return data({ error: "Verification document upload is temporarily unavailable." });
+		return data({
+			error: "Verification document upload is temporarily unavailable.",
+		});
 	}
 
 	// Validate Text Fields
@@ -90,7 +100,10 @@ export async function action({ request }: ActionFunctionArgs) {
 	const result = applicationSchema.safeParse(rawData);
 
 	if (!result.success) {
-		return data({ error: "Invalid form data", details: result.error.flatten() });
+		return data({
+			error: "Invalid form data",
+			details: result.error.flatten(),
+		});
 	}
 
 	try {

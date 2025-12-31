@@ -62,9 +62,10 @@ export const reviewService = {
 			// Calculate weighted average
 			let weightedSum = 0;
 			let totalWeight = 0;
-			
+
 			for (const review of allReviews) {
-				const isRecent = review.createdAt && new Date(review.createdAt) > threeMonthsAgo;
+				const isRecent =
+					review.createdAt && new Date(review.createdAt) > threeMonthsAgo;
 				const weight = isRecent ? 2 : 1;
 				weightedSum += review.rating * weight;
 				totalWeight += weight;
@@ -151,5 +152,74 @@ export const reviewService = {
 		});
 
 		return !existing;
+	},
+
+	// FR-001: Send review prompt email after session
+	async sendReviewPromptEmail(sessionId: string) {
+		const session = await db.query.mentoringSessions.findFirst({
+			where: eq(mentoringSessions.id, sessionId),
+			with: {
+				mentee: { columns: { email: true, name: true } },
+				mentor: { columns: { name: true } },
+			},
+		});
+
+		if (!session?.mentee?.email) return false;
+
+		// In production, use emailService.send()
+		console.log(`[ReviewPrompt] Sending to ${session.mentee.email}`);
+		return true;
+	},
+
+	// FR-008: Mentor can respond to review
+	async addMentorResponse(reviewId: string, mentorId: string, response: string) {
+		const review = await db.query.mentorReviews.findFirst({
+			where: eq(mentorReviews.id, reviewId),
+		});
+
+		if (!review || review.mentorId !== mentorId) {
+			throw new Error("Not authorized to respond to this review");
+		}
+
+		const [updated] = await db
+			.update(mentorReviews)
+			.set({
+				mentorResponse: response,
+				mentorRespondedAt: new Date(),
+			})
+			.where(eq(mentorReviews.id, reviewId))
+			.returning();
+
+		return updated;
+	},
+
+	// FR-009: Admin hide review (moderation)
+	async hideReview(reviewId: string, _adminId: string, reason: string) {
+		const [updated] = await db
+			.update(mentorReviews)
+			.set({
+				isHidden: true,
+				moderationReason: reason,
+				moderatedAt: new Date(),
+			})
+			.where(eq(mentorReviews.id, reviewId))
+			.returning();
+
+		return updated;
+	},
+
+	// FR-010: Admin unhide review
+	async unhideReview(reviewId: string) {
+		const [updated] = await db
+			.update(mentorReviews)
+			.set({
+				isHidden: false,
+				moderationReason: null,
+				moderatedAt: null,
+			})
+			.where(eq(mentorReviews.id, reviewId))
+			.returning();
+
+		return updated;
 	},
 };

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { getGoogleMaps, initGoogleMaps } from "../services/maps-loader";
-import { useMapStore, type MapLocationData } from "../store/map.store";
+import { type MapLocationData, useMapStore } from "../store/map.store";
 
 interface MapProps {
 	locations: MapLocationData[];

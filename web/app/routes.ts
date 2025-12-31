@@ -1,4 +1,9 @@
-import { index, layout, type RouteConfig, route } from "@react-router/dev/routes";
+import {
+	index,
+	layout,
+	type RouteConfig,
+	route,
+} from "@react-router/dev/routes";
 
 export default [
 	// Root layout - redirect to roadmap
@@ -14,7 +19,10 @@ export default [
 			"verify-email/required",
 			"features/auth/routes/verify-email.required.tsx",
 		),
-		route("resend-verification", "features/auth/routes/resend-verification.tsx"),
+		route(
+			"resend-verification",
+			"features/auth/routes/resend-verification.tsx",
+		),
 		route("forgot-password", "features/auth/routes/forgot-password.tsx"),
 		route("reset-password", "features/auth/routes/reset-password.tsx"),
 	]),
@@ -52,7 +60,10 @@ export default [
 		// User settings
 		route("settings/profile", "features/users/routes/profile.tsx"),
 		route("settings/privacy", "features/users/routes/settings/privacy.tsx"),
-		route("settings/notifications", "features/notifications/routes/settings.tsx"),
+		route(
+			"settings/notifications",
+			"features/notifications/routes/settings.tsx",
+		),
 		route("profile/:username", "features/users/routes/profile.$username.tsx"),
 
 		// Diagnosis & Payment
@@ -149,7 +160,10 @@ export default [
 
 	// Roadmap APIs (SPEC 016)
 	route("api/roadmap", "features/roadmap/apis/api.roadmap.get.ts"),
-	route("api/roadmap/tasks/update", "features/roadmap/apis/api.roadmap.update-task.ts"),
+	route(
+		"api/roadmap/tasks/update",
+		"features/roadmap/apis/api.roadmap.update-task.ts",
+	),
 	route("api/roadmap/tasks/:id", "features/roadmap/apis/task.$id.ts"),
 
 	// Pipeline APIs (SPEC 018)
@@ -158,5 +172,8 @@ export default [
 	// Map APIs (SPEC 020)
 	route("api/map", "features/map/apis/api.map.get.ts"),
 	route("api/map/favorites", "features/map/apis/api.favorites.get.ts"),
-	route("api/map/custom-markers", "features/map/apis/api.custom-markers.get.ts"),
+	route(
+		"api/map/custom-markers",
+		"features/map/apis/api.custom-markers.get.ts",
+	),
 ] satisfies RouteConfig;

@@ -1,4 +1,5 @@
 import {
+	type CollisionDetection,
 	closestCenter,
 	DndContext,
 	type DragEndEvent,
@@ -11,23 +12,26 @@ import {
 	pointerWithin,
 	rectIntersection,
 	TouchSensor,
-	type CollisionDetection,
 	type UniqueIdentifier,
+	useDroppable,
 	useSensor,
 	useSensors,
-	useDroppable,
 } from "@dnd-kit/core";
 import {
+	arrayMove,
 	SortableContext,
 	verticalListSortingStrategy,
-	arrayMove,
 } from "@dnd-kit/sortable";
-import { produce, enableMapSet } from "immer";
+import { enableMapSet, produce } from "immer";
 import { useCallback, useRef, useState } from "react";
 import { useUpdateTaskMutation } from "../hooks/useUpdateTaskMutation";
-import { TaskItemWrapper } from "./TaskItemWrapper";
+import type {
+	KanbanColumn,
+	KanbanColumnConfig,
+	KanbanTask,
+} from "./kanban.types";
 import { TaskCard } from "./TaskCard";
-import type { KanbanColumn, KanbanColumnConfig, KanbanTask } from "./kanban.types";
+import { TaskItemWrapper } from "./TaskItemWrapper";
 
 // Enable Map/Set support for immer
 enableMapSet();
@@ -75,7 +79,10 @@ interface PendingChange {
 }
 
 // Helper: Build initial items from tasks
-function buildItemsFromTasks(tasks: KanbanTask[], columns: KanbanColumnConfig[]): Items {
+function buildItemsFromTasks(
+	tasks: KanbanTask[],
+	columns: KanbanColumnConfig[],
+): Items {
 	const result: Items = {};
 	for (const col of columns) {
 		result[col.id] = [];
@@ -102,12 +109,19 @@ function buildTaskMap(tasks: KanbanTask[]): Record<string, KanbanTask> {
  * - Batch save with explicit user action
  * - No side effects (useEffect/setTimeout)
  */
-export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) {
+export function KanbanBoard({
+	tasks: initialTasks,
+	columns,
+}: KanbanBoardProps) {
 	// State
 	const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-	const [items, setItems] = useState<Items>(() => buildItemsFromTasks(initialTasks, columns));
+	const [items, setItems] = useState<Items>(() =>
+		buildItemsFromTasks(initialTasks, columns),
+	);
 	const [taskMap] = useState(() => buildTaskMap(initialTasks));
-	const [pendingChanges, setPendingChanges] = useState<Map<string, PendingChange>>(new Map());
+	const [pendingChanges, setPendingChanges] = useState<
+		Map<string, PendingChange>
+	>(new Map());
 	const [isSaving, setIsSaving] = useState(false);
 
 	// Refs for collision detection
@@ -129,7 +143,7 @@ export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) 
 				tolerance: 5,
 			},
 		}),
-		useSensor(KeyboardSensor)
+		useSensor(KeyboardSensor),
 	);
 
 	// Find container for task ID
@@ -144,7 +158,7 @@ export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) 
 				return closestCenter({
 					...args,
 					droppableContainers: args.droppableContainers.filter(
-						(container) => container.id in items
+						(container) => container.id in items,
 					),
 				});
 			}
@@ -167,7 +181,7 @@ export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) 
 							droppableContainers: args.droppableContainers.filter(
 								(container) =>
 									container.id !== overId &&
-									containerItems.includes(container.id as string)
+									containerItems.includes(container.id as string),
 							),
 						})[0]?.id;
 					}
@@ -183,10 +197,14 @@ export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) 
 
 			return lastOverId.current ? [{ id: lastOverId.current }] : [];
 		},
-		[activeId, items]
+		[activeId, items],
 	);
 
-	const handleDragStart = ({ active }: { active: { id: UniqueIdentifier } }) => {
+	const handleDragStart = ({
+		active,
+	}: {
+		active: { id: UniqueIdentifier };
+	}) => {
 		setActiveId(active.id);
 	};
 
@@ -220,8 +238,7 @@ export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) 
 								over.rect.top + over.rect.height;
 
 						const modifier = isBelowOverItem ? 1 : 0;
-						newIndex =
-							overIndex >= 0 ? overIndex + modifier : overItems.length;
+						newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length;
 					}
 
 					recentlyMovedToNewContainer.current = true;
@@ -230,7 +247,7 @@ export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) 
 					draft[activeContainer].splice(activeIndex, 1);
 					// Add to over container
 					draft[overContainer].splice(newIndex, 0, active.id as string);
-				})
+				}),
 			);
 		}
 	};
@@ -251,7 +268,9 @@ export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) 
 		if (overId == null) return;
 
 		const isOverContainer = Object.keys(items).includes(overId as string);
-		const overContainer = isOverContainer ? (overId as string) : findContainer(overId);
+		const overContainer = isOverContainer
+			? (overId as string)
+			: findContainer(overId);
 		if (!overContainer) return;
 
 		// Same column reordering (within current container)
@@ -267,9 +286,9 @@ export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) 
 						draft[overContainer] = arrayMove(
 							draft[overContainer],
 							activeIndex,
-							overIndex
+							overIndex,
 						);
-					})
+					}),
 				);
 			}
 		}
@@ -295,7 +314,7 @@ export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) 
 							toColumn: newColumn,
 						});
 					}
-				})
+				}),
 			);
 		} else {
 			// Moved back to original column - remove from pending if exists
@@ -304,7 +323,7 @@ export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) 
 					if (draft.has(taskId)) {
 						draft.delete(taskId);
 					}
-				})
+				}),
 			);
 		}
 	};
@@ -328,7 +347,7 @@ export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) 
 						kanbanColumn: change.toColumn,
 						orderIndex: orderIndex >= 0 ? orderIndex : 0,
 					});
-				})
+				}),
 			);
 
 			setPendingChanges(new Map());
@@ -432,10 +451,7 @@ export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) 
 											columnTaskIds.map((taskId) => {
 												const task = taskMap[taskId];
 												return task ? (
-													<TaskItemWrapper
-														key={taskId}
-														task={task}
-													/>
+													<TaskItemWrapper key={taskId} task={task} />
 												) : null;
 											})
 										)}
@@ -448,12 +464,9 @@ export function KanbanBoard({ tasks: initialTasks, columns }: KanbanBoardProps) 
 
 				{/* Drag Overlay */}
 				<DragOverlay>
-					{activeTask ? (
-						<TaskCard task={activeTask} isOverlay />
-					) : null}
+					{activeTask ? <TaskCard task={activeTask} isOverlay /> : null}
 				</DragOverlay>
 			</DndContext>
 		</div>
 	);
 }
-

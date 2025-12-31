@@ -6,8 +6,12 @@ import { useCallback } from "react";
 import { useMapStore } from "../store/map.store";
 
 export function useMapFilters() {
-	const { selectedCategories, toggleCategory, clearCategories, setSearchQuery } =
-		useMapStore();
+	const {
+		selectedCategories,
+		toggleCategory,
+		clearCategories,
+		setSearchQuery,
+	} = useMapStore();
 
 	// 필터 초기화 (검색어 포함)
 	const resetAll = useCallback(() => {

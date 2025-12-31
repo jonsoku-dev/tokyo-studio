@@ -1,5 +1,5 @@
 import { data, type LoaderFunctionArgs } from "react-router";
-import { getLocations, getLocationSuggestions } from "./api.map.locations";
+import { getLocationSuggestions, getLocations } from "./api.map.locations";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const url = new URL(request.url);
@@ -27,9 +27,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		});
 	} catch (error) {
 		console.error("[Map API Error]", error);
-		return data(
-			{ error: "위치 데이터를 불러올 수 없습니다" },
-			{ status: 500 },
-		);
+		return data({ error: "위치 데이터를 불러올 수 없습니다" }, { status: 500 });
 	}
 }

@@ -1,2 +1,2 @@
-export { useMapSearch } from "./useMapSearch";
 export { useMapFilters } from "./useMapFilters";
+export { useMapSearch } from "./useMapSearch";

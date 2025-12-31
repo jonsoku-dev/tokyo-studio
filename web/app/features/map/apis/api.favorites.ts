@@ -1,6 +1,6 @@
 import { db } from "@itcom/db/client";
-import { userFavorites, mapLocations } from "@itcom/db/schema";
-import { eq, and } from "drizzle-orm";
+import { mapLocations, userFavorites } from "@itcom/db/schema";
+import { and, eq } from "drizzle-orm";
 
 export type CreateFavoriteInput = {
 	userId: string;
@@ -19,7 +19,10 @@ export async function addFavorite({ userId, locationId }: CreateFavoriteInput) {
 	try {
 		// 중복 확인
 		const existing = await db.query.userFavorites.findFirst({
-			where: and(eq(userFavorites.userId, userId), eq(userFavorites.locationId, locationId)),
+			where: and(
+				eq(userFavorites.userId, userId),
+				eq(userFavorites.locationId, locationId),
+			),
 		});
 
 		if (existing) {
@@ -36,10 +39,13 @@ export async function addFavorite({ userId, locationId }: CreateFavoriteInput) {
 		}
 
 		// 즐겨찾기 추가
-		const result = await db.insert(userFavorites).values({
-			userId,
-			locationId,
-		}).returning();
+		const result = await db
+			.insert(userFavorites)
+			.values({
+				userId,
+				locationId,
+			})
+			.returning();
 
 		return { success: true, favorite: result[0] };
 	} catch (error) {
@@ -75,19 +81,29 @@ export async function getUserFavorites(userId: string) {
 		};
 	} catch (error) {
 		console.error("[Favorites API] Get error:", error);
-		return { success: false, error: "즐겨찾기 조회에 실패했습니다", favorites: [] };
+		return {
+			success: false,
+			error: "즐겨찾기 조회에 실패했습니다",
+			favorites: [],
+		};
 	}
 }
 
 /**
  * 즐겨찾기 삭제
  */
-export async function removeFavorite({ userId, locationId }: DeleteFavoriteInput) {
+export async function removeFavorite({
+	userId,
+	locationId,
+}: DeleteFavoriteInput) {
 	try {
 		const result = await db
 			.delete(userFavorites)
 			.where(
-				and(eq(userFavorites.userId, userId), eq(userFavorites.locationId, locationId)),
+				and(
+					eq(userFavorites.userId, userId),
+					eq(userFavorites.locationId, locationId),
+				),
 			)
 			.returning();
 
@@ -105,10 +121,16 @@ export async function removeFavorite({ userId, locationId }: DeleteFavoriteInput
 /**
  * 특정 위치가 즐겨찾기에 있는지 확인
  */
-export async function isFavorite(userId: string, locationId: string): Promise<boolean> {
+export async function isFavorite(
+	userId: string,
+	locationId: string,
+): Promise<boolean> {
 	try {
 		const favorite = await db.query.userFavorites.findFirst({
-			where: and(eq(userFavorites.userId, userId), eq(userFavorites.locationId, locationId)),
+			where: and(
+				eq(userFavorites.userId, userId),
+				eq(userFavorites.locationId, locationId),
+			),
 		});
 		return !!favorite;
 	} catch {

@@ -65,7 +65,10 @@ export const authService = {
 		// Try to send verification email, but don't fail if it errors
 		try {
 			const verificationToken = await createVerificationToken(newUser.id);
-			await emailService.sendVerificationEmail(newUser.email, verificationToken);
+			await emailService.sendVerificationEmail(
+				newUser.email,
+				verificationToken,
+			);
 		} catch (error) {
 			console.warn("Failed to send verification email:", error);
 			// Continue anyway - user is already verified

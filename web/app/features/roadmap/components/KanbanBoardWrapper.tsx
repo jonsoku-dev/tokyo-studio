@@ -1,9 +1,9 @@
-import { lazy, Suspense, useState, useEffect, type ReactNode } from "react";
+import { lazy, type ReactNode, Suspense, useEffect, useState } from "react";
 import type { KanbanColumnConfig, KanbanTask } from "./kanban.types";
 
 // Lazy load the client-only KanbanBoard
 const KanbanBoardClient = lazy(() =>
-	import("./KanbanBoard.client").then((mod) => ({ default: mod.KanbanBoard }))
+	import("./KanbanBoard.client").then((mod) => ({ default: mod.KanbanBoard })),
 );
 
 interface KanbanBoardWrapperProps {
