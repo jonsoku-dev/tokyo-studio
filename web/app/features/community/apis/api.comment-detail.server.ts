@@ -1,7 +1,7 @@
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { commentsService } from "~/features/community/services/comments.server";
 import { actionHandler, BadRequestError } from "~/shared/lib";
-import type { Route } from "./+types/comment-detail";
+import type { Route } from "./+types/api.comment-detail.server";
 
 import type { ActionFunctionArgs } from "react-router";
 

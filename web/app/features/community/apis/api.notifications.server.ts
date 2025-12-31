@@ -1,7 +1,7 @@
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { notificationsService } from "~/features/community/services/notifications.server";
 import { actionHandler, loaderHandler, BadRequestError } from "~/shared/lib";
-import type { Route } from "./+types/notifications";
+import type { Route } from "./+types/api.notifications.server";
 
 export const loader = loaderHandler(async ({ request }: Route.LoaderArgs) => {
 	const userId = await requireUserId(request);

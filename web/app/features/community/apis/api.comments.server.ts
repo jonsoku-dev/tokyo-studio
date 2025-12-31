@@ -1,7 +1,7 @@
 import { requireVerifiedEmail } from "~/features/auth/services/require-verified-email.server";
 import { commentsService } from "~/features/community/services/comments.server";
 import { actionHandler, BadRequestError } from "~/shared/lib";
-import type { Route } from "./+types/comments";
+import type { Route } from "./+types/api.comments.server";
 
 export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 	const user = await requireVerifiedEmail(request);

@@ -2,7 +2,7 @@ import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
 } from "react-router";
-import { addFavorite, getUserFavorites, removeFavorite } from "./api.favorites";
+import { addFavorite, getUserFavorites, removeFavorite } from "./api.favorites.server";
 import { actionHandler, loaderHandler, BadRequestError, UnauthorizedError, InternalError } from "~/shared/lib";
 
 export const loader = loaderHandler(async ({ request }: LoaderFunctionArgs) => {

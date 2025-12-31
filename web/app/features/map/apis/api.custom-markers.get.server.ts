@@ -7,7 +7,7 @@ import {
 	deleteCustomMarker,
 	getUserCustomMarkers,
 	updateCustomMarker,
-} from "./api.custom-markers";
+} from "./api.custom-markers.server";
 import { actionHandler, loaderHandler, BadRequestError, UnauthorizedError, InternalError } from "~/shared/lib";
 
 export const loader = loaderHandler(async ({ request }: LoaderFunctionArgs) => {

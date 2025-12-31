@@ -1,7 +1,7 @@
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { profileService } from "../services/profile.server";
 import { actionHandler, ConflictError } from "~/shared/lib";
-import type { Route } from "./+types/profile";
+import type { Route } from "./+types/api.profile.server";
 
 export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 	const userId = await requireUserId(request);

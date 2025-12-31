@@ -4,7 +4,7 @@ import {
 	logAvatarChange,
 } from "../services/avatar-logger.server";
 import { checkAvatarUploadRateLimit } from "../services/avatar-rate-limiter.server";
-import type { Route } from "./+types/avatar";
+import type { Route } from "./+types/api.avatar.server";
 import { actionHandler, BadRequestError, InternalError, AppError, ErrorCode, RateLimitError } from "~/shared/lib";
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB

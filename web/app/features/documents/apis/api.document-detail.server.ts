@@ -1,7 +1,7 @@
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { documentsService } from "~/features/documents/services/documents.server";
 import { actionHandler, loaderHandler, BadRequestError, InternalError } from "~/shared/lib";
-import type { Route } from "./+types/document-detail";
+import type { Route } from "./+types/api.document-detail.server";
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
 
 export const loader = loaderHandler(async ({ request, params }: LoaderFunctionArgs) => {

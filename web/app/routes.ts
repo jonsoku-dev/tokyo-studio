@@ -81,99 +81,147 @@ export default [
 
 	// --- APIs ---
 	// Auth APIs
-	route("api/auth/google", "features/auth/apis/google.ts"),
-	route("api/auth/google/callback", "features/auth/apis/google.callback.ts"),
-	route("api/auth/github", "features/auth/apis/github.ts"),
-	route("api/auth/github/callback", "features/auth/apis/github.callback.ts"),
-	route("api/auth/kakao", "features/auth/apis/kakao.ts"),
-	route("api/auth/kakao/callback", "features/auth/apis/kakao.callback.ts"),
-	route("api/auth/line", "features/auth/apis/line.ts"),
-	route("api/auth/line/callback", "features/auth/apis/line.callback.ts"),
+	route("api/auth/google", "features/auth/apis/api.google.server.ts"),
+	route(
+		"api/auth/google/callback",
+		"features/auth/apis/api.google.callback.server.ts",
+	),
+	route("api/auth/github", "features/auth/apis/api.github.server.ts"),
+	route(
+		"api/auth/github/callback",
+		"features/auth/apis/api.github.callback.server.ts",
+	),
+	route("api/auth/kakao", "features/auth/apis/api.kakao.server.ts"),
+	route(
+		"api/auth/kakao/callback",
+		"features/auth/apis/api.kakao.callback.server.ts",
+	),
+	route("api/auth/line", "features/auth/apis/api.line.server.ts"),
+	route(
+		"api/auth/line/callback",
+		"features/auth/apis/api.line.callback.server.ts",
+	),
 	route(
 		"api/auth/forgot-password",
-		"features/auth/apis/api.auth.forgot-password.ts",
+		"features/auth/apis/api.auth.forgot-password.server.ts",
 	),
 	route(
 		"api/auth/resend-verification",
-		"features/auth/apis/api.auth.resend-verification.ts",
+		"features/auth/apis/api.auth.resend-verification.server.ts",
 	),
-	route("api/auth/reset-password", "features/auth/apis/reset-password.ts"),
-	route("api/users/me/avatar", "features/users/apis/avatar.ts"),
-	route("api/users/me/profile", "features/users/apis/profile.ts"),
-	route("api/users/me/privacy", "features/users/apis/privacy.ts"),
+	route(
+		"api/auth/reset-password",
+		"features/auth/apis/api.reset-password.server.ts",
+	),
+	route("api/users/me/avatar", "features/users/apis/api.avatar.server.ts"),
+	route("api/users/me/profile", "features/users/apis/api.profile.server.ts"),
+	route("api/users/me/privacy", "features/users/apis/api.privacy.server.ts"),
 
 	// Storage APIs
-	route("api/storage/presigned", "features/storage/apis/presigned.ts"),
-	route("api/storage/upload", "features/storage/apis/upload.ts"),
-	route("api/storage/confirm", "features/storage/apis/confirm.ts"),
+	route(
+		"api/storage/presigned",
+		"features/storage/apis/api.presigned.server.ts",
+	),
+	route("api/storage/upload", "features/storage/apis/api.upload.server.ts"),
+	route("api/storage/confirm", "features/storage/apis/api.confirm.server.ts"),
 	route(
 		"api/storage/download/:documentId",
-		"features/storage/apis/download.$documentId.ts",
+		"features/storage/apis/api.download.$documentId.server.ts",
 	),
-	route("api/storage/files", "features/storage/apis/files.ts"),
+	route("api/storage/files", "features/storage/apis/api.files.server.ts"),
 	route(
 		"api/documents/:documentId",
-		"features/documents/apis/document-detail.ts",
+		"features/documents/apis/api.document-detail.server.ts",
 	),
 
 	// Community APIs
-	route("api/comments", "features/community/apis/comments.ts"),
-	route("api/comments/:commentId", "features/community/apis/comment-detail.ts"),
-	route("api/comments/:commentId/report", "features/community/apis/report.ts"),
-	route("api/notifications", "features/community/apis/notifications.ts"),
-	route("api/search", "features/community/apis/api.search.ts"),
+	route("api/comments", "features/community/apis/api.comments.server.ts"),
+	route(
+		"api/comments/:commentId",
+		"features/community/apis/api.comment-detail.server.ts",
+	),
+	route(
+		"api/comments/:commentId/report",
+		"features/community/apis/api.report.server.ts",
+	),
+	route(
+		"api/notifications",
+		"features/community/apis/api.notifications.server.ts",
+	),
+	route("api/search", "features/community/apis/api.search.server.ts"),
 	route(
 		"api/search/suggestions",
-		"features/community/apis/api.search.suggestions.ts",
+		"features/community/apis/api.search.suggestions.server.ts",
 	),
-	route("api/setup-search", "features/community/apis/api.setup-search.ts"),
-	route("api/setup-voting", "features/community/apis/api.setup-voting.ts"),
+	route(
+		"api/setup-search",
+		"features/community/apis/api.setup-search.server.ts",
+	),
+	route(
+		"api/setup-voting",
+		"features/community/apis/api.setup-voting.server.ts",
+	),
 	route(
 		"api/setup-reputation",
-		"features/community/apis/api.setup-reputation.ts",
+		"features/community/apis/api.setup-reputation.server.ts",
 	),
-	route("api/vote", "features/community/apis/api.vote.ts"),
+	route("api/vote", "features/community/apis/api.vote.server.ts"),
 	route(
 		"api/notifications/subscribe",
-		"features/notifications/apis/subscribe.ts",
+		"features/notifications/apis/api.subscribe.server.ts",
 	),
 
 	// Mentoring APIs (SPEC 013-015)
 	route(
 		"mentoring/session/:sessionId/join",
-		"features/mentoring/apis/api.mentoring.session.join.ts",
+		"features/mentoring/apis/api.mentoring.session.join.server.ts",
 	),
 	route(
 		"api/mentoring/session/:sessionId/review",
-		"features/mentoring/apis/api.mentoring.review.submit.ts",
+		"features/mentoring/apis/api.mentoring.review.submit.server.ts",
 	),
 	route(
 		"api/mentoring/mentor/:mentorId/reviews",
-		"features/mentoring/apis/api.mentoring.reviews.get.ts",
+		"features/mentoring/apis/api.mentoring.reviews.get.server.ts",
 	),
 	route(
 		"api/mentoring/review/:reviewId/response",
-		"features/mentoring/apis/api.mentoring.review.response.ts",
+		"features/mentoring/apis/api.mentoring.review.response.server.ts",
 	),
 
 	// route(\"api/notifications/settings\", \"features/notifications/apis/settings.ts\"), // TODO: Implement settings API
 
 	// Roadmap APIs (SPEC 016)
-	route("api/roadmap", "features/roadmap/apis/api.roadmap.get.ts"),
+	route(
+		"api/roadmap",
+		"features/roadmap/apis/api.roadmap.get.server.ts",
+	),
 	route(
 		"api/roadmap/tasks/update",
-		"features/roadmap/apis/api.roadmap.update-task.ts",
+		"features/roadmap/apis/api.roadmap.update-task.server.ts",
 	),
-	route("api/roadmap/tasks/:id", "features/roadmap/apis/task.$id.ts"),
+	route(
+		"api/roadmap/tasks/:id",
+		"features/roadmap/apis/api.task.$id.server.ts",
+	),
 
 	// Pipeline APIs (SPEC 018)
-	route("api/jobs/parse", "features/pipeline/apis/api.job-parser.ts"),
+	route(
+		"api/jobs/parse",
+		"features/pipeline/apis/api.job-parser.server.ts",
+	),
 
 	// Map APIs (SPEC 020)
-	route("api/map", "features/map/apis/api.map.get.ts"),
-	route("api/map/favorites", "features/map/apis/api.favorites.get.ts"),
+	route(
+		"api/map",
+		"features/map/apis/api.map.get.server.ts",
+	),
+	route(
+		"api/map/favorites",
+		"features/map/apis/api.favorites.get.server.ts",
+	),
 	route(
 		"api/map/custom-markers",
-		"features/map/apis/api.custom-markers.get.ts",
+		"features/map/apis/api.custom-markers.get.server.ts",
 	),
 ] satisfies RouteConfig;
