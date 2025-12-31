@@ -1,14 +1,15 @@
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { notificationsService } from "~/features/community/services/notifications.server";
+import { actionHandler, loaderHandler, BadRequestError } from "~/shared/lib";
 import type { Route } from "./+types/notifications";
 
-export async function loader({ request }: Route.LoaderArgs) {
+export const loader = loaderHandler(async ({ request }: Route.LoaderArgs) => {
 	const userId = await requireUserId(request);
 	const notifications = await notificationsService.getUserNotifications(userId);
 	return { notifications };
-}
+});
 
-export async function action({ request }: Route.ActionArgs) {
+export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 	const userId = await requireUserId(request);
 	const formData = await request.formData();
 	const intent = formData.get("intent");
@@ -26,5 +27,5 @@ export async function action({ request }: Route.ActionArgs) {
 		return { success: true };
 	}
 
-	return { error: "Invalid intent" };
-}
+	throw new BadRequestError("Invalid intent");
+});

@@ -1,10 +1,11 @@
 import { db } from "@itcom/db/client";
 import { pushSubscriptions } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
-import { type ActionFunction, data } from "react-router"; // or json
+import type { ActionFunctionArgs } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
+import { actionHandler, BadRequestError } from "~/shared/lib";
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 	const userId = await requireUserId(request);
 
 	if (request.method === "POST") {
@@ -12,14 +13,22 @@ export const action: ActionFunction = async ({ request }) => {
 		const subscriptionString = formData.get("subscription");
 
 		if (!subscriptionString || typeof subscriptionString !== "string") {
-			return data({ error: "Invalid subscription data" }, { status: 400 });
+			throw new BadRequestError("Invalid subscription data");
 		}
 
-		const subscription = JSON.parse(subscriptionString);
+		console.log("Subscription payload:", subscriptionString); // 디버깅용 로그 추가
+
+		let subscription;
+		try {
+			subscription = JSON.parse(subscriptionString);
+		} catch (e) {
+			throw new BadRequestError("Invalid JSON in subscription data");
+		}
+
 		const { endpoint, keys } = subscription;
 
 		if (!endpoint || !keys || !keys.p256dh || !keys.auth) {
-			return data({ error: "Invalid subscription format" }, { status: 400 });
+			throw new BadRequestError("Invalid subscription format");
 		}
 
 		await db
@@ -32,7 +41,7 @@ export const action: ActionFunction = async ({ request }) => {
 			})
 			.onConflictDoNothing({ target: pushSubscriptions.endpoint });
 
-		return data({ success: true });
+		return { success: true };
 	}
 
 	if (request.method === "DELETE") {
@@ -40,15 +49,15 @@ export const action: ActionFunction = async ({ request }) => {
 		const endpoint = formData.get("endpoint");
 
 		if (!endpoint || typeof endpoint !== "string") {
-			return data({ error: "Invalid endpoint" }, { status: 400 });
+			throw new BadRequestError("Invalid endpoint");
 		}
 
 		await db
 			.delete(pushSubscriptions)
 			.where(eq(pushSubscriptions.endpoint, endpoint));
 
-		return data({ success: true });
+		return { success: true };
 	}
 
-	return data({ error: "Method not allowed" }, { status: 405 });
-};
+	throw new BadRequestError("Method not allowed");
+});

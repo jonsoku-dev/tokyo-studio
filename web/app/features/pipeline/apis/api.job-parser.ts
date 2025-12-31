@@ -1,7 +1,12 @@
-import { data } from "react-router";
 import { z } from "zod";
 import { requireUserId } from "../../auth/utils/session.server";
 import { parserService } from "../parser/parser.server";
+import {
+	actionHandler,
+	ValidationError,
+	ServiceUnavailableError,
+} from "~/shared/lib";
+import type { ActionFunctionArgs } from "react-router";
 
 const parseRequestSchema = z.object({
 	url: z.string().url(),
@@ -12,28 +17,25 @@ const parseRequestSchema = z.object({
  * API: POST /api/jobs/parse
  * Body: { url: string, forceRefresh?: boolean }
  */
-export async function action({ request }: { request: Request }) {
+export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 	// 1. Auth check
 	await requireUserId(request);
 
-	if (request.method !== "POST") {
-		return data({ error: "Method not allowed" }, { status: 405 });
+	// 2. Parse request
+	const body = await request.json();
+	const validation = parseRequestSchema.safeParse(body);
+
+	if (!validation.success) {
+		throw new ValidationError(validation.error.flatten().fieldErrors);
 	}
 
-	try {
-		// 2. Parse request
-		const body = await request.json();
-		const { url, forceRefresh } = parseRequestSchema.parse(body);
+	const { url, forceRefresh } = validation.data;
 
+	try {
 		// 3. Process with parser service (pass forceRefresh)
 		const result = await parserService.parse(url, forceRefresh);
-
-		return data(result);
-	} catch (error) {
-		console.error("[JobParserAPI] Error:", error);
-		if (error instanceof z.ZodError) {
-			return data({ error: "Invalid URL format" }, { status: 400 });
-		}
+		return result;
+	} catch (error: unknown) {
 		// FR-008: Graceful error message for timeout/403
 		const errorMessage =
 			error instanceof Error ? error.message : "Failed to parse job posting";
@@ -41,13 +43,12 @@ export async function action({ request }: { request: Request }) {
 			errorMessage.includes("Failed to fetch") ||
 			errorMessage.includes("timeout");
 
-		return data(
-			{
-				error: isNetworkError
-					? "Unable to reach job site. Please enter details manually."
-					: errorMessage,
-			},
-			{ status: 500 },
-		);
+		if (isNetworkError) {
+			throw new ServiceUnavailableError(
+				"Unable to reach job site. Please enter details manually.",
+			);
+		}
+
+		throw error; // Let apiHandler handle other errors (as 500 or app errors)
 	}
-}
+});

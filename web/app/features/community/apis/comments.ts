@@ -1,8 +1,9 @@
 import { requireVerifiedEmail } from "~/features/auth/services/require-verified-email.server";
 import { commentsService } from "~/features/community/services/comments.server";
+import { actionHandler, BadRequestError } from "~/shared/lib";
 import type { Route } from "./+types/comments";
 
-export async function action({ request }: Route.ActionArgs) {
+export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 	const user = await requireVerifiedEmail(request);
 	const formData = await request.formData();
 	const intent = formData.get("intent");
@@ -13,7 +14,7 @@ export async function action({ request }: Route.ActionArgs) {
 		const parentId = (formData.get("parentId") as string) || undefined;
 
 		if (!content || !postId) {
-			return { error: "Missing required fields" };
+			throw new BadRequestError("Missing required fields");
 		}
 
 		await commentsService.createComment({
@@ -26,5 +27,5 @@ export async function action({ request }: Route.ActionArgs) {
 		return { success: true };
 	}
 
-	return { error: "Invalid intent" };
-}
+	throw new BadRequestError("Invalid intent");
+});

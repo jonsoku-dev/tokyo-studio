@@ -1,6 +1,5 @@
 import {
 	type ActionFunctionArgs,
-	data,
 	type LoaderFunctionArgs,
 } from "react-router";
 import {
@@ -9,26 +8,27 @@ import {
 	getUserCustomMarkers,
 	updateCustomMarker,
 } from "./api.custom-markers";
+import { actionHandler, loaderHandler, BadRequestError, UnauthorizedError, InternalError } from "~/shared/lib";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export const loader = loaderHandler(async ({ request }: LoaderFunctionArgs) => {
 	const userId = request.headers.get("X-User-Id");
 	if (!userId) {
-		return data({ error: "인증이 필요합니다" }, { status: 401 });
+		throw new UnauthorizedError("인증이 필요합니다");
 	}
 
 	try {
 		const result = await getUserCustomMarkers(userId);
-		return data(result);
+		return result;
 	} catch (error) {
 		console.error("[Custom Markers API] Loader error:", error);
-		return data({ error: "커스텀 마커 조회 실패" }, { status: 500 });
+		throw new InternalError("커스텀 마커 조회 실패");
 	}
-}
+});
 
-export async function action({ request }: ActionFunctionArgs) {
+export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 	const userId = request.headers.get("X-User-Id");
 	if (!userId) {
-		return data({ error: "인증이 필요합니다" }, { status: 401 });
+		throw new UnauthorizedError("인증이 필요합니다");
 	}
 
 	// 생성
@@ -39,9 +39,9 @@ export async function action({ request }: ActionFunctionArgs) {
 				userId,
 				...body,
 			});
-			return data(result);
+			return result;
 		} catch (error) {
-			return data({ error: "요청 처리 실패" }, { status: 400 });
+			throw new BadRequestError("요청 처리 실패");
 		}
 	}
 
@@ -53,9 +53,9 @@ export async function action({ request }: ActionFunctionArgs) {
 				userId,
 				...body,
 			});
-			return data(result);
+			return result;
 		} catch (error) {
-			return data({ error: "요청 처리 실패" }, { status: 400 });
+			throw new BadRequestError("요청 처리 실패");
 		}
 	}
 
@@ -66,15 +66,15 @@ export async function action({ request }: ActionFunctionArgs) {
 			const { id } = body;
 
 			if (!id) {
-				return data({ error: "id가 필요합니다" }, { status: 400 });
+				throw new BadRequestError("id가 필요합니다");
 			}
 
 			const result = await deleteCustomMarker(id, userId);
-			return data(result);
+			return result;
 		} catch (error) {
-			return data({ error: "요청 처리 실패" }, { status: 400 });
+			throw new BadRequestError("요청 처리 실패");
 		}
 	}
 
-	return data({ error: "지원하지 않는 요청입니다" }, { status: 405 });
-}
+	throw new BadRequestError("지원하지 않는 요청입니다");
+});

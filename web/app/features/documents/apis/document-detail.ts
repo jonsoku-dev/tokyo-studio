@@ -1,30 +1,31 @@
-import { data } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { documentsService } from "~/features/documents/services/documents.server";
+import { actionHandler, loaderHandler, BadRequestError, InternalError } from "~/shared/lib";
 import type { Route } from "./+types/document-detail";
+import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
 
-export async function loader({ request, params }: Route.LoaderArgs) {
+export const loader = loaderHandler(async ({ request, params }: LoaderFunctionArgs) => {
 	const _userId = await requireUserId(request);
 	const { documentId } = params;
 
 	if (!documentId) {
-		throw data("Document ID required", { status: 400 });
+		throw new BadRequestError("Document ID required");
 	}
 
 	const versions = await documentsService.getVersions(documentId);
 	return { versions };
-}
+});
 
-export async function action({ request, params }: Route.ActionArgs) {
+export const action = actionHandler(async ({ request, params }: ActionFunctionArgs) => {
 	const userId = await requireUserId(request);
 	const { documentId } = params;
 
 	if (!documentId) {
-		throw data("Document ID required", { status: 400 });
+		throw new BadRequestError("Document ID required");
 	}
 
 	if (request.method !== "PATCH" && request.method !== "POST") {
-		throw data("Method not allowed", { status: 405 });
+		throw new BadRequestError("Method not allowed");
 	}
 
 	const formData = await request.formData();
@@ -32,7 +33,7 @@ export async function action({ request, params }: Route.ActionArgs) {
 	const status = formData.get("status")?.toString();
 
 	if (!title && !status) {
-		throw data("No updates provided", { status: 400 });
+		throw new BadRequestError("No updates provided");
 	}
 
 	try {
@@ -42,9 +43,9 @@ export async function action({ request, params }: Route.ActionArgs) {
 		});
 		return { success: true };
 	} catch (error) {
-		throw data(
-			error instanceof Error ? error.message : "Failed to update document",
-			{ status: 500 },
-		);
+		if (error instanceof Error) {
+			throw new InternalError(error.message);
+		}
+		throw new InternalError("Failed to update document");
 	}
-}
+});

@@ -1,4 +1,5 @@
-import { type ActionFunctionArgs, data } from "react-router";
+import { type ActionFunctionArgs } from "react-router";
+import { actionHandler, BadRequestError, UnauthorizedError, InternalError } from "~/shared/lib";
 
 import { weeklyDigestCronHandler } from "../services/weekly-digest.server";
 
@@ -21,10 +22,10 @@ import { weeklyDigestCronHandler } from "../services/weekly-digest.server";
  *
  * Security: Add authorization header check if exposing publicly
  */
-export async function action({ request }: ActionFunctionArgs) {
+export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 	// Only allow POST requests
 	if (request.method !== "POST") {
-		return data({ error: "Method not allowed" }, { status: 405 });
+		throw new BadRequestError("Method not allowed");
 	}
 
 	// Security check: Verify cron secret (if running on Vercel or similar)
@@ -33,31 +34,21 @@ export async function action({ request }: ActionFunctionArgs) {
 		process.env.CRON_SECRET &&
 		cronSecret !== `Bearer ${process.env.CRON_SECRET}`
 	) {
-		return data({ error: "Unauthorized" }, { status: 401 });
+		throw new UnauthorizedError("Unauthorized");
 	}
 
 	try {
 		console.log("[API] Weekly digest cron triggered");
 		await weeklyDigestCronHandler();
 
-		return data(
-			{
-				success: true,
-				message: "Weekly digest cron completed successfully",
-				timestamp: new Date().toISOString(),
-			},
-			{ status: 200 },
-		);
+		return {
+			success: true,
+			message: "Weekly digest cron completed successfully",
+			timestamp: new Date().toISOString(),
+		};
 	} catch (error) {
 		console.error("[API] Weekly digest cron failed:", error);
 
-		return data(
-			{
-				success: false,
-				error: error instanceof Error ? error.message : "Unknown error",
-				timestamp: new Date().toISOString(),
-			},
-			{ status: 500 },
-		);
+		throw new InternalError(error instanceof Error ? error.message : "Unknown error");
 	}
-}
+});

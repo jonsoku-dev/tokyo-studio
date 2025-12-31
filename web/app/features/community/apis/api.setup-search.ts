@@ -1,8 +1,8 @@
 import { db } from "@itcom/db/client";
 import { sql } from "drizzle-orm";
-import { data } from "react-router";
+import { loaderHandler, ServiceUnavailableError } from "~/shared/lib";
 
-export async function loader() {
+export const loader = loaderHandler(async () => {
 	try {
 		// 1. Add column if not exists (Drizzle might do this via db:push, but being safe)
 		// actually db:push handles the column creation if I run it, but let's assume we run this getting robust setup.
@@ -42,18 +42,12 @@ export async function loader() {
 				setweight(to_tsvector('pg_catalog.english', coalesce(content,'')), 'B');
 		`);
 
-		return data({
+		return {
 			success: true,
 			message: "Search index and triggers set up successfully",
-		});
+		};
 	} catch (error: unknown) {
 		console.error("Search setup failed:", error);
-		return data(
-			{
-				success: false,
-				error: error instanceof Error ? error.message : "Unknown error",
-			},
-			{ status: 500 },
-		);
+		throw new ServiceUnavailableError("Search setup failed");
 	}
-}
+});

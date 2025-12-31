@@ -1,10 +1,11 @@
-import { data, type LoaderFunctionArgs } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 import { MentorService } from "~/features/mentoring/services/mentor.server";
+import { loaderHandler, BadRequestError } from "~/shared/lib";
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
+export const loader = loaderHandler(async ({ request, params }: LoaderFunctionArgs) => {
 	const mentorId = params.id;
 	if (!mentorId) {
-		throw new Response("Mentor ID required", { status: 400 });
+		throw new BadRequestError("Mentor ID required");
 	}
 
 	const url = new URL(request.url);
@@ -19,5 +20,5 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 		startDate,
 		endDate,
 	);
-	return data({ slots });
-}
+	return { slots };
+});

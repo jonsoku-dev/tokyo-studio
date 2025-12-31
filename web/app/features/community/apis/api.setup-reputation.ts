@@ -1,7 +1,8 @@
 import { db } from "@itcom/db/client";
 import { sql } from "drizzle-orm";
+import { loaderHandler, ServiceUnavailableError } from "~/shared/lib";
 
-export async function loader() {
+export const loader = loaderHandler(async () => {
 	try {
 		// Function to update user reputation when reputation_logo is inserted/deleted
 		await db.execute(sql`
@@ -32,20 +33,9 @@ export async function loader() {
             EXECUTE FUNCTION update_user_reputation();
         `);
 
-		return new Response(
-			JSON.stringify({ success: true, message: "Reputation setup completed" }),
-			{
-				headers: { "Content-Type": "application/json" },
-			},
-		);
+		return { success: true, message: "Reputation setup completed" };
 	} catch (error) {
 		console.error("Setup failed:", error);
-		return new Response(
-			JSON.stringify({
-				success: false,
-				error: error instanceof Error ? error.message : "Unknown error",
-			}),
-			{ status: 500, headers: { "Content-Type": "application/json" } },
-		);
+		throw new ServiceUnavailableError("Setup failed");
 	}
-}
+});

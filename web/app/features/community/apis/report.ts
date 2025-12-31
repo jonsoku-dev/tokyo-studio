@@ -1,21 +1,18 @@
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { commentsService } from "~/features/community/services/comments.server";
-import type { Route } from "./+types/report";
+import { actionHandler, BadRequestError } from "~/shared/lib";
+import type { ActionFunctionArgs } from "react-router";
 
-export async function action({ request, params }: Route.ActionArgs) {
+export const action = actionHandler(async ({ request, params }: ActionFunctionArgs) => {
 	const userId = await requireUserId(request);
 	const { commentId } = params;
-	if (!commentId) throw new Error("Comment ID required");
+	if (!commentId) throw new BadRequestError("Comment ID required");
 
 	const formData = await request.formData();
 	const reason = formData.get("reason") as string;
 
-	if (!reason) return { error: "Reason required" };
+	if (!reason) throw new BadRequestError("Reason required");
 
-	try {
-		await commentsService.reportComment(commentId, userId, reason);
-		return { success: true };
-	} catch (error) {
-		return { error: error instanceof Error ? error.message : "Unknown error" };
-	}
-}
+	await commentsService.reportComment(commentId, userId, reason);
+	return { success: true };
+});

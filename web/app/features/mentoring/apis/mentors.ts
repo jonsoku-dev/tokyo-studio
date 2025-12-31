@@ -1,7 +1,8 @@
-import { data, type LoaderFunctionArgs } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 import { MentorService } from "~/features/mentoring/services/mentor.server";
+import { loaderHandler } from "~/shared/lib";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export const loader = loaderHandler(async ({ request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url);
 	const filters = {
 		jobFamily: url.searchParams.get("jobFamily") || undefined,
@@ -12,5 +13,5 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	};
 
 	const mentors = await MentorService.searchMentors(filters);
-	return data({ mentors });
-}
+	return { mentors };
+});

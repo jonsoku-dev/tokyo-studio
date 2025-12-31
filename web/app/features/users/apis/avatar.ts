@@ -1,17 +1,15 @@
-import { data } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { avatarService } from "../services/avatar.server";
 import {
-	getIpAddressFromRequest,
-	getUserAgentFromRequest,
 	logAvatarChange,
 } from "../services/avatar-logger.server";
 import { checkAvatarUploadRateLimit } from "../services/avatar-rate-limiter.server";
 import type { Route } from "./+types/avatar";
+import { actionHandler, BadRequestError, InternalError, AppError, ErrorCode, RateLimitError } from "~/shared/lib";
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
-export async function action({ request }: Route.ActionArgs) {
+export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 	const userId = await requireUserId(request);
 
 	if (request.method === "DELETE") {
@@ -30,7 +28,7 @@ export async function action({ request }: Route.ActionArgs) {
 			console.error("Avatar deletion error:", error);
 			const message =
 				error instanceof Error ? error.message : "Failed to delete avatar";
-			return data({ error: message }, { status: 500 });
+			throw new InternalError(message);
 		}
 	}
 
@@ -39,11 +37,8 @@ export async function action({ request }: Route.ActionArgs) {
 			// Check rate limit
 			const rateLimitCheck = checkAvatarUploadRateLimit(userId);
 			if (!rateLimitCheck.allowed) {
-				return data(
-					{
-						error: `Rate limit exceeded. Please try again in ${rateLimitCheck.retryAfter} seconds.`,
-					},
-					{ status: 429 },
+				throw new RateLimitError(
+					`Rate limit exceeded. Please try again in ${rateLimitCheck.retryAfter} seconds.`
 				);
 			}
 
@@ -51,11 +46,11 @@ export async function action({ request }: Route.ActionArgs) {
 			const file = formData.get("file") as File;
 
 			if (!file || file.size === 0) {
-				return data({ error: "No file uploaded" }, { status: 400 });
+				throw new BadRequestError("No file uploaded");
 			}
 
 			if (file.size > MAX_FILE_SIZE) {
-				return data({ error: "File size exceeds 5MB limit" }, { status: 400 });
+				throw new BadRequestError("File size exceeds 5MB limit");
 			}
 
 			const buffer = Buffer.from(await file.arrayBuffer());
@@ -80,12 +75,13 @@ export async function action({ request }: Route.ActionArgs) {
 				remaining: rateLimitCheck.remaining,
 			};
 		} catch (error: unknown) {
+			if (error instanceof AppError) throw error;
 			console.error("Avatar upload error:", error);
 			const message =
 				error instanceof Error ? error.message : "Failed to upload avatar";
-			return data({ error: message }, { status: 500 });
+			throw new InternalError(message);
 		}
 	}
 
-	return data({ error: "Method not allowed" }, { status: 405 });
-}
+	throw new BadRequestError("Method not allowed");
+});

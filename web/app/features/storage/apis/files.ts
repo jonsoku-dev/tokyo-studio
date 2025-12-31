@@ -1,12 +1,12 @@
 import { db } from "@itcom/db/client";
 import { documents } from "@itcom/db/schema";
 import { desc, eq } from "drizzle-orm";
-import { data } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { storageService } from "~/features/storage/services/storage.server";
+import { actionHandler, loaderHandler, BadRequestError } from "~/shared/lib";
 import type { Route } from "./+types/files";
 
-export async function loader({ request }: Route.LoaderArgs) {
+export const loader = loaderHandler(async ({ request }: Route.LoaderArgs) => {
 	const userId = await requireUserId(request);
 
 	const files = await db.query.documents.findMany({
@@ -17,9 +17,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 	const usedQuota = await storageService.getUsedQuota(userId);
 
 	return { files, usedQuota };
-}
+});
 
-export async function action({ request }: Route.ActionArgs) {
+export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 	const userId = await requireUserId(request);
 	const formData = await request.formData();
 	const intent = formData.get("intent");
@@ -36,35 +36,26 @@ export async function action({ request }: Route.ActionArgs) {
 			| "Cover Letter";
 
 		if (!key || !originalName || !mimeType || !size || !type) {
-			return data({ error: "Missing fields" }, { status: 400 });
+			throw new BadRequestError("Missing fields");
 		}
 
-		try {
-			const doc = await storageService.finalizeUpload(userId, {
-				key,
-				originalName,
-				mimeType,
-				size,
-				type,
-			});
-			return { success: true, document: doc };
-		} catch (e) {
-			console.error(e);
-			return data({ error: "Failed to save metadata" }, { status: 500 });
-		}
+		const doc = await storageService.finalizeUpload(userId, {
+			key,
+			originalName,
+			mimeType,
+			size,
+			type,
+		});
+		return { success: true, document: doc };
 	}
 
 	if (intent === "delete") {
 		const documentId = formData.get("documentId") as string;
-		if (!documentId) return data({ error: "Missing ID" }, { status: 400 });
+		if (!documentId) throw new BadRequestError("Missing ID");
 
-		try {
-			await storageService.deleteFile(userId, documentId);
-			return { success: true };
-		} catch (_e) {
-			return data({ error: "Failed to delete" }, { status: 500 });
-		}
+		await storageService.deleteFile(userId, documentId);
+		return { success: true };
 	}
 
-	return data({ error: "Invalid intent" }, { status: 400 });
-}
+	throw new BadRequestError("Invalid intent");
+});

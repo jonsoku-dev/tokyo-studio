@@ -1,16 +1,16 @@
-import { data } from "react-router";
-
+import type { ActionFunctionArgs } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
+import { actionHandler, BadRequestError } from "~/shared/lib";
 import type { KanbanColumn } from "../services/roadmap.server";
 import { updateTaskColumn } from "../services/roadmap.server";
 import type { Route } from "./+types/task.$id";
 
-export async function action({ request, params }: Route.ActionArgs) {
+export const action = actionHandler(async ({ request, params }: ActionFunctionArgs) => {
 	const userId = await requireUserId(request);
 	const taskId = params.id;
 
 	if (!taskId) {
-		return data({ error: "Task ID required" }, { status: 400 });
+		throw new BadRequestError("Task ID required");
 	}
 
 	if (request.method === "PATCH") {
@@ -21,12 +21,12 @@ export async function action({ request, params }: Route.ActionArgs) {
 			!kanbanColumn ||
 			!["todo", "in_progress", "completed"].includes(kanbanColumn)
 		) {
-			return data({ error: "Invalid kanban column" }, { status: 400 });
+			throw new BadRequestError("Invalid kanban column");
 		}
 
 		const task = await updateTaskColumn(taskId, userId, kanbanColumn);
-		return data({ success: true, task });
+		return { success: true, task };
 	}
 
-	return data({ error: "Method not allowed" }, { status: 405 });
-}
+	throw new BadRequestError("Method not allowed");
+});

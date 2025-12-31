@@ -1,9 +1,9 @@
-import { data } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { profileService } from "../services/profile.server";
+import { actionHandler, InternalError } from "~/shared/lib";
 import type { Route } from "./+types/privacy";
 
-export async function action({ request }: Route.ActionArgs) {
+export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 	const userId = await requireUserId(request);
 	const formData = await request.formData();
 
@@ -20,9 +20,6 @@ export async function action({ request }: Route.ActionArgs) {
 
 		return { success: true };
 	} catch (_error) {
-		return data(
-			{ error: "Failed to update privacy settings" },
-			{ status: 500 },
-		);
+		throw new InternalError("Failed to update privacy settings");
 	}
-}
+});

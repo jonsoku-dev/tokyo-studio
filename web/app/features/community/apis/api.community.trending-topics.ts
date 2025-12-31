@@ -1,4 +1,5 @@
-import { data, type LoaderFunctionArgs } from "react-router";
+import { type LoaderFunctionArgs } from "react-router";
+import { loaderHandler, ServiceUnavailableError } from "~/shared/lib";
 
 import {
 	getSearchAnalyticsSummary,
@@ -15,11 +16,7 @@ import {
  * - include_summary: Include analytics summary (true/false)
  * - include_gaps: Include zero-result searches (true/false)
  */
-export async function loader({ request }: LoaderFunctionArgs) {
-	if (request.method !== "GET") {
-		return data({ error: "Method not allowed" }, { status: 405 });
-	}
-
+export const loader = loaderHandler(async ({ request }: LoaderFunctionArgs) => {
 	try {
 		const url = new URL(request.url);
 		const limit = Math.min(
@@ -44,20 +41,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 			response.gaps = await getZeroResultSearches(5);
 		}
 
-		return data(response, {
+		return new Response(JSON.stringify(response), {
 			headers: {
+				"Content-Type": "application/json",
 				"Cache-Control": "public, max-age=300", // Cache for 5 minutes
 			},
 		});
 	} catch (error) {
 		console.error("[API] Trending topics error:", error);
-
-		return data(
-			{
-				error: "Failed to fetch trending topics",
-				topics: [],
-			},
-			{ status: 500 },
-		);
+		throw new ServiceUnavailableError("Failed to fetch trending topics");
 	}
-}
+});

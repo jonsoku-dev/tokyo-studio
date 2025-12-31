@@ -1,8 +1,8 @@
 import { db } from "@itcom/db/client";
 import { sql } from "drizzle-orm";
-import { data } from "react-router";
+import { loaderHandler, ServiceUnavailableError } from "~/shared/lib";
 
-export async function loader() {
+export const loader = loaderHandler(async () => {
 	try {
 		// 1. Create or replace triggers for Post Score
 		await db.execute(sql`
@@ -90,18 +90,12 @@ export async function loader() {
       FOR EACH ROW EXECUTE FUNCTION update_comment_score();
     `);
 
-		return data({
+		return {
 			success: true,
 			message: "Voting system triggers set up successfully",
-		});
+		};
 	} catch (error: unknown) {
 		console.error("Voting setup failed:", error);
-		return data(
-			{
-				success: false,
-				error: error instanceof Error ? error.message : "Unknown error",
-			},
-			{ status: 500 },
-		);
+		throw new ServiceUnavailableError("Voting setup failed");
 	}
-}
+});
