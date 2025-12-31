@@ -832,6 +832,7 @@ export const mentorProfiles = pgTable("mentor_profiles", {
 	isActive: boolean("is_active").default(true).notNull(),
 	averageRating: integer("average_rating").default(0), // Store as integer (rating * 100)
 	totalReviews: integer("total_reviews").default(0),
+	isTopRated: boolean("is_top_rated").default(false).notNull(), // FR-007: 4.8+ avg and 10+ reviews
 	totalSessions: integer("total_sessions").default(0).notNull(),
 	preferredVideoProvider: text("preferred_video_provider").default("jitsi"), // "jitsi" | "google" | "zoom" | "manual"
 	manualMeetingUrl: text("manual_meeting_url"),
@@ -945,14 +946,19 @@ export const mentorApplications = pgTable("mentor_applications", {
 
 	// JSON Fields
 	expertise: jsonb("expertise").$type<string[]>().notNull(), // e.g. ["Frontend", "React"]
-	languages: jsonb("languages").$type<string[]>().notNull(), // e.g. ["Korean", "Japanese"]
+	languages: jsonb("languages").$type<Record<string, string>>().notNull(), // e.g. { japanese: "N1", english: "Business" }
+
+	// Pricing
+	hourlyRate: integer("hourly_rate").notNull().default(5000), // in JPY
 
 	// Verification
 	verificationFileUrl: text("verification_file_url").notNull(), // S3 Key (Private)
 
 	// Status
-	status: text("status").default("pending").notNull(), // "pending", "approved", "rejected"
+	status: text("status").default("pending").notNull(), // "pending", "approved", "rejected", "under_review"
 	rejectionReason: text("rejection_reason"),
+	rejectedAt: timestamp("rejected_at"),
+	requestedInfoReason: text("requested_info_reason"),
 	reviewedBy: uuid("reviewed_by").references(() => users.id),
 	reviewedAt: timestamp("reviewed_at"),
 
@@ -1315,5 +1321,83 @@ export const userTaskCompletionsRelations = relations(userTaskCompletions, ({ on
 	task: one(settlementTasks, {
 		fields: [userTaskCompletions.taskId],
 		references: [settlementTasks.id],
+	}),
+}));
+
+// --- Map Locations (SPEC 020) ---
+export const mapLocations = pgTable("map_locations", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	category: text("category").notNull(), // "government" | "immigration" | "banking" | "mobile" | "housing" | "shopping"
+	nameEn: text("name_en").notNull(),
+	nameJa: text("name_ja").notNull(),
+	nameKo: text("name_ko").notNull(),
+	address: text("address").notNull(),
+	latitude: numeric("latitude", { precision: 10, scale: 8 }).notNull(),
+	longitude: numeric("longitude", { precision: 11, scale: 8 }).notNull(),
+	phone: text("phone"),
+	hours: text("hours"), // "09:00-18:00"
+	station: text("station"), // 최근역 이름
+	area: text("area").default("tokyo"), // "tokyo" | "yokohama" | "chiba" | "saitama"
+	isVerified: boolean("is_verified").default(false),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertMapLocationSchema = createInsertSchema(mapLocations);
+export const selectMapLocationSchema = createSelectSchema(mapLocations);
+export type MapLocation = InferSelectModel<typeof mapLocations>;
+export type InsertMapLocation = typeof mapLocations.$inferInsert;
+
+// --- User Favorites (SPEC 020) ---
+export const userFavorites = pgTable("user_favorites", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	locationId: uuid("location_id")
+		.references(() => mapLocations.id, { onDelete: "cascade" })
+		.notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertUserFavoriteSchema = createInsertSchema(userFavorites);
+export const selectUserFavoriteSchema = createSelectSchema(userFavorites);
+export type UserFavorite = InferSelectModel<typeof userFavorites>;
+
+// --- Custom Markers (SPEC 020) ---
+export const customMarkers = pgTable("custom_markers", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	userId: uuid("user_id")
+		.references(() => users.id, { onDelete: "cascade" })
+		.notNull(),
+	name: text("name").notNull(),
+	category: text("category").notNull(),
+	latitude: numeric("latitude", { precision: 10, scale: 8 }).notNull(),
+	longitude: numeric("longitude", { precision: 11, scale: 8 }).notNull(),
+	notes: text("notes"),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertCustomMarkerSchema = createInsertSchema(customMarkers);
+export const selectCustomMarkerSchema = createSelectSchema(customMarkers);
+export type CustomMarker = InferSelectModel<typeof customMarkers>;
+
+// --- Map Relations ---
+export const userFavoritesRelations = relations(userFavorites, ({ one }) => ({
+	user: one(users, {
+		fields: [userFavorites.userId],
+		references: [users.id],
+	}),
+	location: one(mapLocations, {
+		fields: [userFavorites.locationId],
+		references: [mapLocations.id],
+	}),
+}));
+
+export const customMarkersRelations = relations(customMarkers, ({ one }) => ({
+	user: one(users, {
+		fields: [customMarkers.userId],
+		references: [users.id],
 	}),
 }));

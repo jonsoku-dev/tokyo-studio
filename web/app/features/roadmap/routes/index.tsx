@@ -53,8 +53,14 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 		roadmap: null,
 	});
 
-	// Use the data from React Query (or SSR data if not yet hydrated)
-	const displayTasks = roadmapData?.tasks ?? tasks;
+	// Use the data from React Query (includes server-fetched data after mutations)
+	// Server is the source of truth for progress and tasks
+	// Cast kanbanColumn to proper type (DB returns string, component expects union type)
+	const displayTasks = (roadmapData?.tasks ?? tasks).map((t) => ({
+		...t,
+		kanbanColumn: t.kanbanColumn as "todo" | "in_progress" | "completed",
+	}));
+	const displayProgress = roadmapData?.progress ?? progress;
 
 	// Column configuration
 	const columns: KanbanColumnConfig[] = [
@@ -98,13 +104,13 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 									전체 진행률
 								</p>
 								<p className="text-xl font-bold text-indigo-600">
-									{progress.percent}%
+									{displayProgress.percent}%
 								</p>
 							</div>
 							<div className="w-24 sm:w-32 bg-gray-100 rounded-full h-2.5 overflow-hidden">
 								<div
 									className="bg-indigo-600 h-full rounded-full transition-all duration-500 ease-out"
-									style={{ width: `${progress.percent}%` }}
+									style={{ width: `${displayProgress.percent}%` }}
 								/>
 							</div>
 						</div>
@@ -129,15 +135,15 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 										{cat}
 									</span>
 									<span className="text-[10px] text-gray-400 font-medium">
-										{progress.byCategory[cat].completed}/
-										{progress.byCategory[cat].total}
+										{displayProgress.byCategory[cat].completed}/
+										{displayProgress.byCategory[cat].total}
 									</span>
 								</div>
 								<div className="w-full bg-gray-200/50 rounded-full h-1">
 									<div
 										className="bg-indigo-500 h-1 rounded-full text-[0px]"
 										style={{
-											width: `${progress.byCategory[cat].percent}%`,
+											width: `${displayProgress.byCategory[cat].percent}%`,
 										}}
 									>
 										.

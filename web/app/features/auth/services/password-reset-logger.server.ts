@@ -63,7 +63,6 @@ export async function logPasswordResetEvent({
 			eventType,
 			ipAddress: ipAddress ?? null,
 			userAgent: userAgent ?? null,
-			metadata: metadata ? JSON.stringify(metadata) : null,
 			timestamp: new Date(),
 		});
 

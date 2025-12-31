@@ -74,7 +74,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 			mentorId: session.mentorId,
 			menteeId: userId,
 			rating,
-			comment,
+			text: comment,
 		});
 
 		return redirect("/mentoring/bookings");

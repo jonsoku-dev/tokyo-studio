@@ -11,21 +11,40 @@ export const roadmapQueryKeys = {
 };
 
 /**
+ * Fetch roadmap from server
+ * Single source of truth - always fetches latest data from server
+ */
+async function fetchRoadmap(): Promise<RoadmapWithTasks> {
+	const response = await fetch("/api/roadmap", {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
+
+	if (!response.ok) {
+		const errorData = await response.json();
+		throw new Error(errorData.error || "Failed to fetch roadmap");
+	}
+
+	return response.json();
+}
+
+/**
  * Hook to fetch and cache roadmap data
  *
- * Uses SSR loader data as initial cache value to avoid refetching
- * Will only refetch if explicitly invalidated
+ * Single direction data flow:
+ * - Server is the source of truth
+ * - Uses SSR loader data as initial cache to avoid waterfall requests
+ * - After mutations, invalidation triggers fresh server fetch
+ * - staleTime: 0 ensures fresh data on any invalidation
  */
 export function useRoadmapQuery(initialData: RoadmapWithTasks) {
 	return useQuery({
 		queryKey: roadmapQueryKeys.all,
-		queryFn: async () => {
-			// Since this is SSR data from loader, just return initial data
-			// Data is refreshed via mutation invalidation
-			return initialData;
-		},
+		queryFn: fetchRoadmap,
 		initialData,
-		staleTime: Infinity, // Don't refetch until explicitly invalidated
+		staleTime: 0, // Always refetch when invalidated (server is source of truth)
 		gcTime: 1000 * 60 * 30, // Keep in cache for 30 minutes
 	});
 }

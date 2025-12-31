@@ -63,6 +63,9 @@ export default [
 
 		// Settlement Checklist (SPEC 019)
 		route("settlement", "features/settlement/routes/index.tsx"),
+
+		// Map Integration (SPEC 020)
+		route("map", "features/map/routes/index.tsx"),
 	]),
 
 	// --- APIs ---
@@ -145,9 +148,15 @@ export default [
 	// route(\"api/notifications/settings\", \"features/notifications/apis/settings.ts\"), // TODO: Implement settings API
 
 	// Roadmap APIs (SPEC 016)
+	route("api/roadmap", "features/roadmap/apis/api.roadmap.get.ts"),
 	route("api/roadmap/tasks/update", "features/roadmap/apis/api.roadmap.update-task.ts"),
 	route("api/roadmap/tasks/:id", "features/roadmap/apis/task.$id.ts"),
 
 	// Pipeline APIs (SPEC 018)
 	route("api/jobs/parse", "features/pipeline/apis/api.job-parser.ts"),
+
+	// Map APIs (SPEC 020)
+	route("api/map", "features/map/apis/api.map.get.ts"),
+	route("api/map/favorites", "features/map/apis/api.favorites.get.ts"),
+	route("api/map/custom-markers", "features/map/apis/api.custom-markers.get.ts"),
 ] satisfies RouteConfig;

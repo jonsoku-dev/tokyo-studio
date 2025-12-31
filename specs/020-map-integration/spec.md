@@ -1,196 +1,213 @@
-# Feature Specification: Tokyo Map Integration
+# 도쿄 지도 통합 기능 명세서
 
-**Feature Branch**: `020-map-integration`
-**Created**: 2025-12-28
-**Status**: Draft
-**Input**: User description: "Build an interactive Tokyo map showing key locations for settlement and daily life. The map displays markers for important places including city halls (Shibuya, Shinjuku, Minato, etc.), immigration offices, major banks (SMBC, MUFG, Mizuho), mobile carriers (Docomo, Softbank, au), popular housing areas (Shibuya, Nakameguro, Ebisu, Meguro), and convenience stores for administrative tasks (7-Eleven, Family Mart with multi-copy machines). Each marker shows the location name in English, Japanese, and Korean with address, phone number, business hours, and nearest train station. Users can filter markers by category (Government, Banking, Housing, Mobile, Shopping) and search for specific locations. The map integrates with Google Maps to show walking/transit directions from the user's current location. Users can save favorite locations and add custom markers with notes. The system defaults to showing locations in central Tokyo but allows users to search other areas if they plan to live outside the city center."
+**기능 브랜치**: `020-map-integration`
+**작성일**: 2025-12-28
+**상태**: 진행 중
 
-## User Scenarios & Testing *(mandatory)*
+## 개요
 
-### User Story 1 - View Essential Settlement Locations on Interactive Map (Priority: P1)
+한국인 신규 정착자를 위한 대화형 도쿄 지도 제공. 주요 기능:
+- 구청, 은행, 이민국, 이동통신사, 주택 지역, 편의점 등의 위치 표시
+- 영어/일본어/한국어 다국어 지원
+- 카테고리별 필터링 및 검색 기능
+- 구글 맵 내비게이션 연동
+- 즐겨찾기 저장 기능
 
-A Korean professional who just arrived in Tokyo needs to quickly find and navigate to essential locations like the ward office for residence registration, nearby banks to open an account, and immigration office for their residence card.
+### US-1: 정착 필수 위치 지도 표시 (P1)
 
-**Why this priority**: This is the core value proposition. Without an interactive map showing essential locations, users must manually search each location online, which is time-consuming and error-prone. This single feature delivers immediate value for newly arrived professionals.
+**배경**: 신규 정착자는 구청, 은행, 이민국 등 주요 기관의 위치를 빠르게 파악해야 함.
 
-**Independent Test**: Can be fully tested by loading the map view with pre-populated location markers and verifying markers display correctly with multilingual labels. Delivers standalone value even without filtering or directions.
-
-**Acceptance Scenarios**:
-
-1. **Given** user is on the Tokyo settlement guide page, **When** they click "View Map", **Then** an interactive map centered on central Tokyo (Shibuya/Shinjuku area) is displayed with markers for all essential locations
-2. **Given** the map is displayed, **When** user clicks on a city hall marker (e.g., Shibuya Ward Office), **Then** a popup shows location details including name in English/Japanese/Korean, address, phone number, business hours, and nearest train station
-3. **Given** user wants to see location details, **When** they hover over any marker, **Then** a tooltip shows the location name and category
-4. **Given** the map has loaded, **When** user views the default map state, **Then** markers are clustered by geographic proximity to avoid overwhelming visual clutter
-5. **Given** user clicks on a marker cluster, **When** the cluster is activated, **Then** the map zooms in to reveal individual markers within that cluster
-
----
-
-### User Story 2 - Filter Locations by Category (Priority: P1)
-
-A user needs to focus on specific types of locations based on their immediate priorities, such as finding banks to open an account or identifying convenient housing areas.
-
-**Why this priority**: Without category filtering, users face cognitive overload from seeing 50+ markers simultaneously. This feature is essential for usability and directly supports the core use case of helping users prioritize their settlement tasks.
-
-**Independent Test**: Can be tested independently by implementing category filter checkboxes and verifying markers show/hide based on selected categories. Works without search or directions features.
-
-**Acceptance Scenarios**:
-
-1. **Given** the map is displayed with all markers, **When** user selects the "Banking" category filter, **Then** only bank markers (SMBC, MUFG, Mizuho) are displayed on the map
-2. **Given** user has filtered to show only "Government" locations, **When** they additionally select "Immigration", **Then** both government offices and immigration offices are displayed (additive filtering)
-3. **Given** multiple filters are active, **When** user clicks "Clear All Filters", **Then** all location markers are displayed again
-4. **Given** user is on mobile device, **When** they open the category filter, **Then** a drawer slides up from the bottom showing filter options with touch-friendly checkboxes
-5. **Given** filtering is active, **When** user deselects all categories, **Then** map displays all markers again with a hint message "Select categories to filter locations"
+**수용 기준**:
+1. 지도 로드 시 도쿄 중심(시부야/신주쿠)을 기본값으로 표시
+2. 마커 클릭 시 영/일/한 다국어 정보(이름, 주소, 전화, 시간, 최근역) 표시
+3. 줌아웃 시 마커는 자동으로 클러스터링되어 지도 가독성 유지
+4. 마커 클러스터 클릭 시 지도를 해당 영역으로 확대
 
 ---
 
-### User Story 3 - Search for Specific Locations (Priority: P2)
+### US-2: 카테고리 필터링 (P1)
 
-A user knows they need to visit a specific bank branch or ward office and wants to quickly locate it on the map without manually browsing markers.
+**배경**: 50개 이상의 마커를 한 번에 표시하면 사용성 저하. 사용자가 필요한 정보에만 집중할 수 있어야 함.
 
-**Why this priority**: While filtering reduces clutter, users often search for specific known locations. This improves user efficiency but is not absolutely critical for MVP since filtering provides basic discovery.
-
-**Independent Test**: Can be tested by implementing a search input that filters markers by name/address and highlights matching results. Standalone value for power users who know what they're looking for.
-
-**Acceptance Scenarios**:
-
-1. **Given** user is viewing the map, **When** they type "Shibuya" in the search box, **Then** search results show matching locations (Shibuya Ward Office, Shibuya banks, housing areas) with autocomplete suggestions
-2. **Given** search results are displayed, **When** user clicks on a search result, **Then** the map centers on that location and opens its information popup
-3. **Given** user has typed a search query, **When** they press Enter or click search icon, **Then** map zooms to fit all matching markers in view
-4. **Given** user searches in Korean (e.g., "시부야 구청"), **When** the search is executed, **Then** matching locations are found using multilingual search (searches across EN/JP/KR names)
-5. **Given** no matches are found, **When** search completes, **Then** user sees "No locations found. Try different keywords or browse by category" message
+**수용 기준**:
+1. 카테고리(정부, 은행, 이민, 이동통신, 주택, 쇼핑) 필터 제공
+2. 복수 선택 가능 (선택한 카테고리의 합집합 표시)
+3. 모바일에서는 하단 드로어로 필터 표시
+4. 필터 초기화 버튼 제공
 
 ---
 
-### User Story 4 - Get Directions to Locations (Priority: P2)
+### US-3: 위치 검색 (P2)
 
-A user wants to navigate from their current location to a city hall or bank using public transit or walking directions.
+**배경**: 특정 지점(예: "시부야 구청")을 알고 있는 사용자는 검색으로 빠르게 찾을 수 있어야 함.
 
-**Why this priority**: Directions are valuable but not critical for MVP. Users can manually copy the address into Google Maps if needed. This priority allows us to ship the core map viewing experience faster and add directions as enhancement.
-
-**Independent Test**: Can be tested by implementing a "Get Directions" button that opens Google Maps with destination pre-filled. Delivers value independently of other features.
-
-**Acceptance Scenarios**:
-
-1. **Given** user has clicked on a location marker, **When** they click "Get Directions" in the popup, **Then** browser requests location permission (if not granted) and opens Google Maps with walking/transit route from user's current location
-2. **Given** location permission is denied, **When** user clicks "Get Directions", **Then** Google Maps opens with destination pre-filled but prompts user to enter starting location manually
-3. **Given** user is on mobile device, **When** they click "Get Directions", **Then** the native Google Maps app opens (if installed) instead of web browser
-4. **Given** user views directions, **When** they select "Transit" mode, **Then** Google Maps shows train/subway routes with nearest station transfers
-5. **Given** user is viewing location details, **When** they click the address text, **Then** address is copied to clipboard with confirmation toast
+**수용 기준**:
+1. 위치명/주소로 검색 가능 (영/일/한 모두 지원)
+2. 검색 결과 클릭 시 지도 중심을 해당 위치로 이동
+3. 3자 이상 입력 시 자동완성 제안 제공 (300ms 이내)
+4. 검색 결과 없으면 "검색 결과 없음" 메시지 표시
 
 ---
 
-### User Story 5 - Save Favorite Locations and Add Custom Markers (Priority: P3)
+### US-4: 길안내 기능 (P2)
 
-A user wants to bookmark frequently visited locations (e.g., their apartment, preferred bank branch) and add custom markers for places they discover (e.g., recommended ramen shop, job interview location).
+**배경**: 사용자의 현재 위치에서 목적지까지의 경로를 빠르게 확인할 수 있어야 함.
 
-**Why this priority**: Nice-to-have personalization feature that enhances user experience but is not essential for initial settlement tasks. Can be added after core mapping features are validated with users.
-
-**Independent Test**: Can be tested by implementing a favorites system with local storage and verifying users can save/remove favorites and add custom pins with notes.
-
-**Acceptance Scenarios**:
-
-1. **Given** user has clicked on a location marker, **When** they click the "Save to Favorites" star icon, **Then** location is saved to their favorites list and star icon turns gold
-2. **Given** user has saved favorites, **When** they navigate to "My Saved Locations" view, **Then** all favorited locations are listed with option to view on map or remove
-3. **Given** user wants to add a custom location, **When** they long-press on the map (or right-click on desktop), **Then** a "Add Custom Marker" dialog appears with fields for name, category, and notes
-4. **Given** custom marker is created, **When** user saves it, **Then** marker appears on map with a different icon color (purple) to distinguish from pre-populated markers
-5. **Given** user has multiple custom markers, **When** they click on a custom marker, **Then** popup shows their notes and option to edit or delete the marker
-6. **Given** user's favorites are stored, **When** they clear browser data, **Then** favorites are persisted to their user account (if logged in) or lost (if not logged in) with warning message
+**수용 기준**:
+1. 마커의 "길안내" 버튼 클릭 시 구글맵으로 이동
+2. 현재 위치 권한 미획득 시: 목적지만 미리 입력된 상태로 구글맵 오픈
+3. 모바일: 설치된 경우 네이티브 구글맵 앱 실행
+4. 주소 텍스트 클릭 시 클립보드로 복사 및 토스트 표시
 
 ---
 
-### User Story 6 - Browse Locations Outside Central Tokyo (Priority: P3)
+### US-5: 즐겨찾기 및 커스텀 마커 (P3)
 
-A user planning to live in areas like Chiba, Yokohama, or Saitama wants to view settlement locations relevant to their chosen residential area.
+**배경**: 자주 방문하는 위치나 발견한 맛집 등을 표시할 수 있으면 편함. (인증 필수)
 
-**Why this priority**: Most users settle in central Tokyo (23 wards), so this is lower priority. Can be added later to support edge cases without blocking core functionality for majority users.
+**수용 기준**:
+1. 별 아이콘으로 즐겨찾기 저장/삭제 가능
+2. "저장된 위치" 뷰에서 목록 확인 가능
+3. 지도 우클릭(또는 롱프레스)으로 커스텀 마커 추가
+4. 커스텀 마커는 다른 색상으로 구분 표시
 
-**Independent Test**: Can be tested by implementing area search/selection that loads different marker sets based on selected prefecture or city.
+## 기능 요구사항
 
-**Acceptance Scenarios**:
+### P1 (초기 출시)
 
-1. **Given** user is viewing the Tokyo map, **When** they click "Change Area" and select "Yokohama", **Then** map re-centers to Yokohama and displays relevant ward offices, banks, and immigration offices for that area
-2. **Given** user has changed area to outside Tokyo, **When** they view the map, **Then** location markers reflect the selected area's specific offices (e.g., Yokohama Ward Offices instead of Tokyo Ward Offices)
-3. **Given** user searches for a location, **When** the location is outside the current map area, **Then** system prompts "Location found in [Area Name]. Switch to this area?" with confirmation button
-4. **Given** user has selected a non-Tokyo area, **When** they view location details, **Then** train station information shows relevant local lines (e.g., Yokohama Municipal Subway instead of Tokyo Metro)
+| 요구사항 | 설명 |
+|---------|------|
+| **지도 표시** | 도쿄 중심(시부야/신주쿠, 35.6762°N, 139.6503°E)을 기본값으로 하는 대화형 지도 |
+| **마커 카테고리** | 정부(파란색), 은행(초록색), 이민(빨간색), 이동통신(보라색), 주택(주황색), 쇼핑(노란색) |
+| **다국어 지원** | 각 위치당 영/일/한 이름, 주소, 전화, 시간, 최근역 정보 표시 |
+| **필터링** | 카테고리 복수 선택 필터 (실시간 업데이트) |
+| **검색** | 위치명/주소 검색 (영/일/한 모두 지원) + 자동완성 |
+| **마커 클러스터링** | 줌아웃 시 자동 클러스터링으로 가독성 유지 |
+| **길안내** | 구글맵 연동 (위치권한 선택적) |
+| **모바일 최적화** | 터치 제스처 지원, 하단 드로어 필터 |
 
----
+### P2 (2차 개선)
 
-### Edge Cases
+| 요구사항 | 설명 |
+|---------|------|
+| **즐겨찾기** | 인증된 사용자의 저장 위치 (데이터베이스 연동) |
+| **커스텀 마커** | 사용자 추가 마커 저장 |
+| **클립보드 복사** | 주소 복사 기능 |
 
-- **What happens when Google Maps API fails to load?** Display fallback static map with markers using OpenStreetMap or Mapbox, with degraded functionality (no directions, basic pan/zoom only) and error message explaining limited features.
-- **What happens when user denies location permission?** Directions feature shows message "Enable location permission for navigation" with manual address input as fallback. All other features work normally.
-- **What happens when marker data is outdated (e.g., bank branch closed)?** Display "Last updated: [date]" on each marker popup and provide "Report Issue" button that opens feedback form. Admin dashboard allows updating location data.
-- **What happens when user is on slow network?** Show skeleton loading state for map container, load markers progressively as data arrives, implement retry logic for failed API calls, and display offline notice if network unavailable.
-- **What happens when user has saved 50+ favorites?** Implement pagination or infinite scroll in favorites list, categorize favorites by type, and warn user at 40 favorites "Consider organizing with custom categories".
-- **What happens when multiple locations share the same address?** Stack markers vertically with slight offset, show count badge on marker (e.g., "3"), and clicking marker opens list view of all locations at that address.
-- **What happens when user's browser blocks third-party cookies (Google Maps API)?** Detect cookie blocking, show warning with instructions to enable cookies for maps.google.com, and provide fallback static map option.
-- **What happens when user language preference is not EN/JP/KR?** Default to English labels, detect browser language, and show message "Currently supporting English, Japanese, and Korean. More languages coming soon."
+### P3 (향후 고려)
 
-## Requirements *(mandatory)*
+- 도쿄 외 지역(요코하마, 치바, 사이타마) 지원
+- 위치 신고 기능 ("최종 업데이트 날짜" + "문제 신고" 버튼)
 
-### Functional Requirements
+### 기술 스택
 
-- **FR-001**: System MUST display an interactive map centered on central Tokyo (Shibuya/Shinjuku area, coordinates approximately 35.6762°N, 139.6503°E) as the default view
-- **FR-002**: System MUST render markers for the following location categories with distinct icon colors/shapes:
-  - Government (city halls, ward offices) - Blue building icon
-  - Immigration (immigration offices) - Red passport icon
-  - Banking (SMBC, MUFG, Mizuho, Japan Post Bank) - Green bank icon
-  - Mobile (Docomo, Softbank, au) - Purple phone icon
-  - Housing (popular residential areas) - Orange house icon
-  - Shopping (convenience stores with multi-copy machines) - Yellow shopping cart icon
-- **FR-003**: System MUST display multilingual information for each location in English, Japanese (日本語), and Korean (한국어) including:
-  - Location name
-  - Full address
-  - Phone number (if available)
-  - Business hours (if applicable)
-  - Nearest train station with line information
-- **FR-004**: Users MUST be able to filter visible markers by selecting one or more categories with real-time map updates
-- **FR-005**: Users MUST be able to search locations by name, address, or category in any supported language (EN/JP/KR) with autocomplete suggestions
-- **FR-006**: System MUST provide "Get Directions" functionality that integrates with Google Maps to show walking/transit routes from user's current location
-- **FR-007**: Users MUST be able to save locations to a personal favorites list (requires authentication)
-- **FR-008**: Users MUST be able to create custom markers with name, category, and notes (requires authentication)
-- **FR-009**: System MUST cluster markers when zoomed out to prevent visual clutter (e.g., show "5" badge when 5 markers are within close proximity)
-- **FR-010**: System MUST persist user favorites and custom markers to their account across devices
-- **FR-011**: System MUST support area switching to display locations for regions outside Tokyo (Yokohama, Chiba, Saitama) with appropriate marker sets
-- **FR-012**: System MUST display location markers with "Last updated: [date]" timestamp and "Report Issue" button for data accuracy
-- **FR-013**: System MUST handle Google Maps API failures gracefully with fallback to alternative mapping provider or static map
-- **FR-014**: System MUST be mobile-responsive with touch-friendly controls (pinch to zoom, pan gestures, bottom drawer for filters)
+| 항목 | 선택 | 사유 |
+|------|------|------|
+| **지도 라이브러리** | Google Maps API v3 | 마커 클러스터링, 내비게이션 기본 지원 |
+| **상태 관리** | Legend State (앱 기본) | 반응형 UI 업데이트 (필터, 검색) |
+| **데이터 소스** | SQLite + Drizzle ORM | 위치 데이터 저장 및 쿼리 |
+| **컴포넌트** | React Router v7 (클라이언트 렌더링) | 서버-클라이언트 분리 구현 |
 
-### Key Entities *(include if feature involves data)*
+### 설계 원칙
 
-- **MapLocation**: Represents a physical location on the map
-  - Attributes: id, category (enum: Government, Immigration, Banking, Mobile, Housing, Shopping), names (EN/JP/KR), address (structured: prefecture, city, street), coordinates (latitude/longitude), phone, businessHours (structured: dayOfWeek, openTime, closeTime), nearestStation (name, lines), lastUpdated, isVerified
-  - Relationships: Can be favorited by multiple Users, can have multiple IssueReports
+**단방향 데이터 흐름**:
+- 사용자 입력 → 상태 업데이트 → UI 반영
+- 필터/검색 상태는 Legend State로 중앙화
+- 부수 효과(API 호출, 권한 요청)는 최소화
 
-- **LocationCategory**: Categorizes locations for filtering
-  - Attributes: id, name (EN/JP/KR), iconType, iconColor, displayOrder
-  - Relationships: Has many MapLocations
+**useEffect 최소화**:
+- 지도 초기화: 1회만 실행 (empty dependency)
+- 필터/검색: Legend State 구독으로 처리 (effect 제거)
+- 마커 업데이트: 상태 변경 시 자동 리렌더 (effect 불필요)
 
-- **UserFavorite**: Junction table linking users to favorited locations
-  - Attributes: id, userId, locationId, notes (optional personal notes), createdAt
-  - Relationships: Belongs to User, belongs to MapLocation
+## 데이터 모델
 
-- **CustomMarker**: User-created custom locations
-  - Attributes: id, userId, name, category, coordinates, notes, color, icon, createdAt
-  - Relationships: Belongs to User
+### MapLocation (위치 데이터)
+```typescript
+{
+  id: string
+  category: 'government' | 'immigration' | 'banking' | 'mobile' | 'housing' | 'shopping'
+  name_en: string
+  name_ja: string
+  name_ko: string
+  address: string
+  latitude: number
+  longitude: number
+  phone?: string
+  hours?: string  // "09:00-18:00"
+  station?: string  // "최근역 이름"
+  updated_at: Date
+}
+```
 
-- **LocationIssueReport**: User-reported data inaccuracies
-  - Attributes: id, locationId, userId, issueType (enum: Closed, WrongHours, WrongAddress, Other), description, status (Pending, Resolved, Dismissed), createdAt
-  - Relationships: Belongs to MapLocation, belongs to User
+### UserFavorite (즐겨찾기)
+```typescript
+{
+  id: string
+  user_id: string
+  location_id: string
+  created_at: Date
+}
+```
 
-## Success Criteria *(mandatory)*
+### CustomMarker (커스텀 마커)
+```typescript
+{
+  id: string
+  user_id: string
+  name: string
+  category: string
+  latitude: number
+  longitude: number
+  notes?: string
+  created_at: Date
+}
+```
 
-### Measurable Outcomes
+## 성공 기준
 
-- **SC-001**: Users can locate and view details for any essential settlement location (city hall, bank, immigration office) within 30 seconds of opening the map
-- **SC-002**: Map loads and displays initial markers within 2 seconds on 4G connection, within 5 seconds on 3G connection
-- **SC-003**: 80% of users successfully filter locations by category on first attempt without tutorial or help documentation
-- **SC-004**: 90% of "Get Directions" clicks successfully open Google Maps with correct destination pre-filled
-- **SC-005**: Map supports simultaneous viewing of 100+ location markers without performance degradation (60 FPS pan/zoom on modern mobile devices)
-- **SC-006**: Marker clustering reduces visible markers by at least 70% when zoomed out to Tokyo-wide view, improving visual clarity
-- **SC-007**: Search autocomplete returns relevant suggestions within 300ms of user keystroke for queries with 3+ characters
-- **SC-008**: 95% of location data is accurate and up-to-date (verified through user issue reports and periodic audits)
-- **SC-009**: Mobile users can complete core tasks (view map, filter, get directions) using touch gestures without needing to zoom excessively or struggle with small tap targets
-- **SC-010**: Users who save favorites report 50% reduction in time spent re-locating frequently visited places (measured via user survey)
-- **SC-011**: Custom markers feature has 20%+ adoption rate among authenticated users within first month of launch
-- **SC-012**: System maintains 99.5% uptime with graceful degradation (fallback map) when Google Maps API is unavailable
+### 성능 목표
+
+| 항목 | 기준 |
+|------|------|
+| **초기 로딩** | 4G에서 2초, 3G에서 5초 이내 |
+| **마커 개수** | 100개 이상 동시 표시 가능 (60 FPS) |
+| **검색 응답** | 3자 이상 입력 시 300ms 이내 자동완성 |
+| **클러스터링** | 줌아웃 시 가시 마커 70% 이상 감소 |
+
+### UX 검증
+
+| 항목 | 기준 |
+|------|------|
+| **필터링** | 사용자 80%가 튜토리얼 없이 카테고리 필터 사용 성공 |
+| **길안내** | 길안내 버튼 클릭 시 90% 이상 구글맵 정상 이동 |
+| **모바일 사용성** | 터치 제스처만으로 핵심 기능 완료 가능 |
+
+### 데이터 품질
+
+- 위치 정보 정확도 90% 이상 (월 1회 검증)
+- API 무중단 시간 99% 이상
+
+## 구현 범위
+
+### 포함 (P1)
+- [x] 지도 표시 및 기본 마커
+- [x] 카테고리 필터링
+- [x] 텍스트 검색 + 자동완성
+- [x] 구글맵 길안내 연동
+- [x] 모바일 최적화
+
+### 미포함 (P2+)
+- [ ] 즐겨찾기 (인증 필요, 2차)
+- [ ] 커스텀 마커 (인증 필요, 2차)
+- [ ] 도쿄 외 지역 (3차)
+- [ ] 위치 신고 기능 (3차)
+
+## 위험 요소 및 완화 방안
+
+| 위험 | 완화 방안 |
+|------|---------|
+| Google Maps API 비용 증가 | Mapbox 폴백 준비, API 쿼리 캐싱 |
+| 위치 데이터 오래됨 | 월 1회 정기 검증, 사용자 신고 기능 |
+| 모바일 성능 저하 | 마커 가상화, 점진적 로딩 |
+| 검색 지연 | 클라이언트 사이드 인덱싱 (즉시 응답) |

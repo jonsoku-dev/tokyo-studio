@@ -11,12 +11,8 @@ import {
 	useActionData,
 	useNavigation,
 } from "react-router";
-// @ts-expect-error - React Router v7 export issues (temporarily disabled)
-// import {
-// 	unstable_composeUploadHandlers,
-// 	unstable_createMemoryUploadHandler,
-// 	unstable_parseMultipartFormData,
-// } from "@react-router/node";
+// Note: File upload via unstable_parseMultipartFormData is disabled
+// These imports are not yet stable in React Router v7
 import { z } from "zod";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { Button } from "~/shared/components/ui/Button";
@@ -36,12 +32,15 @@ const applicationSchema = z.object({
 			.map((s) => s.trim())
 			.filter(Boolean),
 	),
-	languages: z.string().transform((str) =>
-		str
-			.split(",")
-			.map((s) => s.trim())
-			.filter(Boolean),
-	),
+	languages: z.string().transform((str) => {
+		// Convert comma-separated "language:level" pairs to Record
+		const entries = str.split(",").map((s) => s.trim()).filter(Boolean);
+		return entries.reduce((acc, entry) => {
+			const [lang, level] = entry.includes(":") ? entry.split(":") : [entry, "Conversational"];
+			acc[lang.trim()] = (level || "Conversational").trim();
+			return acc;
+		}, {} as Record<string, string>);
+	}),
 	// verificationFile handled separately
 });
 
@@ -77,46 +76,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
 	const userId = await requireUserId(request);
 
-	// Custom Upload Handler
-	const uploadHandler = unstable_composeUploadHandlers(
-		async ({
-			name,
-			contentType,
-			data,
-			filename,
-		}: {
-			name: string;
-			contentType: string;
-			data: AsyncIterable<Uint8Array>;
-			filename?: string;
-		}) => {
-			if (name !== "verificationFile") {
-				return undefined;
-			}
-			if (!filename) return undefined;
-
-			// Basic validation (size limit could be here or in stream)
-			const key = await storageService.uploadPrivateFile(
-				data,
-				filename,
-				contentType,
-			);
-			return key; // specific string to identify it was uploaded
-		},
-		// Fallback for text fields
-		unstable_createMemoryUploadHandler(),
-	);
-
-	let formData;
-	try {
-		formData = await unstable_parseMultipartFormData(request, uploadHandler);
-	} catch (error) {
-		return { error: "File upload failed. Max size 5MB." };
-	}
+	// Note: File upload via unstable_parseMultipartFormData is currently disabled
+	// due to import issues. Using simple formData for now - file upload needs server setup.
+	const formData = await request.formData();
 
 	const verificationFileUrl = formData.get("verificationFile") as string;
-	if (!verificationFileUrl || typeof verificationFileUrl !== "string") {
-		return { error: "Verification document is required." };
+	if (!verificationFileUrl) {
+		return data({ error: "Verification document upload is temporarily unavailable." });
 	}
 
 	// Validate Text Fields
@@ -124,21 +90,20 @@ export async function action({ request }: ActionFunctionArgs) {
 	const result = applicationSchema.safeParse(rawData);
 
 	if (!result.success) {
-		// Cleanup uploaded file if text validation fails? (Ideally yes, skip for MVP)
-		return { error: "Invalid form data", details: result.error.flatten() };
+		return data({ error: "Invalid form data", details: result.error.flatten() });
 	}
 
 	try {
 		await applicationService.createApplication({
 			userId,
 			...result.data,
-			verificationFileUrl,
+			verificationFileUrl: verificationFileUrl.toString(),
 			status: "pending",
 		});
 		return redirect("/dashboard");
 	} catch (error) {
 		console.error(error);
-		return { error: "Failed to submit application." };
+		return data({ error: "Failed to submit application." });
 	}
 }
 
@@ -161,15 +126,6 @@ export default function MentorApplicationPage() {
 					<div className="mb-6 rounded-lg bg-red-500/10 p-4 text-red-500 border border-red-500/20">
 						<p className="font-bold">Error</p>
 						<p>{actionData.error}</p>
-						{actionData.details && (
-							<ul className="list-disc list-inside text-sm mt-2">
-								{Object.values(actionData.details.fieldErrors)
-									.flat()
-									.map((e: any, i) => (
-										<li key={i}>{e}</li>
-									))}
-							</ul>
-						)}
 					</div>
 				)}
 

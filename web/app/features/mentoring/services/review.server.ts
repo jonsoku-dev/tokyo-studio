@@ -1,13 +1,14 @@
 import { db } from "@itcom/db/client";
-import type { InsertMentorReview } from "@itcom/db/schema";
 import {
 	mentoringSessions,
 	mentorProfiles,
 	mentorReviews,
 	users,
 } from "@itcom/db/schema";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { pushService } from "~/features/notifications/services/push.server";
+
+type InsertMentorReview = typeof mentorReviews.$inferInsert;
 
 export const reviewService = {
 	async createReview(data: InsertMentorReview) {
@@ -45,25 +46,43 @@ export const reviewService = {
 				})
 				.returning();
 
-			// 3. Update Mentor Stats
-			// Recalculate average
-			const stats = await tx
+			// 3. Update Mentor Stats with WEIGHTED AVERAGE (FR-006)
+			// Recent reviews (last 3 months) weighted 2x
+			const threeMonthsAgo = new Date();
+			threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+			const allReviews = await tx
 				.select({
-					count: sql<number>`count(*)`,
-					avg: sql<number>`avg(${mentorReviews.rating})`,
+					rating: mentorReviews.rating,
+					createdAt: mentorReviews.createdAt,
 				})
 				.from(mentorReviews)
 				.where(eq(mentorReviews.mentorId, data.mentorId));
 
-			const count = Number(stats[0]?.count || 0);
-			const avgRaw = Number(stats[0]?.avg || 0);
-			const avg = Math.round(avgRaw * 100); // Store as integer x100 (e.g. 4.5 -> 450)
+			// Calculate weighted average
+			let weightedSum = 0;
+			let totalWeight = 0;
+			
+			for (const review of allReviews) {
+				const isRecent = review.createdAt && new Date(review.createdAt) > threeMonthsAgo;
+				const weight = isRecent ? 2 : 1;
+				weightedSum += review.rating * weight;
+				totalWeight += weight;
+			}
+
+			const count = allReviews.length;
+			const weightedAvg = totalWeight > 0 ? weightedSum / totalWeight : 0;
+			const avg = Math.round(weightedAvg * 100); // Store as integer x100 (e.g. 4.5 -> 450)
+
+			// FR-007: Top Rated Badge check (4.8+ avg and 10+ reviews)
+			const isTopRated = weightedAvg >= 4.8 && count >= 10;
 
 			await tx
 				.update(mentorProfiles)
 				.set({
 					totalReviews: count,
 					averageRating: avg,
+					isTopRated,
 				})
 				.where(eq(mentorProfiles.userId, data.mentorId));
 

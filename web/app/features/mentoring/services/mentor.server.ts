@@ -111,7 +111,7 @@ export const MentorService = {
 			.select({
 				id: mentorReviews.id,
 				rating: mentorReviews.rating,
-				comment: mentorReviews.comment,
+				comment: mentorReviews.text,
 				createdAt: mentorReviews.createdAt,
 				mentee: {
 					id: users.id,

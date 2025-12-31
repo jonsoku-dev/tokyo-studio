@@ -3,6 +3,7 @@ import {
 	ChevronDown,
 	ChevronRight,
 	Clock,
+	Download,
 	ExternalLink,
 	FileText,
 } from "lucide-react";
@@ -229,18 +230,35 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 								</div>
 							)}
 
-							{/* Official URL */}
-							{task.officialUrl && (
-								<a
-									href={task.officialUrl}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="inline-flex items-center gap-1 text-blue-600 hover:underline"
-								>
-									<ExternalLink className="w-4 h-4" />
-									공식 사이트 바로가기
-								</a>
-							)}
+							{/* Action Buttons */}
+							<div className="flex flex-wrap gap-3 pt-2">
+								{/* Form Template Download (P2) */}
+								{task.formTemplateUrl && (
+									<a
+										href={task.formTemplateUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										download
+										className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
+									>
+										<Download className="w-4 h-4" />
+										양식 다운로드
+									</a>
+								)}
+
+								{/* Official URL */}
+								{task.officialUrl && (
+									<a
+										href={task.officialUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+									>
+										<ExternalLink className="w-4 h-4" />
+										공식 사이트
+									</a>
+								)}
+							</div>
 						</div>
 					)}
 				</div>

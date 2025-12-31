@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { KanbanColumn, KanbanTask } from "../components/kanban.types";
+import type { KanbanColumn } from "../components/kanban.types";
 import { roadmapQueryKeys } from "./useRoadmapQuery";
 
 interface UpdateTaskParams {
@@ -32,11 +32,11 @@ async function updateTaskAPI(params: UpdateTaskParams) {
 /**
  * Hook for mutating (updating) task position
  *
- * Features:
- * - Optimistic UI updates (immediate feedback)
- * - Automatic rollback on error
- * - Automatic refetch after success
- * - Toast notifications
+ * Unidirectional data flow:
+ * - Server update via PATCH /api/roadmap/tasks/update
+ * - No optimistic update (keeps client in sync with server)
+ * - After success, refetch from server to get latest state
+ * - Server is the single source of truth
  */
 export function useUpdateTaskMutation() {
 	const queryClient = useQueryClient();
@@ -44,48 +44,19 @@ export function useUpdateTaskMutation() {
 	return useMutation({
 		mutationFn: updateTaskAPI,
 
-		// 1. Optimistic update - update UI immediately before server response
-		onMutate: async (variables) => {
-			// Cancel ongoing refetches to prevent race conditions
-			await queryClient.cancelQueries({ queryKey: roadmapQueryKeys.all });
+		// Error handler - show error toast
+		onError: (error) => {
+			toast.error(error.message || "작업 업데이트에 실패했습니다");
+		},
 
-			// Snapshot previous data for rollback
-			const previousData = queryClient.getQueryData(roadmapQueryKeys.all) as any;
-
-			// Optimistically update the cache
-			queryClient.setQueryData(roadmapQueryKeys.all, (oldData: any) => {
-				if (!oldData) return oldData;
-
-				return {
-					...oldData,
-					tasks: oldData.tasks.map((task: KanbanTask) => {
-						if (task.id === variables.taskId) {
-							return {
-								...task,
-								kanbanColumn: variables.kanbanColumn,
-								orderIndex: variables.orderIndex ?? task.orderIndex,
-							};
-						}
-						return task;
-					}),
-				};
+		// Success handler - fetch fresh data from server
+		onSuccess: async () => {
+			// Directly refetch from server to ensure data consistency
+			// This forces a fresh query execution, not using cache
+			await queryClient.refetchQueries({
+				queryKey: roadmapQueryKeys.all,
+				type: "all",
 			});
-
-			return { previousData };
-		},
-
-		// 2. Error handler - rollback on failure
-		onError: (error, variables, context) => {
-			if (context?.previousData) {
-				queryClient.setQueryData(roadmapQueryKeys.all, context.previousData);
-			}
-			toast.error(error.message || "Failed to update task");
-		},
-
-		// 3. Success handler - invalidate and refetch
-		onSuccess: () => {
-			// Refetch data from server to ensure consistency
-			queryClient.invalidateQueries({ queryKey: roadmapQueryKeys.all });
 		},
 	});
 }

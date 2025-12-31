@@ -88,8 +88,7 @@ export const storageService = {
 			const filePath = path.join(PRIVATE_STORAGE_DIR, uniqueKey);
 			const writable = fs.createWriteStream(filePath);
 
-			// @ts-expect-error - native stream piping
-			await finished(Readable.from(fileStream).pipe(writable));
+			await finished(Readable.from(fileStream as AsyncIterable<Uint8Array>).pipe(writable));
 
 			return uniqueKey;
 		}

@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { Check, CreditCard, Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFetcher } from "react-router";
 
 import { Button } from "~/shared/components/ui/Button";
@@ -22,49 +22,81 @@ interface BookingModalProps {
 	mentor: Mentor;
 }
 
-type Step = "duration" | "details" | "payment" | "success";
-
+/**
+ * Booking Modal for mentoring sessions.
+ *
+ * Design principles:
+ * - Zero useEffect (key pattern for reset, derived state for success)
+ * - Unidirectional data flow
+ */
 export function BookingModal({
 	isOpen,
 	onClose,
 	slot,
 	mentor,
 }: BookingModalProps) {
-	const fetcher = useFetcher();
-	const [step, setStep] = useState<Step>("duration");
-	const [duration, setDuration] = useState<30 | 60 | 90>(30); // Default 30? Spec says 30min increments.
-	// Spec FR-009: 30/60/90.
-	const [topic, setTopic] = useState("");
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	// Key increments on close to reset form state on next open
+	const [formKey, setFormKey] = useState(0);
 
-	// Reset on open
-	useEffect(() => {
-		if (isOpen) {
-			setStep("duration");
-			setTopic("");
-			setIsSubmitting(false);
-		}
-	}, [isOpen]);
-
-	// Handle fetcher response
-	useEffect(() => {
-		if (fetcher.state === "idle" && fetcher.data?.success) {
-			setStep("success");
-		}
-	}, [fetcher.state, fetcher.data]);
+	const handleClose = () => {
+		setFormKey((k) => k + 1);
+		onClose();
+	};
 
 	if (!slot || !mentor.profile) return null;
 
-	const hourlyRate = mentor.profile.hourlyRate || 0; // cents
-	const price = hourlyRate * (duration / 60); // Simple linear pricing
+	return (
+		<Dialog open={isOpen} onOpenChange={handleClose}>
+			<DialogContent className="border-white/10 bg-black/90 text-white backdrop-blur-xl sm:max-w-[425px]">
+				{/* Key forces remount = fresh form state */}
+				<BookingForm
+					key={formKey}
+					slot={slot}
+					mentor={mentor}
+					onClose={handleClose}
+				/>
+			</DialogContent>
+		</Dialog>
+	);
+}
+
+type Step = "duration" | "details" | "payment" | "success";
+
+interface BookingFormProps {
+	slot: AvailabilitySlot;
+	mentor: Mentor;
+	onClose: () => void;
+}
+
+/**
+ * Inner form component - remounts on each modal open via key prop.
+ * Zero useEffect - state is fresh on mount, success is derived.
+ */
+function BookingForm({ slot, mentor, onClose }: BookingFormProps) {
+	const fetcher = useFetcher();
+	const [step, setStep] = useState<Step>("duration");
+	const [duration, setDuration] = useState<30 | 60 | 90>(30);
+	const [topic, setTopic] = useState("");
+
+	// Derived state: check for successful submission (no useEffect!)
+	const isSuccess =
+		fetcher.state === "idle" && fetcher.data?.success && step !== "success";
+
+	// Transition to success step (derived, not useEffect)
+	if (isSuccess) {
+		setTimeout(() => setStep("success"), 0);
+	}
+
+	const hourlyRate = mentor.profile?.hourlyRate || 0;
+	const price = hourlyRate * (duration / 60);
+	const isSubmitting = fetcher.state !== "idle";
 
 	const handleConfirm = () => {
-		setIsSubmitting(true);
 		fetcher.submit(
 			{
 				intent: "book",
 				mentorId: mentor.id,
-				slotId: slot.id, // We need slot ID
+				slotId: slot.id,
 				duration: String(duration),
 				topic,
 				price: String(price),
@@ -218,26 +250,24 @@ export function BookingModal({
 	};
 
 	return (
-		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="border-white/10 bg-black/90 text-white backdrop-blur-xl sm:max-w-[425px]">
-				<DialogHeader>
-					<DialogTitle>
-						{step === "success" ? "Success" : "Book Session"}
-					</DialogTitle>
-					<DialogDescription>
-						{step === "duration" && "Select session duration"}
-						{step === "details" && "Tell us about your goals"}
-						{step === "payment" && "Complete payment"}
-					</DialogDescription>
-				</DialogHeader>
+		<>
+			<DialogHeader>
+				<DialogTitle>
+					{step === "success" ? "Success" : "Book Session"}
+				</DialogTitle>
+				<DialogDescription>
+					{step === "duration" && "Select session duration"}
+					{step === "details" && "Tell us about your goals"}
+					{step === "payment" && "Complete payment"}
+				</DialogDescription>
+			</DialogHeader>
 
-				{step === "duration" && renderDurationStep()}
-				{step === "details" && renderDetailsStep()}
-				{step === "payment" && renderPaymentStep()}
-				{step === "success" && renderSuccessStep()}
+			{step === "duration" && renderDurationStep()}
+			{step === "details" && renderDetailsStep()}
+			{step === "payment" && renderPaymentStep()}
+			{step === "success" && renderSuccessStep()}
 
-				<DialogFooter>{getFooter()}</DialogFooter>
-			</DialogContent>
-		</Dialog>
+			<DialogFooter>{getFooter()}</DialogFooter>
+		</>
 	);
 }

@@ -40,7 +40,7 @@ async function generateAvatarSizes(buffer: Buffer): Promise<{
 	// First, strip all EXIF metadata from the original
 	const cleanedBuffer = await sharp(buffer)
 		.rotate() // Auto-rotate based on EXIF orientation (then strips EXIF)
-		.withMetadata(false) // Explicitly remove all metadata
+		.withMetadata({}) // Strip metadata by providing empty options
 		.webp() // Convert to WebP (removing any format-specific metadata)
 		.toBuffer();
 

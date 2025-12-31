@@ -28,6 +28,7 @@ export interface TaskWithCompletion {
 	deadlineDays: number | null;
 	tips: string | null;
 	officialUrl: string | null;
+	formTemplateUrl: string | null;
 	orderIndex: number;
 	isCompleted: boolean;
 	completedAt: Date | null;
@@ -97,6 +98,7 @@ export const settlementService = {
 				deadlineDays: task.deadlineDays,
 				tips: task.tips,
 				officialUrl: task.officialUrl,
+				formTemplateUrl: task.formTemplateUrl,
 				orderIndex: task.orderIndex,
 				isCompleted: completedTaskIds.has(task.id),
 				completedAt: completion?.completedAt ?? null,
