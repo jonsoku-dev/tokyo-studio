@@ -1,32 +1,13 @@
 import clsx from "clsx";
-import {
-	Briefcase,
-	CheckSquare,
-	FileText,
-	Home,
-	Map as MapIcon,
-	MessageSquare,
-	Users,
-} from "lucide-react";
 import { Link, useLocation } from "react-router";
-
-const navigation = [
-	{ name: "Home", href: "/", icon: Home },
-	{ name: "My Roadmap", href: "/roadmap", icon: MapIcon },
-	{ name: "Diagnosis", href: "/diagnosis", icon: CheckSquare },
-	{ name: "Pipeline", href: "/pipeline", icon: Briefcase },
-	{ name: "Documents", href: "/documents", icon: FileText },
-	{ name: "Mentoring", href: "/mentoring", icon: Users },
-	{ name: "Community", href: "/community", icon: MessageSquare },
-	{ name: "Settle Tokyo", href: "/settlement", icon: CheckSquare },
-];
+import { NAVIGATION_ITEMS } from "~/shared/constants/navigation";
 
 export function Sidebar() {
 	const location = useLocation();
 
 	return (
 		<nav className="space-y-1">
-			{navigation.map((item) => {
+			{NAVIGATION_ITEMS.map((item) => {
 				const isActive = location.pathname === item.href;
 				return (
 					<Link

@@ -5,15 +5,6 @@ import {
 	useSpring,
 	useTransform,
 } from "framer-motion";
-import {
-	Briefcase,
-	CheckSquare,
-	FileText,
-	Home,
-	Map as MapIcon,
-	MessageSquare,
-	Users,
-} from "lucide-react";
 import { useRef } from "react";
 import { Link, useLocation } from "react-router";
 import {
@@ -21,17 +12,8 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "~/shared/components/ui/Tooltip";
+import { NAVIGATION_ITEMS } from "~/shared/constants/navigation";
 import { cn } from "~/shared/utils/cn";
-
-export const NAVIGATION_ITEMS = [
-	{ name: "Home", href: "/", icon: Home },
-	{ name: "My Roadmap", href: "/roadmap", icon: MapIcon },
-	{ name: "Pipeline", href: "/pipeline", icon: Briefcase },
-	{ name: "Documents", href: "/documents", icon: FileText },
-	{ name: "Mentoring", href: "/mentoring", icon: Users },
-	{ name: "Community", href: "/community", icon: MessageSquare },
-	{ name: "Settle Tokyo", href: "/settle", icon: CheckSquare },
-];
 
 export function SidebarDock() {
 	const mouseY = useMotionValue(Infinity);
@@ -57,7 +39,7 @@ function DockIcon({
 	item,
 }: {
 	mouseY: MotionValue;
-	item: (typeof NAVIGATION_ITEMS)[0];
+	item: (typeof NAVIGATION_ITEMS)[number];
 }) {
 	const ref = useRef<HTMLDivElement>(null);
 
