@@ -168,7 +168,9 @@ export const settlementService = {
 			conditions.push(eq(settlementTemplates.targetVisa, filters.targetVisa));
 		}
 		if (filters?.familyStatus) {
-			conditions.push(eq(settlementTemplates.familyStatus, filters.familyStatus));
+			conditions.push(
+				eq(settlementTemplates.familyStatus, filters.familyStatus),
+			);
 		}
 		if (filters?.region) {
 			conditions.push(eq(settlementTemplates.region, filters.region));
@@ -440,10 +442,10 @@ export const settlementService = {
 		rating: number,
 		comment: string,
 	) {
-		// Use upsert to handle both add and update in one go if collision occurs, 
-        // but for now let's keep add separate primarily.
-        // Actually, let's check strict uniqueness on the schema side manually or just simple insert.
-        // Given the unique constraint usually exists (userId, templateId), we can use onConflictDoUpdate.
+		// Use upsert to handle both add and update in one go if collision occurs,
+		// but for now let's keep add separate primarily.
+		// Actually, let's check strict uniqueness on the schema side manually or just simple insert.
+		// Given the unique constraint usually exists (userId, templateId), we can use onConflictDoUpdate.
 		await db
 			.insert(settlementReviews)
 			.values({
@@ -452,22 +454,22 @@ export const settlementService = {
 				rating,
 				comment,
 			})
-            .onConflictDoUpdate({
-                target: [settlementReviews.userId, settlementReviews.templateId],
-                set: { rating, comment, updatedAt: new Date() }
-            });
+			.onConflictDoUpdate({
+				target: [settlementReviews.userId, settlementReviews.templateId],
+				set: { rating, comment, updatedAt: new Date() },
+			});
 	},
 
-    async deleteReview(userId: string, templateId: string) {
-        await db
-            .delete(settlementReviews)
-            .where(
-                and(
-                    eq(settlementReviews.userId, userId),
-                    eq(settlementReviews.templateId, templateId)
-                )
-            );
-    },
+	async deleteReview(userId: string, templateId: string) {
+		await db
+			.delete(settlementReviews)
+			.where(
+				and(
+					eq(settlementReviews.userId, userId),
+					eq(settlementReviews.templateId, templateId),
+				),
+			);
+	},
 
 	async getReviews(templateId: string) {
 		return await db.query.settlementReviews.findMany({

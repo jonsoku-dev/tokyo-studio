@@ -122,7 +122,7 @@ export function AvailabilityCalendar({
 			);
 			days = [];
 		}
-		return <div>{rows}</div>;
+		return <div className="space-y-1">{rows}</div>;
 	};
 
 	// Slots for selected date
@@ -140,8 +140,8 @@ export function AvailabilityCalendar({
 			<div className="mt-6 border-gray-100 border-t pt-4">
 				<div className="mb-2 flex items-center justify-between">
 					<h4 className="body-sm text-gray-500">
-						Available Times (
-						{selectedDate ? format(selectedDate, "MMM d") : "-"})
+						예약 가능 시간 ({selectedDate ? format(selectedDate, "MMM d") : "-"}
+						)
 					</h4>
 					<span className="caption text-gray-400">{timezone}</span>
 				</div>
@@ -157,13 +157,13 @@ export function AvailabilityCalendar({
 								onClick={() => onSelectSlot(slot)}
 							>
 								<Clock className="mr-2 h-3 w-3 text-gray-400" />
-								{format(new Date(slot.startTime), "h:mm a")}
+								{format(new Date(slot.startTime), "a h:mm")}
 							</Button>
 						))}
 					</div>
 				) : (
 					<p className="caption py-4 text-center text-gray-400">
-						No slots available for this date.
+						선택하신 날짜에 가능한 시간이 없습니다.
 					</p>
 				)}
 			</div>

@@ -11,10 +11,7 @@ export type SettlementTemplateStatus = z.infer<
 	typeof SettlementTemplateStatusSchema
 >;
 
-export const TEMPLATE_STATUS: Record<
-	string,
-	SettlementTemplateStatus
-> = {
+export const TEMPLATE_STATUS: Record<string, SettlementTemplateStatus> = {
 	DRAFT: "draft",
 	PUBLISHED: "published",
 	ARCHIVED: "archived",
@@ -25,29 +22,32 @@ export interface StatusConfig {
 	icon: LucideIcon;
 	color: string;
 	badgeVariant: "neutral" | "primary" | "secondary" | "outline"; // generic usage
-    dotColor: string;
+	dotColor: string;
 }
 
-export const TEMPLATE_STATUS_CONFIG: Record<SettlementTemplateStatus, StatusConfig> = {
+export const TEMPLATE_STATUS_CONFIG: Record<
+	SettlementTemplateStatus,
+	StatusConfig
+> = {
 	draft: {
 		label: "비공개 (Draft)",
 		icon: Lock,
 		color: "text-gray-500",
 		badgeVariant: "neutral",
-        dotColor: "bg-gray-400",
+		dotColor: "bg-gray-400",
 	},
 	published: {
 		label: "공개 (Published)",
 		icon: CheckCircle2,
 		color: "text-green-600",
 		badgeVariant: "primary",
-        dotColor: "bg-green-500",
+		dotColor: "bg-green-500",
 	},
 	archived: {
 		label: "보관 (Archived)",
 		icon: Archive,
 		color: "text-orange-500",
 		badgeVariant: "secondary",
-        dotColor: "bg-orange-400",
+		dotColor: "bg-orange-400",
 	},
 };

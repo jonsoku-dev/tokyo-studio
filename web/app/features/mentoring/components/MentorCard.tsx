@@ -68,8 +68,15 @@ export function MentorCard({ mentor }: MentorCardProps) {
 
 				<div className="shrink-0 text-right">
 					<div className="heading-5 text-gray-900">
-						${((mentor.profile.hourlyRate || 0) / 100).toFixed(0)}
-						<span className="caption ml-0.5 font-normal text-gray-500">/h</span>
+						{mentor.profile.currency === "USD"
+							? "$"
+							: mentor.profile.currency === "JPY"
+								? "¥"
+								: "₩"}
+						{(mentor.profile.hourlyRate || 0).toLocaleString()}
+						<span className="caption ml-0.5 font-normal text-gray-500">
+							/시간
+						</span>
 					</div>
 					<div className="caption mt-1 flex items-center justify-end gap-1 font-medium text-amber-500">
 						<Star className="h-3 w-3 fill-current" />
@@ -83,10 +90,10 @@ export function MentorCard({ mentor }: MentorCardProps) {
 
 			<div className="caption mt-4 flex items-center justify-between border-gray-100 border-t pt-3">
 				<div className="flex items-center gap-2 text-gray-500">
-					<span>{mentor.profile.yearsOfExperience} years exp.</span>
+					<span>{mentor.profile.yearsOfExperience}년차</span>
 				</div>
 				<div className="font-medium text-primary-600 transition-colors group-hover:text-primary-700 group-hover:underline">
-					View Profile →
+					프로필 보기 →
 				</div>
 			</div>
 		</Link>

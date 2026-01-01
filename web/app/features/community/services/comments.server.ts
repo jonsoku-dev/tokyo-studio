@@ -6,7 +6,7 @@ import {
 	communityComments,
 	users,
 } from "@itcom/db/schema";
-import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, lt, or, sql } from "drizzle-orm";
 import { pushService } from "~/features/notifications/services/push.server";
 
 import type { CommentWithAuthor, InsertComment } from "./types";
@@ -122,13 +122,66 @@ class CommentsService {
 		return comment;
 	}
 
-	// Get Comments (Flat list with data, to be constructed into tree or list by UI)
+	// Get Comments (Paginated)
 	async getComments(
 		postId: string,
 		userId?: string,
 		sortBy: "best" | "oldest" | "newest" = "oldest",
-	): Promise<CommentWithAuthor[]> {
-		const comments = await db
+		parentId: string | null = null,
+		cursor: string | null = null, // encoded "${timestamp}_${id}"
+		limit = 5,
+	): Promise<{ comments: CommentWithAuthor[]; nextCursor: string | null }> {
+		const queries = [];
+		queries.push(eq(communityComments.postId, postId));
+
+		// Parent Filter
+		if (parentId) {
+			queries.push(eq(communityComments.parentId, parentId));
+		} else {
+			queries.push(sql`${communityComments.parentId} IS NULL`);
+		}
+
+		// Cursor Filter
+		if (cursor) {
+			const [timestamp, id] = cursor.split("_");
+			const decodedDate = new Date(parseInt(timestamp));
+			
+			if (!isNaN(decodedDate.getTime()) && id) {
+				if (sortBy === "newest") {
+					// DESC: created_at < date OR (created_at = date AND id < id)
+					queries.push(
+						or(
+							lt(communityComments.createdAt, decodedDate),
+							and(
+								eq(communityComments.createdAt, decodedDate),
+								lt(communityComments.id, id)
+							)
+						)
+					);
+				} else if (sortBy === "oldest") {
+					// ASC: created_at > date OR (created_at = date AND id > id)
+					queries.push(
+						or(
+							gt(communityComments.createdAt, decodedDate),
+							and(
+								eq(communityComments.createdAt, decodedDate),
+								gt(communityComments.id, id)
+							)
+						)
+					);
+				}
+			}
+		}
+
+	// Determine sort order
+		const sortOrder =
+			sortBy === "best"
+				? [desc(communityComments.score), desc(communityComments.id)] // Add ID tie-breaker even for best
+				: sortBy === "newest"
+					? [desc(communityComments.createdAt), desc(communityComments.id)]
+					: [asc(communityComments.createdAt), asc(communityComments.id)];
+
+		const data = await db
 			.select({
 				id: communityComments.id,
 				postId: communityComments.postId,
@@ -152,19 +205,28 @@ class CommentsService {
 				userVote: userId
 					? sql<number>`(SELECT vote_type FROM ${commentVotes} WHERE comment_id = ${communityComments.id} AND user_id = ${userId} LIMIT 1)`
 					: sql<number>`0`,
+				// Check for children count to show "Load More Replies" even if we don't load them
+				replyCount: sql<number>`(SELECT count(*) FROM ${communityComments} cc2 WHERE cc2.parent_id = ${communityComments.id})::int`,
 			})
 			.from(communityComments)
 			.leftJoin(users, eq(communityComments.authorId, users.id))
-			.where(eq(communityComments.postId, postId))
-			.orderBy(
-				sortBy === "best"
-					? desc(communityComments.score)
-					: sortBy === "newest"
-						? desc(communityComments.createdAt)
-						: asc(communityComments.createdAt),
-			);
+			.where(and(...queries))
+			.orderBy(...sortOrder)
+			.limit(limit + 1); // Fetch one more to check nextCursor
 
-		return comments.map((c) => {
+		const hasMore = data.length > limit;
+		const items = hasMore ? data.slice(0, limit) : data;
+
+		let nextCursor: string | null = null;
+		if (hasMore && items.length > 0) {
+			const lastItem = items[items.length - 1];
+			// Use composite cursor: timestamp_id
+			if (lastItem.createdAt) {
+				nextCursor = `${lastItem.createdAt.getTime()}_${lastItem.id}`;
+			}
+		}
+
+		const mapped = items.map((c) => {
 			const author = c.author?.id
 				? {
 						id: c.author.id,
@@ -181,17 +243,21 @@ class CommentsService {
 					author: null,
 					score: 0,
 					userVote: 0,
-					children: [], // For tree structure
+					children: [],
+					replyCount: c.replyCount || 0,
 				};
 			}
 			return {
 				...c,
-				author, // Use safe author object
+				author,
 				score: c.score,
 				userVote: c.userVote || 0,
 				children: [],
+				replyCount: c.replyCount || 0,
 			};
 		}) as CommentWithAuthor[];
+
+		return { comments: mapped, nextCursor };
 	}
 
 	// Vote

@@ -1,8 +1,6 @@
-import { randomUUID } from "node:crypto";
 import type * as schema from "@itcom/db/schema";
 import { users } from "@itcom/db/schema";
 import bcrypt from "bcryptjs";
-import { eq } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 export async function seedAuth(db: NodePgDatabase<typeof schema>) {
@@ -66,10 +64,12 @@ export async function seedAuth(db: NodePgDatabase<typeof schema>) {
 				displayName: u.displayName,
 				role: u.role as "user" | "admin",
 				status: "active",
+				emailVerified: new Date(),
 			})
 			.onConflictDoUpdate({
 				target: users.id,
 				set: {
+					emailVerified: new Date(),
 					password: hashedPassword,
 					name: u.name,
 					displayName: u.displayName,

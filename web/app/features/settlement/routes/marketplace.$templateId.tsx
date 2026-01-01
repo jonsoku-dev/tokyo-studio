@@ -18,13 +18,6 @@ import {
 	useFetcher,
 	useLoaderData,
 } from "react-router";
-import { requireUserId } from "../../auth/utils/session.server";
-import {
-	SettlementTemplateStatusSchema,
-	TEMPLATE_STATUS_CONFIG,
-	type SettlementTemplateStatus,
-} from "../constants";
-import { settlementService } from "../services/settlement.server";
 import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { Avatar } from "~/shared/components/ui/Avatar";
 import { Badge } from "~/shared/components/ui/Badge";
@@ -37,6 +30,13 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/shared/components/ui/Select";
+import { requireUserId } from "../../auth/utils/session.server";
+import {
+	type SettlementTemplateStatus,
+	SettlementTemplateStatusSchema,
+	TEMPLATE_STATUS_CONFIG,
+} from "../constants";
+import { settlementService } from "../services/settlement.server";
 import type { Route } from "./+types/marketplace.$templateId";
 
 export function meta({ data }: Route.MetaArgs) {
@@ -204,7 +204,7 @@ export default function TemplateDetail() {
 				<div className="stack-md lg:col-span-2">
 					{/* Task List Card */}
 					<div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
-						<div className="flex items-center justify-between border-b border-gray-50 px-6 py-4">
+						<div className="flex items-center justify-between border-gray-50 border-b px-6 py-4">
 							<h2 className="heading-5">포함된 태스크</h2>
 							<Badge variant="secondary">{tasks.length}개</Badge>
 						</div>
@@ -269,7 +269,7 @@ export default function TemplateDetail() {
 
 					{/* Reviews Card */}
 					<div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
-						<div className="flex items-center justify-between border-b border-gray-50 px-6 py-4">
+						<div className="flex items-center justify-between border-gray-50 border-b px-6 py-4">
 							<h2 className="heading-5">Reviews</h2>
 							<div className="flex gap-1 text-yellow-400">
 								{[1, 2, 3, 4, 5].map((s) => (
@@ -331,7 +331,7 @@ export default function TemplateDetail() {
 										name="comment"
 										rows={3}
 										defaultValue={myReview?.comment || ""}
-										className="w-full rounded-lg border border-gray-200 bg-white p-3 text-sm focus-ring"
+										className="focus-ring w-full rounded-lg border border-gray-200 bg-white p-3 text-sm"
 										placeholder="이 템플릿이 어떠셨나요?"
 										required
 									/>
@@ -359,14 +359,15 @@ export default function TemplateDetail() {
 									<div className="mb-2 flex items-center justify-between">
 										<div className="flex items-center gap-2">
 											<Badge variant="primary">내 리뷰</Badge>
-											<div className="flex gap-1 text-yellow-500 text-xs">
+											<div className="flex gap-1 text-xs text-yellow-500">
 												{Array.from({ length: 5 }).map((_, i) => (
 													<Star
+														// biome-ignore lint/suspicious/noArrayIndexKey: Static 5 stars
 														key={`star-${i}`}
 														className={`h-3.5 w-3.5 ${
 															i < myReview.rating
-																? "fill-current"
-																: "text-gray-300"
+																? "fill-yellow-500 text-yellow-500"
+																: "fill-gray-200 text-gray-200"
 														}`}
 													/>
 												))}
@@ -406,7 +407,7 @@ export default function TemplateDetail() {
 											</fetcher.Form>
 										</div>
 									</div>
-									<p className="text-gray-800 text-sm font-medium">
+									<p className="font-medium text-gray-800 text-sm">
 										{myReview.comment}
 									</p>
 									<p className="mt-2 text-primary-400 text-xs">
@@ -451,14 +452,15 @@ export default function TemplateDetail() {
 														{new Date(review.createdAt).toLocaleDateString()}
 													</span>
 												</div>
-												<div className="mb-2 flex gap-1 text-yellow-400 text-xs">
+												<div className="mb-2 flex gap-1 text-xs text-yellow-400">
 													{Array.from({ length: 5 }).map((_, i) => (
 														<Star
+															// biome-ignore lint/suspicious/noArrayIndexKey: Static 5 stars
 															key={`review-star-${i}`}
 															className={`h-3 w-3 ${
 																i < review.rating
-																	? "fill-current"
-																	: "text-gray-200"
+																	? "fill-yellow-400 text-yellow-400"
+																	: "fill-gray-100 text-gray-100"
 															}`}
 														/>
 													))}
@@ -479,8 +481,8 @@ export default function TemplateDetail() {
 				<div className="stack-md sticky top-24 self-start">
 					{/* Owner Controls */}
 					{isOwner && (
-						<div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-							<div className="bg-gray-50 border-b border-gray-100 px-6 py-3">
+						<div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+							<div className="border-gray-100 border-b bg-gray-50 px-6 py-3">
 								<h3 className="flex items-center gap-2 font-semibold text-gray-900 text-sm">
 									<UserIcon className="h-4 w-4 text-gray-500" />
 									제작자 관리
@@ -614,7 +616,7 @@ export default function TemplateDetail() {
 								<dd>{new Date(template.updatedAt).toLocaleDateString()}</dd>
 							</div>
 							{template.region && (
-								<div className="flex items-center justify-between border-gray-50 border-t pt-3 py-1">
+								<div className="flex items-center justify-between border-gray-50 border-t py-1 pt-3">
 									<dt className="flex items-center gap-1.5 text-gray-500">
 										<Globe className="h-3.5 w-3.5" /> Region
 									</dt>

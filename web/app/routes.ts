@@ -156,6 +156,7 @@ export default [
 	),
 
 	// Community APIs
+	route("api/comments/list", "features/community/apis/api.comments.list.ts"),
 	route("api/comments", "features/community/apis/api.comments.ts"),
 	route(
 		"api/comments/:commentId",

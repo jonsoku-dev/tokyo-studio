@@ -1,7 +1,6 @@
-import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import * as schema from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
-import { settlementCategories } from "@itcom/db/schema";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 type DB = NodePgDatabase<typeof schema>;
 

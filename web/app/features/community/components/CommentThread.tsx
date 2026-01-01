@@ -1,52 +1,57 @@
 import { MessageCircle } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFetcher } from "react-router";
+import { toast } from "sonner";
 import { Button } from "~/shared/components/ui/Button";
 import type { CommentWithAuthor } from "../services/types";
 import { CommentItem } from "./CommentItem";
 
 interface CommentThreadProps {
-	comments: CommentWithAuthor[];
+	initialComments: CommentWithAuthor[];
+	initialNextCursor: string | null;
 	currentUserId?: string;
 	postId: string;
+	sort: "best" | "oldest" | "newest";
 }
 
 export function CommentThread({
-	comments,
+	initialComments,
+	initialNextCursor,
 	currentUserId,
 	postId,
+	sort,
 }: CommentThreadProps) {
-	// Transform flat list to tree
-	const rootComments = useMemo(() => {
-		const map = new Map<string, CommentWithAuthor>();
-		const roots: CommentWithAuthor[] = [];
+	// Top-level comments state
+	const [comments, setComments] = useState<CommentWithAuthor[]>(initialComments);
+	const [nextCursor, setNextCursor] = useState<string | null>(initialNextCursor);
 
-		// First pass: map all
-		for (const c of comments) {
-			map.set(c.id, { ...c, children: [] });
+	// Fetcher for loading more top-level comments
+	const fetcher = useFetcher<{ comments: CommentWithAuthor[]; nextCursor: string | null }>();
+
+	const handleLoadMore = () => {
+		if (!nextCursor) return;
+		const params = new URLSearchParams({
+			postId,
+			sort,
+			cursor: nextCursor,
+			limit: "5",
+		});
+		fetcher.load(`/api/comments/list?${params.toString()}`);
+	};
+
+	useEffect(() => {
+		if (fetcher.data) {
+			setComments((prev) => {
+				const newComments = fetcher.data?.comments || [];
+				// Deduplicate to prevent key collision error
+				const uniqueNew = newComments.filter(
+					(n) => !prev.some((p) => p.id === n.id),
+				);
+				return [...prev, ...uniqueNew];
+			});
+			setNextCursor(fetcher.data.nextCursor);
 		}
-
-		// Second pass: attach to parents
-		// Second pass: attach to parents
-		for (const c of comments) {
-			const node = map.get(c.id);
-			if (!node) continue;
-
-			if (c.parentId) {
-				const parent = map.get(c.parentId);
-				if (parent?.children) {
-					parent.children.push(node);
-				} else {
-					// Fallback if parent missing or no children array (shouldn't happen)
-					roots.push(node);
-				}
-			} else {
-				roots.push(node);
-			}
-		}
-
-		return roots;
-	}, [comments]);
+	}, [fetcher.data]);
 
 	const [replyingTo, setReplyingTo] = useState<string | null>(null);
 
@@ -59,13 +64,13 @@ export function CommentThread({
 
 			{/* List */}
 			<div className="stack-md">
-				{rootComments.length === 0 && (
+				{comments.length === 0 && (
 					<div className="py-8 text-center text-gray-500">
 						<MessageCircle className="mx-auto mb-2 h-8 w-8 opacity-50" />
-						No comments yet. Be the first to share your thoughts!
+						아직 댓글이 없습니다. 첫 번째 댓글을 남겨보세요!
 					</div>
 				)}
-				{rootComments.map((comment) => (
+				{comments.map((comment) => (
 					<CommentNode
 						key={comment.id}
 						comment={comment}
@@ -73,8 +78,22 @@ export function CommentThread({
 						postId={postId}
 						replyingTo={replyingTo}
 						setReplyingTo={setReplyingTo}
+						sort={sort}
 					/>
 				))}
+
+				{/* Load More Button */}
+				{nextCursor && (
+					<div className="text-center pt-2">
+						<Button
+							variant="outline"
+							onClick={handleLoadMore}
+							disabled={fetcher.state === "loading"}
+						>
+							{fetcher.state === "loading" ? "로딩 중..." : "댓글 더 불러오기"}
+						</Button>
+					</div>
+				)}
 			</div>
 		</div>
 	);
@@ -87,20 +106,70 @@ function CommentNode({
 	postId,
 	replyingTo,
 	setReplyingTo,
+	sort,
 }: {
 	comment: CommentWithAuthor;
 	currentUserId?: string;
 	postId: string;
 	replyingTo: string | null;
 	setReplyingTo: (id: string | null) => void;
+	sort: string;
 }) {
-	// SPEC 008: Show More Replies collapsing
-	// Auto-expand if 3 or fewer replies, otherwise collapse
-	const [showReplies, setShowReplies] = useState(
-		!comment.children || comment.children.length <= 3,
-	);
-	const hasReplies = comment.children && comment.children.length > 0;
-	const replyCount = comment.children?.length || 0;
+	// Local state for replies (children)
+	const [children, setChildren] = useState<CommentWithAuthor[]>(comment.children || []);
+	const [nextCursor, setNextCursor] = useState<string | null>(null); // We need to returned initial cursor if we preloaded children? 
+	// Actually current loader ONLY returns top level. So initial children is empty.
+	// But replyCount > 0.
+
+	const replyCount = comment.replyCount || 0;
+	// If 0 replies, showReplies is false.
+	// If > 0, user must click "Show Replies". 
+	// Or we could auto-fetch for first few?
+	// User Requirement: "Show More Button".
+	// Let's default to collapsed (or auto-fetch if we implemented that, but we didn't).
+	// So we show "Show X Replies".
+	const [showReplies, setShowReplies] = useState(false);
+	
+	const fetcher = useFetcher<{ comments: CommentWithAuthor[]; nextCursor: string | null }>();
+
+	const handleLoadReplies = () => {
+		const cursor = nextCursor; 
+		const params = new URLSearchParams({
+			postId,
+			parentId: comment.id,
+			sort: sort, // Keep sort consistent
+			limit: "5",
+		});
+		if (cursor) params.set("cursor", cursor);
+		
+		fetcher.load(`/api/comments/list?${params.toString()}`);
+	};
+
+	useEffect(() => {
+		if (fetcher.data) {
+			setChildren((prev) => {
+				const newComments = fetcher.data?.comments || [];
+				// Deduplicate
+				const uniqueNew = newComments.filter(
+					(n) => !prev.some((p) => p.id === n.id),
+				);
+				return [...prev, ...uniqueNew];
+			});
+			setNextCursor(fetcher.data.nextCursor);
+		}
+	}, [fetcher.data]);
+
+	const toggleReplies = () => {
+		if (!showReplies) {
+			setShowReplies(true);
+			// If no children loaded yet, load them!
+			if (children.length === 0 && replyCount > 0) {
+				handleLoadReplies();
+			}
+		} else {
+			setShowReplies(false);
+		}
+	};
 
 	return (
 		<div className="relative">
@@ -122,23 +191,23 @@ function CommentNode({
 				</div>
 			)}
 
-			{/* Show/Hide Replies Button (for threads with > 3 replies) */}
-			{hasReplies && replyCount > 3 && (
+			{/* Smart Reply Toggle Button */}
+			{replyCount > 0 && (
 				<button
 					type="button"
-					onClick={() => setShowReplies(!showReplies)}
+					onClick={toggleReplies}
 					className="mt-2 ml-11 flex items-center gap-1 font-medium text-primary-600 text-sm transition-colors hover:text-primary-700"
 				>
 					{showReplies ? (
 						<>
-							Hide {replyCount} replies
+							답글 숨기기
 							<svg
 								className="h-4 w-4"
 								fill="none"
 								viewBox="0 0 24 24"
 								stroke="currentColor"
 							>
-								<title>Hide replies</title>
+								<title>Hide reply thread</title>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"
@@ -149,14 +218,14 @@ function CommentNode({
 						</>
 					) : (
 						<>
-							Show {replyCount} more {replyCount === 1 ? "reply" : "replies"}
+							답글 {replyCount}개 보기
 							<svg
 								className="h-4 w-4"
 								fill="none"
 								viewBox="0 0 24 24"
 								stroke="currentColor"
 							>
-								<title>Show replies</title>
+								<title>Show reply thread</title>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"
@@ -169,11 +238,10 @@ function CommentNode({
 				</button>
 			)}
 
-			{/* Children */}
-			{hasReplies && showReplies && (
+			{/* Children List */}
+			{showReplies && (
 				<div className="stack-sm mt-3 ml-4 border-gray-100 border-l-2 pl-4">
-					{/* biome-ignore lint/suspicious/noExplicitAny: Recursive type structure difficult to type perfectly here */}
-					{(comment as any).children.map((child: any) => (
+					{children.map((child) => (
 						<CommentNode
 							key={child.id}
 							comment={child}
@@ -181,8 +249,22 @@ function CommentNode({
 							postId={postId}
 							replyingTo={replyingTo}
 							setReplyingTo={setReplyingTo}
+							sort={sort}
 						/>
 					))}
+					
+					{/* Load More Replies Button */}
+					{/* If we have children but also nextCursor, show "Load More" */}
+					{(nextCursor || (fetcher.state === "loading" && children.length > 0)) && (
+						<button
+							type="button"
+							onClick={handleLoadReplies}
+							disabled={fetcher.state === "loading"}
+							className="mt-2 text-xs font-semibold text-gray-500 hover:text-gray-700"
+						>
+							{fetcher.state === "loading" ? "로딩 중..." : "답글 더 보기"}
+						</button>
+					)}
 				</div>
 			)}
 		</div>
@@ -208,18 +290,30 @@ function CommentForm({
 	// We can key the form or use useEffect.
 	// Simpler: use key based on submitting state or manual clear.
 
+	// Handle toast notifications (Side Effect)
+	// We still use useEffect for Toasts as they are imperative system interactions.
+	// But Form Reset is now handled unidirectionally via the `key` prop below.
+	useEffect(() => {
+		if (fetcher.state === "idle" && fetcher.data) {
+			if (fetcher.data.success) {
+				toast.success("댓글이 등록되었습니다.");
+				if (onCancel) onCancel();
+			} else if (fetcher.data.error) {
+				toast.error(fetcher.data.error);
+			}
+		}
+	}, [fetcher.state, fetcher.data, onCancel]);
+
+	// Unidirectional Reset:
+	// When success timestamp updates, the Form component remounts, clearing all uncontrolled inputs.
+	const formKey = fetcher.data?.success ? `success-${fetcher.data.timestamp}` : "initial";
+
 	return (
 		<fetcher.Form
+			key={formKey}
 			method="POST"
 			action="/api/comments"
 			className="stack-sm"
-			ref={(form) => {
-				// simple reset on success handling usually done via useEffect on fetcher.data
-				if (fetcher.state === "idle" && fetcher.data?.success) {
-					form?.reset();
-					if (onCancel) onCancel();
-				}
-			}}
 		>
 			<input type="hidden" name="intent" value="create" />
 			<input type="hidden" name="postId" value={postId} />
@@ -228,7 +322,7 @@ function CommentForm({
 			<textarea
 				name="content"
 				rows={parentId ? 2 : 3}
-				placeholder={parentId ? "Write a reply..." : "What are your thoughts?"}
+				placeholder={parentId ? "답글을 작성하세요..." : "생각을 남겨주세요..."}
 				className="w-full rounded-lg border-gray-200 p-3 text-sm transition-all focus:border-transparent focus:ring-2 focus:ring-primary-500"
 				required
 				// biome-ignore lint/a11y/noAutofocus: Intentional for reply UX
@@ -243,11 +337,11 @@ function CommentForm({
 						onClick={onCancel}
 						disabled={isSubmitting}
 					>
-						Cancel
+						취소
 					</Button>
 				)}
 				<Button type="submit" size="sm" disabled={isSubmitting}>
-					{isSubmitting ? "Posting..." : parentId ? "Reply" : "Post Comment"}
+					{isSubmitting ? "등록 중..." : parentId ? "답글 달기" : "댓글 등록"}
 				</Button>
 			</div>
 		</fetcher.Form>

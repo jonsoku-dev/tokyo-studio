@@ -96,12 +96,12 @@ export default function SettlementMarketplace() {
 								<div className="mb-4 flex items-start justify-between">
 									<div className="flex flex-wrap items-center gap-2">
 										{template.isOfficial && (
-											<span className="rounded bg-primary-50 px-2 py-1 text-xs font-medium text-primary-700">
+											<span className="rounded bg-primary-50 px-2 py-1 font-medium text-primary-700 text-xs">
 												OFFICIAL
 											</span>
 										)}
 										{template.region && (
-											<span className="rounded bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+											<span className="rounded bg-gray-100 px-2 py-1 font-medium text-gray-600 text-xs">
 												📍 {template.region}
 											</span>
 										)}
@@ -115,20 +115,20 @@ export default function SettlementMarketplace() {
 									{template.description}
 								</p>
 
-								<div className="flex flex-wrap gap-2 mb-4">
+								<div className="mb-4 flex flex-wrap gap-2">
 									{template.targetVisa && (
-										<span className="rounded-md bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
+										<span className="rounded-md bg-blue-50 px-2 py-0.5 font-medium text-blue-700 text-xs">
 											{template.targetVisa}
 										</span>
 									)}
 									{template.familyStatus && (
-										<span className="rounded-md bg-purple-50 px-2 py-0.5 text-xs font-medium text-purple-700">
+										<span className="rounded-md bg-purple-50 px-2 py-0.5 font-medium text-purple-700 text-xs">
 											{template.familyStatus}
 										</span>
 									)}
 								</div>
 
-								<div className="flex items-center gap-2 text-sm text-gray-500">
+								<div className="flex items-center gap-2 text-gray-500 text-sm">
 									<span>
 										By{" "}
 										{template.author?.displayName ||
@@ -147,7 +147,7 @@ export default function SettlementMarketplace() {
 											{template.tags.map((tag: string) => (
 												<span
 													key={tag}
-													className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600"
+													className="rounded bg-gray-100 px-2 py-0.5 text-gray-600 text-xs"
 												>
 													#{tag}
 												</span>

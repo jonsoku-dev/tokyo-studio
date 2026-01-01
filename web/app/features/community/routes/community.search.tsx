@@ -34,7 +34,7 @@ export default function SearchPage() {
 
 	return (
 		<div>
-			<PageHeader title="Search Results" className="mb-8" />
+			<PageHeader title="검색 결과" className="mb-8" />
 			<div className="mb-8">
 				<SearchBar />
 			</div>
@@ -49,9 +49,9 @@ export default function SearchPage() {
 				<div className="stack-md md:col-span-3">
 					{query && results.length === 0 && (
 						<div className="rounded-lg bg-gray-50 py-12 text-center">
-							<p className="text-gray-500">No results found for "{query}"</p>
+							<p className="text-gray-500">"{query}"에 대한 검색 결과가 없습니다.</p>
 							<p className="mt-2 text-gray-400 text-sm">
-								Try adjusting your filters or search terms.
+								필터를 조정하거나 다른 검색어로 다시 시도해보세요.
 							</p>
 						</div>
 					)}
@@ -89,11 +89,11 @@ export default function SearchPage() {
 									<span>{post.authorName}</span>
 								</div>
 								<span>
-									{format(new Date(post.createdAt || ""), "MMM d, yyyy")}
+									{format(new Date(post.createdAt || ""), "yyyy.MM.dd")}
 								</span>
 								{Boolean(post.rank) && (
 									<span className="text-gray-300">
-										Rank: {Number(post.rank).toFixed(2)}
+										정확도: {Number(post.rank).toFixed(2)}
 									</span>
 								)}
 							</div>

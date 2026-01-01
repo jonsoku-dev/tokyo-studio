@@ -11,7 +11,7 @@ import { CreateCommunityPostSchema } from "../domain/community.types";
 import type { Route } from "./+types/new";
 
 export function meta() {
-	return [{ title: "Write Post - Japan IT Job" }];
+	return [{ title: "새 글 작성 - Japan IT Job" }];
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -48,9 +48,9 @@ export default function NewPost({ actionData }: Route.ComponentProps) {
 	return (
 		<div>
 			<div className="mb-6">
-				<h1 className="heading-3">Create a Post</h1>
+				<h1 className="heading-3">새 글 작성</h1>
 				<p className="text-gray-500 text-sm">
-					Share your experience or ask a question.
+					경험을 공유하거나 질문을 남겨보세요.
 				</p>
 			</div>
 
@@ -66,7 +66,7 @@ export default function NewPost({ actionData }: Route.ComponentProps) {
 								}`
 							}
 						>
-							Ask Question (QnA)
+							질문하기
 						</Tab>
 						<Tab
 							className={({ selected }) =>
@@ -77,7 +77,7 @@ export default function NewPost({ actionData }: Route.ComponentProps) {
 								}`
 							}
 						>
-							Write Review
+							후기 작성
 						</Tab>
 					</TabList>
 					<TabPanels>
@@ -126,11 +126,11 @@ function PostForm({
 			<Input
 				id="title"
 				name="title"
-				label="Title"
+				label="제목"
 				placeholder={
 					category === "review"
-						? "e.g. Frontend Interview at LINE Yahoo"
-						: "e.g. How to prepare for visa interview?"
+						? "예: 라인 야후 프론트엔드 면접 후기"
+						: "예: 비자 인터뷰 어떻게 준비하나요?"
 				}
 				required
 			/>
@@ -140,16 +140,16 @@ function PostForm({
 					htmlFor="content"
 					className="mb-1 block font-medium text-gray-700 text-sm"
 				>
-					Content
+					내용
 				</label>
 				<MarkdownEditor
 					value={content}
 					onChange={setContent}
-					label="Content"
+					label="내용"
 					placeholder={
 						category === "review"
-							? "Share your interview process, questions asked, and outcome..."
-							: "Describe your question in detail..."
+							? "면접 과정, 질문 내용, 결과, 느낌 점 등을 자유롭게 공유해주세요..."
+							: "궁금한 점을 자세히 적어주세요..."
 					}
 					rows={12}
 				/>
@@ -161,10 +161,10 @@ function PostForm({
 					to="/community"
 					className="rounded-md border border-gray-300 px-4 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50"
 				>
-					Cancel
+					취소
 				</Link>
 				<Button type="submit" disabled={isSubmitting}>
-					{isSubmitting ? "Posting..." : "Post"}
+					{isSubmitting ? "등록 중..." : "등록"}
 				</Button>
 			</div>
 		</Form>

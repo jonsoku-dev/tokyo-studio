@@ -24,7 +24,7 @@ export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 			parentId,
 		});
 
-		return { success: true };
+		return { success: true, timestamp: Date.now() };
 	}
 
 	throw new BadRequestError("Invalid intent");

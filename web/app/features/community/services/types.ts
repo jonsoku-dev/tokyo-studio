@@ -26,6 +26,7 @@ export type CommentWithAuthor = SelectComment & {
 	score?: number;
 	userVote?: number; // 1 | -1 | 0
 	children?: CommentWithAuthor[];
+	replyCount?: number;
 };
 
 export type NotificationWithData = SelectNotification & {

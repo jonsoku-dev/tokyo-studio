@@ -1,4 +1,3 @@
-
 import { ChevronDown, Filter, X } from "lucide-react";
 import {
 	Dropdown,
@@ -34,7 +33,7 @@ export function MarketplaceFilterBar({
 			<div className="flex flex-wrap items-center gap-3">
 				<div className="flex items-center gap-2 text-gray-600">
 					<Filter className="h-4 w-4" />
-					<span className="text-sm font-medium">필터</span>
+					<span className="font-medium text-sm">필터</span>
 				</div>
 
 				<FilterDropdown
@@ -111,7 +110,7 @@ function FilterDropdown({
 	return (
 		<Dropdown>
 			<DropdownButton
-				className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+				className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium text-sm transition-colors ${
 					isActive
 						? "bg-primary-100 text-primary-700"
 						: "bg-gray-100 text-gray-600 hover:bg-gray-200"

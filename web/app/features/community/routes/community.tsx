@@ -27,7 +27,7 @@ export default function Community() {
 	return (
 		<div className="stack">
 			<PageHeader
-				title="Community"
+				title="커뮤니티"
 				actions={
 					<div className="flex items-center space-x-4">
 						<div className="flex rounded-lg bg-gray-100 p-1">
@@ -39,7 +39,7 @@ export default function Community() {
 										: "link-subtle"
 								}`}
 							>
-								Recent
+								최신순
 							</Link>
 							<Link
 								to="?sort=best"
@@ -49,14 +49,14 @@ export default function Community() {
 										: "link-subtle"
 								}`}
 							>
-								Best
+								인기순
 							</Link>
 						</div>
 						<Link
 							to="/community/new"
 							className="rounded-md bg-primary-600 px-4 py-2 font-medium text-sm text-white hover:bg-primary-700"
 						>
-							Write Post
+							글쓰기
 						</Link>
 					</div>
 				}
@@ -64,9 +64,10 @@ export default function Community() {
 
 			<div className="stack">
 				{posts.map((post) => (
-					<div
+					<Link
 						key={post.id}
-						className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-gray-300"
+						to={`/community/${post.id}`}
+						className="block cursor-pointer rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-gray-300"
 					>
 						<div className="flex items-start justify-between">
 							<div>
@@ -80,10 +81,14 @@ export default function Community() {
 													: "bg-gray-100 text-gray-800"
 										}`}
 									>
-										{post.category?.toUpperCase()}
+										{post.category === "review"
+											? "리뷰"
+											: post.category === "qna"
+												? "질문답변"
+												: "일반"}
 									</span>
 									<span className="caption">
-										Posted by {post.author?.name || "Unknown"}
+										{post.author?.name || "알 수 없음"}
 									</span>
 									<span className="caption">•</span>
 									<span className="caption">
@@ -101,15 +106,15 @@ export default function Community() {
 								<span className="heading-5 text-gray-700">
 									{post._count?.comments || 0}
 								</span>
-								<span className="caption">Cmts</span>
+								<span className="caption">댓글</span>
 							</div>
 						</div>
-					</div>
+					</Link>
 				))}
 
 				{posts.length === 0 && (
 					<div className="rounded-lg border border-gray-200 bg-white py-10 text-center text-gray-500">
-						No posts yet. Be the first to share!
+						아직 게시물이 없습니다. 첫 번째 글을 작성해보세요!
 					</div>
 				)}
 			</div>

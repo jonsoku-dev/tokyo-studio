@@ -4,7 +4,7 @@ import type {
 	SettlementTaskTemplate,
 } from "@itcom/db/schema";
 import { ArrowLeft, ArrowRight, Trash2 } from "lucide-react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "~/shared/components/ui/Button";
 import {
 	Dialog,
@@ -60,21 +60,29 @@ export function TaskDialog({
 		initialData?.category || categories[0]?.slug || "government",
 	);
 
-    // Prepare Options
-    const phaseOptions = useMemo(() => phases.map(p => ({
-        label: <span className="font-medium">{p.titleKo}</span>,
-        value: p.id
-    })), [phases]);
+	// Prepare Options
+	const phaseOptions = useMemo(
+		() =>
+			phases.map((p) => ({
+				label: <span className="font-medium">{p.titleKo}</span>,
+				value: p.id,
+			})),
+		[phases],
+	);
 
-    const categoryOptions = useMemo(() => categories.map(c => ({
-        label: (
-            <>
-                <span className="mr-2">{c.icon}</span>
-                {c.titleKo}
-            </>
-        ),
-        value: c.slug
-    })), [categories]);
+	const categoryOptions = useMemo(
+		() =>
+			categories.map((c) => ({
+				label: (
+					<>
+						<span className="mr-2">{c.icon}</span>
+						{c.titleKo}
+					</>
+				),
+				value: c.slug,
+			})),
+		[categories],
+	);
 
 	// Derived Phase Data
 	const selectedPhase = phases.find((p) => p.id === phaseId);
@@ -184,7 +192,7 @@ export function TaskDialog({
 								value={phaseId}
 								onValueChange={setPhaseId}
 								disabled={!isEdit && !!defaultPhaseId}
-                                options={phaseOptions}
+								options={phaseOptions}
 							>
 								<SelectTrigger className="h-12 border-gray-200 bg-gray-50">
 									<SelectValue placeholder="시기 선택" />
@@ -196,11 +204,11 @@ export function TaskDialog({
 						{/* Category Selection */}
 						<div className="stack-xs">
 							<Label className="text-gray-500">카테고리</Label>
-							<Select 
-                                value={category} 
-                                onValueChange={setCategory}
-                                options={categoryOptions}
-                            >
+							<Select
+								value={category}
+								onValueChange={setCategory}
+								options={categoryOptions}
+							>
 								<SelectTrigger className="h-12 border-gray-200 bg-gray-50">
 									<SelectValue placeholder="카테고리 선택" />
 								</SelectTrigger>

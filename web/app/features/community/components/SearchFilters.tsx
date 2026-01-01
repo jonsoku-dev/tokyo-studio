@@ -19,30 +19,34 @@ export function SearchFilters() {
 	return (
 		<div className="stack-md">
 			<div>
-				<h3 className="mb-2 font-medium text-gray-500 text-sm">Category</h3>
+				<h3 className="mb-2 font-medium text-gray-500 text-sm">카테고리</h3>
 				<div className="cluster-sm">
-					{["all", "general", "qna", "review"].map((c) => (
+					{[
+						{ label: "전체", value: "all" },
+						{ label: "일반", value: "general" },
+						{ label: "질문", value: "qna" },
+						{ label: "리뷰", value: "review" },
+					].map((c) => (
 						<Button
-							key={c}
-							variant={category === c ? "primary" : "outline"}
+							key={c.value}
+							variant={category === c.value ? "primary" : "outline"}
 							size="sm"
-							onClick={() => updateFilter("category", c)}
-							className="capitalize"
+							onClick={() => updateFilter("category", c.value)}
 						>
-							{c}
+							{c.label}
 						</Button>
 					))}
 				</div>
 			</div>
 
 			<div>
-				<h3 className="mb-2 font-medium text-gray-500 text-sm">Time Range</h3>
+				<h3 className="mb-2 font-medium text-gray-500 text-sm">기간</h3>
 				<div className="cluster-sm">
 					{[
-						{ label: "All Time", value: "all" },
-						{ label: "Past Week", value: "week" },
-						{ label: "Past Month", value: "month" },
-						{ label: "Past Year", value: "year" },
+						{ label: "전체", value: "all" },
+						{ label: "최근 1주", value: "week" },
+						{ label: "최근 1달", value: "month" },
+						{ label: "최근 1년", value: "year" },
 					].map((t) => (
 						<Button
 							key={t.value}

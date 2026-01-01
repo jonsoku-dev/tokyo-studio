@@ -6,6 +6,8 @@ import {
 	mentorProfiles,
 	mentorReviews,
 	users,
+	communityPosts,
+	communityComments,
 } from "@itcom/db/schema";
 import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { emailService } from "~/features/auth/services/email.server";
@@ -235,6 +237,90 @@ export const mentoringService = {
 		});
 	},
 
+	updateAvailability: async (
+		userId: string,
+		rules: { day: string; start: string; end: string }[],
+	) => {
+		return await db.transaction(async (tx) => {
+			// 1. Get Mentor ID (profile -> mentor -> or just use userId if mentorId is userId,
+			// but schema says mentorAvailabilitySlots uses mentorId which references users.id?
+			// Let's check schema. mentorAvailabilitySlots.mentorId references users.id directly?
+			// Schema says: mentorId references users.id. So userId is fine.
+
+			// 2. Delete FUTURE UNBOOKED slots
+			const now = new Date();
+			await tx
+				.delete(mentorAvailabilitySlots)
+				.where(
+					and(
+						eq(mentorAvailabilitySlots.mentorId, userId),
+						gte(mentorAvailabilitySlots.startTime, now),
+						eq(mentorAvailabilitySlots.isBooked, false),
+					),
+				);
+
+			// 3. Generate Slots for next 30 days
+			const slotsToInsert: (typeof mentorAvailabilitySlots.$inferInsert)[] = [];
+			const today = new Date();
+
+			// Generate for 4 weeks (28 days)
+			for (let i = 0; i < 28; i++) {
+				const date = new Date(today);
+				date.setDate(today.getDate() + i);
+				const dayOfWeek = date.getDay().toString(); // 0-6
+
+				// Find rules for this day
+				const dayRules = rules.filter((r) => r.day === dayOfWeek);
+
+				for (const rule of dayRules) {
+					// Parse Start
+					const [startHour, startMin] = rule.start.split(":").map(Number);
+					const slotStart = new Date(date);
+					slotStart.setHours(startHour, startMin, 0, 0);
+
+					// Parse End
+					const [endHour, endMin] = rule.end.split(":").map(Number);
+					const slotEnd = new Date(date);
+					slotEnd.setHours(endHour, endMin, 0, 0);
+
+					// Skip if in the past
+					if (slotStart < now) continue;
+
+					// Create 30-min slots? or just one big block?
+					// The availability schema stores start/end.
+					// Let's assume we store the block as defined by user for now,
+					// OR break it down if the system expects discrete slots.
+					// Booking logic locks a valid slot.
+					// If the user defines "09:00 - 18:00", we probably want to break it into chunks
+					// OR simply store it and let the booking UI handle slicing.
+					// However, typical mentor systems have discrete slots (30m or 60m).
+					// Let's break into 30-minute intervals for granularity.
+
+					let current = new Date(slotStart);
+					while (current < slotEnd) {
+						const next = new Date(current);
+						next.setMinutes(current.getMinutes() + 30);
+
+						if (next > slotEnd) break;
+
+						slotsToInsert.push({
+							mentorId: userId,
+							startTime: new Date(current),
+							endTime: new Date(next),
+							isBooked: false,
+						});
+
+						current = next;
+					}
+				}
+			}
+
+			if (slotsToInsert.length > 0) {
+				await tx.insert(mentorAvailabilitySlots).values(slotsToInsert);
+			}
+		});
+	},
+
 	getUserSessions: async (userId: string) => {
 		const results = await db
 			.select({
@@ -283,5 +369,21 @@ export const mentoringService = {
 			mentor,
 			isReviewed: !!reviewId,
 		}));
+	},
+
+	getMentorCommunityPosts: async (userId: string) => {
+		return await db
+			.select({
+				id: communityPosts.id,
+				title: communityPosts.title,
+				category: communityPosts.category,
+				createdAt: communityPosts.createdAt,
+				upvotes: communityPosts.upvotes,
+				commentCount: sql<number>`(select count(*) from ${communityComments} where ${communityComments.postId} = ${communityPosts.id})`,
+			})
+			.from(communityPosts)
+			.where(eq(communityPosts.authorId, userId))
+			.orderBy(desc(communityPosts.createdAt))
+			.limit(5);
 	},
 };

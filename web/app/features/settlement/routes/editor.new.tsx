@@ -1,17 +1,17 @@
 import { db } from "@itcom/db/client";
 import { settlementTemplates } from "@itcom/db/schema";
-import { redirect, useFetcher, useNavigation } from "react-router";
+import { redirect, useFetcher } from "react-router";
 import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { Button } from "~/shared/components/ui/Button";
 import { Input } from "~/shared/components/ui/Input";
 import { Label } from "~/shared/components/ui/Label";
-import { Textarea } from "~/shared/components/ui/Textarea";
 import {
 	Select,
 	SelectContent,
 	SelectTrigger,
 	SelectValue,
 } from "~/shared/components/ui/Select";
+import { Textarea } from "~/shared/components/ui/Textarea";
 import { requireUserId } from "../../auth/utils/session.server";
 import type { Route } from "./+types/editor.new";
 
@@ -78,10 +78,11 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function CreateTemplate() {
 	const fetcher = useFetcher();
-    // Fetcher doesn't expose 'navigation' state directly like useNavigation, but it has .state
-    // However, for page transitions on action redirect, regular navigation might be better if not using fetcher.Form?
-    // User used fetcher.Form previously. Let's stick to it, but handle loading state.
-    const isSubmitting = fetcher.state === "submitting" || fetcher.state === "loading";
+	// Fetcher doesn't expose 'navigation' state directly like useNavigation, but it has .state
+	// However, for page transitions on action redirect, regular navigation might be better if not using fetcher.Form?
+	// User used fetcher.Form previously. Let's stick to it, but handle loading state.
+	const isSubmitting =
+		fetcher.state === "submitting" || fetcher.state === "loading";
 
 	return (
 		<div className="mx-auto max-w-3xl">
@@ -94,13 +95,13 @@ export default function CreateTemplate() {
 				<fetcher.Form method="post" className="stack-lg">
 					{/* Section 1: Basic Information */}
 					<div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-						<div className="border-b border-gray-100 px-6 py-4">
+						<div className="border-gray-100 border-b px-6 py-4">
 							<h2 className="heading-5 text-gray-900">기본 정보</h2>
 							<p className="text-gray-500 text-sm">
 								체크리스트의 제목과 설명을 입력해주세요.
 							</p>
 						</div>
-						<div className="p-6 stack-md">
+						<div className="stack-md p-6">
 							<div className="stack-sm">
 								<Label htmlFor="title">제목</Label>
 								<Input
@@ -108,7 +109,7 @@ export default function CreateTemplate() {
 									id="title"
 									placeholder="예: 워킹홀리데이 100일 완성 가이드"
 									required
-                                    className="text-lg font-medium"
+									className="font-medium text-lg"
 								/>
 							</div>
 
@@ -126,10 +127,11 @@ export default function CreateTemplate() {
 
 					{/* Section 2: Target Audience */}
 					<div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-						<div className="border-b border-gray-100 px-6 py-4">
+						<div className="border-gray-100 border-b px-6 py-4">
 							<h2 className="heading-5 text-gray-900">대상 독자 설정</h2>
 							<p className="text-gray-500 text-sm">
-								이 체크리스트가 가장 도움이 될 대상을 설정해주세요. (필터링에 사용됩니다)
+								이 체크리스트가 가장 도움이 될 대상을 설정해주세요. (필터링에
+								사용됩니다)
 							</p>
 						</div>
 						<div className="p-6">
@@ -142,7 +144,9 @@ export default function CreateTemplate() {
 										</SelectTrigger>
 										<SelectContent />
 									</Select>
-                                    <p className="text-gray-400 text-xs text-muted-foreground">특정 비자 소지자를 위한 가이드라면 선택해주세요.</p>
+									<p className="text-gray-400 text-muted-foreground text-xs">
+										특정 비자 소지자를 위한 가이드라면 선택해주세요.
+									</p>
 								</div>
 
 								<div className="stack-sm">
@@ -153,18 +157,26 @@ export default function CreateTemplate() {
 										</SelectTrigger>
 										<SelectContent />
 									</Select>
-                                    <p className="text-gray-400 text-xs text-muted-foreground">1인 가구, 가족 동반 등 대상을 지정할 수 있습니다.</p>
+									<p className="text-gray-400 text-muted-foreground text-xs">
+										1인 가구, 가족 동반 등 대상을 지정할 수 있습니다.
+									</p>
 								</div>
 
 								<div className="stack-sm md:col-span-2">
 									<Label>지역</Label>
-									<Select name="region" defaultValue="Tokyo" options={REGION_OPTIONS}>
+									<Select
+										name="region"
+										defaultValue="Tokyo"
+										options={REGION_OPTIONS}
+									>
 										<SelectTrigger>
 											<SelectValue placeholder="지역 선택" />
 										</SelectTrigger>
 										<SelectContent />
 									</Select>
-                                    <p className="text-gray-400 text-xs text-muted-foreground">주로 어느 지역에 해당하는 정보인가요?</p>
+									<p className="text-gray-400 text-muted-foreground text-xs">
+										주로 어느 지역에 해당하는 정보인가요?
+									</p>
 								</div>
 							</div>
 						</div>
@@ -173,7 +185,7 @@ export default function CreateTemplate() {
 					<div className="flex justify-end pt-4 pb-20">
 						<Button
 							type="submit"
-                            size="lg"
+							size="lg"
 							disabled={isSubmitting}
 							className="min-w-[200px]"
 						>

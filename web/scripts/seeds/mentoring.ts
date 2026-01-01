@@ -1,5 +1,6 @@
-import * as schema from "@itcom/db/schema";
 import { faker } from "@faker-js/faker";
+import * as schema from "@itcom/db/schema";
+import { sql } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 export async function seedMentoring(
@@ -47,6 +48,25 @@ export async function seedMentoring(
 		})
 		.returning();
 
+	// Mentor Availability Rules (Moved up for JSON sync)
+	const rules = [
+		{
+			day: "1", // Mon
+			start: "19:00",
+			end: "22:00",
+		},
+		{
+			day: "3", // Wed
+			start: "19:00",
+			end: "22:00",
+		},
+		{
+			day: "6", // Sat
+			start: "10:00",
+			end: "18:00",
+		},
+	];
+
 	// Mentor Profiles Table (Extended)
 	await db.insert(schema.mentorProfiles).values({
 		userId: adminUserId,
@@ -58,6 +78,18 @@ export async function seedMentoring(
 		bio: "Expert in React, Node.js, and System Design. Helping you land your first job in Japan.",
 		specialties: ["Frontend", "Backend", "System Design"],
 		languages: ["Korean", "Japanese", "English"],
+		timezone: "Asia/Tokyo",
+		availability: rules, // Sync JSON for Settings UI
+		socialHandles: {
+			linkedin: "https://linkedin.com/in/example",
+			x: "https://x.com/example",
+			youtube: "https://youtube.com/@example",
+		},
+		videoUrls: [
+			"https://www.youtube.com/watch?v=dQw4w9WgXcQ", // Classic
+			"https://www.youtube.com/watch?v=5qap5aO4i9A", // Lofi Girl
+		],
+		preferredVideoProvider: "google",
 		isActive: true,
 		isTopRated: true,
 		averageRating: 490, // 4.9
@@ -65,43 +97,63 @@ export async function seedMentoring(
 		totalSessions: 50,
 	});
 
-	// Mentor Availability
-	await db.insert(schema.mentorAvailability).values([
-		{
-			mentorId: mentor.id,
-			dayOfWeek: "1", // Mon
-			startTime: "19:00",
-			endTime: "22:00",
-		},
-		{
-			mentorId: mentor.id,
-			dayOfWeek: "3", // Wed
-			startTime: "19:00",
-			endTime: "22:00",
-		},
-		{
-			mentorId: mentor.id,
-			dayOfWeek: "6", // Sat
-			startTime: "10:00",
-			endTime: "18:00",
-		},
-	]);
+	// Generate Concrete Slots for next 30 days
+	const slotsToInsert: (typeof schema.mentorAvailabilitySlots.$inferInsert)[] =
+		[];
+	const today = new Date();
 
-	// 2. Create Mentees
-	const menteeIds = [];
-	for (let i = 0; i < 3; i++) {
-		const [user] = await db
-			.insert(schema.users)
-			.values({
-				email: faker.internet.email(),
-				name: faker.person.fullName(),
-				displayName: faker.person.fullName(),
-				avatarUrl: faker.image.avatar(),
-				role: "user",
-			})
-			.returning();
-		menteeIds.push(user.id);
+	for (let i = 0; i < 30; i++) {
+		const date = new Date(today);
+		date.setDate(today.getDate() + i);
+		const dayOfWeek = date.getDay().toString(); // 0-6
+
+		// Find rules for this day
+		const dayRules = rules.filter((r) => r.day === dayOfWeek);
+
+		for (const rule of dayRules) {
+			const [startHour, startMin] = rule.start.split(":").map(Number);
+			const slotStart = new Date(date);
+			slotStart.setHours(startHour, startMin, 0, 0);
+
+			const [endHour, endMin] = rule.end.split(":").map(Number);
+			const slotEnd = new Date(date);
+			slotEnd.setHours(endHour, endMin, 0, 0);
+
+			// Break into 30 minute chunks
+			let current = new Date(slotStart);
+			while (current < slotEnd) {
+				const next = new Date(current);
+				next.setMinutes(current.getMinutes() + 30);
+
+				if (next > slotEnd) break;
+
+				slotsToInsert.push({
+					mentorId: adminUserId, // Use userId as mentorId reference
+					startTime: new Date(current),
+					endTime: new Date(next),
+					isBooked: false,
+				});
+
+				current = next;
+			}
+		}
 	}
+
+	if (slotsToInsert.length > 0) {
+		await db.insert(schema.mentorAvailabilitySlots).values(slotsToInsert);
+	}
+
+	// 2. Get Existing Mentees (from auth.ts seed)
+	const potentialMentees = await db
+		.select()
+		.from(schema.users)
+		.where(sql`${schema.users.id} != ${adminUserId}`);
+	
+	if (potentialMentees.length === 0) {
+		console.warn("⚠️ No potential mentees found. Skipping detailed mentoring seed.");
+	}
+
+	const menteeIds = potentialMentees.map(u => u.id);
 
 	// 3. Create Sessions & Reviews
 	for (const menteeId of menteeIds) {

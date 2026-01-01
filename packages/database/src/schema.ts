@@ -923,6 +923,14 @@ export const mentorProfiles = pgTable("mentor_profiles", {
 	totalSessions: integer("total_sessions").default(0).notNull(),
 	preferredVideoProvider: text("preferred_video_provider").default("jitsi"), // "jitsi" | "google" | "zoom" | "manual"
 	manualMeetingUrl: text("manual_meeting_url"),
+	socialHandles: jsonb("social_handles").$type<{
+		linkedin?: string;
+		x?: string;
+		instagram?: string;
+		threads?: string;
+		youtube?: string;
+	}>(),
+	videoUrls: jsonb("video_urls").$type<string[]>(), // Array of YouTube URLs
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 	updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

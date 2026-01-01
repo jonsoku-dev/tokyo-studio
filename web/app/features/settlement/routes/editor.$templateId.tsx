@@ -401,7 +401,9 @@ export default function TemplateEditor() {
 											기술/인문지식/국제업무
 										</SelectItem>
 										<SelectItem value="Student">유학</SelectItem>
-										<SelectItem value="Working Holiday">워킹홀리데이</SelectItem>
+										<SelectItem value="Working Holiday">
+											워킹홀리데이
+										</SelectItem>
 										<SelectItem value="Dependent">가족체재</SelectItem>
 										<SelectItem value="HSP">고도인재</SelectItem>
 										<SelectItem value="Spouse">일본인의 배우자</SelectItem>

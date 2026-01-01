@@ -13,6 +13,17 @@ const JOB_FAMILIES = [
 	"Design",
 ];
 
+const ADD_JOB_LABELS: Record<string, string> = {
+	Frontend: "프론트엔드",
+	Backend: "백엔드",
+	Mobile: "모바일",
+	DevOps: "데브옵스",
+	Cybersecurity: "보안",
+	Data: "데이터",
+	Product: "기획/PM",
+	Design: "디자인",
+};
+
 export function MentorFilters() {
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
@@ -32,7 +43,7 @@ export function MentorFilters() {
 		<div className="stack-lg">
 			<div>
 				<h3 className="caption mb-3 border-gray-100 border-b pb-2 font-bold text-gray-900 uppercase tracking-wider">
-					Job Family
+					직군 (Job Family)
 				</h3>
 				<div className="flex flex-wrap gap-2">
 					<Button
@@ -41,7 +52,7 @@ export function MentorFilters() {
 						className={`rounded-full ${!currentJob ? "" : "border-gray-200 text-gray-600 hover:bg-gray-50"}`}
 						onClick={() => handleJobChange(null)}
 					>
-						All
+						전체
 					</Button>
 					{JOB_FAMILIES.map((job) => (
 						<Button
@@ -51,7 +62,7 @@ export function MentorFilters() {
 							className={`rounded-full ${currentJob === job ? "" : "border-gray-200 text-gray-600 hover:bg-gray-50"}`}
 							onClick={() => handleJobChange(job)}
 						>
-							{job}
+							{ADD_JOB_LABELS[job] || job}
 						</Button>
 					))}
 				</div>
@@ -60,13 +71,13 @@ export function MentorFilters() {
 			{/* Price Filter - Simplified Inputs */}
 			<div>
 				<h3 className="caption mb-3 border-gray-100 border-b pb-2 font-bold text-gray-900 uppercase tracking-wider">
-					Hourly Rate ($)
+					시간당 비용 ($)
 				</h3>
 				<div className="flex items-center gap-2">
 					<div className="relative flex-1">
 						<Input
 							name="minPrice"
-							placeholder="Min"
+							placeholder="최소"
 							type="number"
 							containerClassName="w-full"
 							defaultValue={minPrice ? Number(minPrice) / 100 : ""}
@@ -84,7 +95,7 @@ export function MentorFilters() {
 					<div className="relative flex-1">
 						<Input
 							name="maxPrice"
-							placeholder="Max"
+							placeholder="최대"
 							type="number"
 							containerClassName="w-full"
 							defaultValue={maxPrice ? Number(maxPrice) / 100 : ""}

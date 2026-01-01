@@ -4,11 +4,12 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { seedAuth } from "./seeds/auth";
 import { seedCategories } from "./seeds/categories";
+import { seedCommunity } from "./seeds/community";
+import { seedMentoring } from "./seeds/mentoring";
 import { seedPhases } from "./seeds/phases";
 import { seedPipeline } from "./seeds/pipeline";
 import { seedRoadmap } from "./seeds/roadmap";
 import { seedSettlement } from "./seeds/settlement";
-import { seedMentoring } from "./seeds/mentoring";
 
 // Load environment variables
 config({ path: ".env" });
@@ -34,6 +35,14 @@ export async function seedDatabase() {
 		console.log("🌱 Starting database seed...\n");
 
 		// Clear dependent tables first to avoid foreign key constraints
+		await db.delete(schema.voteAuditLogs);
+		await db.delete(schema.reputationLogs);
+		await db.delete(schema.commentVotes);
+		await db.delete(schema.postVotes);
+		await db.delete(schema.commentNotifications);
+		await db.delete(schema.communityComments);
+		await db.delete(schema.communityPosts);
+
 		await db.delete(schema.settlementReviews);
 		await db.delete(schema.settlementTaskTemplates);
 		await db.delete(schema.settlementTemplates);
@@ -44,10 +53,10 @@ export async function seedDatabase() {
 		await db.delete(schema.profiles);
 		await db.delete(schema.documents);
 		await db.delete(schema.tasks);
-        await db.delete(schema.mentorReviews);
-        await db.delete(schema.mentoringSessions);
-        await db.delete(schema.mentorApplications);
-        await db.delete(schema.mentorProfiles);
+		await db.delete(schema.mentorReviews);
+		await db.delete(schema.mentoringSessions);
+		await db.delete(schema.mentorApplications);
+		await db.delete(schema.mentorProfiles);
 		await db.delete(schema.mentors);
 		await db.delete(schema.users);
 
@@ -64,11 +73,14 @@ export async function seedDatabase() {
 		await seedPhases(db);
 		await seedCategories(db); // Uses db import internally, might need check
 
+		// Step 3.6: Community
+		await seedCommunity(db);
+
 		// Step 4: Settlement
 		await seedSettlement(db, userId);
 
-        // Step 5: Mentoring
-        await seedMentoring(db, userId);
+		// Step 5: Mentoring
+		await seedMentoring(db, userId);
 
 		console.log("✅ Database seeding completed successfully!");
 		console.log("📊 Test user email: test@example.com");

@@ -37,7 +37,7 @@ export function SearchBar() {
 						setIsOpen(true);
 					}}
 					onBlur={() => setTimeout(() => setIsOpen(false), 200)}
-					placeholder="Search titles, content, tags..."
+					placeholder="제목, 내용, 태그 검색..."
 					className="w-full pr-10 pl-9"
 					autoComplete="off"
 				/>
@@ -45,7 +45,7 @@ export function SearchBar() {
 					type="button"
 					onClick={() => setShowHelp(!showHelp)}
 					className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
-					title="Search help"
+					title="검색 도움말"
 				>
 					<HelpCircle className="h-4 w-4" />
 				</button>
@@ -55,7 +55,7 @@ export function SearchBar() {
 			{showHelp && (
 				<div className="absolute top-full right-0 z-50 mt-1 w-80 rounded-lg border bg-white p-4 shadow-lg">
 					<div className="mb-3 flex items-center justify-between">
-						<h3 className="heading-5">Search Tips</h3>
+						<h3 className="heading-5">검색 팁</h3>
 						<button
 							type="button"
 							onClick={() => setShowHelp(false)}
@@ -69,25 +69,25 @@ export function SearchBar() {
 							<code className="whitespace-nowrap rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">
 								react hooks
 							</code>
-							<span className="text-gray-600">Find posts with both words</span>
+							<span className="text-gray-600">두 단어가 모두 포함된 글</span>
 						</li>
 						<li className="flex items-start gap-2">
 							<code className="whitespace-nowrap rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">
 								react OR vue
 							</code>
-							<span className="text-gray-600">Find posts with either word</span>
+							<span className="text-gray-600">두 단어 중 하나라도 포함된 글</span>
 						</li>
 						<li className="flex items-start gap-2">
 							<code className="whitespace-nowrap rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">
 								react -vue
 							</code>
-							<span className="text-gray-600">Exclude a word</span>
+							<span className="text-gray-600">특정 단어 제외</span>
 						</li>
 						<li className="flex items-start gap-2">
 							<code className="whitespace-nowrap rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">
 								"exact phrase"
 							</code>
-							<span className="text-gray-600">Search exact phrase</span>
+							<span className="text-gray-600">정확한 문구 일치</span>
 						</li>
 					</ul>
 				</div>

@@ -136,7 +136,7 @@ function BookingForm({
 								: "border-gray-200 bg-white text-gray-600 hover:border-primary-300 hover:bg-gray-50"
 						}`}
 					>
-						<span className="heading-5 text-gray-900">{d} min</span>
+						<span className="heading-5 text-gray-900">{d}분</span>
 						<span className="caption text-gray-500">
 							${((hourlyRate * (d / 60)) / 100).toFixed(0)}
 						</span>
@@ -145,10 +145,10 @@ function BookingForm({
 			</div>
 			<div className="rounded-lg border border-primary-100 bg-primary-50 p-3 text-primary-700 text-sm">
 				<p>
-					Session with <strong className="font-semibold">{mentor.name}</strong>
+					멘토: <strong className="font-semibold">{mentor.name}</strong>
 				</p>
 				<p className="mt-1 text-primary-600 text-xs">
-					{format(new Date(slot.startTime), "MMMM d, yyyy 'at' h:mm a")}
+					{format(new Date(slot.startTime), "yyyy년 M월 d일 a h:mm")}
 				</p>
 			</div>
 		</div>
@@ -161,11 +161,11 @@ function BookingForm({
 					htmlFor="booking-topic"
 					className="font-medium text-gray-700 text-sm"
 				>
-					What would you like to discuss?
+					어떤 내용을 논의하고 싶으신가요?
 				</label>
 				<Textarea
 					id="booking-topic"
-					placeholder="e.g. Code review for my React project, Career advice..."
+					placeholder="예: React 프로젝트 코드 리뷰, 커리어 조언, 이력서 첨삭 등..."
 					className="min-h-[100px]"
 					value={topic}
 					onChange={(e) => setTopic(e.target.value)}
@@ -182,8 +182,8 @@ function BookingForm({
 						mode="multi"
 						maxSelections={MAX_SHARED_DOCUMENTS}
 						onChange={(selected) => setSharedDocumentIds(selected as string[])}
-						label="Share Documents (Optional)"
-						hint="Share your resume or portfolio for mentor review"
+						label="문서 공유 (선택)"
+						hint="이력서나 포트폴리오를 멘토에게 미리 공유하면 더 효과적인 멘토링이 가능합니다."
 					/>
 				</div>
 			)}
@@ -194,7 +194,7 @@ function BookingForm({
 		<div className="stack py-4">
 			<div className="rounded-xl border border-gray-200 bg-white p-4">
 				<div className="mb-4 flex items-center justify-between border-gray-100 border-b pb-4">
-					<span className="text-gray-500">Total</span>
+					<span className="text-gray-500">총 결제 금액</span>
 					<span className="heading-3 text-gray-900">
 						${(price / 100).toFixed(2)}
 					</span>
@@ -227,7 +227,7 @@ function BookingForm({
 					</div>
 				</div>
 				<p className="mt-3 text-center text-gray-400 text-xs">
-					Test Mode: Payment will be simulated.
+					테스트 모드: 실제 결제는 진행되지 않습니다.
 				</p>
 			</div>
 		</div>
@@ -238,10 +238,11 @@ function BookingForm({
 			<div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600">
 				<Check className="h-8 w-8" />
 			</div>
-			<h3 className="heading-4 text-gray-900">Booking Confirmed!</h3>
+			<h3 className="heading-4 text-gray-900">예약이 확정되었습니다!</h3>
 			<p className="mt-2 text-gray-500">
-				You're all set to meet {mentor.name}.<br />
-				Check your email for the calendar invite.
+				{mentor.name} 멘토님과의 세션이 준비되었습니다.
+				<br />
+				이메일로 발송된 캘린더 초대를 확인해주세요.
 			</p>
 		</div>
 	);
@@ -250,7 +251,7 @@ function BookingForm({
 		if (step === "success") {
 			return (
 				<Button onClick={onClose} className="w-full">
-					Done
+					확인 (Done)
 				</Button>
 			);
 		}
@@ -262,7 +263,7 @@ function BookingForm({
 						variant="outline"
 						onClick={() => setStep(step === "payment" ? "details" : "duration")}
 					>
-						Back
+						이전
 					</Button>
 				)}
 				<Button
@@ -275,7 +276,9 @@ function BookingForm({
 					}}
 				>
 					{isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-					{step === "payment" ? `Pay $${(price / 100).toFixed(0)}` : "Continue"}
+					{step === "payment"
+						? `결제하기 ($${(price / 100).toFixed(0)})`
+						: "다음"}
 				</Button>
 			</div>
 		);
@@ -285,12 +288,12 @@ function BookingForm({
 		<>
 			<DialogHeader>
 				<DialogTitle>
-					{step === "success" ? "Success" : "Book Session"}
+					{step === "success" ? "예약 확정" : "세션 예약하기"}
 				</DialogTitle>
 				<DialogDescription>
-					{step === "duration" && "Select session duration"}
-					{step === "details" && "Tell us about your goals"}
-					{step === "payment" && "Complete payment"}
+					{step === "duration" && "세션 시간을 선택해주세요."}
+					{step === "details" && "멘토링 목표를 공유해주세요."}
+					{step === "payment" && "결제를 완료해주세요."}
 				</DialogDescription>
 			</DialogHeader>
 
