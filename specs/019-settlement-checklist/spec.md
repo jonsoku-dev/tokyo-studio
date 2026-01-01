@@ -231,3 +231,112 @@ Potential features for future versions:
 - Integration with local services (bank account opening, phone contracts)
 - Photo documentation feature (upload photos of completed forms/documents)
 - Sharing checklists with family members or colleagues also moving to Tokyo
+
+---
+
+---
+
+## Extended Specification: Settlement Marketplace & Ecosystem (Product Vision)
+
+### 1. Product Vision
+**From "Static Checklist" to "Living Settlement Ecosystem"**
+
+The goal is to evolve the settlement feature from a simple "To-Do List" into a **dynamic ecosystem** where collective intelligence helps users settle faster and smarter.
+- **Current**: "Here is a standard list of things everyone does."
+- **Future**: "Here is the best strategy for *you*, verified by people *like you*."
+
+We treat settlement checklists not as static documents, but as **equippable modules ("Loadouts")**. Users can mix and match these modules to build their perfect personal roadmap.
+
+---
+
+### 2. Core User Experience (UX)
+
+#### 2.1 The "Loadout" Concept (Checklist Composition)
+Just like equipping gear in an RPG game, users "equip" Settlement Modules to their journey.
+- **Base Layer**: The "Official Tokyo Settlement Guide" (Fundamental legal/admin tasks).
+- **Add-on Layers**: Specialized modules that plug into the timeline.
+    - 🏢 *Employment Type*: "Engineer Job Change Guide", "Fresh Graduate Guide"
+    - 👨‍👩‍👧 *Family Status*: "Moving with Spouse", "Raising Kids (School/Nursery)", "Pet Relocation"
+    - 🏠 *Lifestyle*: "Minato-ku Luxury Living", "Cost-effective Sharehouse Life"
+
+**User Value**: Instead of ignoring 50% of irrelevant tasks in a generic list, users get a 100% relevant roadmap.
+
+#### 2.2 User Scenarios
+
+**Scenario A: The 30s Single Developer**
+1.  **Onboarding**: Enters "Tokyo", "Single", "Engineer", "Arrival: Mar 1".
+2.  **Recommendation**: System suggests the **"Tokyo Tech Starter Pack"**.
+    - 📦 *Official Settlement Guide* (Visa/Resident Card)
+    - 📦 *IT Engineer Setup* (Internet/Desk Setup/Tech Meetups)
+    - 📦 *Single Life Hacks* (Furnished Apartments/Meal Delivery)
+3.  **Action**: User clicks "Equip All".
+4.  **Result**: A unified timeline appears. "Getting a SIM Card" (from Kit A) and "Registering at Connpass" (from Kit B) are scheduled intelligently.
+
+**Scenario B: The Family Mover**
+1.  **Context**: Moving with wife and 3-year-old child.
+2.  **Selection**:
+    - Equips *Official Guide*.
+    - Equips *Dependent Visa Supplement*.
+    - Equips *Tokyo Nursery (Hoikuen) Hunting Guide*.
+3.  **Clash Management**: If two modules suggest "Bank Account", the system recognizes the duplication and merges them or asks the user which specific bank advice to follow.
+
+---
+
+### 3. Marketplace Mechanics
+
+#### 3.1 Collections (꿀조합 / Best Practice Sets)
+- **Problem**: Users don't know which modules they need.
+- **Solution**: "Collections".
+    - curated sets of modules.
+    - Examples: "Zero-Japanese Survival Kit", "High-Income Expat Kit".
+- **Social Proof**: Collections show "Used by 1,230 people", "98% Satisfaction".
+
+#### 3.2 Forks & Remixes
+- **Evolution**: A power user finds the "Official Guide" too slow. They modify it to add shortcuts (e.g., "Pre-fill forms online").
+- **Sharing**: They publish this as "Fast-Track Official Guide (Remix)".
+- **Attribution**: Original authors are credited. The community decides if the Remix is better via usage stats.
+
+#### 3.3 Reviews & Feedback
+- Users review **Modules**, not just the app.
+- "This 'Pet Guide' is outdated for 2025" -> Author gets notified, or community flags it.
+- "Helpful" votes push high-quality guides to the top.
+
+---
+
+### 4. Creator Ecosystem & Rewards
+
+#### 4.1 Motivation (Why create?)
+- **Altruism**: "I suffered so you don't have to."
+- **Reputation (Honor)**:
+    - High-ranking authors get "Settlement Guru" badges on their profiles.
+    - This reputation spills over to other interactions (Mentoring, Hiring).
+    - *Example*: A mentor with a top-rated "Junior Dev Settlement Guide" is seen as more trustworthy.
+
+#### 4.2 Indirect Rewards
+- **No Cash Payouts**: To avoid spam/low-quality bait.
+- **Perks**:
+    - Platform points (redeemable for mentoring sessions or premium features).
+    - Exposure (Pinned profile, Featured author status).
+    - Coffee coupons (eventual partnership potential).
+
+---
+
+### 5. Administration & Trust
+
+#### 5.1 The "Official" Baseline
+- The Admin team maintains the **"Standard Protocol"** (Core Module).
+- This ensures legal accuracy implies "If you only do this, you won't get deported."
+- All other modules are "Community Extensions".
+
+#### 5.2 Quality Control
+- **Verified Badge**: For community modules that have been manually audited by Admins.
+- **Deprecation**: Old modules can be marked "Outdated" if the author doesn't update them.
+
+---
+
+### 6. Technical / Data Implications (Brief)
+- **Multi-Subscription Engine**: The dashboard must query `UserTasks` from multiple source `Templates` and render them in a single `TimelineView`.
+- **Conflict Resolution**: Logic to handle tasks with same `slug` or `intent` from different modules.
+- **Versioning**: When a Creator updates a Module v1 -> v2, Subscribers get a "Update Available" prompt (like App Store updates).
+
+
