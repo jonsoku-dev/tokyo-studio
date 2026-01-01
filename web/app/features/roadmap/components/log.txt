@@ -1,0 +1,37 @@
+
+KanbanBoard.client.tsx:157 [Collision Detection] activeId: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:161 [Collision Detection] Pointer collisions: 2
+KanbanBoard.client.tsx:165 [Collision Detection] Using pointer collision - overId: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:195 [Collision Detection] Final overId from pointer: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:157 [Collision Detection] activeId: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:161 [Collision Detection] Pointer collisions: 2
+KanbanBoard.client.tsx:165 [Collision Detection] Using pointer collision - overId: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:195 [Collision Detection] Final overId from pointer: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:157 [Collision Detection] activeId: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:161 [Collision Detection] Pointer collisions: 2
+KanbanBoard.client.tsx:165 [Collision Detection] Using pointer collision - overId: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:195 [Collision Detection] Final overId from pointer: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:157 [Collision Detection] activeId: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:161 [Collision Detection] Pointer collisions: 2
+KanbanBoard.client.tsx:165 [Collision Detection] Using pointer collision - overId: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:195 [Collision Detection] Final overId from pointer: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:157 [Collision Detection] activeId: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:161 [Collision Detection] Pointer collisions: 2
+KanbanBoard.client.tsx:165 [Collision Detection] Using pointer collision - overId: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:195 [Collision Detection] Final overId from pointer: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:297 [DragEnd] active: 14c8608e-4a6e-46b2-bdfe-a74f736c121e over: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:305 [DragEnd] task found: true
+KanbanBoard.client.tsx:310 [DragEnd] currentContainer: completed
+KanbanBoard.client.tsx:314 [DragEnd] overId: 14c8608e-4a6e-46b2-bdfe-a74f736c121e
+KanbanBoard.client.tsx:325 [DragEnd] isOverContainer: false overContainer: completed
+KanbanBoard.client.tsx:333 [DragEnd] Same container, reordering items
+KanbanBoard.client.tsx:339 [DragEnd] activeIndex: 1 overIndex: 1
+KanbanBoard.client.tsx:359 [DragEnd] originalColumn: todo newColumn: completed
+KanbanBoard.client.tsx:363 [DragEnd] Column changed, adding to pending
+KanbanBoard.client.tsx:379 [DragEnd] Added new pending change
+KanbanBoard.client.tsx:379 [DragEnd] Added new pending change
+KanbanBoard.client.tsx:399 [SaveChanges] Starting save with 2 changes
+KanbanBoard.client.tsx:411 [SaveChanges] Saving changes: (2) [{…}, {…}]
+KanbanBoard.client.tsx:418 [SaveChanges] Updating task: 84159af0-0838-4501-bede-efd0fa21806c to column: in_progress at index: 1
+KanbanBoard.client.tsx:418 [SaveChanges] Updating task: 14c8608e-4a6e-46b2-bdfe-a74f736c121e to column: completed at index: 1
+KanbanBoard.client.tsx:435 [SaveChanges] All changes saved successfully

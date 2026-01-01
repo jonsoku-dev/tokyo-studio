@@ -57,9 +57,11 @@ async function logAdminAction(
 	await db.insert(adminAuditLogs).values({
 		adminId,
 		action,
-		targetType,
 		targetId,
-		details,
+		metadata: {
+			targetType,
+			...details,
+		},
 	});
 }
 

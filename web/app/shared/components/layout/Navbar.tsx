@@ -1,4 +1,4 @@
-import { Menu, Transition } from "@headlessui/react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import type { User } from "@itcom/db/schema";
 import {
 	LogOut,
@@ -7,12 +7,10 @@ import {
 	Settings,
 	User as UserIcon,
 } from "lucide-react";
-import { Fragment } from "react";
 import { Form, Link, useRouteLoaderData } from "react-router";
 import { NotificationsPopover } from "~/features/community/components/NotificationsPopover";
 import { Avatar } from "~/shared/components/ui/Avatar";
 import { Button } from "~/shared/components/ui/Button";
-import { cn } from "~/shared/utils/cn";
 
 export function Navbar() {
 	const data = useRouteLoaderData("root") as { user: User };
@@ -57,86 +55,65 @@ export function Navbar() {
 					)}
 
 					{user ? (
-						<Menu as="div" className="relative ml-2">
-							<Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+						<Menu>
+							<MenuButton className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
 								<span className="sr-only">Open user menu</span>
 								<Avatar
-									src={user.avatarUrl}
-									alt={user.fullName || user.email}
+									src={user.avatarUrl || undefined}
+									alt={user.displayName || user.name}
 									fallback={user.email?.[0]?.toUpperCase()}
 									className="h-9 w-9"
 								/>
-							</Menu.Button>
-							<Transition
-								as={Fragment}
-								enter="transition ease-out duration-200"
-								enterFrom="transform opacity-0 scale-95"
-								enterTo="transform opacity-100 scale-100"
-								leave="transition ease-in duration-75"
-								leaveFrom="transform opacity-100 scale-100"
-								leaveTo="transform opacity-0 scale-95"
+							</MenuButton>
+							<MenuItems
+								transition
+								anchor="bottom end"
+								className="z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-gray-200 transition duration-100 ease-out [--anchor-gap:8px] data-[closed]:scale-95 data-[closed]:opacity-0"
 							>
-								<Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-									<div className="border-gray-100 border-b px-4 py-2">
-										<p className="truncate font-medium text-gray-900 text-sm">
-											{user.fullName || "User"}
-										</p>
-										<p className="truncate text-gray-500 text-xs">
-											{user.email}
-										</p>
-									</div>
+								<div className="border-gray-100 border-b px-4 py-2">
+									<p className="truncate font-medium text-gray-900 text-sm">
+										{user.displayName || user.name}
+									</p>
+									<p className="truncate text-gray-500 text-xs">
+										{user.email}
+									</p>
+								</div>
 
-									<div className="py-1">
-										<Menu.Item>
-											{({ active }) => (
-												<Link
-													to="/profile"
-													className={cn(
-														active ? "bg-gray-50" : "",
-														"block flex items-center gap-2 px-4 py-2 text-gray-700 text-sm",
-													)}
-												>
-													<UserIcon className="h-4 w-4" />
-													Your Profile
-												</Link>
-											)}
-										</Menu.Item>
-										<Menu.Item>
-											{({ active }) => (
-												<Link
-													to="/settings/profile"
-													className={cn(
-														active ? "bg-gray-50" : "",
-														"block flex items-center gap-2 px-4 py-2 text-gray-700 text-sm",
-													)}
-												>
-													<Settings className="h-4 w-4" />
-													Settings
-												</Link>
-											)}
-										</Menu.Item>
-									</div>
+								<div className="py-1">
+									<MenuItem>
+										<Link
+											to="/profile"
+											className="block flex items-center gap-2 px-4 py-2 text-gray-700 text-sm"
+										>
+											<UserIcon className="h-4 w-4" />
+											Your Profile
+										</Link>
+									</MenuItem>
+									<MenuItem>
+										<Link
+											to="/settings/profile"
+											className="block flex items-center gap-2 px-4 py-2 text-gray-700 text-sm"
+										>
+											<Settings className="h-4 w-4" />
+											Settings
+										</Link>
+									</MenuItem>
+								</div>
 
-									<div className="border-gray-100 border-t py-1">
-										<Menu.Item>
-											{({ active }) => (
-												<Form action="/logout" method="post" className="w-full">
-													<button
-														type="submit"
-														className={cn(
-															active ? "bg-gray-50" : "",
-															"block flex w-full items-center gap-2 px-4 py-2 text-left text-red-600 text-sm",
-														)}
-													>
-														<LogOut className="h-4 w-4" />
-														Sign out
-													</button>
-												</Form>
-											)}
-										</Menu.Item>
-									</div>
-								</Menu.Items>
-							</Transition>
+								<div className="border-gray-100 border-t py-1">
+									<MenuItem>
+										<Form action="/logout" method="post" className="w-full">
+											<button
+												type="submit"
+												className="block flex w-full items-center gap-2 px-4 py-2 text-left text-red-600 text-sm"
+											>
+												<LogOut className="h-4 w-4" />
+												Sign out
+											</button>
+										</Form>
+									</MenuItem>
+								</div>
+							</MenuItems>
 						</Menu>
 					) : (
 						<>

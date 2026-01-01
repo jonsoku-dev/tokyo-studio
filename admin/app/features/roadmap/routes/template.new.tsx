@@ -5,7 +5,7 @@
 import { data, redirect } from "react-router";
 import { TemplateForm } from "../components/TemplateForm";
 import { requireAdmin } from "~/features/auth/utils/session.server";
-import { createRoadmapTemplate } from "../services/admin-roadmap.server";
+import { createTemplate } from "../services/admin-roadmap.server";
 import type { Route } from "./+types/template.new";
 
 // ============================================

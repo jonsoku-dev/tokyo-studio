@@ -1,7 +1,9 @@
 import { data, redirect } from "react-router";
+import { useEffect } from "react";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { KanbanBoard, type KanbanColumnConfig } from "../components";
 import { useRoadmapQuery } from "../hooks/useRoadmapQuery";
+import { useRoadmapStore } from "../stores/roadmap.store";
 import {
 	generateRoadmap,
 	getRoadmap,
@@ -42,6 +44,16 @@ export async function loader({ request }: Route.LoaderArgs) {
 export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 	const { tasks, progress, profile } = loaderData;
 
+	// Initialize store on mount
+	const storeProgress = useRoadmapStore((state) => state.progress);
+	const storeSetTasks = useRoadmapStore((state) => state.setTasks);
+
+	// Initialize Zustand store with server data on mount
+	useEffect(() => {
+		console.log("[Page] Initializing store with server tasks:", tasks.length);
+		storeSetTasks(tasks);
+	}, []); // Only on mount - server data is initial source
+
 	// Initialize React Query with SSR data
 	const { data: roadmapData } = useRoadmapQuery({
 		tasks,
@@ -49,14 +61,15 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 		roadmap: null,
 	});
 
-	// Use the data from React Query (includes server-fetched data after mutations)
-	// Server is the source of truth for progress and tasks
+	// Display data: Use store progress for real-time updates, fallback to server
 	// Cast kanbanColumn to proper type (DB returns string, component expects union type)
 	const displayTasks = (roadmapData?.tasks ?? tasks).map((t) => ({
 		...t,
 		kanbanColumn: t.kanbanColumn as "todo" | "in_progress" | "completed",
 	}));
-	const displayProgress = roadmapData?.progress ?? progress;
+
+	// Use store progress (real-time updated) instead of server progress
+	const displayProgress = storeProgress;
 
 	// Column configuration
 	const columns: KanbanColumnConfig[] = [

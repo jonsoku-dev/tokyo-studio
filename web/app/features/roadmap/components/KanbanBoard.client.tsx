@@ -25,6 +25,7 @@ import {
 import { enableMapSet, produce } from "immer";
 import { useCallback, useRef, useState } from "react";
 import { useUpdateTaskMutation } from "../hooks/useUpdateTaskMutation";
+import { useRoadmapStore } from "../stores/roadmap.store";
 import type {
 	KanbanColumn,
 	KanbanColumnConfig,
@@ -129,6 +130,7 @@ export function KanbanBoard({
 	const recentlyMovedToNewContainer = useRef(false);
 
 	const updateTaskMutation = useUpdateTaskMutation();
+	const roadmapStore = useRoadmapStore();
 
 	// Sensors
 	const sensors = useSensors(
@@ -151,32 +153,27 @@ export function KanbanBoard({
 		return Object.keys(items).find((key) => items[key].includes(id as string));
 	};
 
-	// Custom collision detection strategy
+	// Simplified collision detection strategy - prioritize pointer detection
 	const collisionDetectionStrategy: CollisionDetection = useCallback(
 		(args) => {
-			if (activeId && activeId in items) {
-				return closestCenter({
-					...args,
-					droppableContainers: args.droppableContainers.filter(
-						(container) => container.id in items,
-					),
-				});
-			}
+			console.log("[Collision Detection] activeId:", activeId);
 
-			const pointerIntersections = pointerWithin(args);
-			const intersections =
-				pointerIntersections.length > 0
-					? pointerIntersections
-					: rectIntersection(args);
+			// First, try pointer-based detection (most reliable for drag over)
+			const pointerCollisions = pointerWithin(args);
+			console.log("[Collision Detection] Pointer collisions:", pointerCollisions.length);
 
-			let overId = getFirstCollision(intersections, "id");
+			if (pointerCollisions.length > 0) {
+				let overId = pointerCollisions[0]?.id;
+				console.log("[Collision Detection] Using pointer collision - overId:", overId);
 
-			if (overId != null) {
-				if (overId in items) {
+				// If overId is a container, find the closest item within it
+				if (overId && overId in items) {
 					const containerItems = items[overId as string];
+					console.log("[Collision Detection] Over container:", overId, "items count:", containerItems.length);
 
 					if (containerItems.length > 0) {
-						overId = closestCenter({
+						// Find closest item in the container
+						const closestItem = closestCenter({
 							...args,
 							droppableContainers: args.droppableContainers.filter(
 								(container) =>
@@ -184,17 +181,37 @@ export function KanbanBoard({
 									containerItems.includes(container.id as string),
 							),
 						})[0]?.id;
+
+						if (closestItem) {
+							overId = closestItem;
+							console.log("[Collision Detection] Found closest item:", closestItem);
+						} else {
+							console.log("[Collision Detection] No closest item, keeping container:", overId);
+						}
+					} else {
+						console.log("[Collision Detection] Container is empty, will drop into it");
 					}
 				}
+
+				lastOverId.current = overId;
+				console.log("[Collision Detection] Final overId from pointer:", overId);
+				return [{ id: overId }];
+			}
+
+			// Fallback: rect intersection
+			console.log("[Collision Detection] No pointer collision, trying rect intersection");
+			const rectCollisions = rectIntersection(args);
+
+			if (rectCollisions.length > 0) {
+				const overId = rectCollisions[0]?.id;
+				console.log("[Collision Detection] Using rect collision - overId:", overId);
 
 				lastOverId.current = overId;
 				return [{ id: overId }];
 			}
 
-			if (recentlyMovedToNewContainer.current) {
-				lastOverId.current = activeId;
-			}
-
+			// Last resort: use previous over id
+			console.log("[Collision Detection] No collisions, using lastOverId:", lastOverId.current);
 			return lastOverId.current ? [{ id: lastOverId.current }] : [];
 		},
 		[activeId, items],
@@ -205,31 +222,52 @@ export function KanbanBoard({
 	}: {
 		active: { id: UniqueIdentifier };
 	}) => {
+		console.log("[DragStart] taskId:", active.id);
 		setActiveId(active.id);
 	};
 
 	const handleDragOver = ({ active, over }: DragOverEvent) => {
 		const overId = over?.id;
 
-		if (overId == null || active.id in items) return;
+		console.log("[DragOver] active:", active.id, "over:", overId);
 
-		const overContainer = findContainer(overId);
+		if (overId == null || active.id in items) {
+			console.log("[DragOver] Early return - overId is null:", overId == null, "or active.id in items:", active.id in items);
+			return;
+		}
+
+		// Check if overId is a container directly (not a task inside a container)
+		const isOverIdContainer = overId in items;
+		console.log("[DragOver] isOverIdContainer:", isOverIdContainer);
+
+		// Determine the over container
+		const overContainer = isOverIdContainer ? (overId as string) : findContainer(overId);
 		const activeContainer = findContainer(active.id);
 
-		if (!overContainer || !activeContainer) return;
+		console.log("[DragOver] activeContainer:", activeContainer, "overContainer:", overContainer);
+
+		if (!overContainer || !activeContainer) {
+			console.log("[DragOver] Missing container - activeContainer:", activeContainer, "overContainer:", overContainer);
+			return;
+		}
 
 		if (activeContainer !== overContainer) {
+			console.log("[DragOver] Moving to different container:", activeContainer, "->", overContainer);
 			setItems(
 				produce((draft) => {
 					const activeItems = draft[activeContainer];
 					const overItems = draft[overContainer];
-					const overIndex = overItems.indexOf(overId as string);
+					const overIndex = isOverIdContainer ? -1 : overItems.indexOf(overId as string);
 					const activeIndex = activeItems.indexOf(active.id as string);
+
+					console.log("[DragOver] Indices - activeIndex:", activeIndex, "overIndex:", overIndex, "isOverIdContainer:", isOverIdContainer);
 
 					let newIndex: number;
 
-					if (overId in draft) {
+					if (isOverIdContainer) {
+						// Dropping into a container directly
 						newIndex = overItems.length;
+						console.log("[DragOver] Dropping into empty/container, newIndex:", newIndex);
 					} else {
 						const isBelowOverItem =
 							over &&
@@ -239,6 +277,7 @@ export function KanbanBoard({
 
 						const modifier = isBelowOverItem ? 1 : 0;
 						newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length;
+						console.log("[DragOver] isBelowOverItem:", isBelowOverItem, "newIndex:", newIndex);
 					}
 
 					recentlyMovedToNewContainer.current = true;
@@ -247,38 +286,59 @@ export function KanbanBoard({
 					draft[activeContainer].splice(activeIndex, 1);
 					// Add to over container
 					draft[overContainer].splice(newIndex, 0, active.id as string);
+
+					console.log("[DragOver] Updated items - moved to position", newIndex);
 				}),
 			);
+		} else {
+			console.log("[DragOver] Same container, no update needed");
 		}
 	};
 
 	const handleDragEnd = ({ active, over }: DragEndEvent) => {
+		console.log("[DragEnd] active:", active.id, "over:", over?.id);
+
 		setActiveId(null);
 		recentlyMovedToNewContainer.current = false;
 
 		const taskId = active.id as string;
 		const task = taskMap[taskId];
+
+		console.log("[DragEnd] task found:", !!task);
 		if (!task) return;
 
 		// Current container (after handleDragOver moved it)
 		const currentContainer = findContainer(active.id);
+		console.log("[DragEnd] currentContainer:", currentContainer);
 		if (!currentContainer) return;
 
 		const overId = over?.id;
-		if (overId == null) return;
+		console.log("[DragEnd] overId:", overId);
+		if (overId == null) {
+			console.log("[DragEnd] No over target, aborting");
+			return;
+		}
 
 		const isOverContainer = Object.keys(items).includes(overId as string);
 		const overContainer = isOverContainer
 			? (overId as string)
 			: findContainer(overId);
-		if (!overContainer) return;
+
+		console.log("[DragEnd] isOverContainer:", isOverContainer, "overContainer:", overContainer);
+		if (!overContainer) {
+			console.log("[DragEnd] No overContainer found");
+			return;
+		}
 
 		// Same column reordering (within current container)
 		if (currentContainer === overContainer) {
+			console.log("[DragEnd] Same container, reordering items");
 			const activeIndex = items[currentContainer].indexOf(taskId);
 			const overIndex = isOverContainer
 				? items[overContainer].length - 1
 				: items[overContainer].indexOf(overId as string);
+
+			console.log("[DragEnd] activeIndex:", activeIndex, "overIndex:", overIndex);
 
 			if (activeIndex !== overIndex && overIndex >= 0) {
 				setItems(
@@ -288,6 +348,7 @@ export function KanbanBoard({
 							activeIndex,
 							overIndex,
 						);
+						console.log("[DragEnd] Reordered items in container");
 					}),
 				);
 			}
@@ -297,8 +358,13 @@ export function KanbanBoard({
 		const originalColumn = task.kanbanColumn;
 		const newColumn = currentContainer as KanbanColumn;
 
+		console.log("[DragEnd] originalColumn:", originalColumn, "newColumn:", newColumn);
+
 		// Only track if column actually changed from original
 		if (originalColumn !== newColumn) {
+			console.log("[DragEnd] Column changed, adding to pending and updating store");
+
+			// 1. Add to pending changes
 			setPendingChanges(
 				produce((draft) => {
 					const existing = draft.get(taskId);
@@ -306,6 +372,7 @@ export function KanbanBoard({
 					if (existing) {
 						// Task was moved before - update target
 						existing.toColumn = newColumn;
+						console.log("[DragEnd] Updated existing pending change");
 					} else {
 						// New move
 						draft.set(taskId, {
@@ -313,15 +380,23 @@ export function KanbanBoard({
 							fromColumn: originalColumn,
 							toColumn: newColumn,
 						});
+						console.log("[DragEnd] Added new pending change");
 					}
 				}),
 			);
+
+			// 2. Update store immediately for real-time UI updates (진행률 실시간 반영)
+			const orderIndex = items[newColumn].indexOf(taskId);
+			console.log("[DragEnd] Updating store with new column:", newColumn, "at index:", orderIndex);
+			roadmapStore.updateTaskColumn(taskId, newColumn, orderIndex);
 		} else {
 			// Moved back to original column - remove from pending if exists
+			console.log("[DragEnd] Column unchanged, checking if we need to remove from pending");
 			setPendingChanges(
 				produce((draft) => {
 					if (draft.has(taskId)) {
 						draft.delete(taskId);
+						console.log("[DragEnd] Removed task from pending changes");
 					}
 				}),
 			);
@@ -330,17 +405,33 @@ export function KanbanBoard({
 
 	// Save all pending changes
 	const handleSaveChanges = async () => {
-		if (pendingChanges.size === 0) return;
+		console.log("[SaveChanges] Starting save with", pendingChanges.size, "changes");
+
+		if (pendingChanges.size === 0) {
+			console.log("[SaveChanges] No pending changes to save");
+			return;
+		}
 
 		setIsSaving(true);
 
 		try {
 			const changes = Array.from(pendingChanges.values());
 
+			console.log("[SaveChanges] Saving changes:", changes);
+
 			await Promise.all(
 				changes.map((change) => {
 					// Find the current order index in the new column
 					const orderIndex = items[change.toColumn].indexOf(change.taskId);
+
+					console.log(
+						"[SaveChanges] Updating task:",
+						change.taskId,
+						"to column:",
+						change.toColumn,
+						"at index:",
+						orderIndex,
+					);
 
 					return updateTaskMutation.mutateAsync({
 						taskId: change.taskId,
@@ -350,9 +441,30 @@ export function KanbanBoard({
 				}),
 			);
 
+			console.log("[SaveChanges] All changes saved successfully");
+
+			// After successful save, sync store with current UI state
+			// This uses initialTasks as source, with updated kanbanColumn
+			const currentDisplayTasks = Object.entries(items).flatMap(
+				([columnId, taskIds]) =>
+					taskIds.map((taskId) => {
+						const task = initialTasks.find((t) => t.id === taskId);
+						return task
+							? {
+									...task,
+									kanbanColumn: columnId as "todo" | "in_progress" | "completed",
+								}
+							: null;
+					}),
+			).filter(Boolean) as any[];
+
+			console.log("[SaveChanges] Syncing store with persisted state");
+			roadmapStore.setTasks(currentDisplayTasks);
+
+			// Clear pending changes
 			setPendingChanges(new Map());
 		} catch (error) {
-			console.error("Failed to save changes:", error);
+			console.error("[SaveChanges] Failed to save changes:", error);
 		} finally {
 			setIsSaving(false);
 		}
@@ -360,55 +472,19 @@ export function KanbanBoard({
 
 	// Discard all pending changes
 	const handleDiscardChanges = () => {
+		console.log("[DiscardChanges] Discarding", pendingChanges.size, "pending changes");
 		setItems(buildItemsFromTasks(initialTasks, columns));
 		setPendingChanges(new Map());
+		console.log("[DiscardChanges] Changes discarded, reset to initial state");
 	};
 
 	const activeTask = activeId ? taskMap[activeId as string] : null;
 	const hasChanges = pendingChanges.size > 0;
 
 	return (
-		<div className="relative">
-			{/* Pending Changes Banner */}
-			{hasChanges && (
-				<div className="sticky top-0 z-20 mb-4 flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 p-3">
-					<div className="flex items-center gap-2">
-						<span className="font-medium text-amber-600">
-							{pendingChanges.size}개의 변경사항
-						</span>
-						<span className="text-amber-500 text-sm">
-							저장하지 않으면 변경사항이 사라집니다
-						</span>
-					</div>
-					<div className="flex items-center gap-2">
-						<button
-							type="button"
-							onClick={handleDiscardChanges}
-							disabled={isSaving}
-							className="body-sm px-3 py-1.5 hover:text-gray-800 disabled:opacity-50"
-						>
-							취소
-						</button>
-						<button
-							type="button"
-							onClick={handleSaveChanges}
-							disabled={isSaving}
-							className="flex items-center gap-2 rounded-md bg-indigo-600 px-4 py-1.5 text-sm text-white hover:bg-indigo-700 disabled:opacity-50"
-						>
-							{isSaving ? (
-								<>
-									<span className="animate-spin">↻</span>
-									저장 중...
-								</>
-							) : (
-								"저장"
-							)}
-						</button>
-					</div>
-				</div>
-			)}
-
-			<DndContext
+		<>
+			<div className="relative">
+				<DndContext
 				sensors={sensors}
 				collisionDetection={collisionDetectionStrategy}
 				measuring={{
@@ -465,6 +541,55 @@ export function KanbanBoard({
 					{activeTask ? <TaskCard task={activeTask} isOverlay /> : null}
 				</DragOverlay>
 			</DndContext>
-		</div>
+			</div>
+
+			{/* Pending Changes Banner - Fixed at Bottom */}
+			{hasChanges && (
+				<div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between border-t border-amber-200 bg-amber-50 p-4 shadow-lg">
+					<div className="container-wide mx-auto flex w-full items-center justify-between px-4">
+						<div className="flex items-center gap-3">
+							<div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-200">
+								<span className="text-sm font-bold text-amber-700">
+									{pendingChanges.size}
+								</span>
+							</div>
+							<div>
+								<p className="font-medium text-amber-900">
+									{pendingChanges.size}개의 변경사항 대기 중
+								</p>
+								<p className="text-xs text-amber-600">
+									저장하지 않으면 변경사항이 사라집니다
+								</p>
+							</div>
+						</div>
+						<div className="flex items-center gap-2">
+							<button
+								type="button"
+								onClick={handleDiscardChanges}
+								disabled={isSaving}
+								className="body-sm px-4 py-2 text-amber-700 hover:bg-amber-100 disabled:opacity-50"
+							>
+								취소
+							</button>
+							<button
+								type="button"
+								onClick={handleSaveChanges}
+								disabled={isSaving}
+								className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+							>
+								{isSaving ? (
+									<>
+										<span className="animate-spin">↻</span>
+										저장 중...
+									</>
+								) : (
+									"저장하기"
+								)}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+		</>
 	);
 }
