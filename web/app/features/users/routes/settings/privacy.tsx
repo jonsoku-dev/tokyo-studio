@@ -3,7 +3,7 @@ import { profilePrivacySettings } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import { useFetcher } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
-
+import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { Button } from "~/shared/components/ui/Button";
 import type { Route } from "./+types/privacy";
 
@@ -30,8 +30,8 @@ export default function PrivacySettings({ loaderData }: Route.ComponentProps) {
 	const isSaving = fetcher.state === "submitting";
 
 	return (
-		<div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
-			<h1 className="heading-3 mb-6">Privacy Settings</h1>
+		<div>
+			<PageHeader title="Privacy Settings" className="mb-6" />
 
 			<div className="overflow-hidden rounded-lg bg-white shadow">
 				<div className="stack-md p-6">

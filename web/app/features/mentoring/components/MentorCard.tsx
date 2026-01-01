@@ -10,9 +10,6 @@ interface MentorCardProps {
 export function MentorCard({ mentor }: MentorCardProps) {
 	if (!mentor.profile) return null;
 
-	// Actually Mentor interface in types.ts is { profile: ... } & User.
-	// So mentor directly has name, avatarUrl.
-
 	// Rating handling: stored as integer * 100.
 	const ratingValue = (mentor.profile.averageRating || 0) / 100;
 	const formattedRating = ratingValue.toFixed(1);
@@ -20,7 +17,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
 	return (
 		<Link
 			to={`/mentoring/mentors/${mentor.id}`}
-			className="group relative flex flex-col rounded-xl border border-gray-200 bg-white p-5 transition-all duration-200 hover:border-primary-200 hover:shadow-md"
+			className="group relative flex flex-col rounded-xl border border-gray-200 bg-white p-5 transition-all duration-200 hover:border-primary-200 hover:shadow-md hover:ring-1 hover:ring-primary-200"
 		>
 			<div className="flex items-start gap-4">
 				<div className="relative">
@@ -32,7 +29,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
 						alt={mentor.name}
 						className="h-14 w-14 rounded-full border border-gray-100 object-cover"
 					/>
-					<div className="absolute -right-1 -bottom-1 flex h-5 w-5 items-center justify-center rounded-full border border-gray-100 bg-white text-[10px] shadow-sm">
+					<div className="center absolute -right-1 -bottom-1 h-5 w-5 rounded-full border border-gray-100 bg-white text-[10px] shadow-sm">
 						🇯🇵
 					</div>
 				</div>
@@ -53,7 +50,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
 							<Badge
 								key={skill}
 								variant="secondary"
-								className="border-gray-200 bg-gray-50 px-1.5 py-0.5 font-normal text-[10px] text-gray-600"
+								className="border-gray-100 bg-gray-50 px-1.5 py-0.5 font-normal text-[10px] text-gray-600"
 							>
 								{skill}
 							</Badge>
@@ -61,7 +58,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
 						{(mentor.profile.specialties?.length || 0) > 2 && (
 							<Badge
 								variant="secondary"
-								className="border-gray-200 bg-gray-50 px-1.5 py-0.5 text-[10px] text-gray-500"
+								className="border-gray-100 bg-gray-50 px-1.5 py-0.5 text-[10px] text-gray-500"
 							>
 								+{(mentor.profile.specialties?.length || 0) - 2}
 							</Badge>
@@ -88,7 +85,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
 				<div className="flex items-center gap-2 text-gray-500">
 					<span>{mentor.profile.yearsOfExperience} years exp.</span>
 				</div>
-				<div className="font-medium text-primary-600 group-hover:underline">
+				<div className="font-medium text-primary-600 transition-colors group-hover:text-primary-700 group-hover:underline">
 					View Profile →
 				</div>
 			</div>

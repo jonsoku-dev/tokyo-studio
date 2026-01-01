@@ -1,9 +1,9 @@
 import { db } from "@itcom/db/client";
 import { mentorProfiles } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
-import { Form, useLoaderData, useNavigation } from "react-router";
+import { Form, redirect, useLoaderData, useNavigation } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
-
+import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { Button } from "~/shared/components/ui/Button";
 import { Input } from "~/shared/components/ui/Input";
 import type { Route } from "./+types/mentoring.settings";
@@ -20,8 +20,8 @@ export async function loader({ request }: Route.LoaderArgs) {
 	});
 
 	if (!profile) {
-		// In a real app, redirect to "Become a Mentor" flow
-		throw new Response("Mentor profile not found", { status: 404 });
+		// Redirect to "Become a Mentor" flow if not yet a mentor
+		throw redirect("/mentoring/apply");
 	}
 
 	return { profile };
@@ -61,14 +61,12 @@ export default function MentorSettings() {
 	const isSaving = navigation.state === "submitting";
 
 	return (
-		<div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
+		<div>
 			<div className="stack-md">
-				<div>
-					<h1 className="heading-3">Mentor Settings</h1>
-					<p className="caption mt-1">
-						Configure your mentoring preferences and video conferencing.
-					</p>
-				</div>
+				<PageHeader
+					title="Mentor Settings"
+					description="Configure your mentoring preferences and video conferencing."
+				/>
 
 				<div className="rounded-lg bg-white p-6 shadow">
 					<Form method="post" className="stack-md">

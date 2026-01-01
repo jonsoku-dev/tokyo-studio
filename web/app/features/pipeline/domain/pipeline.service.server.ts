@@ -5,18 +5,30 @@ import type { PipelineItem, PipelineStatus } from "./pipeline.types";
 
 export const pipelineService = {
 	getItems: async (userId: string): Promise<PipelineItem[]> => {
-		const items = await db
-			.select()
-			.from(pipelineItems)
-			.where(eq(pipelineItems.userId, userId));
-		return items.map((item) => ({
+		const itemsWithRelations = await db.query.pipelineItems.findMany({
+			where: eq(pipelineItems.userId, userId),
+			with: {
+				resume: {
+					columns: {
+						id: true,
+						title: true,
+						type: true,
+					},
+				},
+			},
+			orderBy: (items, { asc }) => [asc(items.orderIndex)],
+		});
+
+		return itemsWithRelations.map((item) => ({
 			id: item.id,
 			company: item.company,
 			position: item.position,
 			stage: item.stage as PipelineStatus,
 			date: item.date,
 			nextAction: item.nextAction || null,
-			userId: item.userId, // Add userId to return type if needed, or just specific internal method
+			resumeId: item.resumeId || null,
+			resume: item.resume || null, // SPEC 022
+			userId: item.userId,
 		}));
 	},
 
@@ -58,6 +70,7 @@ export const pipelineService = {
 			stage?: PipelineStatus;
 			date?: string;
 			nextAction?: string;
+			resumeId?: string | null; // SPEC 022: Document Integration
 		},
 	) => {
 		const [updated] = await db
@@ -87,6 +100,7 @@ export const pipelineService = {
 			stage: PipelineStatus;
 			date: string;
 			nextAction?: string | null;
+			resumeId?: string | null; // SPEC 022: Document Integration
 		},
 	) => {
 		const [created] = await db

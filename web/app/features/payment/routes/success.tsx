@@ -58,7 +58,7 @@ export default function Success({ loaderData }: Route.ComponentProps) {
 	const navigate = useNavigate();
 
 	return (
-		<div className="mx-auto max-w-md py-20 text-center">
+		<div className="text-center">
 			{loaderData.success ? (
 				<div className="stack-md">
 					<CheckCircle className="mx-auto h-20 w-20 text-accent-500" />

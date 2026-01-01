@@ -13,11 +13,12 @@ import { Link, useLocation } from "react-router";
 const navigation = [
 	{ name: "Home", href: "/", icon: Home },
 	{ name: "My Roadmap", href: "/roadmap", icon: MapIcon },
+	{ name: "Diagnosis", href: "/diagnosis", icon: CheckSquare },
 	{ name: "Pipeline", href: "/pipeline", icon: Briefcase },
 	{ name: "Documents", href: "/documents", icon: FileText },
 	{ name: "Mentoring", href: "/mentoring", icon: Users },
 	{ name: "Community", href: "/community", icon: MessageSquare },
-	{ name: "Settle Tokyo", href: "/settle", icon: CheckSquare },
+	{ name: "Settle Tokyo", href: "/settlement", icon: CheckSquare },
 ];
 
 export function Sidebar() {

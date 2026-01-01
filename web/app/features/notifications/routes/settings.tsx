@@ -13,6 +13,7 @@ import { eq } from "drizzle-orm";
 import { Clock, Moon } from "lucide-react";
 import { Form, useLoaderData } from "react-router";
 import { requireVerifiedEmail } from "~/features/auth/services/require-verified-email.server";
+import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { Button } from "~/shared/components/ui/Button";
 import type { Route } from "./+types/settings";
 
@@ -103,13 +104,12 @@ export default function NotificationSettings() {
 	const { preferences } = useLoaderData<typeof loader>();
 
 	return (
-		<div className="mx-auto max-w-2xl p-6">
-			<div className="mb-8">
-				<h1 className="heading-3">Notification Settings</h1>
-				<p className="mt-1 text-gray-600">
-					Manage how and when you receive notifications
-				</p>
-			</div>
+		<div>
+			<PageHeader
+				title="Notification Settings"
+				description="Manage how and when you receive notifications"
+				className="mb-8"
+			/>
 
 			<Form method="POST" className="stack-lg">
 				{/* Notification Types */}

@@ -12,6 +12,11 @@ export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 	const linkedinUrl = formData.get("linkedinUrl") as string;
 	const githubUrl = formData.get("githubUrl") as string;
 	const slug = formData.get("slug") as string;
+	// SPEC 022: Portfolio document ID
+	const portfolioDocumentIdValue = formData.get(
+		"portfolioDocumentId",
+	) as string;
+	const portfolioDocumentId = portfolioDocumentIdValue || null;
 
 	// Slug uniqueness check
 	if (slug) {
@@ -27,6 +32,7 @@ export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 		linkedinUrl,
 		githubUrl,
 		slug: slug || undefined, // Only update if provided
+		portfolioDocumentId, // SPEC 022
 	});
 
 	return { success: true, error: null };

@@ -92,10 +92,10 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 	];
 
 	return (
-		<div className="min-h-screen bg-gray-50">
+		<div>
 			{/* Header */}
 			<div className="sticky top-0 z-10 border-gray-200 border-b bg-white">
-				<div className="container-wide px-4 py-4 sm:py-6">
+				<div className="px-4 py-4 sm:py-6">
 					<div className="flex items-center justify-between">
 						<div>
 							<h1 className="sm:heading-3 text-xl tracking-tight">
@@ -157,7 +157,7 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 			</div>
 
 			{/* Kanban Board */}
-			<div className="container-wide px-4 py-8">
+			<div className="px-4 py-8">
 				<KanbanBoard tasks={displayTasks} columns={columns} />
 			</div>
 		</div>

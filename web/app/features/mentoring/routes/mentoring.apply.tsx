@@ -15,7 +15,10 @@ import {
 // These imports are not yet stable in React Router v7
 import { z } from "zod";
 import { requireUserId } from "~/features/auth/utils/session.server";
+import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { Button } from "~/shared/components/ui/Button";
+import { Input } from "~/shared/components/ui/Input";
+import { Textarea } from "~/shared/components/ui/Textarea";
 import { applicationService } from "../services/application.server";
 
 // Zod Schema for validation (Client & Server)
@@ -125,17 +128,16 @@ export default function MentorApplicationPage() {
 	const isSubmitting = navigation.state === "submitting";
 
 	return (
-		<div className="container-page max-w-2xl px-4 py-12">
-			<div className="mb-8 text-center">
-				<h1 className="heading-2 mb-2">Become a Mentor</h1>
-				<p className="text-gray-400">
-					Share your expertise and help others grow in their IT career in Japan.
-				</p>
-			</div>
+		<div>
+			<PageHeader
+				title="Become a Mentor"
+				description="Share your expertise and help others grow in their IT career in Japan."
+				className="mb-8"
+			/>
 
-			<div className="rounded-2xl border border-white/10 bg-[#0A0A0A] p-8 shadow-xl">
+			<div className="card-lg bg-white shadow-xl">
 				{actionData?.error && (
-					<div className="mb-6 rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-red-500">
+					<div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
 						<p className="font-bold">Error</p>
 						<p>{actionData.error}</p>
 					</div>
@@ -144,135 +146,82 @@ export default function MentorApplicationPage() {
 				<Form method="post" encType="multipart/form-data" className="stack-md">
 					{/* Professional Info */}
 					<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-						<div>
-							<label
-								htmlFor="jobTitle"
-								className="mb-2 block font-medium text-gray-400 text-sm"
-							>
-								Job Title
-							</label>
-							<input
-								id="jobTitle"
-								name="jobTitle"
-								type="text"
-								required
-								className="w-full rounded-lg border border-white/10 bg-white/5 p-3 text-white focus:border-primary focus:outline-none"
-								placeholder="e.g. Senior Frontend Engineer"
-							/>
-						</div>
-						<div>
-							<label
-								htmlFor="company"
-								className="mb-2 block font-medium text-gray-400 text-sm"
-							>
-								Company
-							</label>
-							<input
-								id="company"
-								name="company"
-								type="text"
-								required
-								className="w-full rounded-lg border border-white/10 bg-white/5 p-3 text-white focus:border-primary focus:outline-none"
-								placeholder="e.g. Tech Corp KK"
-							/>
-						</div>
+						<Input
+							label="Job Title"
+							id="jobTitle"
+							name="jobTitle"
+							required
+							placeholder="e.g. Senior Frontend Engineer"
+						/>
+						<Input
+							label="Company"
+							id="company"
+							name="company"
+							required
+							placeholder="e.g. Tech Corp KK"
+						/>
 					</div>
 
 					<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-						<div>
-							<label
-								htmlFor="yearsOfExperience"
-								className="mb-2 block font-medium text-gray-400 text-sm"
-							>
-								Years of Experience
-							</label>
-							<input
-								id="yearsOfExperience"
-								name="yearsOfExperience"
-								type="number"
-								min="0"
-								required
-								className="w-full rounded-lg border border-white/10 bg-white/5 p-3 text-white focus:border-primary focus:outline-none"
-							/>
-						</div>
-						<div>
-							<label
-								htmlFor="linkedinUrl"
-								className="mb-2 block font-medium text-gray-400 text-sm"
-							>
-								LinkedIn URL (Optional)
-							</label>
-							<input
-								id="linkedinUrl"
-								name="linkedinUrl"
-								type="url"
-								className="w-full rounded-lg border border-white/10 bg-white/5 p-3 text-white focus:border-primary focus:outline-none"
-								placeholder="https://linkedin.com/in/..."
-							/>
-						</div>
+						<Input
+							label="Years of Experience"
+							id="yearsOfExperience"
+							name="yearsOfExperience"
+							type="number"
+							min="0"
+							required
+						/>
+						<Input
+							label="LinkedIn URL (Optional)"
+							id="linkedinUrl"
+							name="linkedinUrl"
+							type="url"
+							placeholder="https://linkedin.com/in/..."
+						/>
 					</div>
 
 					{/* JSON Fields (Simple Input for MVP) */}
-					<div>
-						<label
-							htmlFor="expertise"
-							className="mb-2 block font-medium text-gray-400 text-sm"
-						>
-							Expertise (Comma separated)
-						</label>
-						<input
-							id="expertise"
-							name="expertise"
-							type="text"
-							required
-							className="w-full rounded-lg border border-white/10 bg-white/5 p-3 text-white focus:border-primary focus:outline-none"
-							placeholder="Frontend, React, TypeScript, Career Advice"
-						/>
-					</div>
+					<Input
+						label="Expertise (Comma separated)"
+						id="expertise"
+						name="expertise"
+						required
+						placeholder="Frontend, React, TypeScript, Career Advice"
+					/>
 
-					<div>
-						<label
-							htmlFor="languages"
-							className="mb-2 block font-medium text-gray-400 text-sm"
-						>
-							Languages Spoken (Comma separated)
-						</label>
-						<input
-							id="languages"
-							name="languages"
-							type="text"
-							required
-							className="w-full rounded-lg border border-white/10 bg-white/5 p-3 text-white focus:border-primary focus:outline-none"
-							placeholder="Korean, Japanese (Business), English"
-						/>
-					</div>
+					<Input
+						label="Languages Spoken (Comma separated)"
+						id="languages"
+						name="languages"
+						required
+						placeholder="Korean, Japanese (Business), English"
+					/>
 
 					<div>
 						<label
 							htmlFor="bio"
-							className="mb-2 block font-medium text-gray-400 text-sm"
+							className="mb-2 block font-medium text-gray-700 text-sm"
 						>
 							Bio / Motivation
 						</label>
-						<textarea
+						<Textarea
 							id="bio"
 							name="bio"
 							rows={4}
 							required
-							className="w-full rounded-lg border border-white/10 bg-white/5 p-3 text-white focus:border-primary focus:outline-none"
 							placeholder="Tell us about yourself and why you want to mentor..."
 						/>
 					</div>
 
 					{/* File Upload */}
-					<div className="rounded-lg border border-white/20 border-dashed bg-white/5 p-4">
+					<div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-6 text-center">
 						<label
 							htmlFor="verificationFile"
-							className="mb-2 block font-medium text-gray-400 text-sm"
+							className="mb-2 block font-medium text-gray-900 text-sm"
 						>
 							Verification Document
 						</label>
-						<p className="caption mb-4">
+						<p className="caption mb-4 text-gray-500">
 							Please upload a company ID or payslip. This file will be stored
 							securely and only visible to admins.
 						</p>
@@ -282,14 +231,14 @@ export default function MentorApplicationPage() {
 							type="file"
 							accept=".pdf,.jpg,.jpeg,.png"
 							required
-							className="w-full text-gray-400 text-sm file:mr-4 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2 file:font-semibold file:text-sm file:text-white hover:file:bg-primary/80"
+							className="mx-auto block w-full max-w-xs text-gray-500 text-sm file:mr-4 file:rounded-full file:border-0 file:bg-primary-50 file:px-4 file:py-2 file:font-semibold file:text-primary-700 file:text-sm hover:file:bg-primary-100"
 						/>
 					</div>
 
-					<div className="flex justify-end gap-3 pt-4">
+					<div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
 						<Link
 							to="/dashboard"
-							className="rounded-lg px-6 py-2 text-gray-400 transition-colors hover:text-white"
+							className="rounded-lg px-6 py-2 text-gray-600 transition-colors hover:bg-gray-100"
 						>
 							Cancel
 						</Link>

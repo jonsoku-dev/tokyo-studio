@@ -48,7 +48,7 @@ export function AvailabilityCalendar({
 	const renderHeader = () => {
 		return (
 			<div className="mb-4 flex items-center justify-between">
-				<h3 className="heading-5 dark:text-white">
+				<h3 className="heading-5 text-gray-900">
 					{format(currentMonth, "MMMM yyyy")}
 				</h3>
 				{/* Navigation omitted for simple 30-day view, or implemented if needed */}
@@ -99,15 +99,17 @@ export function AvailabilityCalendar({
 					<button
 						type="button"
 						key={day.toString()}
-						className={`relative flex h-10 w-full items-center justify-center rounded-lg text-sm transition-colors ${!isSameMonth(day, monthStart) ? "text-gray-600 opacity-50" : ""}
-                            ${isSelected ? "bg-primary font-bold text-white" : ""}
-                            ${!isSelected && isSameMonth(day, monthStart) ? "text-gray-300 hover:bg-white/10" : ""}
-                            ${hasSlots && !isSelected ? "font-bold text-white ring-1 ring-primary/50" : ""}cursor-pointer`}
+						className={`relative flex h-10 w-full items-center justify-center rounded-lg text-sm transition-colors ${!isSameMonth(day, monthStart) ? "text-gray-300 opacity-50" : ""}
+                            ${isSelected ? "bg-primary-600 font-bold text-white shadow-sm" : ""}
+                            ${!isSelected && isSameMonth(day, monthStart) ? "text-gray-700 hover:bg-gray-50" : ""}
+                            ${hasSlots && !isSelected ? "font-bold text-primary-600 ring-1 ring-primary-100 bg-primary-50" : ""} cursor-pointer`}
 						onClick={() => setSelectedDate(cloneDay)}
 					>
 						<span>{formattedDate}</span>
 						{hasSlots && (
-							<div className="absolute bottom-1 h-1 w-1 rounded-full bg-primary" />
+							<div
+								className={`absolute bottom-1 h-1 w-1 rounded-full ${isSelected ? "bg-white" : "bg-primary-500"}`}
+							/>
 						)}
 					</button>,
 				);
@@ -130,18 +132,18 @@ export function AvailabilityCalendar({
 	const activeSlots = selectedDateKey ? slotsByDate[selectedDateKey] || [] : [];
 
 	return (
-		<div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
+		<div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
 			{renderHeader()}
 			{renderDays()}
 			{renderCells()}
 
-			<div className="mt-6 border-white/10 border-t pt-4">
+			<div className="mt-6 border-gray-100 border-t pt-4">
 				<div className="mb-2 flex items-center justify-between">
-					<h4 className="body-sm text-gray-300">
+					<h4 className="body-sm text-gray-500">
 						Available Times (
 						{selectedDate ? format(selectedDate, "MMM d") : "-"})
 					</h4>
-					<span className="caption">{timezone}</span>
+					<span className="caption text-gray-400">{timezone}</span>
 				</div>
 
 				{activeSlots.length > 0 ? (
@@ -151,16 +153,16 @@ export function AvailabilityCalendar({
 								key={slot.id}
 								variant="outline"
 								size="sm"
-								className="justify-center border-primary/30 bg-primary/5 hover:border-primary hover:bg-primary/20"
+								className="justify-center font-normal"
 								onClick={() => onSelectSlot(slot)}
 							>
-								<Clock className="mr-2 h-3 w-3" />
+								<Clock className="mr-2 h-3 w-3 text-gray-400" />
 								{format(new Date(slot.startTime), "h:mm a")}
 							</Button>
 						))}
 					</div>
 				) : (
-					<p className="caption py-4 text-center">
+					<p className="caption py-4 text-center text-gray-400">
 						No slots available for this date.
 					</p>
 				)}

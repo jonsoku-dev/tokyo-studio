@@ -1,20 +1,34 @@
-# SPEC 022: Document Integration - Tasks
+# SPEC 022: Document Integration - Detailed Tasks
 
-## Phase 1: Schema & Basic API
-- [ ] TASK-001: Pipeline 서비스에 resumeId 지원 추가
-- [ ] TASK-002: Mentoring 서비스에 sharedDocumentIds 지원 추가
-- [ ] TASK-003: Profile 서비스에 portfolioDocumentId 지원 추가
+## ✅ Phase 1: Foundation (Complete)
+- [x] Schema: resumeId, sharedDocumentIds, portfolioDocumentId
+- [x] Constants, DocumentSelector component
+- [x] Service layer updates
 
-## Phase 2: UI Integration
-- [ ] TASK-004: PipelineItemModal에 이력서 선택 드롭다운 추가
-- [ ] TASK-005: MentoringBooking에 문서 공유 UI 추가
-- [ ] TASK-006: ProfileSettings에 포트폴리오 선택 UI 추가
+## ✅ Phase 2: Integration (Input Side Complete)
+### Pipeline
+- [x] Loader/Action/Modal integration (Attach Resume)
+- [ ] **[Gap]** Display attached resume on Pipeline Card
 
-## Phase 3: Access Control
-- [ ] TASK-007: 공유 문서 접근 API 구현
-- [ ] TASK-008: 권한 체크 및 에러 핸들링
+### Mentoring
+- [x] Loader/Action/BookingModal integration (Share Documents)
+- [ ] **[Gap]** Display shared documents in Mentor Session View
+- [ ] **[Gap]** Mentor view of shared documents (API/UI)
 
-## Verification
-- [ ] Typecheck: 0 errors
-- [ ] Biome: 0 errors
-- [ ] Build: SUCCESS
+### Profile
+- [x] Loader/API/Settings integration (Select Portfolio)
+- [ ] **[Gap]** Display Portfolio on Public Profile (`/profile/:username`)
+
+## 🚧 Phase 3: Access Control & Polish (Pending)
+- [ ] **[API]** `GET /api/documents/:id/shared-access` (Secure Presigned URL)
+- [ ] **[Security]** Validate document access (Ownership, Mentoring relation, Public Portfolio)
+- [ ] **[UI]** PDF Viewer integration for shared documents
+
+## ✅ Bug Fixes (Complete)
+- [x] Route: mentoring/mentors/:mentorId
+- [x] Route: /profile alias
+
+## ✅ Verification
+- [x] Typecheck: 0 errors
+- [x] Biome: 0 errors
+- [x] Build: SUCCESS

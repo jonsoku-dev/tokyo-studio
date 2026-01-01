@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { data, useFetcher, useLoaderData } from "react-router";
-
+import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { requireUserId } from "../../auth/utils/session.server";
 import { CountdownBanner } from "../components/CountdownBanner";
 import {
@@ -201,14 +201,20 @@ export default function SettlementPage() {
 		urgencyFilter !== "all";
 
 	return (
-		<div className="stack-md mx-auto max-w-4xl">
+		<div className="stack-md">
 			{/* Header */}
-			<div className="stack-sm">
-				<h1 className="heading-2 text-gray-900">🗼 도쿄 정착 체크리스트</h1>
-				<p className="text-gray-500">
-					東京定住チェックリスト - Tokyo Settlement Checklist
-				</p>
-			</div>
+			<PageHeader
+				title="🗼 도쿄 정착 체크리스트"
+				description="일본 생활에 꼭 필요한 절차들을 단계별로 정리했습니다."
+				actions={
+					<div className="flex gap-2 text-sm text-gray-500">
+						<span className="font-medium text-primary-600">
+							{computedProgress.completed}/{computedProgress.total}
+						</span>
+						완료 ({computedProgress.percentage}%)
+					</div>
+				}
+			/>
 
 			{/* Arrival Date Input */}
 			<div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">

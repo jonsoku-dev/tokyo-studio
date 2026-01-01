@@ -19,6 +19,7 @@ export const profileService = {
 						profilePrivacySettings: true,
 					},
 				},
+				portfolioDocument: true, // SPEC 022: Fetch portfolio document
 			},
 		});
 

@@ -7,6 +7,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "~/shared/components/ui/Dialog";
+import type { DocumentOption } from "../../documents/components/DocumentSelector";
+import { DocumentSelector } from "../../documents/components/DocumentSelector";
 import { PARSING_PLUGINS } from "../constants/parsing-plugins";
 import type { ParsingPluginConfig } from "../domain/parsing.types";
 import type { PipelineItem, PipelineStage } from "../domain/pipeline.types";
@@ -17,6 +19,8 @@ interface PipelineItemModalProps {
 	stages: PipelineStage[];
 	parsers: ParsingPluginConfig[];
 	initialData?: PipelineItem | null;
+	/** SPEC 022: User's resume documents for attachment */
+	userResumes?: DocumentOption[];
 }
 
 /**
@@ -34,6 +38,7 @@ export function PipelineItemModal({
 	stages,
 	parsers,
 	initialData,
+	userResumes = [],
 }: PipelineItemModalProps) {
 	// Key increments on close to reset form state on next open
 	// Also dependents on initialData.id to reset when switching items
@@ -55,6 +60,7 @@ export function PipelineItemModal({
 					stages={stages}
 					parsers={parsers}
 					initialData={initialData}
+					userResumes={userResumes}
 				/>
 			</DialogContent>
 		</Dialog>
@@ -70,11 +76,13 @@ function ApplicationForm({
 	stages,
 	parsers,
 	initialData,
+	userResumes = [],
 }: {
 	onClose: () => void;
 	stages: PipelineStage[];
 	parsers: ParsingPluginConfig[];
 	initialData?: PipelineItem | null;
+	userResumes?: DocumentOption[];
 }) {
 	const isEdit = !!initialData;
 
@@ -94,6 +102,10 @@ function ApplicationForm({
 			: new Date().toISOString().split("T")[0],
 	);
 	const [nextAction, setNextAction] = useState(initialData?.nextAction || "");
+	// SPEC 022: Resume attachment state
+	const [resumeId, setResumeId] = useState<string | null>(
+		initialData?.resumeId ?? null,
+	);
 	const [_urlError, setUrlError] = useState("");
 
 	const parserFetcher = useFetcher<{
@@ -120,7 +132,11 @@ function ApplicationForm({
 
 	// URL validation
 	const isUrlValid = url
-		? PARSING_PLUGINS.validateUrl(url, parserId as any)
+		? PARSING_PLUGINS.validateUrl(
+				url,
+				// biome-ignore lint/suspicious/noExplicitAny: Parser ID type mismatch handling
+				parserId as any,
+			)
 		: true;
 	const urlValidationError =
 		url && !isUrlValid
@@ -168,6 +184,8 @@ function ApplicationForm({
 				stage,
 				date,
 				nextAction,
+				// SPEC 022: Resume attachment
+				resumeId: resumeId || "",
 			},
 			{ method: "POST", action: "/pipeline" },
 		);
@@ -373,6 +391,19 @@ function ApplicationForm({
 						className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
 					/>
 				</div>
+
+				{/* SPEC 022: Resume Attachment */}
+				{userResumes.length > 0 && (
+					<DocumentSelector
+						documents={userResumes}
+						selectedId={resumeId}
+						mode="single"
+						onChange={(selected) => setResumeId(selected as string | null)}
+						label="Attach Resume"
+						placeholder="Select a resume to attach..."
+						hint="Optional: Link your resume to this application"
+					/>
+				)}
 
 				<div className="pt-4">
 					<button

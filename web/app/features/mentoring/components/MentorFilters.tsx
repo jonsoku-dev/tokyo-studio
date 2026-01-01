@@ -1,5 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router";
 import { Button } from "~/shared/components/ui/Button";
+import { Input } from "~/shared/components/ui/Input";
 
 const JOB_FAMILIES = [
 	"Frontend",
@@ -63,13 +64,11 @@ export function MentorFilters() {
 				</h3>
 				<div className="flex items-center gap-2">
 					<div className="relative flex-1">
-						<span className="caption absolute top-1/2 left-2.5 -translate-y-1/2 text-gray-400">
-							$
-						</span>
-						<input
-							type="number"
+						<Input
+							name="minPrice"
 							placeholder="Min"
-							className="body-sm w-full rounded-md border border-gray-300 bg-white py-2 pr-2 pl-5 text-gray-900 placeholder-gray-400 transition-shadow focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+							type="number"
+							containerClassName="w-full"
 							defaultValue={minPrice ? Number(minPrice) / 100 : ""}
 							onBlur={(e) => {
 								const p = new URLSearchParams(searchParams);
@@ -78,17 +77,16 @@ export function MentorFilters() {
 								else p.delete("minPrice");
 								navigate(`?${p.toString()}`);
 							}}
+							startIcon={<span className="text-gray-400 text-xs">$</span>}
 						/>
 					</div>
 					<span className="text-gray-400">-</span>
 					<div className="relative flex-1">
-						<span className="caption absolute top-1/2 left-2.5 -translate-y-1/2 text-gray-400">
-							$
-						</span>
-						<input
-							type="number"
+						<Input
+							name="maxPrice"
 							placeholder="Max"
-							className="body-sm w-full rounded-md border border-gray-300 bg-white py-2 pr-2 pl-5 text-gray-900 placeholder-gray-400 transition-shadow focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+							type="number"
+							containerClassName="w-full"
 							defaultValue={maxPrice ? Number(maxPrice) / 100 : ""}
 							onBlur={(e) => {
 								const p = new URLSearchParams(searchParams);
@@ -97,6 +95,7 @@ export function MentorFilters() {
 								else p.delete("maxPrice");
 								navigate(`?${p.toString()}`);
 							}}
+							startIcon={<span className="text-gray-400 text-xs">$</span>}
 						/>
 					</div>
 				</div>

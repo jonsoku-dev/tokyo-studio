@@ -40,7 +40,7 @@ export default function DiagnosisResult({ loaderData }: Route.ComponentProps) {
 	};
 
 	return (
-		<div className="stack-lg mx-auto max-w-4xl py-8">
+		<div className="stack-lg">
 			{/* Header */}
 			<div className="stack text-center">
 				<div className="inline-center mb-4 h-16 w-16 rounded-full bg-accent-100 text-accent-600">

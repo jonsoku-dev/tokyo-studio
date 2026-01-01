@@ -1,12 +1,13 @@
 import { db } from "@itcom/db/client";
 import {
+	documents,
 	mentorAvailabilitySlots,
 	mentoringSessions,
 	mentorProfiles,
 	mentorReviews,
 	users,
 } from "@itcom/db/schema";
-import { and, asc, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { emailService } from "~/features/auth/services/email.server";
 import { pushService } from "~/features/notifications/services/push.server";
 import type {
@@ -156,6 +157,8 @@ export const mentoringService = {
 					currency: "USD",
 					status: "confirmed", // Skip pending/payment for MVP mock
 					meetingUrl: meetingUrl,
+					// SPEC 022: Document Integration - shared documents for mentoring
+					sharedDocumentIds: data.sharedDocumentIds || [],
 				})
 				.returning();
 
@@ -248,8 +251,35 @@ export const mentoringService = {
 			.where(eq(mentoringSessions.userId, userId))
 			.orderBy(desc(mentoringSessions.date));
 
+		// SPEC 022: Fetch shared documents
+		const allSharedDocIds = Array.from(
+			new Set(results.flatMap((r) => r.session.sharedDocumentIds || [])),
+		);
+
+		const docsMap = new Map();
+		if (allSharedDocIds.length > 0) {
+			const docs = await db
+				.select({
+					id: documents.id,
+					title: documents.title,
+					type: documents.type,
+					storageKey: documents.storageKey,
+				})
+				.from(documents)
+				.where(inArray(documents.id, allSharedDocIds));
+
+			for (const d of docs) {
+				docsMap.set(d.id, d);
+			}
+		}
+
 		return results.map(({ session, mentor, reviewId }) => ({
-			session,
+			session: {
+				...session,
+				sharedDocuments: (session.sharedDocumentIds || [])
+					.map((id) => docsMap.get(id))
+					.filter(Boolean),
+			},
 			mentor,
 			isReviewed: !!reviewId,
 		}));

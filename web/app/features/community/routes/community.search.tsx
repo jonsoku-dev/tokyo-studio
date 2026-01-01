@@ -4,7 +4,7 @@ import { Link, useLoaderData } from "react-router";
 import { SearchBar } from "~/features/community/components/SearchBar";
 import { SearchFilters } from "~/features/community/components/SearchFilters";
 import { searchPosts } from "~/features/community/services/search.server";
-
+import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { Avatar } from "~/shared/components/ui/Avatar";
 import { Badge } from "~/shared/components/ui/Badge";
 
@@ -33,9 +33,9 @@ export default function SearchPage() {
 	const { results, query } = useLoaderData<typeof loader>();
 
 	return (
-		<div className="mx-auto max-w-5xl px-4 py-8">
+		<div>
+			<PageHeader title="Search Results" className="mb-8" />
 			<div className="mb-8">
-				<h1 className="heading-3 mb-4">Search Results</h1>
 				<SearchBar />
 			</div>
 

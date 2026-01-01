@@ -23,9 +23,18 @@ export const PipelineItemSchema = selectPipelineItemSchema
 		position: true,
 		date: true,
 		nextAction: true,
+		resumeId: true, // SPEC 022: Document Integration
 	})
 	.extend({
 		stage: PipelineStatusEnum,
+		resume: z
+			.object({
+				id: z.string(),
+				title: z.string(),
+				type: z.string(),
+			})
+			.nullable()
+			.optional(),
 	});
 
 export type PipelineItem = z.infer<typeof PipelineItemSchema>;

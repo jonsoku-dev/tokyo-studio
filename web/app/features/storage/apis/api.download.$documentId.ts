@@ -1,6 +1,6 @@
 import { db } from "@itcom/db/client";
-import { documents } from "@itcom/db/schema";
-import { and, eq } from "drizzle-orm";
+import { documents, mentoringSessions, profiles } from "@itcom/db/schema";
+import { and, eq, or, sql } from "drizzle-orm";
 import { type LoaderFunctionArgs, redirect } from "react-router";
 import { getUserFromRequest } from "~/features/auth/services/require-verified-email.server";
 import { generateDownloadPresignedUrl } from "~/features/storage/services/presigned-urls.server";
@@ -31,15 +31,74 @@ export const loader = loaderHandler(
 			throw new UnauthorizedError();
 		}
 
-		// 2. Find and verify document ownership
+		// 3. Verify document ownership OR access rights
+		// Original check: owner only
+		// const [document] = await db.select()... where(owner verify)
+
+		// Updated check:
+		// 1. Owner
+		// 2. Public Portfolio
+		// 3. Shared in Mentoring Session (for involved mentor/mentee)
+
 		const [document] = await db
 			.select()
 			.from(documents)
-			.where(and(eq(documents.id, documentId), eq(documents.userId, user.id)))
+			.where(eq(documents.id, documentId))
 			.limit(1);
 
 		if (!document) {
-			throw new NotFoundError("Document not found or access denied");
+			throw new NotFoundError("Document not found");
+		}
+
+		let hasAccess = false;
+
+		// Check 1: Owner
+		if (document.userId === user.id) {
+			hasAccess = true;
+		}
+
+		// Check 2: Public Portfolio (if not owner)
+		if (!hasAccess) {
+			const [portfolio] = await db
+				.select()
+				.from(profiles)
+				.where(eq(profiles.portfolioDocumentId, documentId))
+				.limit(1);
+
+			if (portfolio) {
+				hasAccess = true;
+			}
+		}
+
+		// Check 3: Shared in Mentoring Session (if not owner/portfolio)
+		// This is expensive check.
+		// Check if this doc is in any session where current user is mentor OR mentee.
+		if (!hasAccess) {
+			// Find sessions where (mentor=user OR mentee=user) AND sharedDocumentIds contains documentId
+			// Drizzle array contains check
+			// We need sql check for jsonb array contains
+
+			const [session] = await db
+				.select({ id: mentoringSessions.id })
+				.from(mentoringSessions)
+				.where(
+					and(
+						sql`${mentoringSessions.sharedDocumentIds}::jsonb @> ${JSON.stringify([documentId])}::jsonb`,
+						or(
+							eq(mentoringSessions.mentorId, user.id),
+							eq(mentoringSessions.userId, user.id),
+						),
+					),
+				)
+				.limit(1);
+
+			if (session) {
+				hasAccess = true;
+			}
+		}
+
+		if (!hasAccess) {
+			throw new UnauthorizedError("Access denied");
 		}
 
 		// 3. Verify document has S3 key

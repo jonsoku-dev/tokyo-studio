@@ -46,7 +46,7 @@ export default function NewPost({ actionData }: Route.ComponentProps) {
 	const isSubmitting = navigation.state === "submitting";
 
 	return (
-		<div className="mx-auto max-w-2xl">
+		<div>
 			<div className="mb-6">
 				<h1 className="heading-3">Create a Post</h1>
 				<p className="text-gray-500 text-sm">

@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from "react-router";
-
+import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { requireUserId } from "../../auth/utils/session.server";
 import { PostContent } from "../components/PostContent";
 import { communityService } from "../domain/community.service.server";
@@ -26,39 +26,41 @@ export default function Community() {
 
 	return (
 		<div className="stack">
-			<div className="flex items-center justify-between">
-				<h1 className="heading-3">Community</h1>
-				<div className="flex items-center space-x-4">
-					<div className="flex rounded-lg bg-gray-100 p-1">
+			<PageHeader
+				title="Community"
+				actions={
+					<div className="flex items-center space-x-4">
+						<div className="flex rounded-lg bg-gray-100 p-1">
+							<Link
+								to="?sort=recent"
+								className={`rounded-md px-3 py-1 font-medium text-sm transition-colors ${
+									sortBy === "recent"
+										? "bg-white text-gray-900 shadow-sm"
+										: "link-subtle"
+								}`}
+							>
+								Recent
+							</Link>
+							<Link
+								to="?sort=best"
+								className={`rounded-md px-3 py-1 font-medium text-sm transition-colors ${
+									sortBy === "best"
+										? "bg-white text-gray-900 shadow-sm"
+										: "link-subtle"
+								}`}
+							>
+								Best
+							</Link>
+						</div>
 						<Link
-							to="?sort=recent"
-							className={`rounded-md px-3 py-1 font-medium text-sm transition-colors ${
-								sortBy === "recent"
-									? "bg-white text-gray-900 shadow-sm"
-									: "link-subtle"
-							}`}
+							to="/community/new"
+							className="rounded-md bg-primary-600 px-4 py-2 font-medium text-sm text-white hover:bg-primary-700"
 						>
-							Recent
-						</Link>
-						<Link
-							to="?sort=best"
-							className={`rounded-md px-3 py-1 font-medium text-sm transition-colors ${
-								sortBy === "best"
-									? "bg-white text-gray-900 shadow-sm"
-									: "link-subtle"
-							}`}
-						>
-							Best
+							Write Post
 						</Link>
 					</div>
-					<Link
-						to="/community/new"
-						className="rounded-md bg-primary-600 px-4 py-2 font-medium text-sm text-white hover:bg-primary-700"
-					>
-						Write Post
-					</Link>
-				</div>
-			</div>
+				}
+			/>
 
 			<div className="stack">
 				{posts.map((post) => (

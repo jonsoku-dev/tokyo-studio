@@ -38,4 +38,6 @@ export interface CreateBookingDTO {
 	duration: 30 | 60 | 90;
 	topic: string;
 	price: number;
+	/** SPEC 022: Document Integration - documents to share with mentor */
+	sharedDocumentIds?: string[];
 }

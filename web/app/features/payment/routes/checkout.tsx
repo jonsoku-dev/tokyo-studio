@@ -4,7 +4,7 @@ import {
 } from "@tosspayments/payment-widget-sdk";
 import { nanoid } from "nanoid";
 import { useEffect, useRef, useState } from "react";
-
+import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { Button } from "~/shared/components/ui/Button";
 import { requireUserId } from "../../auth/utils/session.server";
 import type { Route } from "./+types/checkout";
@@ -70,8 +70,8 @@ export default function Checkout({ loaderData }: Route.ComponentProps) {
 	};
 
 	return (
-		<div className="mx-auto max-w-2xl py-12">
-			<h1 className="heading-2 mb-8 text-center">Checkout</h1>
+		<div>
+			<PageHeader title="Checkout" className="mb-8 text-center" />
 			<div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
 				<div id="payment-widget" />
 				<div id="agreement" />

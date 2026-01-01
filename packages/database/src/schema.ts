@@ -623,10 +623,25 @@ export const documentVersionsRelations = relations(
 	}),
 );
 
+export const pipelineItemsRelations = relations(pipelineItems, ({ one }) => ({
+	user: one(users, {
+		fields: [pipelineItems.userId],
+		references: [users.id],
+	}),
+	resume: one(documents, {
+		fields: [pipelineItems.resumeId],
+		references: [documents.id],
+	}),
+}));
+
 export const profilesRelations = relations(profiles, ({ one }) => ({
 	user: one(users, {
 		fields: [profiles.userId],
 		references: [users.id],
+	}),
+	portfolioDocument: one(documents, {
+		fields: [profiles.portfolioDocumentId],
+		references: [documents.id],
 	}),
 }));
 

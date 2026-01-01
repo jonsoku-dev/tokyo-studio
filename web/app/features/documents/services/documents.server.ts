@@ -25,6 +25,29 @@ class DocumentsService {
 		}
 	}
 
+	/**
+	 * Get user's documents filtered by type
+	 * Used for: Pipeline (Resume/CV), Mentoring (all), Profile (Portfolio)
+	 */
+	async getUserDocumentsByType(
+		userId: string,
+		types: string[],
+		options?: { onlyFinal?: boolean },
+	) {
+		const results = await db.query.documents.findMany({
+			where: eq(documents.userId, userId),
+			orderBy: [desc(documents.uploadedAt), desc(documents.createdAt)],
+		});
+
+		// Filter in application code for simplicity
+		return results.filter(
+			(doc) =>
+				types.includes(doc.type) &&
+				doc.status !== "pending" && // Exclude pending uploads
+				(!options?.onlyFinal || doc.status === "final"),
+		);
+	}
+
 	// Search and Filter Documents
 	async searchDocuments(
 		userId: string,

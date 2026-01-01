@@ -16,6 +16,7 @@ import { FileUploader } from "~/features/storage/components/FileUploader";
 import { StorageUsageCompact } from "~/features/storage/components/StorageUsageIndicator";
 import { getDownloadUrl } from "~/features/storage/services/s3-upload.client";
 import { storageService } from "~/features/storage/services/storage.server";
+import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { Button } from "~/shared/components/ui/Button";
 import { BadRequestError } from "~/shared/lib";
 import type { Route } from "./+types/documents";
@@ -175,42 +176,40 @@ export default function Documents({ loaderData }: Route.ComponentProps) {
 	const _percentUsed = Math.min((usedQuota / (100 * 1024 * 1024)) * 100, 100);
 
 	return (
-		<div className="container-wide stack-lg px-4 py-8 sm:px-6 lg:px-8">
+		<div className="stack-lg">
 			{/* Header & Stats */}
-			<div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
-				<div>
-					<h1 className="heading-3">Documents</h1>
-					<p className="caption mt-1">
-						Manage your career documents with version control.
-					</p>
-				</div>
-
-				<div className="flex items-center gap-6">
-					<div className="hidden sm:block">
-						<p className="mb-2 text-right font-medium text-gray-500 text-xs">
-							Storage
-						</p>
-						<StorageUsageCompact storageUsed={usedQuota} />
+			{/* Header & Stats */}
+			<PageHeader
+				title="Documents"
+				description="Manage your career documents with version control."
+				actions={
+					<div className="flex items-center gap-6">
+						<div className="hidden sm:block">
+							<p className="mb-2 text-right font-medium text-gray-500 text-xs">
+								Storage
+							</p>
+							<StorageUsageCompact storageUsed={usedQuota} />
+						</div>
+						<Button onClick={() => setIsUploadOpen(!isUploadOpen)}>
+							<Plus className="mr-2 h-4 w-4" />
+							Upload New
+						</Button>
 					</div>
-					<Button onClick={() => setIsUploadOpen(!isUploadOpen)}>
-						<Plus className="mr-2 h-4 w-4" />
-						Upload New
-					</Button>
-				</div>
-			</div>
-
-			{/* Upload Expandable Area */}
-			{isUploadOpen && (
-				<div className="card slide-in-from-top-4 fade-in animate-in border border-gray-100 p-6 duration-200">
-					<h2 className="heading-5 mb-4">Upload Documents</h2>
-					<FileUploader
-						onUploadComplete={() => {
-							// revalidate
-							submit(searchParams);
-						}}
-					/>
-				</div>
-			)}
+				}
+			>
+				{/* Upload Expandable Area */}
+				{isUploadOpen && (
+					<div className="card slide-in-from-top-4 fade-in animate-in mt-4 border border-gray-100 p-6 duration-200">
+						<h2 className="heading-5 mb-4">Upload Documents</h2>
+						<FileUploader
+							onUploadComplete={() => {
+								// revalidate
+								submit(searchParams);
+							}}
+						/>
+					</div>
+				)}
+			</PageHeader>
 
 			{/* Search & Filter Toolbar */}
 			<div className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:flex-row">

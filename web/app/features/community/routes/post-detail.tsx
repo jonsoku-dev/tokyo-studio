@@ -37,7 +37,7 @@ export default function PostDetail() {
 		useLoaderData<typeof loader>();
 
 	return (
-		<div className="stack-lg mx-auto max-w-4xl">
+		<div className="stack-lg">
 			{/* Post Header */}
 			{/* Post Header & Content */}
 			<div className="flex gap-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">

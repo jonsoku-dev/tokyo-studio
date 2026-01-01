@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useLoaderData } from "react-router";
-
+import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { requireUserId } from "../../auth/utils/session.server";
+import { RESUME_DOCUMENT_TYPES } from "../../documents/constants";
+import { documentsService } from "../../documents/services/documents.server";
 import { DeletePipelineItemModal } from "../components/DeletePipelineItemModal";
 import { KanbanBoard } from "../components/KanbanBoardWrapper";
 import { PipelineItemModal } from "../components/PipelineItemModal";
@@ -20,12 +22,14 @@ export function meta() {
 
 export async function loader({ request }: { request: Request }) {
 	const userId = await requireUserId(request);
-	const [items, stages] = await Promise.all([
+	const [items, stages, userResumes] = await Promise.all([
 		pipelineService.getItems(userId),
 		pipelineService.getStages(),
+		// SPEC 022: Fetch user's resume documents for attachment
+		documentsService.getUserDocumentsByType(userId, [...RESUME_DOCUMENT_TYPES]),
 	]);
 	const parsers = PARSING_PLUGINS.getAllPlugins();
-	return { items, stages, parsers };
+	return { items, stages, parsers, userResumes };
 }
 
 export async function action({ request }: { request: Request }) {
@@ -41,6 +45,9 @@ export async function action({ request }: { request: Request }) {
 		const nextAction = formData.get("nextAction")
 			? String(formData.get("nextAction"))
 			: null;
+		// SPEC 022: Resume attachment
+		const resumeIdValue = formData.get("resumeId");
+		const resumeId = resumeIdValue ? String(resumeIdValue) : null;
 
 		await pipelineService.addItem(userId, {
 			company,
@@ -48,6 +55,7 @@ export async function action({ request }: { request: Request }) {
 			stage,
 			date,
 			nextAction,
+			resumeId,
 		});
 		return { success: true };
 	}
@@ -60,6 +68,9 @@ export async function action({ request }: { request: Request }) {
 		const date = String(formData.get("date"));
 		const nextActionValue = formData.get("nextAction");
 		const nextAction = nextActionValue ? String(nextActionValue) : undefined;
+		// SPEC 022: Resume attachment
+		const resumeIdValue = formData.get("resumeId");
+		const resumeId = resumeIdValue ? String(resumeIdValue) : null;
 
 		await pipelineService.updateItem(userId, itemId, {
 			company,
@@ -67,6 +78,7 @@ export async function action({ request }: { request: Request }) {
 			stage,
 			date,
 			nextAction,
+			resumeId,
 		});
 		return { success: true };
 	}
@@ -75,10 +87,16 @@ export async function action({ request }: { request: Request }) {
 }
 
 export default function Pipeline() {
-	const { items, stages, parsers } = useLoaderData<{
+	const { items, stages, parsers, userResumes } = useLoaderData<{
 		items: PipelineItem[];
 		stages: PipelineStage[];
 		parsers: ParsingPluginConfig[];
+		userResumes: Array<{
+			id: string;
+			title: string;
+			type: string;
+			status: string;
+		}>;
 	}>();
 
 	// Modal State
@@ -114,16 +132,18 @@ export default function Pipeline() {
 
 	return (
 		<div className="stack">
-			<div className="flex items-center justify-between">
-				<h1 className="heading-3">Pipeline</h1>
-				<button
-					type="button"
-					onClick={handleAddItem}
-					className="rounded-md bg-primary-600 px-4 py-2 font-medium text-sm text-white shadow-sm transition-colors hover:bg-primary-700"
-				>
-					Add Application
-				</button>
-			</div>
+			<PageHeader
+				title="Pipeline"
+				actions={
+					<button
+						type="button"
+						onClick={handleAddItem}
+						className="rounded-md bg-primary-600 px-4 py-2 font-medium text-sm text-white shadow-sm transition-colors hover:bg-primary-700"
+					>
+						Add Application
+					</button>
+				}
+			/>
 
 			<KanbanBoard
 				items={items}
@@ -139,6 +159,7 @@ export default function Pipeline() {
 				stages={stages}
 				parsers={parsers}
 				initialData={selectedItem}
+				userResumes={userResumes}
 			/>
 
 			{/* Delete Confirmation Modal */}

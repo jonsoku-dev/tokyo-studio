@@ -58,6 +58,32 @@ export function PipelineCard({
 							</p>
 						</div>
 					)}
+
+					{item.resume && (
+						<div
+							className="flex items-center gap-1 text-xs text-gray-500"
+							title={item.resume.title || "Attached Resume"}
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								className="h-3 w-3"
+								aria-label="Resume Document"
+							>
+								<title>Resume Document</title>
+								<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+								<polyline points="14 2 14 8 20 8" />
+							</svg>
+							<span className="truncate max-w-[120px]">
+								{item.resume.title}
+							</span>
+						</div>
+					)}
 				</div>
 
 				{/* Action Buttons (Visible on Hover) */}

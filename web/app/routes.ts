@@ -26,54 +26,70 @@ export default [
 
 	// --- PROTECTED LAYOUT (Authentication required) ---
 	layout("shared/layouts/ProtectedLayout.tsx", [
-		// Features
-		index("features/dashboard/routes/home.tsx"),
-		route("roadmap", "features/roadmap/routes/index.tsx"),
-		route("pipeline", "features/pipeline/routes/pipeline.tsx"),
-		route("documents", "features/documents/routes/documents.tsx"),
+		// Standard Page Layout (Centered Container - 1280px)
+		layout("shared/layouts/ContainerLayout.tsx", [
+			// Features
+			index("features/dashboard/routes/home.tsx"),
+			route("roadmap", "features/roadmap/routes/index.tsx"),
+			route("pipeline", "features/pipeline/routes/pipeline.tsx"),
+			route("documents", "features/documents/routes/documents.tsx"),
 
-		// Mentoring
-		route("mentoring", "features/mentoring/routes/mentoring.index.tsx"),
-		route(
-			"mentoring/bookings",
-			"features/mentoring/routes/mentoring.bookings.tsx",
-		),
-		route("mentoring/apply", "features/mentoring/routes/mentoring.apply.tsx"),
-		route(
-			"mentoring/session/:sessionId/review",
-			"features/mentoring/routes/mentoring.session.$sessionId.review.tsx",
-		),
-		route(
-			"mentoring/settings",
-			"features/mentoring/routes/mentoring.settings.tsx",
-		),
+			// Mentoring (Directory & Profile & Booking)
+			route("mentoring", "features/mentoring/routes/mentoring.index.tsx"),
+			route(
+				"mentoring/bookings",
+				"features/mentoring/routes/mentoring.bookings.tsx",
+			),
+			route(
+				"mentoring/session/:sessionId/review",
+				"features/mentoring/routes/mentoring.session.$sessionId.review.tsx",
+			),
+			route(
+				"mentoring/mentors/:mentorId",
+				"features/mentoring/routes/mentoring.profile.$mentorId.tsx",
+			),
 
-		// Community
-		route("community", "features/community/routes/community.tsx"),
-		route("community/search", "features/community/routes/community.search.tsx"),
-		route("community/new", "features/community/routes/new.tsx"),
-		route("community/:postId", "features/community/routes/post-detail.tsx"),
+			// Community
+			route("community", "features/community/routes/community.tsx"),
+			route(
+				"community/search",
+				"features/community/routes/community.search.tsx",
+			),
+			route("community/new", "features/community/routes/new.tsx"),
+			route("community/:postId", "features/community/routes/post-detail.tsx"),
 
-		// User settings
-		route("settings/profile", "features/users/routes/profile.tsx"),
-		route("settings/privacy", "features/users/routes/settings/privacy.tsx"),
-		route(
-			"settings/notifications",
-			"features/notifications/routes/settings.tsx",
-		),
-		route("profile/:username", "features/users/routes/profile.$username.tsx"),
+			// Diagnosis Result (Page)
+			route("diagnosis/result", "features/diagnosis/routes/result.tsx"),
+			route("payment/success", "features/payment/routes/success.tsx"),
 
-		// Diagnosis & Payment
-		route("diagnosis", "features/diagnosis/routes/diagnosis.tsx"),
-		route("diagnosis/result", "features/diagnosis/routes/result.tsx"),
-		route("payment/checkout", "features/payment/routes/checkout.tsx"),
-		route("payment/success", "features/payment/routes/success.tsx"),
+			// Settlement
+			route("settlement", "features/settlement/routes/index.tsx"),
 
-		// Settlement Checklist (SPEC 019)
-		route("settlement", "features/settlement/routes/index.tsx"),
+			// Mentoring Apply
+			route("mentoring/apply", "features/mentoring/routes/mentoring.apply.tsx"),
 
-		// Map Integration (SPEC 020)
-		route("map", "features/map/routes/index.tsx"),
+			// Settings
+			route(
+				"mentoring/settings",
+				"features/mentoring/routes/mentoring.settings.tsx",
+			),
+			route("settings/profile", "features/users/routes/profile.tsx"),
+			route("settings/privacy", "features/users/routes/settings/privacy.tsx"),
+			route(
+				"settings/notifications",
+				"features/notifications/routes/settings.tsx",
+			),
+			route("profile/:username", "features/users/routes/profile.$username.tsx"),
+
+			// Diagnosis Form
+			route("diagnosis", "features/diagnosis/routes/diagnosis.tsx"),
+
+			// Payment Checkout
+			route("payment/checkout", "features/payment/routes/checkout.tsx"),
+
+			// Map
+			route("map", "features/map/routes/index.tsx"),
+		]),
 	]),
 
 	// --- APIs ---
