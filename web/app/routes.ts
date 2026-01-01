@@ -186,6 +186,10 @@ export default [
 		"api/pipeline/stages",
 		"features/pipeline/apis/api.pipeline.get-stages.server.ts",
 	),
+	route(
+		"api/pipeline/parsers",
+		"features/pipeline/apis/api.pipeline.parsers.server.ts",
+	),
 
 	// Map APIs (SPEC 020)
 	route("api/map", "features/map/apis/api.map.get.ts"),

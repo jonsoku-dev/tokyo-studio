@@ -12,13 +12,20 @@ import { PipelineItemWrapper } from "./PipelineItemWrapper";
 interface KanbanBoardProps {
 	items: PipelineItem[];
 	stages: PipelineStage[];
+	onEditItem: (item: PipelineItem) => void;
+	onDeleteItem: (item: PipelineItem) => void;
 }
 
 /**
  * KanbanBoard - Pipeline-specific kanban board
  * Uses the generic KanbanBoard with Pipeline customization
  */
-export function KanbanBoard({ items: initialItems, stages }: KanbanBoardProps) {
+export function KanbanBoard({
+	items: initialItems,
+	stages,
+	onEditItem,
+	onDeleteItem,
+}: KanbanBoardProps) {
 	const updateItemMutation = useUpdatePipelineItemMutation();
 	const pipelineStore = usePipelineStore();
 
@@ -71,9 +78,26 @@ export function KanbanBoard({ items: initialItems, stages }: KanbanBoardProps) {
 				...item,
 				stage: column as PipelineStatus,
 			})}
-			renderCard={(item) => <PipelineCard item={item} />}
-			renderItemWrapper={(item, card) => (
-				<PipelineItemWrapper itemId={item.id}>{() => card}</PipelineItemWrapper>
+			renderCard={(item) => (
+				<PipelineCard
+					item={item}
+					onEdit={() => onEditItem(item)}
+					onDelete={() => onDeleteItem(item)}
+				/>
+			)}
+			renderItemWrapper={(item) => (
+				<PipelineItemWrapper itemId={item.id}>
+					{({ isDragging, listeners, attributes }) => (
+						<PipelineCard
+							item={item}
+							isDragging={isDragging}
+							listeners={listeners}
+							attributes={attributes}
+							onEdit={() => onEditItem(item)}
+							onDelete={() => onDeleteItem(item)}
+						/>
+					)}
+				</PipelineItemWrapper>
 			)}
 			onSaveChanges={handleSaveChanges}
 			layout="scroll"

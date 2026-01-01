@@ -9,6 +9,8 @@ const KanbanBoardClient = lazy(() =>
 interface KanbanBoardWrapperProps {
 	items: PipelineItem[];
 	stages: PipelineStage[];
+	onEditItem: (item: PipelineItem) => void;
+	onDeleteItem: (item: PipelineItem) => void;
 }
 
 // ClientOnly wrapper - only renders children on client
@@ -64,12 +66,22 @@ function KanbanBoardSkeleton() {
 	);
 }
 
-export function KanbanBoard({ items, stages }: KanbanBoardWrapperProps) {
+export function KanbanBoard({
+	items,
+	stages,
+	onEditItem,
+	onDeleteItem,
+}: KanbanBoardWrapperProps) {
 	return (
 		<ClientOnly fallback={<KanbanBoardSkeleton />}>
 			{() => (
 				<Suspense fallback={<KanbanBoardSkeleton />}>
-					<KanbanBoardClient items={items} stages={stages} />
+					<KanbanBoardClient
+						items={items}
+						stages={stages}
+						onEditItem={onEditItem}
+						onDeleteItem={onDeleteItem}
+					/>
 				</Suspense>
 			)}
 		</ClientOnly>

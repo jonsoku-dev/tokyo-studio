@@ -34,7 +34,11 @@ export interface DndKanbanProps<
 		children: React.ReactNode,
 	) => React.ReactNode;
 	onSaveChanges: (
-		changes: Array<{ itemId: string; toColumn: TColumnId; orderIndex?: number }>,
+		changes: Array<{
+			itemId: string;
+			toColumn: TColumnId;
+			orderIndex?: number;
+		}>,
 	) => Promise<void>;
 	layout?: "grid" | "scroll"; // Default: "grid"
 }

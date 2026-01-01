@@ -2,15 +2,9 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { CSSProperties, ReactNode } from "react";
 
-interface RenderPropArgs {
-	isDragging: boolean;
-	listeners: ReturnType<typeof useSortable>["listeners"];
-	attributes: ReturnType<typeof useSortable>["attributes"];
-}
-
 interface KanbanItemWrapperProps {
 	itemId: string;
-	children: ReactNode | ((args: RenderPropArgs) => ReactNode);
+	children: ReactNode | ((isDragging: boolean) => ReactNode);
 }
 
 /**
@@ -38,10 +32,14 @@ export function KanbanItemWrapper({
 	};
 
 	return (
-		<div ref={setNodeRef} style={style} className="touch-none">
-			{typeof children === "function"
-				? children({ isDragging, listeners, attributes })
-				: children}
+		<div
+			ref={setNodeRef}
+			style={style}
+			{...attributes}
+			{...listeners}
+			className="cursor-grab touch-none active:cursor-grabbing"
+		>
+			{typeof children === "function" ? children(isDragging) : children}
 		</div>
 	);
 }

@@ -2,14 +2,17 @@ import { useState } from "react";
 import { useLoaderData } from "react-router";
 
 import { requireUserId } from "../../auth/utils/session.server";
-import { AddApplicationModal } from "../components/AddApplicationModal";
+import { DeletePipelineItemModal } from "../components/DeletePipelineItemModal";
 import { KanbanBoard } from "../components/KanbanBoardWrapper";
+import { PipelineItemModal } from "../components/PipelineItemModal";
+import { PARSING_PLUGINS } from "../constants/parsing-plugins";
 import { pipelineService } from "../domain/pipeline.service.server";
 import type {
 	PipelineItem,
 	PipelineStage,
 	PipelineStatus,
 } from "../domain/pipeline.types";
+import type { ParsingPluginConfig } from "../domain/parsing.types";
 
 export function meta() {
 	return [{ title: "Pipeline - Japan IT Job" }];
@@ -21,13 +24,14 @@ export async function loader({ request }: { request: Request }) {
 		pipelineService.getItems(userId),
 		pipelineService.getStages(),
 	]);
-	return { items, stages };
+	const parsers = PARSING_PLUGINS.getAllPlugins();
+	return { items, stages, parsers };
 }
 
 export async function action({ request }: { request: Request }) {
 	const userId = await requireUserId(request);
 	const formData = await request.formData();
-	const intent = String(formData.get("intent") || "update");
+	const intent = String(formData.get("intent") || "add");
 
 	if (intent === "add") {
 		const company = String(formData.get("company"));
@@ -48,20 +52,65 @@ export async function action({ request }: { request: Request }) {
 		return { success: true };
 	}
 
-	const id = String(formData.get("id"));
-	const stage = String(formData.get("stage"));
+	if (intent === "edit") {
+		const itemId = String(formData.get("itemId"));
+		const company = String(formData.get("company"));
+		const position = String(formData.get("position"));
+		const stage = String(formData.get("stage")) as PipelineStatus;
+		const date = String(formData.get("date"));
+		const nextActionValue = formData.get("nextAction");
+		const nextAction = nextActionValue ? String(nextActionValue) : undefined;
 
-	// biome-ignore lint/suspicious/noExplicitAny: Temporary cast until types are aligned
-	await pipelineService.updateItemStatus(id, stage as any);
-	return { success: true };
+		await pipelineService.updateItem(userId, itemId, {
+			company,
+			position,
+			stage,
+			date,
+			nextAction,
+		});
+		return { success: true };
+	}
+
+	return null;
 }
 
 export default function Pipeline() {
-	const { items, stages } = useLoaderData<{
+	const { items, stages, parsers } = useLoaderData<{
 		items: PipelineItem[];
 		stages: PipelineStage[];
+		parsers: ParsingPluginConfig[];
 	}>();
-	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+	// Modal State
+	const [selectedItem, setSelectedItem] = useState<PipelineItem | null>(null);
+	const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+	// Handlers
+	const handleAddItem = () => {
+		setSelectedItem(null);
+		setIsItemModalOpen(true);
+	};
+
+	const handleEditItem = (item: PipelineItem) => {
+		setSelectedItem(item);
+		setIsItemModalOpen(true);
+	};
+
+	const handleDeleteItem = (item: PipelineItem) => {
+		setSelectedItem(item);
+		setIsDeleteModalOpen(true);
+	};
+
+	const handleCloseItemModal = () => {
+		setIsItemModalOpen(false);
+		setSelectedItem(null);
+	};
+
+	const handleCloseDeleteModal = () => {
+		setIsDeleteModalOpen(false);
+		setSelectedItem(null);
+	};
 
 	return (
 		<div className="stack">
@@ -69,20 +118,37 @@ export default function Pipeline() {
 				<h1 className="heading-3">Pipeline</h1>
 				<button
 					type="button"
-					onClick={() => setIsAddModalOpen(true)}
+					onClick={handleAddItem}
 					className="rounded-md bg-primary-600 px-4 py-2 font-medium text-sm text-white shadow-sm transition-colors hover:bg-primary-700"
 				>
 					Add Application
 				</button>
 			</div>
 
-			<KanbanBoard items={items} stages={stages} />
-
-			<AddApplicationModal
-				isOpen={isAddModalOpen}
-				onClose={() => setIsAddModalOpen(false)}
-			stages={stages}
+			<KanbanBoard
+				items={items}
+				stages={stages}
+				onEditItem={handleEditItem}
+				onDeleteItem={handleDeleteItem}
 			/>
+
+			{/* Add / Edit Modal */}
+			<PipelineItemModal
+				isOpen={isItemModalOpen}
+				onClose={handleCloseItemModal}
+				stages={stages}
+				parsers={parsers}
+				initialData={selectedItem}
+			/>
+
+			{/* Delete Confirmation Modal */}
+			{selectedItem && (
+				<DeletePipelineItemModal
+					isOpen={isDeleteModalOpen}
+					onClose={handleCloseDeleteModal}
+					item={selectedItem}
+				/>
+			)}
 		</div>
 	);
 }

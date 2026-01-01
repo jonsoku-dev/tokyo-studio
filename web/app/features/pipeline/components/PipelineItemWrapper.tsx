@@ -2,14 +2,20 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { CSSProperties, ReactNode } from "react";
 
+interface RenderPropArgs {
+	isDragging: boolean;
+	listeners: ReturnType<typeof useSortable>["listeners"];
+	attributes: ReturnType<typeof useSortable>["attributes"];
+}
+
 interface PipelineItemWrapperProps {
 	itemId: string;
-	children?: (isDragging: boolean) => ReactNode;
+	children?: (args: RenderPropArgs) => ReactNode;
 }
 
 /**
  * PipelineItemWrapper - Wraps an item with dnd-kit's useSortable hook
- * Enables drag-and-drop functionality for individual items
+ * Enables drag-and-drop functionality for individual items, passing listeners down
  */
 export function PipelineItemWrapper({
 	itemId,
@@ -32,14 +38,8 @@ export function PipelineItemWrapper({
 	};
 
 	return (
-		<div
-			ref={setNodeRef}
-			style={style}
-			{...attributes}
-			{...listeners}
-			className="cursor-grab touch-none active:cursor-grabbing"
-		>
-			{children ? children(isDragging) : null}
+		<div ref={setNodeRef} style={style} className="touch-none">
+			{children ? children({ isDragging, listeners, attributes }) : null}
 		</div>
 	);
 }

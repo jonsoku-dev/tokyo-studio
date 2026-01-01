@@ -16,11 +16,27 @@ export const pipelineService = {
 			stage: item.stage as PipelineStatus,
 			date: item.date,
 			nextAction: item.nextAction || null,
+			userId: item.userId, // Add userId to return type if needed, or just specific internal method
 		}));
 	},
 
-	updateItemStatus: async (id: string, stage: PipelineStatus, orderIndex?: number) => {
-		const updateData: any = { stage };
+	getItemById: async (id: string) => {
+		const [item] = await db
+			.select()
+			.from(pipelineItems)
+			.where(eq(pipelineItems.id, id))
+			.limit(1);
+		return item;
+	},
+
+	updateItemStatus: async (
+		id: string,
+		stage: PipelineStatus,
+		orderIndex?: number,
+	) => {
+		const updateData: { stage: PipelineStatus; orderIndex?: number } = {
+			stage,
+		};
 		if (orderIndex !== undefined) {
 			updateData.orderIndex = orderIndex;
 		}
@@ -31,6 +47,36 @@ export const pipelineService = {
 			.where(eq(pipelineItems.id, id))
 			.returning();
 		return updated;
+	},
+
+	updateItem: async (
+		_userId: string,
+		itemId: string,
+		data: {
+			company?: string;
+			position?: string;
+			stage?: PipelineStatus;
+			date?: string;
+			nextAction?: string;
+		},
+	) => {
+		const [updated] = await db
+			.update(pipelineItems)
+			.set({
+				...data,
+				updatedAt: new Date(),
+			})
+			.where(eq(pipelineItems.id, itemId)) // userId check already done in action
+			.returning();
+		return updated;
+	},
+
+	deleteItem: async (_userId: string, itemId: string) => {
+		const [deleted] = await db
+			.delete(pipelineItems)
+			.where(eq(pipelineItems.id, itemId)) // userId check already done in action
+			.returning();
+		return deleted;
 	},
 
 	addItem: async (
