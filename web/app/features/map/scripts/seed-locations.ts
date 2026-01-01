@@ -243,7 +243,7 @@ async function seedLocations() {
 		}
 
 		// 데이터 삽입
-		const result = await db.insert(mapLocations).values(
+		const _result = await db.insert(mapLocations).values(
 			tokyoLocations.map((loc) => ({
 				...loc,
 				latitude: loc.latitude.toString(),

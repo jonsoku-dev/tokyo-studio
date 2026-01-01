@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useUser } from "~/features/auth/hooks/useUser";
 import { type MapLocationData, useMapStore } from "../store/map.store";
 import { LocationPopup } from "./LocationPopup";
 import MapComponent from "./Map.client";
@@ -60,7 +59,7 @@ export function MapPage() {
 		};
 
 		loadLocations();
-	}, []); // 빈 의존성 배열: 마운트 시에만 1회 실행
+	}, [setError, setLoading, setLocations]); // 빈 의존성 배열: 마운트 시에만 1회 실행
 
 	// 필터링 + 검색 실행
 	const handleSearch = useCallback(
@@ -69,7 +68,9 @@ export function MapPage() {
 			try {
 				const params = new URLSearchParams();
 				if (query) params.append("search", query);
-				categories.forEach((cat) => params.append("categories", cat));
+				for (const cat of categories) {
+					params.append("categories", cat);
+				}
 
 				const response = await fetch(`/api/map?${params}`);
 				const data = await response.json();
@@ -116,10 +117,10 @@ export function MapPage() {
 	}, [locations, searchQuery, getSelectedCategories]);
 
 	return (
-		<div className="flex flex-col h-full gap-3">
+		<div className="flex h-full flex-col gap-3">
 			{/* 에러 메시지 */}
 			{error && (
-				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+				<div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
 					{error}
 				</div>
 			)}
@@ -133,7 +134,7 @@ export function MapPage() {
 			</div>
 
 			{/* 지도 */}
-			<div className="flex-1 min-h-0">
+			<div className="min-h-0 flex-1">
 				<MapComponent locations={filteredLocations} isLoading={isLoading} />
 			</div>
 

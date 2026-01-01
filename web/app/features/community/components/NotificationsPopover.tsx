@@ -29,7 +29,7 @@ export function NotificationsPopover() {
 			<Button
 				variant="ghost"
 				size="sm"
-				className="relative text-gray-500 hover:text-gray-900 h-9 w-9 px-0"
+				className="relative h-9 w-9 px-0 text-gray-500 hover:text-gray-900"
 				onClick={() => setIsOpen(!isOpen)}
 			>
 				<Bell className="h-5 w-5" />
@@ -46,7 +46,7 @@ export function NotificationsPopover() {
 						className="fixed inset-0 z-10"
 						onClick={() => setIsOpen(false)}
 					/>
-					<div className="absolute right-0 mt-2 w-80 card-xl border border-gray-100 z-20 overflow-hidden">
+					<div className="card-xl absolute right-0 z-20 mt-2 w-80 overflow-hidden border border-gray-100">
 						<div className="p-2">
 							<NotificationList notifications={notifications} />
 						</div>

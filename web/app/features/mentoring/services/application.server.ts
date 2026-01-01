@@ -4,7 +4,6 @@ import {
 	mentorApplications,
 } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
-import { storageService } from "~/shared/services/storage.server";
 
 export const applicationService = {
 	async hasPendingApplication(userId: string) {

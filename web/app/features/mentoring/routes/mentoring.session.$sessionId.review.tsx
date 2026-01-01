@@ -95,16 +95,16 @@ export default function ReviewSessionPage() {
 	const [hoverRating, setHoverRating] = useState(0);
 
 	return (
-		<div className="fixed inset-0 z-50 center bg-black/80 backdrop-blur-sm p-4">
+		<div className="center fixed inset-0 z-50 bg-black/80 p-4 backdrop-blur-sm">
 			<div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0A0A0A] p-6 shadow-2xl">
 				<h2 className="heading-3 mb-2">Rate your session</h2>
-				<p className="text-gray-400 mb-6">
+				<p className="mb-6 text-gray-400">
 					How was your session with{" "}
-					<span className="text-white font-medium">{session.mentor.name}</span>?
+					<span className="font-medium text-white">{session.mentor.name}</span>?
 				</p>
 
 				{actionData?.error && (
-					<div className="mb-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-500">
+					<div className="mb-4 rounded-lg bg-red-500/10 p-3 text-red-500 text-sm">
 						{actionData.error}
 					</div>
 				)}
@@ -137,7 +137,7 @@ export default function ReviewSessionPage() {
 					<div>
 						<label
 							htmlFor="comment"
-							className="block text-sm font-medium text-gray-400 mb-2"
+							className="mb-2 block font-medium text-gray-400 text-sm"
 						>
 							Share your feedback (optional)
 						</label>
@@ -153,7 +153,7 @@ export default function ReviewSessionPage() {
 					<div className="flex justify-end gap-3 pt-2">
 						<Link
 							to="/mentoring/bookings"
-							className="inline-center rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500 px-4 py-2 text-base"
+							className="inline-center cursor-pointer rounded-full bg-transparent px-4 py-2 font-medium text-base text-gray-700 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 						>
 							Cancel
 						</Link>

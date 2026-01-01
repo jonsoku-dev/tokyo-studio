@@ -21,7 +21,7 @@ const STAGES = [
 
 export function KanbanBoard({ items }: KanbanBoardProps) {
 	return (
-		<div className="flex gap-4 h-[calc(100vh-200px)] overflow-x-auto pb-4 w-full items-start">
+		<div className="flex h-[calc(100vh-200px)] w-full items-start gap-4 overflow-x-auto pb-4">
 			{STAGES.map((stage) => (
 				<KanbanColumn
 					key={stage}

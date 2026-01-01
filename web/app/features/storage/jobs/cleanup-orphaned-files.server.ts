@@ -63,7 +63,7 @@ export async function cleanupOrphanedFiles(): Promise<number> {
 					try {
 						await fs.unlink(filePath);
 						console.log(`[CLEANUP] Deleted local file: ${key}`);
-					} catch (error) {
+					} catch (_error) {
 						// File might not exist, that's okay
 						console.warn(`[CLEANUP] Local file not found: ${key}`);
 					}
@@ -128,7 +128,7 @@ export async function cleanupDeletedDocuments(): Promise<number> {
 					try {
 						await fs.unlink(filePath);
 						console.log(`[CLEANUP] Deleted local file: ${key}`);
-					} catch (error) {
+					} catch (_error) {
 						console.warn(`[CLEANUP] Local file not found: ${key}`);
 					}
 				}
@@ -145,7 +145,7 @@ export async function cleanupDeletedDocuments(): Promise<number> {
 					try {
 						await deleteFromS3(thumbnailKey);
 						console.log(`[CLEANUP] Deleted thumbnail: ${thumbnailKey}`);
-					} catch (error) {
+					} catch (_error) {
 						console.warn(`[CLEANUP] Thumbnail not found: ${thumbnailKey}`);
 					}
 				} else {
@@ -153,7 +153,7 @@ export async function cleanupDeletedDocuments(): Promise<number> {
 					try {
 						await fs.unlink(thumbnailPath);
 						console.log(`[CLEANUP] Deleted local thumbnail: ${thumbnailKey}`);
-					} catch (error) {
+					} catch (_error) {
 						console.warn(
 							`[CLEANUP] Local thumbnail not found: ${thumbnailKey}`,
 						);

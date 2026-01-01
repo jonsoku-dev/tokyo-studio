@@ -32,7 +32,7 @@ export function DefaultAvatar({
 
 	return (
 		<div
-			className={`center rounded-full font-bold flex-shrink-0 ${sizeMap[size]} ${className}`}
+			className={`center flex-shrink-0 rounded-full font-bold ${sizeMap[size]} ${className}`}
 			style={{
 				backgroundColor: colors.bg,
 				color: colors.text,
@@ -65,7 +65,7 @@ export function Avatar({
 			<img
 				src={src}
 				alt={alt || name || "User avatar"}
-				className={`rounded-full flex-shrink-0 ${sizeMap[size]} ${className}`}
+				className={`flex-shrink-0 rounded-full ${sizeMap[size]} ${className}`}
 				loading="lazy"
 			/>
 		);

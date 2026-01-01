@@ -35,7 +35,7 @@ export default function VerifyEmail({ loaderData }: Route.ComponentProps) {
 	if (loaderData.success === false) {
 		return (
 			<div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-				<div className="w-full max-w-md stack-lg text-center">
+				<div className="stack-lg w-full max-w-md text-center">
 					<h2 className="heading-2">Verification Failed</h2>
 					<p className="text-red-600">{loaderData.error}</p>
 					<div className="mt-4">

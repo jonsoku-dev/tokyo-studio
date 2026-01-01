@@ -3,7 +3,6 @@ import {
 	AppError,
 	actionHandler,
 	BadRequestError,
-	ErrorCode,
 	InternalError,
 	RateLimitError,
 } from "~/shared/lib";

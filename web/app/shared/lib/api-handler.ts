@@ -5,10 +5,10 @@
  * loader/action을 래핑하여 일관된 응답/에러 처리
  */
 
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
-import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
 import { AppError, ErrorCode } from "./errors";
-import { ok, type ApiResponse, type ErrorResponse } from "./response";
+import { type ApiResponse, type ErrorResponse, ok } from "./response";
 
 type HandlerArgs = LoaderFunctionArgs | ActionFunctionArgs;
 type HandlerFn<T> = (args: HandlerArgs) => Promise<T>;
@@ -72,8 +72,7 @@ export function apiHandler<T>(handler: HandlerFn<T>) {
 			return data(ok(result));
 		} catch (error) {
 			const errorResponse = handleError(error);
-			const statusCode =
-				error instanceof AppError ? error.statusCode : 500;
+			const statusCode = error instanceof AppError ? error.statusCode : 500;
 
 			return data(errorResponse, { status: statusCode });
 		}

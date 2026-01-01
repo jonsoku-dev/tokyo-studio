@@ -16,10 +16,10 @@ export function CountdownBanner({ arrivalDate }: CountdownBannerProps) {
 
 	if (isArrived) {
 		return (
-			<div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl p-6 text-white shadow-lg">
+			<div className="rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-white shadow-lg">
 				<div className="flex items-center justify-between">
 					<div>
-						<p className="text-accent-100 text-sm font-medium">
+						<p className="font-medium text-accent-100 text-sm">
 							도쿄에 오신 것을 환영합니다! 🎉
 						</p>
 						<p className="heading-2 mt-1">
@@ -46,11 +46,11 @@ export function CountdownBanner({ arrivalDate }: CountdownBannerProps) {
 		>
 			<div className="flex items-center justify-between">
 				<div>
-					<p className="text-white/80 text-sm font-medium">
+					<p className="font-medium text-sm text-white/80">
 						도쿄 도착까지 / 東京到着まで
 					</p>
 					<p className="heading-1 mt-1">D-{diffDays}</p>
-					<p className="text-white/70 text-sm mt-1">
+					<p className="mt-1 text-sm text-white/70">
 						{arrival.toLocaleDateString("ko-KR", {
 							year: "numeric",
 							month: "long",

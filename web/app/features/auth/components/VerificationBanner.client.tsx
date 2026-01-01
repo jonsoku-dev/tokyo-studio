@@ -40,12 +40,12 @@ export function VerificationBanner({
 	const resendSuccess = fetcher.data?.success;
 
 	return (
-		<div className="bg-yellow-50 border-b border-yellow-200">
-			<div className="container-wide py-3 px-4 sm:px-6 lg:px-8">
-				<div className="flex items-center justify-between flex-wrap">
-					<div className="w-0 flex-1 flex items-center">
+		<div className="border-yellow-200 border-b bg-yellow-50">
+			<div className="container-wide px-4 py-3 sm:px-6 lg:px-8">
+				<div className="flex flex-wrap items-center justify-between">
+					<div className="flex w-0 flex-1 items-center">
 						{/* Warning Icon */}
-						<span className="flex p-2 rounded-lg bg-yellow-100">
+						<span className="flex rounded-lg bg-yellow-100 p-2">
 							<svg
 								className="h-5 w-5 text-yellow-600"
 								fill="none"
@@ -83,7 +83,7 @@ export function VerificationBanner({
 					</div>
 
 					{/* Actions */}
-					<div className="flex-shrink-0 flex items-center gap-3">
+					<div className="flex flex-shrink-0 items-center gap-3">
 						{!resendSuccess && (
 							<fetcher.Form
 								method="post"
@@ -92,7 +92,7 @@ export function VerificationBanner({
 								<button
 									type="submit"
 									disabled={isResending}
-									className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+									className="rounded-md bg-yellow-600 px-4 py-2 font-medium text-sm text-white transition-colors hover:bg-yellow-700 disabled:cursor-not-allowed disabled:opacity-50"
 								>
 									{isResending ? "Sending..." : "Resend Email"}
 								</button>
@@ -103,7 +103,7 @@ export function VerificationBanner({
 							<button
 								type="button"
 								onClick={() => setIsDismissed(true)}
-								className="flex p-2 rounded-md hover:bg-yellow-100 transition-colors"
+								className="flex rounded-md p-2 transition-colors hover:bg-yellow-100"
 								aria-label="Dismiss banner"
 							>
 								<svg
@@ -143,7 +143,7 @@ export function VerificationBannerCompact({
 	const isResending = fetcher.state === "submitting";
 
 	return (
-		<div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+		<div className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
 			<div className="flex items-start">
 				<svg
 					className="h-5 w-5 text-yellow-600"
@@ -162,7 +162,7 @@ export function VerificationBannerCompact({
 				</svg>
 
 				<div className="ml-3 flex-1">
-					<h3 className="text-sm font-medium text-yellow-800">
+					<h3 className="font-medium text-sm text-yellow-800">
 						Email not verified
 					</h3>
 					<p className="mt-1 text-sm text-yellow-700">
@@ -176,7 +176,7 @@ export function VerificationBannerCompact({
 						<button
 							type="submit"
 							disabled={isResending}
-							className="text-sm font-medium text-yellow-800 hover:text-yellow-900 underline disabled:opacity-50"
+							className="font-medium text-sm text-yellow-800 underline hover:text-yellow-900 disabled:opacity-50"
 						>
 							{isResending ? "Sending..." : "Resend verification email"}
 						</button>

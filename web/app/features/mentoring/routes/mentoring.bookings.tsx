@@ -14,7 +14,7 @@ export default function MySessionsPage() {
 	const { sessions } = useLoaderData<typeof loader>();
 
 	return (
-		<div className="min-h-screen bg-black text-white pt-24 pb-12">
+		<div className="min-h-screen bg-black pt-24 pb-12 text-white">
 			<div className="container-page px-4">
 				<h1 className="heading-2 mb-8">My Sessions</h1>
 
@@ -34,7 +34,7 @@ export default function MySessionsPage() {
 							return (
 								<div
 									key={session.id}
-									className="flex flex-col md:flex-row items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-all hover:bg-white/10"
+									className="flex flex-col items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-all hover:bg-white/10 md:flex-row"
 								>
 									<div className="flex items-center gap-4">
 										<div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary">
@@ -42,7 +42,7 @@ export default function MySessionsPage() {
 										</div>
 										<div>
 											<h3 className="font-bold text-lg">{session.topic}</h3>
-											<p className="text-sm text-gray-400">
+											<p className="text-gray-400 text-sm">
 												with <span className="text-white">{mentor?.name}</span>
 											</p>
 											<p className="caption mt-1">
@@ -57,7 +57,7 @@ export default function MySessionsPage() {
 
 									<div className="flex items-center gap-3">
 										<div
-											className={`px-3 py-1 rounded-full text-xs font-bold ${
+											className={`rounded-full px-3 py-1 font-bold text-xs ${
 												(session.status || "scheduled") === "confirmed"
 													? "bg-accent-500/20 text-accent-400"
 													: "bg-gray-500/20 text-gray-400"
@@ -71,7 +71,7 @@ export default function MySessionsPage() {
 												href={`/mentoring/session/${session.id}/join`}
 												target="_blank"
 												rel="noreferrer"
-												className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 body-sm text-white hover:bg-primary/80"
+												className="body-sm flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary/80"
 											>
 												<Video className="h-4 w-4" />
 												Join Call
@@ -81,7 +81,7 @@ export default function MySessionsPage() {
 										{canReview && (
 											<Link
 												to={`/mentoring/session/${session.id}/review`}
-												className="flex items-center gap-2 rounded-lg bg-amber-500/20 px-4 py-2 body-sm text-amber-500 hover:bg-amber-500/30"
+												className="body-sm flex items-center gap-2 rounded-lg bg-amber-500/20 px-4 py-2 text-amber-500 hover:bg-amber-500/30"
 											>
 												<Star className="h-4 w-4" />
 												Write Review
@@ -89,7 +89,7 @@ export default function MySessionsPage() {
 										)}
 
 										{isReviewed && (
-											<span className="text-xs text-amber-500 font-medium px-3 py-2">
+											<span className="px-3 py-2 font-medium text-amber-500 text-xs">
 												Reviewed ✓
 											</span>
 										)}
@@ -99,11 +99,11 @@ export default function MySessionsPage() {
 						})}
 					</div>
 				) : (
-					<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 bg-white/5 py-24 text-center">
-						<p className="text-gray-400 mb-4">No sessions booked yet.</p>
+					<div className="flex flex-col items-center justify-center rounded-2xl border border-white/10 border-dashed bg-white/5 py-24 text-center">
+						<p className="mb-4 text-gray-400">No sessions booked yet.</p>
 						<Link
 							to="/mentoring"
-							className="text-primary font-bold hover:underline"
+							className="font-bold text-primary hover:underline"
 						>
 							Browse Mentors →
 						</Link>

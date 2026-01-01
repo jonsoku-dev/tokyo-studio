@@ -53,15 +53,15 @@ export function CommentThread({
 	return (
 		<div className="stack-lg">
 			{/* Root Comment Form */}
-			<div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+			<div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
 				<CommentForm postId={postId} />
 			</div>
 
 			{/* List */}
 			<div className="stack-md">
 				{rootComments.length === 0 && (
-					<div className="text-center text-gray-500 py-8">
-						<MessageCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+					<div className="py-8 text-center text-gray-500">
+						<MessageCircle className="mx-auto mb-2 h-8 w-8 opacity-50" />
 						No comments yet. Be the first to share your thoughts!
 					</div>
 				)}
@@ -127,7 +127,7 @@ function CommentNode({
 				<button
 					type="button"
 					onClick={() => setShowReplies(!showReplies)}
-					className="mt-2 ml-11 text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1 transition-colors"
+					className="mt-2 ml-11 flex items-center gap-1 font-medium text-primary-600 text-sm transition-colors hover:text-primary-700"
 				>
 					{showReplies ? (
 						<>
@@ -171,7 +171,7 @@ function CommentNode({
 
 			{/* Children */}
 			{hasReplies && showReplies && (
-				<div className="mt-3 ml-4 pl-4 border-l-2 border-gray-100 stack-sm">
+				<div className="stack-sm mt-3 ml-4 border-gray-100 border-l-2 pl-4">
 					{/* biome-ignore lint/suspicious/noExplicitAny: Recursive type structure difficult to type perfectly here */}
 					{(comment as any).children.map((child: any) => (
 						<CommentNode
@@ -229,7 +229,7 @@ function CommentForm({
 				name="content"
 				rows={parentId ? 2 : 3}
 				placeholder={parentId ? "Write a reply..." : "What are your thoughts?"}
-				className="w-full p-3 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+				className="w-full rounded-lg border-gray-200 p-3 text-sm transition-all focus:border-transparent focus:ring-2 focus:ring-primary-500"
 				required
 				// biome-ignore lint/a11y/noAutofocus: Intentional for reply UX
 				autoFocus={autoFocus}

@@ -110,11 +110,11 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 	}, [setShowSuggestions]);
 
 	return (
-		<div className="flex flex-col gap-3 p-3 card-md">
+		<div className="card-md flex flex-col gap-3 p-3">
 			{/* 검색 입력 */}
 			<div className="relative">
 				<div className="flex gap-2">
-					<div className="flex-1 relative">
+					<div className="relative flex-1">
 						<input
 							ref={searchInputRef}
 							type="text"
@@ -123,11 +123,11 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 							onChange={(e) => handleSearchInput(e.target.value)}
 							onKeyDown={handleKeyDown}
 							disabled={isLoading}
-							className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-gray-100"
+							className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-gray-100"
 						/>
 						{isLoading && (
-							<div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-								<div className="w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
+							<div className="absolute top-1/2 right-3 -translate-y-1/2 transform">
+								<div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
 							</div>
 						)}
 					</div>
@@ -135,7 +135,7 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 						type="button"
 						onClick={handleSearch}
 						disabled={isLoading}
-						className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-gray-400 transition text-sm font-medium"
+						className="rounded-lg bg-primary-600 px-4 py-2 font-medium text-sm text-white transition hover:bg-primary-700 disabled:bg-gray-400"
 					>
 						검색
 					</button>
@@ -145,7 +145,7 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 				{showSuggestions && suggestions.length > 0 && (
 					<div
 						ref={suggestionsRef}
-						className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-md z-10"
+						className="absolute top-full right-0 left-0 z-10 mt-1 rounded-lg border border-gray-300 bg-white shadow-md"
 					>
 						{suggestions.map((suggestion) => (
 							<button
@@ -154,12 +154,10 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 								onClick={() =>
 									handleSuggestionClick(suggestion.id, suggestion.name)
 								}
-								className="w-full text-left px-3 py-2 hover:bg-gray-100 border-b last:border-b-0 transition"
+								className="w-full border-b px-3 py-2 text-left transition last:border-b-0 hover:bg-gray-100"
 							>
 								<div className="flex items-center gap-2">
-									<span className="caption">
-										{suggestion.category}
-									</span>
+									<span className="caption">{suggestion.category}</span>
 									<span className="text-sm">{suggestion.name}</span>
 								</div>
 							</button>
@@ -175,7 +173,7 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 						type="button"
 						key={category.value}
 						onClick={() => toggleCategory(category.value)}
-						className={`flex items-center gap-1 px-3 py-2 rounded-full text-sm font-medium transition ${
+						className={`flex items-center gap-1 rounded-full px-3 py-2 font-medium text-sm transition ${
 							selectedCategories.has(category.value)
 								? "bg-primary-600 text-white"
 								: "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -195,7 +193,7 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 						clearCategories();
 						setSearchQuery("");
 					}}
-					className="px-3 py-2 body-sm hover:text-gray-900 hover:bg-gray-100 rounded transition"
+					className="body-sm rounded px-3 py-2 transition hover:bg-gray-100 hover:text-gray-900"
 				>
 					필터 초기화
 				</button>

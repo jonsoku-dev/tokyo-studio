@@ -32,23 +32,23 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function Login({ actionData }: Route.ComponentProps) {
 	return (
-		<div className="flex min-h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-			<div className="w-full max-w-md stack-lg bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+		<div className="flex min-h-screen items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+			<div className="stack-lg w-full max-w-md rounded-xl border border-gray-100 bg-white p-8 shadow-lg">
 				<div className="text-center">
-					<h2 className="mt-2 heading-2">Welcome back</h2>
-					<p className="mt-2 caption">Sign in to continue your journey</p>
+					<h2 className="heading-2 mt-2">Welcome back</h2>
+					<p className="caption mt-2">Sign in to continue your journey</p>
 				</div>
 
 				{/* Social Login Grid */}
-				<div className="mt-8 stack">
+				<div className="stack mt-8">
 					<div className="grid grid-cols-2 gap-3">
 						<Form action="/api/auth/google" method="post">
 							<Button
 								variant="outline"
 								type="submit"
-								className="w-full center gap-2 h-11 border-gray-300 hover:bg-gray-50 transition-colors"
+								className="center h-11 w-full gap-2 border-gray-300 transition-colors hover:bg-gray-50"
 							>
-								<svg className="w-5 h-5" viewBox="0 0 24 24">
+								<svg className="h-5 w-5" viewBox="0 0 24 24">
 									<title>Google</title>
 									<path
 										d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -67,14 +67,14 @@ export default function Login({ actionData }: Route.ComponentProps) {
 										fill="#EA4335"
 									/>
 								</svg>
-								<span className="text-gray-700 font-medium">Google</span>
+								<span className="font-medium text-gray-700">Google</span>
 							</Button>
 						</Form>
 
 						<Form action="/api/auth/github" method="post">
 							<Button
 								type="submit"
-								className="w-full center gap-2 h-11 bg-[#24292F] hover:bg-[#24292F]/90 text-white border-none transition-colors"
+								className="center h-11 w-full gap-2 border-none bg-[#24292F] text-white transition-colors hover:bg-[#24292F]/90"
 							>
 								<svg
 									className="h-5 w-5"
@@ -95,10 +95,10 @@ export default function Login({ actionData }: Route.ComponentProps) {
 						<Form action="/api/auth/kakao" method="post">
 							<Button
 								type="submit"
-								className="w-full center gap-2 h-11 bg-[#FEE500] hover:bg-[#FDD835] text-[#191919] border-none transition-colors"
+								className="center h-11 w-full gap-2 border-none bg-[#FEE500] text-[#191919] transition-colors hover:bg-[#FDD835]"
 							>
 								<svg
-									className="w-5 h-5"
+									className="h-5 w-5"
 									viewBox="0 0 24 24"
 									fill="currentColor"
 								>
@@ -112,7 +112,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
 						<Form action="/api/auth/line" method="post">
 							<Button
 								type="submit"
-								className="w-full center gap-2 h-11 bg-[#06C755] hover:bg-[#05b54c] text-white border-none transition-colors"
+								className="center h-11 w-full gap-2 border-none bg-[#06C755] text-white transition-colors hover:bg-[#05b54c]"
 							>
 								<svg
 									className="h-5 w-5"
@@ -134,22 +134,22 @@ export default function Login({ actionData }: Route.ComponentProps) {
 
 					<div className="relative">
 						<div className="absolute inset-0 flex items-center">
-							<div className="w-full divider"></div>
+							<div className="divider w-full"></div>
 						</div>
 						<div className="relative flex justify-center text-sm">
-							<span className="px-2 bg-white text-gray-500">
+							<span className="bg-white px-2 text-gray-500">
 								Or continue with
 							</span>
 						</div>
 					</div>
 				</div>
 
-				<Form method="post" className="mt-8 stack-md">
+				<Form method="post" className="stack-md mt-8">
 					{actionData?.error && (
-						<div className="bg-red-50 text-red-600 text-sm p-3 rounded-md border border-red-100 flex items-start gap-2">
+						<div className="flex items-start gap-2 rounded-md border border-red-100 bg-red-50 p-3 text-red-600 text-sm">
 							{/* Error Icon */}
 							<svg
-								className="w-5 h-5 flex-shrink-0"
+								className="h-5 w-5 flex-shrink-0"
 								fill="none"
 								viewBox="0 0 24 24"
 								stroke="currentColor"
@@ -188,10 +188,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
 								className="h-11"
 							/>
 							<div className="absolute top-0 right-0">
-								<Link
-									to="/forgot-password"
-									className="text-sm link"
-								>
+								<Link to="/forgot-password" className="link text-sm">
 									Forgot?
 								</Link>
 							</div>
@@ -200,17 +197,14 @@ export default function Login({ actionData }: Route.ComponentProps) {
 
 					<Button
 						type="submit"
-						className="w-full h-11 text-base shadow-primary-100 shadow-lg"
+						className="h-11 w-full text-base shadow-lg shadow-primary-100"
 					>
 						Sign in
 					</Button>
 
-					<p className="text-center body-sm">
+					<p className="body-sm text-center">
 						Don't have an account?{" "}
-						<Link
-							to="/signup"
-							className="link"
-						>
+						<Link to="/signup" className="link">
 							Sign up
 						</Link>
 					</p>

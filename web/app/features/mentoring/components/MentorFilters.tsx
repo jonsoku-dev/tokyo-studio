@@ -28,15 +28,16 @@ export function MentorFilters() {
 	};
 
 	return (
-		<div className="stack-md rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
+		<div className="stack-lg">
 			<div>
-				<h3 className="mb-3 body-sm uppercase tracking-wider text-gray-500">
+				<h3 className="caption mb-3 border-gray-100 border-b pb-2 font-bold text-gray-900 uppercase tracking-wider">
 					Job Family
 				</h3>
-				<div className="cluster-sm">
+				<div className="flex flex-wrap gap-2">
 					<Button
 						variant={!currentJob ? "primary" : "outline"}
 						size="sm"
+						className={`rounded-full ${!currentJob ? "" : "border-gray-200 text-gray-600 hover:bg-gray-50"}`}
 						onClick={() => handleJobChange(null)}
 					>
 						All
@@ -46,6 +47,7 @@ export function MentorFilters() {
 							key={job}
 							variant={currentJob === job ? "primary" : "outline"}
 							size="sm"
+							className={`rounded-full ${currentJob === job ? "" : "border-gray-200 text-gray-600 hover:bg-gray-50"}`}
 							onClick={() => handleJobChange(job)}
 						>
 							{job}
@@ -56,39 +58,47 @@ export function MentorFilters() {
 
 			{/* Price Filter - Simplified Inputs */}
 			<div>
-				<h3 className="mb-3 body-sm uppercase tracking-wider text-gray-500">
+				<h3 className="caption mb-3 border-gray-100 border-b pb-2 font-bold text-gray-900 uppercase tracking-wider">
 					Hourly Rate ($)
 				</h3>
 				<div className="flex items-center gap-2">
-					<input
-						type="number"
-						placeholder="Min"
-						className="w-full rounded-md border border-white/10 bg-white/5 px-2 py-1 text-sm text-white placeholder-gray-500 focus:border-primary focus:outline-none"
-						defaultValue={minPrice || ""}
-						onBlur={(e) => {
-							const p = new URLSearchParams(searchParams);
-							if (e.target.value)
-								p.set("minPrice", String(Number(e.target.value) * 100)); // input dollars -> cents
-							else p.delete("minPrice");
-							navigate(`?${p.toString()}`);
-						}}
-					/>
-					<span className="text-gray-500">-</span>
-					<input
-						type="number"
-						placeholder="Max"
-						className="w-full rounded-md border border-white/10 bg-white/5 px-2 py-1 text-sm text-white placeholder-gray-500 focus:border-primary focus:outline-none"
-						defaultValue={maxPrice || ""}
-						onBlur={(e) => {
-							// Correct logic: if parsing is robust.
-							// For MVP, handling onBlur.
-							const p = new URLSearchParams(searchParams);
-							if (e.target.value)
-								p.set("maxPrice", String(Number(e.target.value) * 100));
-							else p.delete("maxPrice");
-							navigate(`?${p.toString()}`);
-						}}
-					/>
+					<div className="relative flex-1">
+						<span className="caption absolute top-1/2 left-2.5 -translate-y-1/2 text-gray-400">
+							$
+						</span>
+						<input
+							type="number"
+							placeholder="Min"
+							className="body-sm w-full rounded-md border border-gray-300 bg-white py-2 pr-2 pl-5 text-gray-900 placeholder-gray-400 transition-shadow focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+							defaultValue={minPrice ? Number(minPrice) / 100 : ""}
+							onBlur={(e) => {
+								const p = new URLSearchParams(searchParams);
+								if (e.target.value)
+									p.set("minPrice", String(Number(e.target.value) * 100)); // input dollars -> cents
+								else p.delete("minPrice");
+								navigate(`?${p.toString()}`);
+							}}
+						/>
+					</div>
+					<span className="text-gray-400">-</span>
+					<div className="relative flex-1">
+						<span className="caption absolute top-1/2 left-2.5 -translate-y-1/2 text-gray-400">
+							$
+						</span>
+						<input
+							type="number"
+							placeholder="Max"
+							className="body-sm w-full rounded-md border border-gray-300 bg-white py-2 pr-2 pl-5 text-gray-900 placeholder-gray-400 transition-shadow focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+							defaultValue={maxPrice ? Number(maxPrice) / 100 : ""}
+							onBlur={(e) => {
+								const p = new URLSearchParams(searchParams);
+								if (e.target.value)
+									p.set("maxPrice", String(Number(e.target.value) * 100));
+								else p.delete("maxPrice");
+								navigate(`?${p.toString()}`);
+							}}
+						/>
+					</div>
 				</div>
 			</div>
 		</div>

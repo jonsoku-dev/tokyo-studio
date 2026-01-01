@@ -69,17 +69,17 @@ export default function MentorProfilePage() {
 	if (!mentor.profile) return null; // Should be handled by loader check
 
 	return (
-		<div className="min-h-screen bg-black text-white pt-24 pb-12">
+		<div className="min-h-screen bg-black pt-24 pb-12 text-white">
 			{/* Background elements */}
-			<div className="fixed inset-0 bg-[url('/grid-pattern.svg')] opacity-10 pointer-events-none" />
+			<div className="pointer-events-none fixed inset-0 bg-[url('/grid-pattern.svg')] opacity-10" />
 
-			<div className="container-page px-4 relative z-10">
+			<div className="container-page relative z-10 px-4">
 				<div className="grid gap-10 lg:grid-cols-[1fr_360px]">
 					{/* Left Column: Profile Info */}
 					<div className="stack-lg">
 						{/* Header Card */}
 						<div className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
-							<div className="flex flex-col md:flex-row gap-6 items-start">
+							<div className="flex flex-col items-start gap-6 md:flex-row">
 								<img
 									src={
 										mentor.avatarUrl ||
@@ -88,9 +88,9 @@ export default function MentorProfilePage() {
 									alt={mentor.name}
 									className="h-32 w-32 rounded-full border-4 border-white/10 object-cover shadow-2xl"
 								/>
-								<div className="flex-1 stack-sm">
+								<div className="stack-sm flex-1">
 									<h1 className="heading-2">{mentor.name}</h1>
-									<div className="text-xl text-gray-400 font-medium">
+									<div className="font-medium text-gray-400 text-xl">
 										{mentor.profile.jobTitle}
 									</div>
 
@@ -111,7 +111,7 @@ export default function MentorProfilePage() {
 									</div>
 								</div>
 
-								<div className="text-right hidden md:block">
+								<div className="hidden text-right md:block">
 									<div className="heading-3">
 										${((mentor.profile.hourlyRate || 0) / 100).toFixed(0)}
 									</div>
@@ -123,7 +123,7 @@ export default function MentorProfilePage() {
 						{/* About Section */}
 						<div className="stack">
 							<h2 className="heading-4">About</h2>
-							<p className="text-gray-300 leading-relaxed whitespace-pre-wrap px-4">
+							<p className="whitespace-pre-wrap px-4 text-gray-300 leading-relaxed">
 								{mentor.profile.bio}
 							</p>
 						</div>
@@ -136,7 +136,7 @@ export default function MentorProfilePage() {
 									<Badge
 										key={skill}
 										variant="secondary"
-										className="bg-white/10 text-sm py-1 px-3"
+										className="bg-white/10 px-3 py-1 text-sm"
 									>
 										{skill}
 									</Badge>
@@ -155,7 +155,7 @@ export default function MentorProfilePage() {
 											key={review.id}
 											className="rounded-xl border border-white/5 bg-white/5 p-4"
 										>
-											<div className="flex items-center justify-between mb-2">
+											<div className="mb-2 flex items-center justify-between">
 												<div className="font-bold text-sm">
 													{review.menteeName || "Anonymous"}
 												</div>
@@ -168,11 +168,11 @@ export default function MentorProfilePage() {
 													))}
 												</div>
 											</div>
-											<p className="text-sm text-gray-400">{review.comment}</p>
+											<p className="text-gray-400 text-sm">{review.comment}</p>
 										</div>
 									))
 								) : (
-									<p className="text-gray-500 italic px-4">No reviews yet.</p>
+									<p className="px-4 text-gray-500 italic">No reviews yet.</p>
 								)}
 							</div>
 						</div>
@@ -181,7 +181,7 @@ export default function MentorProfilePage() {
 					{/* Right Column: Calendar */}
 					<div className="stack-md">
 						<div className="sticky top-24">
-							<div className="rounded-2xl border border-gradient p-[1px] bg-gradient-to-br from-primary/50 to-purple-600/50">
+							<div className="rounded-2xl border border-gradient bg-gradient-to-br from-primary/50 to-purple-600/50 p-[1px]">
 								<div className="rounded-2xl bg-black p-1">
 									<AvailabilityCalendar
 										slots={availability}
@@ -190,7 +190,7 @@ export default function MentorProfilePage() {
 									/>
 								</div>
 							</div>
-							<p className="text-center caption mt-4">
+							<p className="caption mt-4 text-center">
 								Select a date to view available times.
 								<br />
 								All times are in your local timezone.

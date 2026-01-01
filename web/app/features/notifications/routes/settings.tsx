@@ -103,22 +103,18 @@ export default function NotificationSettings() {
 	const { preferences } = useLoaderData<typeof loader>();
 
 	return (
-		<div className="max-w-2xl mx-auto p-6">
+		<div className="mx-auto max-w-2xl p-6">
 			<div className="mb-8">
-				<h1 className="heading-3">
-					Notification Settings
-				</h1>
-				<p className="text-gray-600 mt-1">
+				<h1 className="heading-3">Notification Settings</h1>
+				<p className="mt-1 text-gray-600">
 					Manage how and when you receive notifications
 				</p>
 			</div>
 
 			<Form method="POST" className="stack-lg">
 				{/* Notification Types */}
-				<div className="bg-white rounded-lg border border-gray-200 p-6 stack">
-					<h2 className="heading-5">
-						Notification Types
-					</h2>
+				<div className="stack rounded-lg border border-gray-200 bg-white p-6">
+					<h2 className="heading-5">Notification Types</h2>
 
 					<Toggle
 						name="sessionReminders"
@@ -164,7 +160,7 @@ export default function NotificationSettings() {
 				</div>
 
 				{/* Quiet Hours */}
-				<div className="bg-white rounded-lg border border-gray-200 p-6 stack">
+				<div className="stack rounded-lg border border-gray-200 bg-white p-6">
 					<div className="flex items-center gap-2">
 						<Moon className="h-5 w-5 text-gray-700" />
 						<h2 className="heading-5">Quiet Hours</h2>
@@ -178,18 +174,18 @@ export default function NotificationSettings() {
 						<div>
 							<label
 								htmlFor="quietHoursStart"
-								className="block text-sm font-medium text-gray-700 mb-1"
+								className="mb-1 block font-medium text-gray-700 text-sm"
 							>
 								Start Time
 							</label>
 							<div className="relative">
-								<Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+								<Clock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
 								<input
 									type="time"
 									id="quietHoursStart"
 									name="quietHoursStart"
 									defaultValue={preferences.quietHoursStart || ""}
-									className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+									className="w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 focus:border-transparent focus:ring-2 focus:ring-primary-500"
 								/>
 							</div>
 						</div>
@@ -197,18 +193,18 @@ export default function NotificationSettings() {
 						<div>
 							<label
 								htmlFor="quietHoursEnd"
-								className="block text-sm font-medium text-gray-700 mb-1"
+								className="mb-1 block font-medium text-gray-700 text-sm"
 							>
 								End Time
 							</label>
 							<div className="relative">
-								<Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+								<Clock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
 								<input
 									type="time"
 									id="quietHoursEnd"
 									name="quietHoursEnd"
 									defaultValue={preferences.quietHoursEnd || ""}
-									className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+									className="w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 focus:border-transparent focus:ring-2 focus:ring-primary-500"
 								/>
 							</div>
 						</div>
@@ -218,7 +214,7 @@ export default function NotificationSettings() {
 					<div>
 						<label
 							htmlFor="timezone"
-							className="block text-sm font-medium text-gray-700 mb-1"
+							className="mb-1 block font-medium text-gray-700 text-sm"
 						>
 							Timezone
 						</label>
@@ -226,7 +222,7 @@ export default function NotificationSettings() {
 							id="timezone"
 							name="timezone"
 							defaultValue={preferences.timezone || "UTC"}
-							className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+							className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-primary-500"
 						>
 							<option value="UTC">UTC (Coordinated Universal Time)</option>
 							<option value="America/New_York">Eastern Time (New York)</option>
@@ -268,7 +264,7 @@ function Toggle({
 	defaultChecked: boolean;
 }) {
 	return (
-		<div className="flex items-start justify-between py-3 border-b border-gray-100 last:border-0">
+		<div className="flex items-start justify-between border-gray-100 border-b py-3 last:border-0">
 			<div className="flex-1">
 				<label htmlFor={name} className="heading-5 block">
 					{label}
@@ -281,7 +277,7 @@ function Toggle({
 					id={name}
 					name={name}
 					defaultChecked={defaultChecked}
-					className="h-5 w-5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded cursor-pointer"
+					className="h-5 w-5 cursor-pointer rounded border-gray-300 text-primary-600 focus:ring-primary-500"
 				/>
 			</div>
 		</div>

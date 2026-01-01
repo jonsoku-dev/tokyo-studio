@@ -5,7 +5,7 @@
 const sw = self;
 
 // Install event
-sw.addEventListener("install", (event) => {
+sw.addEventListener("install", (_event) => {
 	console.log("[Service Worker] Installing...");
 	sw.skipWaiting();
 });

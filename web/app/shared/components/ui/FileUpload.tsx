@@ -69,23 +69,23 @@ export function FileUpload({
 		<div className="space-y-4">
 			<label
 				htmlFor={inputId}
-				className="block text-sm font-medium text-gray-700"
+				className="block font-medium text-gray-700 text-sm"
 			>
 				{label}
 			</label>
 
 			<div className="flex items-center gap-4">
-				<div className="relative border-dashed border-2 border-gray-300 rounded-lg p-4 w-full text-center hover:bg-gray-50 transition">
+				<div className="relative w-full rounded-lg border-2 border-gray-300 border-dashed p-4 text-center transition hover:bg-gray-50">
 					<input
 						id={inputId}
 						type="file"
 						accept={accept}
 						onChange={handleFileChange}
-						className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+						className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
 						disabled={uploading}
 					/>
 					<div className="flex flex-col items-center justify-center text-gray-500">
-						<UploadCloud className="w-8 h-8 mb-2" />
+						<UploadCloud className="mb-2 h-8 w-8" />
 						<span className="text-sm">
 							{file ? file.name : "Click to select file"}
 						</span>
@@ -101,7 +101,7 @@ export function FileUpload({
 
 			{publicUrl && (
 				<div className="flex items-center gap-2 text-green-600 text-sm">
-					<CheckCircle className="w-4 h-4" />
+					<CheckCircle className="h-4 w-4" />
 					<span>Upload Complete</span>
 				</div>
 			)}

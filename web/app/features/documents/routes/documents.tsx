@@ -10,7 +10,6 @@ import { FileUploader } from "~/features/storage/components/FileUploader";
 import { StorageUsageCompact } from "~/features/storage/components/StorageUsageIndicator";
 import { getDownloadUrl } from "~/features/storage/services/s3-upload.client";
 import { storageService } from "~/features/storage/services/storage.server";
-import { Shell } from "~/shared/components/layout/Shell";
 import { Button } from "~/shared/components/ui/Button";
 import type { Route } from "./+types/documents";
 
@@ -104,145 +103,143 @@ export default function Documents({ loaderData }: Route.ComponentProps) {
 	};
 
 	// Calculate formatted quota
-	const usedMB = (usedQuota / (1024 * 1024)).toFixed(1);
-	const totalMB = 100;
-	const percentUsed = Math.min((usedQuota / (100 * 1024 * 1024)) * 100, 100);
+	const _usedMB = (usedQuota / (1024 * 1024)).toFixed(1);
+	const _totalMB = 100;
+	const _percentUsed = Math.min((usedQuota / (100 * 1024 * 1024)) * 100, 100);
 
 	return (
-		<Shell>
-			<div className="container-wide py-8 px-4 sm:px-6 lg:px-8 stack-lg">
-				{/* Header & Stats */}
-				<div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-					<div>
-						<h1 className="heading-3">Documents</h1>
-						<p className="mt-1 caption">
-							Manage your career documents with version control.
-						</p>
-					</div>
-
-					<div className="flex items-center gap-6">
-						<div className="hidden sm:block">
-							<p className="mb-2 text-right text-xs font-medium text-gray-500">
-								Storage
-							</p>
-							<StorageUsageCompact storageUsed={usedQuota} />
-						</div>
-						<Button onClick={() => setIsUploadOpen(!isUploadOpen)}>
-							<Plus className="h-4 w-4 mr-2" />
-							Upload New
-						</Button>
-					</div>
+		<div className="container-wide stack-lg px-4 py-8 sm:px-6 lg:px-8">
+			{/* Header & Stats */}
+			<div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+				<div>
+					<h1 className="heading-3">Documents</h1>
+					<p className="caption mt-1">
+						Manage your career documents with version control.
+					</p>
 				</div>
 
-				{/* Upload Expandable Area */}
-				{isUploadOpen && (
-					<div className="card p-6 border border-gray-100 animate-in slide-in-from-top-4 fade-in duration-200">
-						<h2 className="heading-5 mb-4">Upload Documents</h2>
-						<FileUploader
-							onUploadComplete={() => {
-								// revalidate
-								submit(searchParams);
-							}}
-						/>
-					</div>
-				)}
-
-				{/* Search & Filter Toolbar */}
-				<div className="flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-					<div className="relative flex-1">
-						<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-						<form
-							onChange={(e) => handleSearch(e.currentTarget)}
-							onSubmit={(e) => e.preventDefault()}
-						>
-							<input
-								type="text"
-								name="q"
-								defaultValue={searchParams.get("q") || ""}
-								placeholder="Search documents..."
-								className="w-full pl-9 pr-4 py-2 text-sm border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500"
-							/>
-						</form>
-					</div>
-					<div className="flex gap-2">
-						<div className="relative">
-							<select
-								className="pl-3 pr-8 py-2 text-sm border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500 appearance-none bg-white"
-								value={searchParams.get("type") || "All"}
-								onChange={(e) => handleFilterChange("type", e.target.value)}
-							>
-								<option value="All">All Types</option>
-								<option value="Resume">Resume</option>
-								<option value="CV">CV</option>
-								<option value="Portfolio">Portfolio</option>
-								<option value="Cover Letter">Cover Letter</option>
-								<option value="Other">Other</option>
-							</select>
-							<Filter className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400 pointer-events-none" />
-						</div>
-						<div className="relative">
-							<select
-								className="pl-3 pr-8 py-2 text-sm border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500 appearance-none bg-white"
-								value={searchParams.get("status") || "All"}
-								onChange={(e) => handleFilterChange("status", e.target.value)}
-							>
-								<option value="All">All Status</option>
-								<option value="draft">Draft</option>
-								<option value="final">Final</option>
-							</select>
-							<Filter className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400 pointer-events-none" />
-						</div>
-					</div>
-				</div>
-
-				{/* Document Grid */}
-				{files.length === 0 ? (
-					<div className="text-center py-20 bg-white rounded-lg border border-dashed border-gray-300">
-						<FileText className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-						<h3 className="heading-5">No documents found</h3>
-						<p className="text-gray-500 mt-1">
-							Try adjusting your filters or upload a new document.
+				<div className="flex items-center gap-6">
+					<div className="hidden sm:block">
+						<p className="mb-2 text-right font-medium text-gray-500 text-xs">
+							Storage
 						</p>
+						<StorageUsageCompact storageUsed={usedQuota} />
 					</div>
-				) : (
-					<DocumentGrid
-						documents={files as SelectDocument[]}
-						onRename={handleRename}
-						onStatusChange={handleStatusChange}
-						onDelete={handleDelete}
-						onPreview={setPreviewDoc}
-					/>
-				)}
-
-				{/* Preview - PDF Viewer for PDFs, Document Preview for others */}
-				{previewDoc?.mimeType === "application/pdf" && pdfUrl ? (
-					<Suspense
-						fallback={
-							<div className="fixed inset-0 z-50 bg-black/90 center">
-								<div className="text-white text-center">
-									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4" />
-									<p>Loading PDF Viewer...</p>
-								</div>
-							</div>
-						}
-					>
-						<PDFViewer
-							documentUrl={pdfUrl}
-							filename={previewDoc.title}
-							onClose={() => {
-								setPreviewDoc(null);
-								setPdfUrl(null);
-							}}
-						/>
-					</Suspense>
-				) : (
-					<DocumentPreview
-						isOpen={!!previewDoc && previewDoc.mimeType !== "application/pdf"}
-						onClose={() => setPreviewDoc(null)}
-						document={previewDoc}
-					/>
-				)}
+					<Button onClick={() => setIsUploadOpen(!isUploadOpen)}>
+						<Plus className="mr-2 h-4 w-4" />
+						Upload New
+					</Button>
+				</div>
 			</div>
-		</Shell>
+
+			{/* Upload Expandable Area */}
+			{isUploadOpen && (
+				<div className="card slide-in-from-top-4 fade-in animate-in border border-gray-100 p-6 duration-200">
+					<h2 className="heading-5 mb-4">Upload Documents</h2>
+					<FileUploader
+						onUploadComplete={() => {
+							// revalidate
+							submit(searchParams);
+						}}
+					/>
+				</div>
+			)}
+
+			{/* Search & Filter Toolbar */}
+			<div className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:flex-row">
+				<div className="relative flex-1">
+					<Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+					<form
+						onChange={(e) => handleSearch(e.currentTarget)}
+						onSubmit={(e) => e.preventDefault()}
+					>
+						<input
+							type="text"
+							name="q"
+							defaultValue={searchParams.get("q") || ""}
+							placeholder="Search documents..."
+							className="w-full rounded-md border-gray-200 py-2 pr-4 pl-9 text-sm focus:border-primary-500 focus:ring-primary-500"
+						/>
+					</form>
+				</div>
+				<div className="flex gap-2">
+					<div className="relative">
+						<select
+							className="appearance-none rounded-md border-gray-200 bg-white py-2 pr-8 pl-3 text-sm focus:border-primary-500 focus:ring-primary-500"
+							value={searchParams.get("type") || "All"}
+							onChange={(e) => handleFilterChange("type", e.target.value)}
+						>
+							<option value="All">All Types</option>
+							<option value="Resume">Resume</option>
+							<option value="CV">CV</option>
+							<option value="Portfolio">Portfolio</option>
+							<option value="Cover Letter">Cover Letter</option>
+							<option value="Other">Other</option>
+						</select>
+						<Filter className="pointer-events-none absolute top-1/2 right-2.5 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+					</div>
+					<div className="relative">
+						<select
+							className="appearance-none rounded-md border-gray-200 bg-white py-2 pr-8 pl-3 text-sm focus:border-primary-500 focus:ring-primary-500"
+							value={searchParams.get("status") || "All"}
+							onChange={(e) => handleFilterChange("status", e.target.value)}
+						>
+							<option value="All">All Status</option>
+							<option value="draft">Draft</option>
+							<option value="final">Final</option>
+						</select>
+						<Filter className="pointer-events-none absolute top-1/2 right-2.5 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+					</div>
+				</div>
+			</div>
+
+			{/* Document Grid */}
+			{files.length === 0 ? (
+				<div className="rounded-lg border border-gray-300 border-dashed bg-white py-20 text-center">
+					<FileText className="mx-auto mb-4 h-12 w-12 text-gray-300" />
+					<h3 className="heading-5">No documents found</h3>
+					<p className="mt-1 text-gray-500">
+						Try adjusting your filters or upload a new document.
+					</p>
+				</div>
+			) : (
+				<DocumentGrid
+					documents={files as SelectDocument[]}
+					onRename={handleRename}
+					onStatusChange={handleStatusChange}
+					onDelete={handleDelete}
+					onPreview={setPreviewDoc}
+				/>
+			)}
+
+			{/* Preview - PDF Viewer for PDFs, Document Preview for others */}
+			{previewDoc?.mimeType === "application/pdf" && pdfUrl ? (
+				<Suspense
+					fallback={
+						<div className="center fixed inset-0 z-50 bg-black/90">
+							<div className="text-center text-white">
+								<div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-white border-b-2" />
+								<p>Loading PDF Viewer...</p>
+							</div>
+						</div>
+					}
+				>
+					<PDFViewer
+						documentUrl={pdfUrl}
+						filename={previewDoc.title}
+						onClose={() => {
+							setPreviewDoc(null);
+							setPdfUrl(null);
+						}}
+					/>
+				</Suspense>
+			) : (
+				<DocumentPreview
+					isOpen={!!previewDoc && previewDoc.mimeType !== "application/pdf"}
+					onClose={() => setPreviewDoc(null)}
+					document={previewDoc}
+				/>
+			)}
+		</div>
 	);
 }

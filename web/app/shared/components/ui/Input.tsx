@@ -19,7 +19,7 @@ export function Input({ className, label, error, id, ...props }: InputProps) {
 				className={cn("input", error && "input-error", className)}
 				{...props}
 			/>
-			{error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+			{error && <p className="mt-1 text-red-600 text-sm">{error}</p>}
 		</div>
 	);
 }

@@ -1,6 +1,3 @@
-import { db } from "@itcom/db/client";
-import { and, eq, gte } from "drizzle-orm";
-
 /**
  * SPEC 004: Avatar Upload Rate Limiting
  * Prevents abuse by limiting avatar uploads per user
@@ -89,7 +86,7 @@ export function getAvatarUploadStats(): {
 	windowMs: number;
 } {
 	return {
-		totalTracked: rateLimiter["attempts"].size,
+		totalTracked: rateLimiter.attempts.size,
 		maxPerHour: MAX_UPLOADS_PER_HOUR,
 		windowMs: RATE_LIMIT_WINDOW_MS,
 	};

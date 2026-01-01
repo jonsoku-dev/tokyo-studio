@@ -53,7 +53,7 @@ export function StorageUsageIndicator({
 	return (
 		<div className="rounded-lg bg-gray-50 p-4">
 			<div className="mb-2 flex items-center justify-between">
-				<span className="text-sm font-medium text-gray-700">Storage Used</span>
+				<span className="font-medium text-gray-700 text-sm">Storage Used</span>
 				<span className="body-sm">
 					{usedMB} / {limitMB} MB
 				</span>
@@ -69,7 +69,7 @@ export function StorageUsageIndicator({
 
 			{/* Warning Messages */}
 			{usagePercentage >= 100 && (
-				<p className="text-sm text-red-600">
+				<p className="text-red-600 text-sm">
 					⚠️ Storage limit reached. Delete some files to upload more.
 				</p>
 			)}
@@ -81,7 +81,7 @@ export function StorageUsageIndicator({
 
 			{/* Detailed Breakdown */}
 			{detailed && (
-				<div className="mt-3 stack-xs divider pt-3 text-xs text-gray-600">
+				<div className="stack-xs divider mt-3 pt-3 text-gray-600 text-xs">
 					<div className="flex justify-between">
 						<span>Used:</span>
 						<span className="font-medium">{usedMB} MB</span>
@@ -130,7 +130,7 @@ export function StorageUsageCompact({
 					style={{ width: `${usagePercentage}%` }}
 				/>
 			</div>
-			<span className="text-xs text-gray-600">
+			<span className="text-gray-600 text-xs">
 				{usedMB}/{limitMB} MB
 			</span>
 		</div>

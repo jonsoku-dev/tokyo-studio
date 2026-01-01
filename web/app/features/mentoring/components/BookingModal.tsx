@@ -126,7 +126,7 @@ function BookingForm({ slot, mentor, onClose }: BookingFormProps) {
 					</button>
 				))}
 			</div>
-			<div className="rounded-lg bg-primary-900/20 p-3 text-sm text-primary-200">
+			<div className="rounded-lg bg-primary-900/20 p-3 text-primary-200 text-sm">
 				<p>
 					Session with <strong>{mentor.name}</strong>
 				</p>
@@ -142,14 +142,14 @@ function BookingForm({ slot, mentor, onClose }: BookingFormProps) {
 			<div className="stack-sm">
 				<label
 					htmlFor="booking-topic"
-					className="text-sm font-medium text-gray-300"
+					className="font-medium text-gray-300 text-sm"
 				>
 					What would you like to discuss?
 				</label>
 				<Textarea
 					id="booking-topic"
 					placeholder="e.g. Code review for my React project, Career advice..."
-					className="min-h-[100px] bg-white/5 border-white/10"
+					className="min-h-[100px] border-white/10 bg-white/5"
 					value={topic}
 					onChange={(e) => setTopic(e.target.value)}
 				/>
@@ -161,22 +161,20 @@ function BookingForm({ slot, mentor, onClose }: BookingFormProps) {
 	const renderPaymentStep = () => (
 		<div className="stack py-4">
 			<div className="rounded-xl border border-white/10 bg-white/5 p-4">
-				<div className="mb-4 flex items-center justify-between border-b border-white/10 pb-4">
+				<div className="mb-4 flex items-center justify-between border-white/10 border-b pb-4">
 					<span className="text-gray-400">Total</span>
-					<span className="heading-3">
-						${(price / 100).toFixed(2)}
-					</span>
+					<span className="heading-3">${(price / 100).toFixed(2)}</span>
 				</div>
 
 				{/* Mock Card */}
 				<div className="stack-sm">
 					<div className="relative">
-						<CreditCard className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+						<CreditCard className="absolute top-2.5 left-3 h-4 w-4 text-gray-500" />
 						<input
 							type="text"
 							value="4242 4242 4242 4242"
 							readOnly
-							className="w-full rounded-md border border-white/10 bg-black/50 py-2 pl-9 pr-3 text-sm text-gray-400"
+							className="w-full rounded-md border border-white/10 bg-black/50 py-2 pr-3 pl-9 text-gray-400 text-sm"
 						/>
 					</div>
 					<div className="grid grid-cols-2 gap-3">
@@ -184,17 +182,17 @@ function BookingForm({ slot, mentor, onClose }: BookingFormProps) {
 							type="text"
 							value="12/25"
 							readOnly
-							className="rounded-md border border-white/10 bg-black/50 px-3 py-2 text-sm text-gray-400"
+							className="rounded-md border border-white/10 bg-black/50 px-3 py-2 text-gray-400 text-sm"
 						/>
 						<input
 							type="text"
 							value="123"
 							readOnly
-							className="rounded-md border border-white/10 bg-black/50 px-3 py-2 text-sm text-gray-400"
+							className="rounded-md border border-white/10 bg-black/50 px-3 py-2 text-gray-400 text-sm"
 						/>
 					</div>
 				</div>
-				<p className="mt-3 text-xs text-center text-gray-500">
+				<p className="mt-3 text-center text-gray-500 text-xs">
 					Test Mode: Payment will be simulated.
 				</p>
 			</div>

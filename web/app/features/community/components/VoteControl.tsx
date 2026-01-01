@@ -59,8 +59,8 @@ export function VoteControl({
 	return (
 		<div
 			className={cn(
-				"flex flex-col items-center gap-1 bg-gray-50 rounded-lg p-1",
-				size === "sm" && "flex-row bg-transparent p-0 gap-2",
+				"flex flex-col items-center gap-1 rounded-lg bg-gray-50 p-1",
+				size === "sm" && "flex-row gap-2 bg-transparent p-0",
 				className,
 			)}
 		>
@@ -68,12 +68,12 @@ export function VoteControl({
 				type="button"
 				onClick={() => handleVote(1)}
 				className={cn(
-					"p-1 rounded hover:bg-gray-200 transition-colors",
+					"rounded p-1 transition-colors hover:bg-gray-200",
 					isUpvoted && "text-primary-500 hover:bg-primary-100",
 				)}
 				aria-label="Upvote"
 			>
-				<ArrowUp className={cn("w-6 h-6", size === "sm" && "w-4 h-4")} />
+				<ArrowUp className={cn("h-6 w-6", size === "sm" && "h-4 w-4")} />
 			</button>
 
 			<span
@@ -90,12 +90,12 @@ export function VoteControl({
 				type="button"
 				onClick={() => handleVote(-1)}
 				className={cn(
-					"p-1 rounded hover:bg-gray-200 transition-colors",
+					"rounded p-1 transition-colors hover:bg-gray-200",
 					isDownvoted && "text-primary-500 hover:bg-primary-100",
 				)}
 				aria-label="Downvote"
 			>
-				<ArrowDown className={cn("w-6 h-6", size === "sm" && "w-4 h-4")} />
+				<ArrowDown className={cn("h-6 w-6", size === "sm" && "h-4 w-4")} />
 			</button>
 		</div>
 	);

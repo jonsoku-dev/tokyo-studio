@@ -43,12 +43,12 @@ export function NotificationPermissionPrompt() {
 	if (!vapidKey) return null; // Can't subscribe without key
 
 	return (
-		<div className="fixed bottom-4 right-4 z-50 max-w-sm w-full bg-white border border-gray-200 shadow-lg rounded-xl p-4 animate-in fade-in slide-in-from-bottom-4">
+		<div className="fade-in slide-in-from-bottom-4 fixed right-4 bottom-4 z-50 w-full max-w-sm animate-in rounded-xl border border-gray-200 bg-white p-4 shadow-lg">
 			<div className="flex items-start gap-3">
-				<div className="bg-primary-100 p-2 rounded-lg text-primary-600">
+				<div className="rounded-lg bg-primary-100 p-2 text-primary-600">
 					<Bell className="h-5 w-5" />
 				</div>
-				<div className="flex-1 stack-xs">
+				<div className="stack-xs flex-1">
 					<h3 className="heading-5">Enable Notifications?</h3>
 					<p className="caption">
 						Get timely updates on replies, mentor sessions, and application
@@ -63,7 +63,7 @@ export function NotificationPermissionPrompt() {
 					<X className="h-4 w-4" />
 				</button>
 			</div>
-			<div className="mt-4 flex gap-2 justify-end">
+			<div className="mt-4 flex justify-end gap-2">
 				<Button
 					variant="ghost"
 					size="sm"

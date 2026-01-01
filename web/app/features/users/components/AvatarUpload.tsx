@@ -143,7 +143,7 @@ export function AvatarUpload({
 		<div className="flex flex-col items-center gap-4">
 			<div
 				{...getRootProps()}
-				className={`relative w-32 h-32 rounded-full overflow-hidden border-2 cursor-pointer transition-colors ${
+				className={`relative h-32 w-32 cursor-pointer overflow-hidden rounded-full border-2 transition-colors ${
 					isDragActive
 						? "border-primary-500 bg-primary-50"
 						: "border-gray-200 hover:border-gray-300"
@@ -154,14 +154,14 @@ export function AvatarUpload({
 					<img
 						src={currentAvatarUrl}
 						alt="Avatar"
-						className="w-full h-full object-cover"
+						className="h-full w-full object-cover"
 					/>
 				) : (
-					<div className="w-full h-full bg-gray-100 center text-gray-400 heading-4">
+					<div className="center heading-4 h-full w-full bg-gray-100 text-gray-400">
 						{userName.slice(0, 2).toUpperCase()}
 					</div>
 				)}
-				<div className="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition-opacity center text-white text-xs font-medium">
+				<div className="center absolute inset-0 bg-black/30 font-medium text-white text-xs opacity-0 transition-opacity hover:opacity-100">
 					Change
 				</div>
 			</div>
@@ -179,7 +179,7 @@ export function AvatarUpload({
 					<Button
 						variant="ghost"
 						size="sm"
-						className="text-red-500 hover:text-red-600 hover:bg-red-50"
+						className="text-red-500 hover:bg-red-50 hover:text-red-600"
 						onClick={(e) => {
 							e.stopPropagation();
 							handleDelete();
@@ -201,7 +201,7 @@ export function AvatarUpload({
 						<DialogTitle>Adjust Avatar</DialogTitle>
 					</DialogHeader>
 					<div className="stack-md">
-						<div className="relative w-full h-[300px] bg-black/5 rounded-md overflow-hidden">
+						<div className="relative h-[300px] w-full overflow-hidden rounded-md bg-black/5">
 							{imageSrc && (
 								<Cropper
 									image={imageSrc}
@@ -227,7 +227,7 @@ export function AvatarUpload({
 								step={0.1}
 								aria-labelledby="Zoom"
 								onChange={(e) => setZoom(Number(e.target.value))}
-								className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+								className="h-1 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
 							/>
 						</div>
 

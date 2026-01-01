@@ -6,9 +6,6 @@ import {
 } from "@react-router/dev/routes";
 
 export default [
-	// Root layout - redirect to roadmap
-	index("features/dashboard/routes/home.tsx"),
-
 	// --- PUBLIC LAYOUT (No authentication required) ---
 	layout("shared/layouts/PublicLayout.tsx", [
 		// Auth routes
@@ -30,6 +27,7 @@ export default [
 	// --- PROTECTED LAYOUT (Authentication required) ---
 	layout("shared/layouts/ProtectedLayout.tsx", [
 		// Features
+		index("features/dashboard/routes/home.tsx"),
 		route("roadmap", "features/roadmap/routes/index.tsx"),
 		route("pipeline", "features/pipeline/routes/pipeline.tsx"),
 		route("documents", "features/documents/routes/documents.tsx"),
@@ -192,10 +190,7 @@ export default [
 	// route(\"api/notifications/settings\", \"features/notifications/apis/settings.ts\"), // TODO: Implement settings API
 
 	// Roadmap APIs (SPEC 016)
-	route(
-		"api/roadmap",
-		"features/roadmap/apis/api.roadmap.get.server.ts",
-	),
+	route("api/roadmap", "features/roadmap/apis/api.roadmap.get.server.ts"),
 	route(
 		"api/roadmap/tasks/update",
 		"features/roadmap/apis/api.roadmap.update-task.server.ts",
@@ -206,20 +201,11 @@ export default [
 	),
 
 	// Pipeline APIs (SPEC 018)
-	route(
-		"api/jobs/parse",
-		"features/pipeline/apis/api.job-parser.server.ts",
-	),
+	route("api/jobs/parse", "features/pipeline/apis/api.job-parser.server.ts"),
 
 	// Map APIs (SPEC 020)
-	route(
-		"api/map",
-		"features/map/apis/api.map.get.server.ts",
-	),
-	route(
-		"api/map/favorites",
-		"features/map/apis/api.favorites.get.server.ts",
-	),
+	route("api/map", "features/map/apis/api.map.get.server.ts"),
+	route("api/map/favorites", "features/map/apis/api.favorites.get.server.ts"),
 	route(
 		"api/map/custom-markers",
 		"features/map/apis/api.custom-markers.get.server.ts",

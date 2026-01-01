@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { data, useFetcher, useLoaderData } from "react-router";
-import { Shell } from "~/shared/components/layout/Shell";
+
 import { requireUserId } from "../../auth/utils/session.server";
 import { CountdownBanner } from "../components/CountdownBanner";
 import {
@@ -201,93 +201,89 @@ export default function SettlementPage() {
 		urgencyFilter !== "all";
 
 	return (
-		<Shell>
-			<div className="max-w-4xl mx-auto stack-md">
-				{/* Header */}
-				<div className="stack-sm">
-					<h1 className="heading-2 text-gray-900">
-						🗼 도쿄 정착 체크리스트
-					</h1>
-					<p className="text-gray-500">
-						東京定住チェックリスト - Tokyo Settlement Checklist
-					</p>
-				</div>
+		<div className="stack-md mx-auto max-w-4xl">
+			{/* Header */}
+			<div className="stack-sm">
+				<h1 className="heading-2 text-gray-900">🗼 도쿄 정착 체크리스트</h1>
+				<p className="text-gray-500">
+					東京定住チェックリスト - Tokyo Settlement Checklist
+				</p>
+			</div>
 
-				{/* Arrival Date Input */}
-				<div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-					<label
-						htmlFor="arrivalDate"
-						className="block body-sm text-gray-700 mb-2"
+			{/* Arrival Date Input */}
+			<div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+				<label
+					htmlFor="arrivalDate"
+					className="body-sm mb-2 block text-gray-700"
+				>
+					📅 도착 예정일 / 到着予定日
+				</label>
+				<div className="flex gap-3">
+					<input
+						id="arrivalDate"
+						type="date"
+						value={localArrivalDate}
+						onChange={(e) => setLocalArrivalDate(e.target.value)}
+						className="flex-1 rounded-xl border border-gray-200 px-4 py-3 text-lg outline-none focus:ring-2 focus:ring-primary-500"
+					/>
+					<button
+						type="button"
+						onClick={handleSetArrivalDate}
+						disabled={!localArrivalDate || fetcher.state !== "idle"}
+						className="rounded-xl bg-primary-600 px-6 py-3 font-bold text-white transition-all hover:bg-primary-700 disabled:opacity-50"
 					>
-						📅 도착 예정일 / 到着予定日
-					</label>
-					<div className="flex gap-3">
-						<input
-							id="arrivalDate"
-							type="date"
-							value={localArrivalDate}
-							onChange={(e) => setLocalArrivalDate(e.target.value)}
-							className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none text-lg"
-						/>
-						<button
-							type="button"
-							onClick={handleSetArrivalDate}
-							disabled={!localArrivalDate || fetcher.state !== "idle"}
-							className="px-6 py-3 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 disabled:opacity-50 transition-all"
-						>
-							{arrivalDate ? "변경" : "설정"}
-						</button>
-					</div>
-				</div>
-
-				{/* Countdown Banner */}
-				{arrivalDate && <CountdownBanner arrivalDate={arrivalDate} />}
-
-				{/* Progress Bar */}
-				<ProgressBar
-					completed={computedProgress.completed}
-					total={computedProgress.total}
-					percentage={computedProgress.percentage}
-				/>
-
-				{/* Filter Bar */}
-				<FilterBar
-					category={categoryFilter}
-					status={statusFilter}
-					urgency={urgencyFilter}
-					onCategoryChange={setCategoryFilter}
-					onStatusChange={setStatusFilter}
-					onUrgencyChange={setUrgencyFilter}
-					onReset={handleResetFilters}
-				/>
-
-				{/* Filter Results Info */}
-				{hasFiltersApplied && (
-					<p className="caption">
-						{filteredTasks.length}개의 태스크가 필터에 맞습니다
-					</p>
-				)}
-
-				{/* Task Sections */}
-				<div className="stack-md">
-					{phases.map((phase) => {
-						const phaseTasks = groupedTasks[phase.key];
-						if (hasFiltersApplied && phaseTasks.length === 0) return null;
-						return (
-							<TaskSection
-								key={phase.key}
-								phase={phase.key}
-								titleKo={phase.titleKo}
-								titleEn={phase.titleEn}
-								tasks={phaseTasks}
-								phaseProgress={computedProgress.byPhase[phase.key]}
-								arrivalDate={arrivalDate}
-								onToggleTask={handleToggleTask}
-							/>
-						);
-					})}
+						{arrivalDate ? "변경" : "설정"}
+					</button>
 				</div>
 			</div>
-		</Shell>
+
+			{/* Countdown Banner */}
+			{arrivalDate && <CountdownBanner arrivalDate={arrivalDate} />}
+
+			{/* Progress Bar */}
+			<ProgressBar
+				completed={computedProgress.completed}
+				total={computedProgress.total}
+				percentage={computedProgress.percentage}
+			/>
+
+			{/* Filter Bar */}
+			<FilterBar
+				category={categoryFilter}
+				status={statusFilter}
+				urgency={urgencyFilter}
+				onCategoryChange={setCategoryFilter}
+				onStatusChange={setStatusFilter}
+				onUrgencyChange={setUrgencyFilter}
+				onReset={handleResetFilters}
+			/>
+
+			{/* Filter Results Info */}
+			{hasFiltersApplied && (
+				<p className="caption">
+					{filteredTasks.length}개의 태스크가 필터에 맞습니다
+				</p>
+			)}
+
+			{/* Task Sections */}
+			<div className="stack-md">
+				{phases.map((phase) => {
+					const phaseTasks = groupedTasks[phase.key];
+					if (hasFiltersApplied && phaseTasks.length === 0) return null;
+					return (
+						<TaskSection
+							key={phase.key}
+							phase={phase.key}
+							titleKo={phase.titleKo}
+							titleEn={phase.titleEn}
+							tasks={phaseTasks}
+							phaseProgress={computedProgress.byPhase[phase.key]}
+							arrivalDate={arrivalDate}
+							onToggleTask={handleToggleTask}
+						/>
+					);
+				})}
+			</div>
+		</div>
 	);
 }

@@ -113,30 +113,27 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 	}
 
 	return (
-		<div className="fixed inset-0 z-50 bg-black/90 flex flex-col">
+		<div className="fixed inset-0 z-50 flex flex-col bg-black/90">
 			{/* Header */}
-			<div className="flex items-center justify-between p-4 bg-gray-900 text-white shadow-lg">
+			<div className="flex items-center justify-between bg-gray-900 p-4 text-white shadow-lg">
 				{/* Filename */}
-				<h2
-					className="heading-5 truncate max-w-md"
-					title={filename}
-				>
+				<h2 className="heading-5 max-w-md truncate" title={filename}>
 					{filename}
 				</h2>
 
 				{/* Controls */}
 				<div className="flex items-center gap-6">
 					{/* Zoom Controls */}
-					<div className="flex items-center gap-2 bg-gray-800 rounded-lg px-3 py-2">
+					<div className="flex items-center gap-2 rounded-lg bg-gray-800 px-3 py-2">
 						<button
 							type="button"
 							onClick={zoomOut}
 							disabled={scale <= 0.5}
-							className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+							className="rounded bg-gray-700 px-3 py-1 transition-colors hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
 							aria-label="Zoom out"
 						>
 							<svg
-								className="w-4 h-4"
+								className="h-4 w-4"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
@@ -150,18 +147,18 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 								/>
 							</svg>
 						</button>
-						<span className="text-sm font-mono min-w-[4rem] text-center">
+						<span className="min-w-[4rem] text-center font-mono text-sm">
 							{Math.round(scale * 100)}%
 						</span>
 						<button
 							type="button"
 							onClick={zoomIn}
 							disabled={scale >= 3.0}
-							className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+							className="rounded bg-gray-700 px-3 py-1 transition-colors hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
 							aria-label="Zoom in"
 						>
 							<svg
-								className="w-4 h-4"
+								className="h-4 w-4"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
@@ -178,7 +175,7 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 						<button
 							type="button"
 							onClick={resetZoom}
-							className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm transition-colors"
+							className="rounded bg-gray-700 px-3 py-1 text-sm transition-colors hover:bg-gray-600"
 						>
 							Reset
 						</button>
@@ -186,16 +183,16 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 
 					{/* Page Navigation */}
 					{numPages > 1 && (
-						<div className="flex items-center gap-2 bg-gray-800 rounded-lg px-3 py-2">
+						<div className="flex items-center gap-2 rounded-lg bg-gray-800 px-3 py-2">
 							<button
 								type="button"
 								onClick={goToFirstPage}
 								disabled={pageNumber <= 1}
-								className="px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+								className="rounded bg-gray-700 px-2 py-1 transition-colors hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
 								aria-label="First page"
 							>
 								<svg
-									className="w-4 h-4"
+									className="h-4 w-4"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
@@ -213,11 +210,11 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 								type="button"
 								onClick={goToPrevPage}
 								disabled={pageNumber <= 1}
-								className="px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+								className="rounded bg-gray-700 px-2 py-1 transition-colors hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
 								aria-label="Previous page"
 							>
 								<svg
-									className="w-4 h-4"
+									className="h-4 w-4"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
@@ -231,18 +228,18 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 									/>
 								</svg>
 							</button>
-							<span className="text-sm font-mono px-2">
+							<span className="px-2 font-mono text-sm">
 								Page {pageNumber} of {numPages}
 							</span>
 							<button
 								type="button"
 								onClick={goToNextPage}
 								disabled={pageNumber >= numPages}
-								className="px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+								className="rounded bg-gray-700 px-2 py-1 transition-colors hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
 								aria-label="Next page"
 							>
 								<svg
-									className="w-4 h-4"
+									className="h-4 w-4"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
@@ -260,11 +257,11 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 								type="button"
 								onClick={goToLastPage}
 								disabled={pageNumber >= numPages}
-								className="px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+								className="rounded bg-gray-700 px-2 py-1 transition-colors hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
 								aria-label="Last page"
 							>
 								<svg
-									className="w-4 h-4"
+									className="h-4 w-4"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
@@ -285,7 +282,7 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 					<button
 						type="button"
 						onClick={onClose}
-						className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white transition-colors"
+						className="rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
 					>
 						Close
 					</button>
@@ -293,14 +290,14 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 			</div>
 
 			{/* PDF Document */}
-			<div className="flex-1 overflow-auto bg-gray-800 center p-8">
+			<div className="center flex-1 overflow-auto bg-gray-800 p-8">
 				{error ? (
 					<div className="text-center">
-						<div className="text-red-500 text-xl mb-4">⚠️ {error}</div>
+						<div className="mb-4 text-red-500 text-xl">⚠️ {error}</div>
 						<button
 							type="button"
 							onClick={onClose}
-							className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded text-white"
+							className="rounded bg-gray-700 px-4 py-2 text-white hover:bg-gray-600"
 						>
 							Close
 						</button>
@@ -311,8 +308,8 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 						onLoadSuccess={onDocumentLoadSuccess}
 						onLoadError={onDocumentLoadError}
 						loading={
-							<div className="text-white text-center">
-								<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4" />
+							<div className="text-center text-white">
+								<div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-white border-b-2" />
 								<p>Loading PDF...</p>
 							</div>
 						}
@@ -323,8 +320,8 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 							renderTextLayer={true}
 							renderAnnotationLayer={true}
 							loading={
-								<div className="bg-white h-[800px] w-[600px] center">
-									<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+								<div className="center h-[800px] w-[600px] bg-white">
+									<div className="h-8 w-8 animate-spin rounded-full border-gray-900 border-b-2" />
 								</div>
 							}
 						/>
@@ -333,7 +330,7 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 			</div>
 
 			{/* Keyboard Shortcuts Help */}
-			<div className="p-2 bg-gray-900 text-gray-400 text-xs text-center border-t border-gray-800">
+			<div className="border-gray-800 border-t bg-gray-900 p-2 text-center text-gray-400 text-xs">
 				<span className="inline-flex items-center gap-4">
 					<span>← → Navigate pages</span>
 					<span>+ - Zoom</span>

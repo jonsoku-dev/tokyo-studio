@@ -148,7 +148,7 @@ export function FileUploader({ onUploadComplete }: FileUploaderProps) {
 			<div
 				{...getRootProps()}
 				className={cn(
-					"border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors",
+					"cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors",
 					isDragActive
 						? "border-primary-500 bg-primary-50"
 						: "border-gray-300 hover:border-primary-400 hover:bg-gray-50",
@@ -156,47 +156,45 @@ export function FileUploader({ onUploadComplete }: FileUploaderProps) {
 			>
 				<input {...getInputProps()} />
 				<UploadCloud className="mx-auto h-10 w-10 text-gray-400" />
-				<p className="mt-2 text-sm heading-5">
+				<p className="heading-5 mt-2 text-sm">
 					Click to upload or drag and drop
 				</p>
-				<p className="mt-1 caption">PDF, DOCX, TXT up to 10MB</p>
+				<p className="caption mt-1">PDF, DOCX, TXT up to 10MB</p>
 			</div>
 
 			{globalError && (
-				<div className="text-sm text-red-600 bg-red-50 p-2 rounded">
+				<div className="rounded bg-red-50 p-2 text-red-600 text-sm">
 					{globalError}
 				</div>
 			)}
 
 			{uploadingFiles.length > 0 && (
-				<div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-100">
+				<div className="divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white">
 					{uploadingFiles.map((item, idx) => (
 						<div key={`${item.file.name}-${idx}`} className="p-4">
-							<div className="flex items-center justify-between mb-1">
-								<div className="flex items-center min-w-0">
-									<FileIcon className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
-									<p className="text-sm heading-5 truncate">
-										{item.file.name}
-									</p>
+							<div className="mb-1 flex items-center justify-between">
+								<div className="flex min-w-0 items-center">
+									<FileIcon className="mr-2 h-4 w-4 flex-shrink-0 text-gray-400" />
+									<p className="heading-5 truncate text-sm">{item.file.name}</p>
 								</div>
-								<span className="caption whitespace-nowrap ml-2">
+								<span className="caption ml-2 whitespace-nowrap">
 									{item.error ? "Failed" : `${item.progress}%`}
 								</span>
 							</div>
 
 							{item.error ? (
-								<div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+								<div className="mt-2 rounded-lg border border-red-200 bg-red-50 p-3">
 									<div className="flex items-start gap-2">
-										<AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
-										<div className="flex-1 min-w-0">
-											<p className="text-sm font-medium text-red-900">
+										<AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-600" />
+										<div className="min-w-0 flex-1">
+											<p className="font-medium text-red-900 text-sm">
 												Upload Failed
 											</p>
-											<p className="text-xs text-red-700 mt-1">
+											<p className="mt-1 text-red-700 text-xs">
 												{getUploadErrorMessage(item.error)}
 											</p>
 											{getUploadErrorSuggestions(item.error) && (
-												<p className="text-xs text-red-600 mt-2 font-medium">
+												<p className="mt-2 font-medium text-red-600 text-xs">
 													💡 {getUploadErrorSuggestions(item.error)}
 												</p>
 											)}
@@ -204,9 +202,9 @@ export function FileUploader({ onUploadComplete }: FileUploaderProps) {
 									</div>
 								</div>
 							) : (
-								<div className="w-full bg-gray-200 rounded-full h-1.5">
+								<div className="h-1.5 w-full rounded-full bg-gray-200">
 									<div
-										className="bg-primary-500 h-1.5 rounded-full transition-all duration-300"
+										className="h-1.5 rounded-full bg-primary-500 transition-all duration-300"
 										style={{ width: `${item.progress}%` }}
 									/>
 								</div>

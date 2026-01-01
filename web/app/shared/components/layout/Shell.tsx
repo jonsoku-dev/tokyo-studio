@@ -1,22 +1,23 @@
 import type { ReactNode } from "react";
 import { Outlet, useFetcher, useSearchParams } from "react-router";
 import { Navbar } from "./Navbar";
-import { Sidebar } from "./Sidebar";
+import { SidebarDock } from "./SidebarDock";
 
 interface ShellProps {
 	children?: ReactNode;
+	showSidebar?: boolean;
 }
 
-export function Shell({ children }: ShellProps) {
+export function Shell({ children, showSidebar = true }: ShellProps) {
 	const [searchParams] = useSearchParams();
 	const fetcher = useFetcher();
 	const isUnverified = searchParams.get("unverified") === "true";
 	const isSuccess = fetcher.data?.success;
 
 	return (
-		<div className="min-h-screen bg-surface flex flex-col">
+		<div className="flex min-h-screen flex-col bg-surface">
 			{isUnverified && !isSuccess && (
-				<div className="bg-primary-500 text-white px-4 py-2 text-center text-sm font-medium">
+				<div className="bg-primary-500 px-4 py-2 text-center font-medium text-sm text-white">
 					Please verify your email address to access all features. Don't see the
 					email?{" "}
 					<fetcher.Form
@@ -31,16 +32,14 @@ export function Shell({ children }: ShellProps) {
 				</div>
 			)}
 			{isSuccess && (
-				<div className="bg-accent-600 text-white px-4 py-2 text-center text-sm font-medium">
+				<div className="bg-accent-600 px-4 py-2 text-center font-medium text-sm text-white">
 					Verification email sent! Please check your inbox.
 				</div>
 			)}
 			<Navbar />
 			<div className="container-wide flex flex-1">
-				<aside className="hidden md:block w-64 py-6 pr-6 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto">
-					<Sidebar />
-				</aside>
-				<main className="flex-1 py-6 px-4 md:px-0 min-w-0">
+				{showSidebar && <SidebarDock />}
+				<main className="min-w-0 flex-1 px-4 py-6 md:px-0 md:pl-24">
 					{children || <Outlet />}
 				</main>
 			</div>

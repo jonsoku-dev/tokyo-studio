@@ -28,21 +28,21 @@ export function ReviewForm({
 	};
 
 	return (
-		<div className="max-w-2xl mx-auto p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
+		<div className="mx-auto max-w-2xl rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
 			<h2 className="heading-3 mb-2">Share Your Experience</h2>
-			<p className="text-gray-600 mb-6">
+			<p className="mb-6 text-gray-600">
 				Help us improve by sharing your feedback about your session with{" "}
 				<strong>{mentorName}</strong>
 			</p>
 
 			{actionData?.error && (
-				<div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+				<div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
 					{actionData.error}
 				</div>
 			)}
 
 			{actionData?.success && (
-				<div className="mb-6 p-4 bg-accent-50 border border-accent-200 rounded-lg text-accent-700">
+				<div className="mb-6 rounded-lg border border-accent-200 bg-accent-50 p-4 text-accent-700">
 					Thank you for your review! It helps mentors improve.
 				</div>
 			)}
@@ -59,9 +59,9 @@ export function ReviewForm({
 
 				{/* Star Rating */}
 				<div>
-					<label className="block text-sm heading-5 mb-3">
+					<span className="heading-5 mb-3 block text-sm">
 						How would you rate this session?
-					</label>
+					</span>
 					<div className="flex gap-3">
 						{[1, 2, 3, 4, 5].map((star) => (
 							<button
@@ -70,7 +70,7 @@ export function ReviewForm({
 								onClick={() => setRating(star)}
 								onMouseEnter={() => setHoverRating(star)}
 								onMouseLeave={() => setHoverRating(0)}
-								className="focus:outline-none transition-transform hover:scale-110"
+								className="transition-transform hover:scale-110 focus:outline-none"
 							>
 								<Star
 									className={`h-8 w-8 transition-colors ${
@@ -90,10 +90,7 @@ export function ReviewForm({
 
 				{/* Review Text */}
 				<div>
-					<label
-						htmlFor="text"
-						className="block text-sm heading-5 mb-2"
-					>
+					<label htmlFor="text" className="heading-5 mb-2 block text-sm">
 						Tell us more (optional)
 					</label>
 					<textarea
@@ -101,7 +98,7 @@ export function ReviewForm({
 						name="text"
 						rows={4}
 						placeholder="What did you like? What could be improved? Be specific..."
-						className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+						className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500"
 						maxLength={2000}
 					/>
 					<p className="caption mt-1">Max 2000 characters</p>
@@ -109,13 +106,13 @@ export function ReviewForm({
 
 				{/* Anonymous Option */}
 				<div>
-					<label className="flex items-center gap-3 cursor-pointer">
+					<label className="flex cursor-pointer items-center gap-3">
 						<input
 							type="checkbox"
 							name="isAnonymous"
 							className="h-4 w-4 rounded border-gray-300"
 						/>
-						<span className="text-sm text-gray-700">
+						<span className="text-gray-700 text-sm">
 							Post this review anonymously
 						</span>
 					</label>
@@ -128,7 +125,7 @@ export function ReviewForm({
 				<button
 					type="submit"
 					disabled={isSubmitting || !rating}
-					className="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+					className="w-full rounded-lg bg-primary-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:bg-gray-400"
 				>
 					{isSubmitting ? "Submitting..." : "Submit Review"}
 				</button>

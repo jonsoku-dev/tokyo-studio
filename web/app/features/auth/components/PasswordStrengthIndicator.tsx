@@ -53,17 +53,17 @@ export function PasswordStrengthIndicator({
 	const strengthWidth = `${(result.score / 5) * 100}%`;
 
 	return (
-		<div className="mt-2 stack-sm">
+		<div className="stack-sm mt-2">
 			{/* Strength Bar */}
 			<div className="stack-xs">
-				<div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+				<div className="h-2 overflow-hidden rounded-full bg-gray-200">
 					<div
 						className={`h-full transition-all duration-300 ${strengthColors[strength]}`}
 						style={{ width: strengthWidth }}
 					/>
 				</div>
 				<p
-					className={`text-xs font-medium ${strengthTextColors[strength]} capitalize`}
+					className={`font-medium text-xs ${strengthTextColors[strength]} capitalize`}
 				>
 					Strength: {strength}
 				</p>
@@ -94,7 +94,7 @@ export function PasswordStrengthIndicator({
 								// biome-ignore lint/suspicious/noArrayIndexKey: messages are static unique strings list
 								index
 							}`}
-							className="text-xs text-red-600 flex items-center gap-1"
+							className="flex items-center gap-1 text-red-600 text-xs"
 						>
 							<X className="h-3 w-3" />
 							{message}
@@ -110,9 +110,9 @@ function RequirementItem({ met, text }: { met: boolean; text: string }) {
 	return (
 		<div className="flex items-center gap-2 text-xs">
 			{met ? (
-				<Check className="h-4 w-4 text-accent-600 flex-shrink-0" />
+				<Check className="h-4 w-4 flex-shrink-0 text-accent-600" />
 			) : (
-				<div className="h-4 w-4 rounded-full border-2 border-gray-300 flex-shrink-0" />
+				<div className="h-4 w-4 flex-shrink-0 rounded-full border-2 border-gray-300" />
 			)}
 			<span className={met ? "text-accent-600" : "text-gray-500"}>{text}</span>
 		</div>

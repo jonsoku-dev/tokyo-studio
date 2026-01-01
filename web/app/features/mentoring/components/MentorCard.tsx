@@ -20,7 +20,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
 	return (
 		<Link
 			to={`/mentoring/mentors/${mentor.id}`}
-			className="group relative flex flex-col rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:bg-white/10 hover:shadow-2xl hover:shadow-primary/20 dark:border-white/5 dark:bg-black/20"
+			className="group relative flex flex-col rounded-xl border border-gray-200 bg-white p-5 transition-all duration-200 hover:border-primary-200 hover:shadow-md"
 		>
 			<div className="flex items-start gap-4">
 				<div className="relative">
@@ -30,69 +30,67 @@ export function MentorCard({ mentor }: MentorCardProps) {
 							`https://api.dicebear.com/7.x/avataaars/svg?seed=${mentor.id}`
 						}
 						alt={mentor.name}
-						className="h-16 w-16 rounded-full border-2 border-white/10 object-cover shadow-md transition-transform duration-500 group-hover:scale-105 group-hover:border-primary/50"
+						className="h-14 w-14 rounded-full border border-gray-100 object-cover"
 					/>
-					<div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-[10px] backdrop-blur-md">
+					<div className="absolute -right-1 -bottom-1 flex h-5 w-5 items-center justify-center rounded-full border border-gray-100 bg-white text-[10px] shadow-sm">
 						🇯🇵
 					</div>
 				</div>
 
-				<div className="flex-1">
-					<h3 className="font-outfit heading-5 group-hover:text-primary dark:text-gray-100">
+				<div className="min-w-0 flex-1">
+					<h3 className="heading-5 truncate text-gray-900 group-hover:text-primary-600">
 						{mentor.name}
 					</h3>
-					<p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+					<p className="body-sm truncate text-gray-600">
 						{mentor.profile.jobTitle}
 					</p>
-					<p className="caption dark:text-gray-500">
+					<p className="caption truncate text-gray-500">
 						{mentor.profile.company}
 					</p>
 
-					<div className="mt-2 flex flex-wrap gap-1">
+					<div className="mt-3 flex flex-wrap gap-1.5">
 						{mentor.profile.specialties?.slice(0, 2).map((skill: string) => (
 							<Badge
 								key={skill}
 								variant="secondary"
-								className="bg-white/5 text-[10px] hover:bg-primary/20 hover:text-primary"
+								className="border-gray-200 bg-gray-50 px-1.5 py-0.5 font-normal text-[10px] text-gray-600"
 							>
 								{skill}
 							</Badge>
 						))}
 						{(mentor.profile.specialties?.length || 0) > 2 && (
-							<Badge variant="secondary" className="bg-white/5 text-[10px]">
+							<Badge
+								variant="secondary"
+								className="border-gray-200 bg-gray-50 px-1.5 py-0.5 text-[10px] text-gray-500"
+							>
 								+{(mentor.profile.specialties?.length || 0) - 2}
 							</Badge>
 						)}
 					</div>
 				</div>
 
-				<div className="text-right">
-					<div className="heading-5 dark:text-white">
+				<div className="shrink-0 text-right">
+					<div className="heading-5 text-gray-900">
 						${((mentor.profile.hourlyRate || 0) / 100).toFixed(0)}
-						<span className="text-xs font-normal text-gray-500">/h</span>
+						<span className="caption ml-0.5 font-normal text-gray-500">/h</span>
 					</div>
-					<div className="mt-1 flex items-center justify-end gap-1 text-xs font-medium text-amber-400">
+					<div className="caption mt-1 flex items-center justify-end gap-1 font-medium text-amber-500">
 						<Star className="h-3 w-3 fill-current" />
 						<span>{formattedRating}</span>
-						<span className="text-gray-500">
+						<span className="font-normal text-gray-400">
 							({mentor.profile.totalSessions})
 						</span>
 					</div>
 				</div>
 			</div>
 
-			{/* Hover Action */}
-			<div className="absolute inset-x-5 bottom-5 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hidden">
-				{/* This approach needs card to grow or something.
-                     For MVP simple card, just make whole card clickable.
-                 */}
-			</div>
-
-			<div className="mt-4 flex items-center justify-between border-t border-white/5 pt-4 caption">
-				<div className="flex items-center gap-2">
+			<div className="caption mt-4 flex items-center justify-between border-gray-100 border-t pt-3">
+				<div className="flex items-center gap-2 text-gray-500">
 					<span>{mentor.profile.yearsOfExperience} years exp.</span>
 				</div>
-				<div className="font-medium text-primary">View Profile →</div>
+				<div className="font-medium text-primary-600 group-hover:underline">
+					View Profile →
+				</div>
 			</div>
 		</Link>
 	);

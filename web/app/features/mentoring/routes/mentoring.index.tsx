@@ -27,35 +27,36 @@ export default function MentoringDirectory() {
 	const { mentors } = useLoaderData<typeof loader>();
 
 	return (
-		<div className="min-h-screen bg-black text-white selection:bg-primary/30">
+		<div className="stack-lg">
 			{/* Header / Hero */}
-			<div className="relative overflow-hidden border-b border-white/10 bg-gradient-to-b from-primary/10 to-black pb-12 pt-24">
-				<div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-20 mask-gradient" />
-				<div className="container relative mx-auto px-4">
-					<h1 className="mb-4 text-center text-4xl font-extrabold tracking-tight md:text-6xl">
-						Find Your{" "}
-						<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">
-							Mentor
-						</span>
-					</h1>
-					<p className="mx-auto max-w-2xl text-center text-lg text-gray-400">
-						Connect with industry experts who are ready to guide you.
-					</p>
+			<div className="border-gray-200 border-b bg-white py-12">
+				<div className="container-wide">
+					<div className="max-w-3xl">
+						<h1 className="heading-1 mb-4 text-gray-900">
+							Find Your <span className="text-primary-600">Mentor</span>
+						</h1>
+						<p className="body-lg mb-8 text-gray-600">
+							Connect with industry experts who are ready to guide you in your
+							Japan IT career.
+						</p>
 
-					{/* Search Bar */}
-					<div className="mx-auto mt-8 flex max-w-md items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-md">
-						<Search className="h-5 w-5 text-gray-400" />
-						<input
-							type="text"
-							placeholder="Search by name or company..."
-							className="bg-transparent text-sm text-white placeholder-gray-500 focus:outline-none w-full"
-						/>
+						{/* Search Bar */}
+						<div className="relative max-w-lg">
+							<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+								<Search className="h-5 w-5 text-gray-400" />
+							</div>
+							<input
+								type="text"
+								placeholder="Search by name or company..."
+								className="block w-full rounded-lg border border-gray-300 bg-white py-3 pr-3 pl-10 leading-5 placeholder-gray-500 shadow-sm focus:border-primary-500 focus:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm"
+							/>
+						</div>
 					</div>
 				</div>
 			</div>
 
-			<div className="container-page px-4 py-12">
-				<div className="grid gap-8 lg:grid-cols-[280px_1fr]">
+			<div className="container-wide py-8">
+				<div className="grid gap-8 lg:grid-cols-[260px_1fr]">
 					{/* Sidebar Filters */}
 					<aside>
 						<MentorFilters />
@@ -64,9 +65,9 @@ export default function MentoringDirectory() {
 					{/* Mentor Grid */}
 					<main>
 						<div className="mb-6 flex items-center justify-between">
-							<h2 className="heading-4 flex items-center gap-2">
+							<h2 className="heading-4 flex items-center gap-2 text-gray-900">
 								Available Mentors
-								<span className="rounded-full bg-white/10 px-2 py-0.5 caption">
+								<span className="caption rounded-full bg-gray-100 px-2.5 py-0.5 font-medium text-gray-600">
 									{mentors.length}
 								</span>
 							</h2>
@@ -79,8 +80,8 @@ export default function MentoringDirectory() {
 								))}
 							</div>
 						) : (
-							<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 bg-white/5 py-24 text-center">
-								<p className="text-lg font-medium text-gray-400">
+							<div className="flex flex-col items-center justify-center rounded-xl border border-gray-300 border-dashed bg-gray-50 py-24 text-center">
+								<p className="body-lg text-gray-500">
 									No mentors found matching criteria.
 								</p>
 							</div>

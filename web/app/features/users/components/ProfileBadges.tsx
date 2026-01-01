@@ -42,9 +42,7 @@ export function ProfileBadges({ badges }: ProfileBadgesProps) {
 
 	return (
 		<div className="stack-sm">
-			<h3 className="body-sm text-gray-700 uppercase tracking-wider">
-				Badges
-			</h3>
+			<h3 className="body-sm text-gray-700 uppercase tracking-wider">Badges</h3>
 			<div className="cluster-sm">
 				{badges.map((badge) => {
 					const Icon = ICON_MAP[badge.icon] || ShieldCheck;
@@ -52,7 +50,7 @@ export function ProfileBadges({ badges }: ProfileBadgesProps) {
 					return (
 						<div
 							key={badge.id}
-							className="group relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full transition-all hover:shadow-md"
+							className="group relative inline-flex items-center gap-2 rounded-full px-3 py-1.5 transition-all hover:shadow-md"
 							style={{
 								backgroundColor: `${badge.color}20`,
 								color: badge.color,
@@ -62,12 +60,12 @@ export function ProfileBadges({ badges }: ProfileBadgesProps) {
 							title={badge.description}
 						>
 							<Icon className="h-4 w-4" />
-							<span className="text-sm font-medium">{badge.name}</span>
+							<span className="font-medium text-sm">{badge.name}</span>
 
 							{/* Tooltip */}
-							<div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+							<div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-gray-900 px-3 py-2 text-white text-xs opacity-0 transition-opacity group-hover:opacity-100">
 								{badge.description}
-								<div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1">
+								<div className="absolute top-full left-1/2 -mt-1 -translate-x-1/2">
 									<div className="border-4 border-transparent border-t-gray-900" />
 								</div>
 							</div>

@@ -1,7 +1,6 @@
 import type { SelectMentorApplication } from "@itcom/db/schema";
 import { AnimatePresence } from "framer-motion";
 import { useLoaderData } from "react-router";
-import { Shell } from "~/shared/components/layout/Shell";
 import { requireUserId } from "../../auth/utils/session.server";
 import { applicationService } from "../../mentoring/services/application.server";
 import { JobCard } from "../components/JobCard";
@@ -48,65 +47,63 @@ export default function Home() {
 	}>();
 
 	return (
-		<Shell>
-			<div className="stack-md">
-				{/* 3D Welcome Hero */}
-				<WelcomeHero />
+		<div className="stack-md">
+			{/* 3D Welcome Hero */}
+			<WelcomeHero />
 
-				{/* Mentor Application Status Widget */}
-				<MentorApplicationStatus application={mentorApplication} />
+			{/* Mentor Application Status Widget */}
+			<MentorApplicationStatus application={mentorApplication} />
 
-				{/* Create Post / Action Bar */}
-				<div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center gap-4">
-					<div className="w-10 h-10 rounded-full bg-primary-100 flex-shrink-0 border-2 border-white shadow-sm center text-primary-600 font-bold">
-						J
+			{/* Create Post / Action Bar */}
+			<div className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+				<div className="center h-10 w-10 flex-shrink-0 rounded-full border-2 border-white bg-primary-100 font-bold text-primary-600 shadow-sm">
+					J
+				</div>
+				<input
+					type="text"
+					placeholder="What's your next step today?"
+					className="flex-1 rounded-lg border border-transparent bg-gray-50 px-4 py-2.5 text-sm transition-all hover:border-gray-200 hover:bg-white focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+				/>
+			</div>
+
+			<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+				{/* Feed - Today's Tasks */}
+				<div className="stack">
+					<div className="flex items-center justify-between px-1">
+						<h2 className="body-sm text-gray-500 uppercase tracking-wide">
+							Today's Tasks
+						</h2>
+						<span className="rounded-full bg-gray-100 px-2 py-0.5 text-gray-600 text-xs">
+							{tasks.filter((t) => t.status !== "completed").length} Pending
+						</span>
 					</div>
-					<input
-						type="text"
-						placeholder="What's your next step today?"
-						className="flex-1 bg-gray-50 hover:bg-white border-transparent hover:border-gray-200 border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
-					/>
+
+					{tasks.length === 0 && (
+						<div className="caption rounded-xl border border-gray-200 border-dashed bg-gray-50 p-8 text-center">
+							No tasks for today. Great job!
+						</div>
+					)}
+
+					<AnimatePresence mode="popLayout">
+						{tasks.map((task) => (
+							<TaskCard key={task.id} task={task} />
+						))}
+					</AnimatePresence>
 				</div>
 
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-					{/* Feed - Today's Tasks */}
+				{/* Feed - Job Recommendations */}
+				<div className="stack">
+					<h2 className="body-sm px-1 text-gray-500 uppercase tracking-wide">
+						Recommended for you
+					</h2>
+
 					<div className="stack">
-						<div className="flex items-center justify-between px-1">
-							<h2 className="body-sm text-gray-500 uppercase tracking-wide">
-								Today's Tasks
-							</h2>
-							<span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
-								{tasks.filter((t) => t.status !== "completed").length} Pending
-							</span>
-						</div>
-
-						{tasks.length === 0 && (
-							<div className="caption p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
-								No tasks for today. Great job!
-							</div>
-						)}
-
-						<AnimatePresence mode="popLayout">
-							{tasks.map((task) => (
-								<TaskCard key={task.id} task={task} />
-							))}
-						</AnimatePresence>
-					</div>
-
-					{/* Feed - Job Recommendations */}
-					<div className="stack">
-						<h2 className="body-sm text-gray-500 uppercase tracking-wide px-1">
-							Recommended for you
-						</h2>
-
-						<div className="stack">
-							{jobs.map((job, idx) => (
-								<JobCard key={job.id} job={job} index={idx} />
-							))}
-						</div>
+						{jobs.map((job, idx) => (
+							<JobCard key={job.id} job={job} index={idx} />
+						))}
 					</div>
 				</div>
 			</div>
-		</Shell>
+		</div>
 	);
 }

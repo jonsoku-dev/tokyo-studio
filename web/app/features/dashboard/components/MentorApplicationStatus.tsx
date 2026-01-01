@@ -13,16 +13,16 @@ export function MentorApplicationStatus({
 		return (
 			<Link
 				to="/mentoring/apply"
-				className="block p-4 rounded-xl border border-dashed border-primary-200 bg-primary-50 hover:bg-primary-100 transition-colors"
+				className="block rounded-xl border border-primary-200 border-dashed bg-primary-50 p-4 transition-colors hover:bg-primary-100"
 			>
 				<div className="flex items-center justify-between">
 					<div>
 						<h3 className="font-semibold text-primary-900">Become a Mentor</h3>
-						<p className="text-sm text-primary-700 mt-1">
+						<p className="mt-1 text-primary-700 text-sm">
 							Share your expertise and earn by mentoring others
 						</p>
 					</div>
-					<ArrowRight className="h-5 w-5 text-primary-600 flex-shrink-0" />
+					<ArrowRight className="h-5 w-5 flex-shrink-0 text-primary-600" />
 				</div>
 			</Link>
 		);
@@ -77,11 +77,11 @@ export function MentorApplicationStatus({
 	const Icon = config.icon;
 
 	return (
-		<div className={`p-4 rounded-xl border ${config.color} stack-sm`}>
+		<div className={`rounded-xl border p-4 ${config.color} stack-sm`}>
 			<div className="flex items-start justify-between">
 				<div className="flex items-start gap-3">
 					<Icon
-						className={`h-5 w-5 mt-0.5 ${config.textColor} flex-shrink-0`}
+						className={`mt-0.5 h-5 w-5 ${config.textColor} flex-shrink-0`}
 					/>
 					<div>
 						<h3 className={`font-semibold ${config.textColor}`}>
@@ -93,7 +93,7 @@ export function MentorApplicationStatus({
 					</div>
 				</div>
 				<span
-					className={`px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${config.badge}`}
+					className={`whitespace-nowrap rounded-full px-2.5 py-0.5 font-medium text-xs ${config.badge}`}
 				>
 					{application.status.replace("_", " ")}
 				</span>
@@ -108,7 +108,7 @@ export function MentorApplicationStatus({
 				<div className="flex gap-2 pt-2">
 					<Link
 						to="/mentoring/settings"
-						className="text-sm font-medium px-3 py-1.5 rounded-lg bg-accent-100 text-accent-700 hover:bg-accent-200 transition-colors"
+						className="rounded-lg bg-accent-100 px-3 py-1.5 font-medium text-accent-700 text-sm transition-colors hover:bg-accent-200"
 					>
 						Complete Profile
 					</Link>
@@ -130,7 +130,7 @@ export function MentorApplicationStatus({
 							{canReapply && (
 								<Link
 									to="/mentoring/apply"
-									className="text-sm font-medium px-3 py-1.5 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 transition-colors inline-block"
+									className="inline-block rounded-lg bg-red-100 px-3 py-1.5 font-medium text-red-700 text-sm transition-colors hover:bg-red-200"
 								>
 									Reapply Now
 								</Link>

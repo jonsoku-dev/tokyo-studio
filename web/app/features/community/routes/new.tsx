@@ -1,7 +1,7 @@
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { useState } from "react";
 import { Form, Link, redirect, useNavigation } from "react-router";
-import { Shell } from "~/shared/components/layout/Shell";
+
 import { Button } from "~/shared/components/ui/Button";
 import { Input } from "~/shared/components/ui/Input";
 import { requireVerifiedEmail } from "../../auth/services/require-verified-email.server";
@@ -46,61 +46,59 @@ export default function NewPost({ actionData }: Route.ComponentProps) {
 	const isSubmitting = navigation.state === "submitting";
 
 	return (
-		<Shell>
-			<div className="max-w-2xl mx-auto">
-				<div className="mb-6">
-					<h1 className="heading-3">Create a Post</h1>
-					<p className="text-gray-500 text-sm">
-						Share your experience or ask a question.
-					</p>
-				</div>
-
-				<div className="card-sm border border-gray-200 p-6">
-					<TabGroup>
-						<TabList className="flex gap-4 border-b border-gray-200 mb-6">
-							<Tab
-								className={({ selected }) =>
-									`pb-2 text-sm font-medium border-b-2 focus:outline-none ${
-										selected
-											? "border-primary-500 text-primary-600"
-											: "border-transparent link-subtle"
-									}`
-								}
-							>
-								Ask Question (QnA)
-							</Tab>
-							<Tab
-								className={({ selected }) =>
-									`pb-2 text-sm font-medium border-b-2 focus:outline-none ${
-										selected
-											? "border-primary-500 text-primary-600"
-											: "border-transparent link-subtle"
-									}`
-								}
-							>
-								Write Review
-							</Tab>
-						</TabList>
-						<TabPanels>
-							<TabPanel>
-								<PostForm
-									category="qna"
-									error={actionData?.error}
-									isSubmitting={isSubmitting}
-								/>
-							</TabPanel>
-							<TabPanel>
-								<PostForm
-									category="review"
-									error={actionData?.error}
-									isSubmitting={isSubmitting}
-								/>
-							</TabPanel>
-						</TabPanels>
-					</TabGroup>
-				</div>
+		<div className="mx-auto max-w-2xl">
+			<div className="mb-6">
+				<h1 className="heading-3">Create a Post</h1>
+				<p className="text-gray-500 text-sm">
+					Share your experience or ask a question.
+				</p>
 			</div>
-		</Shell>
+
+			<div className="card-sm border border-gray-200 p-6">
+				<TabGroup>
+					<TabList className="mb-6 flex gap-4 border-gray-200 border-b">
+						<Tab
+							className={({ selected }) =>
+								`border-b-2 pb-2 font-medium text-sm focus:outline-none ${
+									selected
+										? "border-primary-500 text-primary-600"
+										: "link-subtle border-transparent"
+								}`
+							}
+						>
+							Ask Question (QnA)
+						</Tab>
+						<Tab
+							className={({ selected }) =>
+								`border-b-2 pb-2 font-medium text-sm focus:outline-none ${
+									selected
+										? "border-primary-500 text-primary-600"
+										: "link-subtle border-transparent"
+								}`
+							}
+						>
+							Write Review
+						</Tab>
+					</TabList>
+					<TabPanels>
+						<TabPanel>
+							<PostForm
+								category="qna"
+								error={actionData?.error}
+								isSubmitting={isSubmitting}
+							/>
+						</TabPanel>
+						<TabPanel>
+							<PostForm
+								category="review"
+								error={actionData?.error}
+								isSubmitting={isSubmitting}
+							/>
+						</TabPanel>
+					</TabPanels>
+				</TabGroup>
+			</div>
+		</div>
 	);
 }
 
@@ -120,7 +118,7 @@ function PostForm({
 			<input type="hidden" name="category" value={category} />
 
 			{error && (
-				<div className="bg-red-50 text-red-600 text-sm p-3 rounded-md">
+				<div className="rounded-md bg-red-50 p-3 text-red-600 text-sm">
 					{error}
 				</div>
 			)}
@@ -140,7 +138,7 @@ function PostForm({
 			<div>
 				<label
 					htmlFor="content"
-					className="block text-sm font-medium text-gray-700 mb-1"
+					className="mb-1 block font-medium text-gray-700 text-sm"
 				>
 					Content
 				</label>
@@ -161,7 +159,7 @@ function PostForm({
 			<div className="flex justify-end gap-3">
 				<Link
 					to="/community"
-					className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+					className="rounded-md border border-gray-300 px-4 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50"
 				>
 					Cancel
 				</Link>

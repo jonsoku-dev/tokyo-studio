@@ -1,7 +1,5 @@
-import { useCallback, useState } from "react";
-import { useUser } from "~/features/auth/hooks/useUser";
+import { useCallback } from "react";
 import type { MapLocationData } from "../store/map.store";
-import { useMapStore } from "../store/map.store";
 
 interface LocationPopupProps {
 	location: MapLocationData | null;
@@ -24,32 +22,35 @@ const CATEGORY_NAMES: Record<string, Record<string, string>> = {
  * - 주소 복사
  */
 export function LocationPopup({ location, onClose }: LocationPopupProps) {
-	if (!location) return null;
-
-	const categoryName =
-		CATEGORY_NAMES[location.category as keyof typeof CATEGORY_NAMES]?.en ||
-		location.category;
-
 	// 길안내 열기 (Google Maps)
 	const handleGetDirections = useCallback(() => {
+		if (!location) return;
 		const url = `https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}&travelmode=transit`;
 		window.open(url, "_blank");
-	}, [location.latitude, location.longitude]);
+	}, [location]);
 
 	// 주소 복사
 	const handleCopyAddress = useCallback(async () => {
+		if (!location) return;
 		try {
 			await navigator.clipboard.writeText(location.address);
 			alert("주소가 복사되었습니다");
 		} catch {
 			alert("복사 실패");
 		}
-	}, [location.address]);
+	}, [location]);
+
+	if (!location) return null;
+
+	const categoryName =
+		CATEGORY_NAMES[location.category as keyof typeof CATEGORY_NAMES]?.en ||
+		location.category;
 
 	return (
-		<div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white rounded-t-lg shadow-lg p-4 sm:bottom-4 sm:left-1/2 sm:transform sm:-translate-x-1/2 sm:rounded-lg">
+		<div className="fixed right-0 bottom-0 left-0 mx-auto max-w-md rounded-t-lg bg-white p-4 shadow-lg sm:bottom-4 sm:left-1/2 sm:-translate-x-1/2 sm:transform sm:rounded-lg">
 			{/* 닫기 버튼 */}
 			<button
+				type="button"
 				onClick={onClose}
 				className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
 			>
@@ -57,7 +58,7 @@ export function LocationPopup({ location, onClose }: LocationPopupProps) {
 			</button>
 
 			{/* 카테고리 배지 */}
-			<div className="mb-2 inline-block bg-primary-100 text-primary-800 px-2 py-1 rounded text-xs font-semibold">
+			<div className="mb-2 inline-block rounded bg-primary-100 px-2 py-1 font-semibold text-primary-800 text-xs">
 				{categoryName}
 			</div>
 
@@ -69,15 +70,16 @@ export function LocationPopup({ location, onClose }: LocationPopupProps) {
 			</div>
 
 			{/* 상세 정보 */}
-			<div className="stack-sm text-sm mb-4">
+			<div className="stack-sm mb-4 text-sm">
 				{/* 주소 */}
 				<div className="flex items-start gap-2">
-					<span className="text-gray-500 w-12">📍</span>
+					<span className="w-12 text-gray-500">📍</span>
 					<div className="flex-1">
-						<p className="text-gray-900 break-words">{location.address}</p>
+						<p className="break-words text-gray-900">{location.address}</p>
 						<button
+							type="button"
 							onClick={handleCopyAddress}
-							className="text-primary-600 hover:text-primary-800 text-xs mt-1"
+							className="mt-1 text-primary-600 text-xs hover:text-primary-800"
 						>
 							복사
 						</button>
@@ -87,7 +89,7 @@ export function LocationPopup({ location, onClose }: LocationPopupProps) {
 				{/* 전화 */}
 				{location.phone && (
 					<div className="flex items-center gap-2">
-						<span className="text-gray-500 w-12">📞</span>
+						<span className="w-12 text-gray-500">📞</span>
 						<a
 							href={`tel:${location.phone}`}
 							className="text-primary-600 hover:text-primary-800"
@@ -100,7 +102,7 @@ export function LocationPopup({ location, onClose }: LocationPopupProps) {
 				{/* 시간 */}
 				{location.hours && (
 					<div className="flex items-center gap-2">
-						<span className="text-gray-500 w-12">🕐</span>
+						<span className="w-12 text-gray-500">🕐</span>
 						<p className="text-gray-900">{location.hours}</p>
 					</div>
 				)}
@@ -108,7 +110,7 @@ export function LocationPopup({ location, onClose }: LocationPopupProps) {
 				{/* 최근역 */}
 				{location.station && (
 					<div className="flex items-center gap-2">
-						<span className="text-gray-500 w-12">🚇</span>
+						<span className="w-12 text-gray-500">🚇</span>
 						<p className="text-gray-900">{location.station}</p>
 					</div>
 				)}
@@ -117,14 +119,16 @@ export function LocationPopup({ location, onClose }: LocationPopupProps) {
 			{/* 액션 버튼 */}
 			<div className="flex gap-2">
 				<button
+					type="button"
 					onClick={handleGetDirections}
-					className="flex-1 bg-primary-600 text-white py-2 px-3 rounded hover:bg-primary-700 text-sm font-medium transition"
+					className="flex-1 rounded bg-primary-600 px-3 py-2 font-medium text-sm text-white transition hover:bg-primary-700"
 				>
 					길안내
 				</button>
 				<button
+					type="button"
 					onClick={onClose}
-					className="flex-1 bg-gray-200 text-gray-900 py-2 px-3 rounded hover:bg-gray-300 text-sm font-medium transition"
+					className="flex-1 rounded bg-gray-200 px-3 py-2 font-medium text-gray-900 text-sm transition hover:bg-gray-300"
 				>
 					닫기
 				</button>

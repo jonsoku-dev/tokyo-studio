@@ -1,6 +1,6 @@
 import { db } from "@itcom/db/client";
-import { communityPosts, searchAnalytics } from "@itcom/db/schema";
-import { desc, eq, gte, sql } from "drizzle-orm";
+import { searchAnalytics } from "@itcom/db/schema";
+import { desc, gte, sql } from "drizzle-orm";
 
 export interface SearchAnalyticsStats {
 	query: string;

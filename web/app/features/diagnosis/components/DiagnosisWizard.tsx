@@ -41,10 +41,10 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 	};
 
 	return (
-		<div className="w-full max-w-2xl mx-auto">
+		<div className="mx-auto w-full max-w-2xl">
 			{/* Progress Bar */}
 			<div className="mb-8">
-				<div className="flex justify-between text-sm font-medium text-gray-500 mb-2">
+				<div className="mb-2 flex justify-between font-medium text-gray-500 text-sm">
 					<span className={clsx(step >= 1 && "text-primary-600")}>Career</span>
 					<span className={clsx(step >= 2 && "text-primary-600")}>
 						Language
@@ -53,7 +53,7 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 						Preferences
 					</span>
 				</div>
-				<div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+				<div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
 					<div
 						className="h-full bg-primary-600 transition-all duration-300 ease-in-out"
 						style={{ width: `${(step / 3) * 100}%` }}
@@ -61,7 +61,7 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 				</div>
 			</div>
 
-			<div className="card-sm border border-gray-200 p-8 min-h-[400px] relative overflow-hidden">
+			<div className="card-sm relative min-h-[400px] overflow-hidden border border-gray-200 p-8">
 				<AnimatePresence mode="wait">
 					{step === 1 && (
 						<motion.div
@@ -71,14 +71,12 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 							exit={{ x: -50, opacity: 0 }}
 							className="stack-md"
 						>
-							<h2 className="heading-4">
-								Tell us about your career
-							</h2>
+							<h2 className="heading-4">Tell us about your career</h2>
 
 							<div>
 								<label
 									htmlFor="jobFamily"
-									className="block text-sm font-medium text-gray-700 mb-1"
+									className="mb-1 block font-medium text-gray-700 text-sm"
 								>
 									Job Family
 								</label>
@@ -86,7 +84,7 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 									id="jobFamily"
 									value={formData.jobFamily}
 									onChange={(e) => updateField("jobFamily", e.target.value)}
-									className="w-full p-2 border border-gray-300 rounded-md bg-white"
+									className="w-full rounded-md border border-gray-300 bg-white p-2"
 								>
 									<option value="frontend">Frontend Developer</option>
 									<option value="backend">Backend Developer</option>
@@ -97,7 +95,7 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 							</div>
 
 							<div>
-								<span className="block text-sm font-medium text-gray-700 mb-1">
+								<span className="mb-1 block font-medium text-gray-700 text-sm">
 									Current Level
 								</span>
 								<div className="grid grid-cols-2 gap-3">
@@ -107,10 +105,10 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 											type="button"
 											onClick={() => updateField("level", lvl)}
 											className={clsx(
-												"p-3 rounded-lg border text-sm font-medium capitalize transition-colors",
+												"rounded-lg border p-3 font-medium text-sm capitalize transition-colors",
 												formData.level === lvl
 													? "border-primary-500 bg-primary-50 text-primary-700"
-													: "border-gray-200 hover:border-gray-300 text-gray-700",
+													: "border-gray-200 text-gray-700 hover:border-gray-300",
 											)}
 										>
 											{lvl}
@@ -129,12 +127,10 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 							exit={{ x: -50, opacity: 0 }}
 							className="stack-md"
 						>
-							<h2 className="heading-4">
-								Language Skills
-							</h2>
+							<h2 className="heading-4">Language Skills</h2>
 
 							<div>
-								<span className="block text-sm font-medium text-gray-700 mb-1">
+								<span className="mb-1 block font-medium text-gray-700 text-sm">
 									Japanese Level (JLPT Equivalent)
 								</span>
 								<div className="grid grid-cols-3 gap-3">
@@ -145,10 +141,10 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 												type="button"
 												onClick={() => updateField("jpLevel", lvl)}
 												className={clsx(
-													"p-3 rounded-lg border text-sm font-medium transition-colors",
+													"rounded-lg border p-3 font-medium text-sm transition-colors",
 													formData.jpLevel === lvl
 														? "border-primary-500 bg-primary-50 text-primary-700"
-														: "border-gray-200 hover:border-gray-300 text-gray-700",
+														: "border-gray-200 text-gray-700 hover:border-gray-300",
 												)}
 											>
 												{lvl}
@@ -161,7 +157,7 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 							<div>
 								<label
 									htmlFor="enLevel"
-									className="block text-sm font-medium text-gray-700 mb-1"
+									className="mb-1 block font-medium text-gray-700 text-sm"
 								>
 									English Level
 								</label>
@@ -169,7 +165,7 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 									id="enLevel"
 									value={formData.enLevel}
 									onChange={(e) => updateField("enLevel", e.target.value)}
-									className="w-full p-2 border border-gray-300 rounded-md bg-white"
+									className="w-full rounded-md border border-gray-300 bg-white p-2"
 								>
 									<option value="Basic">Basic</option>
 									<option value="Conversational">Conversational</option>
@@ -193,7 +189,7 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 							<div>
 								<label
 									htmlFor="targetCity"
-									className="block text-sm font-medium text-gray-700 mb-1"
+									className="mb-1 block font-medium text-gray-700 text-sm"
 								>
 									Target City
 								</label>
@@ -201,7 +197,7 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 									id="targetCity"
 									value={formData.targetCity}
 									onChange={(e) => updateField("targetCity", e.target.value)}
-									className="w-full p-2 border border-gray-300 rounded-md bg-white"
+									className="w-full rounded-md border border-gray-300 bg-white p-2"
 								>
 									<option value="Tokyo">Tokyo</option>
 									<option value="Osaka">Osaka</option>
@@ -211,10 +207,8 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 								</select>
 							</div>
 
-							<div className="bg-gray-50 p-4 rounded-lg">
-								<h3 className="text-sm heading-5 mb-2">
-									Summary
-								</h3>
+							<div className="rounded-lg bg-gray-50 p-4">
+								<h3 className="heading-5 mb-2 text-sm">Summary</h3>
 								<ul className="body-sm stack-xs">
 									<li>
 										Role:{" "}
@@ -240,7 +234,7 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 					)}
 				</AnimatePresence>
 
-				<div className="absolute bottom-8 right-8 left-8 flex justify-between pt-4 border-t border-gray-100">
+				<div className="absolute right-8 bottom-8 left-8 flex justify-between border-gray-100 border-t pt-4">
 					<Button
 						variant="ghost"
 						onClick={handleBack}

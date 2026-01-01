@@ -45,12 +45,12 @@ export function TaskSection({
 		phaseProgress.completed === phaseProgress.total && phaseProgress.total > 0;
 
 	return (
-		<div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+		<div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
 			{/* Section Header */}
 			<button
 				type="button"
 				onClick={() => setIsExpanded(!isExpanded)}
-				className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors"
+				className="flex w-full items-center justify-between p-5 transition-colors hover:bg-gray-50"
 			>
 				<div className="flex items-center gap-3">
 					<span className="text-2xl">{phaseIcons[phase]}</span>
@@ -61,7 +61,7 @@ export function TaskSection({
 				</div>
 				<div className="flex items-center gap-4">
 					<span
-						className={`px-3 py-1 rounded-full text-sm font-medium ${
+						className={`rounded-full px-3 py-1 font-medium text-sm ${
 							isPhaseComplete
 								? "bg-accent-100 text-accent-700"
 								: "bg-gray-100 text-gray-600"
@@ -70,16 +70,16 @@ export function TaskSection({
 						{phaseProgress.completed}/{phaseProgress.total}
 					</span>
 					{isExpanded ? (
-						<ChevronDown className="w-5 h-5 text-gray-400" />
+						<ChevronDown className="h-5 w-5 text-gray-400" />
 					) : (
-						<ChevronRight className="w-5 h-5 text-gray-400" />
+						<ChevronRight className="h-5 w-5 text-gray-400" />
 					)}
 				</div>
 			</button>
 
 			{/* Tasks List */}
 			{isExpanded && (
-				<div className="border-t border-gray-100">
+				<div className="border-gray-100 border-t">
 					{tasks.map((task) => (
 						<TaskCard
 							key={task.id}
@@ -126,7 +126,7 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 
 	return (
 		<div
-			className={`border-b border-gray-50 last:border-0 ${
+			className={`border-gray-50 border-b last:border-0 ${
 				task.isCompleted ? "bg-gray-50" : isUrgent ? "bg-red-50" : ""
 			}`}
 		>
@@ -135,17 +135,17 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 				<button
 					type="button"
 					onClick={onToggle}
-					className={`mt-1 w-6 h-6 rounded-full border-2 center flex-shrink-0 transition-all ${
+					className={`center mt-1 h-6 w-6 flex-shrink-0 rounded-full border-2 transition-all ${
 						task.isCompleted
-							? "bg-accent-500 border-accent-500 text-white"
+							? "border-accent-500 bg-accent-500 text-white"
 							: "border-gray-300 hover:border-primary-500"
 					}`}
 				>
-					{task.isCompleted && <Check className="w-4 h-4" />}
+					{task.isCompleted && <Check className="h-4 w-4" />}
 				</button>
 
 				{/* Content */}
-				<div className="flex-1 min-w-0">
+				<div className="min-w-0 flex-1">
 					<div className="flex items-start justify-between gap-2">
 						<div>
 							<h3
@@ -160,23 +160,23 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 							<p className="caption">{task.titleJa}</p>
 						</div>
 						<span
-							className={`px-2 py-0.5 rounded text-xs font-medium ${categoryColors[task.category]}`}
+							className={`rounded px-2 py-0.5 font-medium text-xs ${categoryColors[task.category]}`}
 						>
 							{task.category}
 						</span>
 					</div>
 
 					{/* Meta Info */}
-					<div className="flex flex-wrap items-center gap-3 mt-2 caption">
+					<div className="caption mt-2 flex flex-wrap items-center gap-3">
 						<span className="flex items-center gap-1">
-							<Clock className="w-3 h-3" />
+							<Clock className="h-3 w-3" />
 							{task.estimatedMinutes >= 60
 								? `${Math.floor(task.estimatedMinutes / 60)}시간`
 								: `${task.estimatedMinutes}분`}
 						</span>
 						{deadlineDate && (
 							<span
-								className={`flex items-center gap-1 ${isUrgent ? "text-red-600 font-medium" : ""}`}
+								className={`flex items-center gap-1 ${isUrgent ? "font-medium text-red-600" : ""}`}
 							>
 								📅{" "}
 								{deadlineDate.toLocaleDateString("ko-KR", {
@@ -192,30 +192,30 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 					<button
 						type="button"
 						onClick={() => setIsDetailOpen(!isDetailOpen)}
-						className="mt-2 text-xs text-primary-600 hover:text-primary-700 font-medium"
+						className="mt-2 font-medium text-primary-600 text-xs hover:text-primary-700"
 					>
 						{isDetailOpen ? "접기 ▲" : "상세보기 ▼"}
 					</button>
 
 					{/* Details Panel */}
 					{isDetailOpen && (
-						<div className="mt-3 p-4 bg-gray-50 rounded-lg stack text-sm">
+						<div className="stack mt-3 rounded-lg bg-gray-50 p-4 text-sm">
 							{/* Instructions */}
 							<div>
-								<h4 className="font-semibold text-gray-700 mb-1">
+								<h4 className="mb-1 font-semibold text-gray-700">
 									📝 안내 / ガイド
 								</h4>
 								<p className="text-gray-600">{task.instructionsKo}</p>
-								<p className="text-gray-500 mt-1">{task.instructionsJa}</p>
+								<p className="mt-1 text-gray-500">{task.instructionsJa}</p>
 							</div>
 
 							{/* Required Documents */}
 							{task.requiredDocuments.length > 0 && (
 								<div>
-									<h4 className="font-semibold text-gray-700 mb-1 flex items-center gap-1">
-										<FileText className="w-4 h-4" /> 필요 서류
+									<h4 className="mb-1 flex items-center gap-1 font-semibold text-gray-700">
+										<FileText className="h-4 w-4" /> 필요 서류
 									</h4>
-									<ul className="list-disc list-inside text-gray-600">
+									<ul className="list-inside list-disc text-gray-600">
 										{task.requiredDocuments.map((doc) => (
 											<li key={doc}>{doc}</li>
 										))}
@@ -225,7 +225,7 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 
 							{/* Tips */}
 							{task.tips && (
-								<div className="bg-yellow-50 p-3 rounded-lg">
+								<div className="rounded-lg bg-yellow-50 p-3">
 									<p className="text-yellow-800">💡 {task.tips}</p>
 								</div>
 							)}
@@ -239,9 +239,9 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 										target="_blank"
 										rel="noopener noreferrer"
 										download
-										className="inline-flex items-center gap-2 px-4 py-2 bg-accent-600 text-white rounded-lg text-sm font-medium hover:bg-accent-700 transition-colors"
+										className="inline-flex items-center gap-2 rounded-lg bg-accent-600 px-4 py-2 font-medium text-sm text-white transition-colors hover:bg-accent-700"
 									>
-										<Download className="w-4 h-4" />
+										<Download className="h-4 w-4" />
 										양식 다운로드
 									</a>
 								)}
@@ -252,9 +252,9 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 										href={task.officialUrl}
 										target="_blank"
 										rel="noopener noreferrer"
-										className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+										className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 font-medium text-gray-700 text-sm transition-colors hover:bg-gray-50"
 									>
-										<ExternalLink className="w-4 h-4" />
+										<ExternalLink className="h-4 w-4" />
 										공식 사이트
 									</a>
 								)}

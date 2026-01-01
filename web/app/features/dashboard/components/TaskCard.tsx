@@ -24,7 +24,7 @@ export function TaskCard({ task }: TaskCardProps) {
 			whileHover={{ scale: 1.01, boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
 			transition={{ duration: 0.2 }}
 			className={clsx(
-				"bg-white p-4 rounded-xl shadow-sm border transition-colors flex gap-4",
+				"flex gap-4 rounded-xl border bg-white p-4 shadow-sm transition-colors",
 				isCompleted
 					? "border-gray-100 bg-gray-50/50"
 					: "border-gray-200 hover:border-primary-200",
@@ -42,12 +42,12 @@ export function TaskCard({ task }: TaskCardProps) {
 						type="checkbox"
 						checked={isCompleted}
 						onChange={(e) => fetcher.submit(e.target.form)}
-						className="w-5 h-5 text-primary-500 rounded-md focus:ring-primary-500 border-gray-300 cursor-pointer transition-all hover:scale-110"
+						className="h-5 w-5 cursor-pointer rounded-md border-gray-300 text-primary-500 transition-all hover:scale-110 focus:ring-primary-500"
 					/>
 				</fetcher.Form>
 			</div>
 			<div className="flex-1">
-				<div className="flex items-center gap-2 caption mb-1">
+				<div className="caption mb-1 flex items-center gap-2">
 					<span className="font-bold text-gray-700">{task.category}</span>
 					{task.dueDate && (
 						<>
@@ -60,7 +60,7 @@ export function TaskCard({ task }: TaskCardProps) {
 				</div>
 				<h3
 					className={clsx(
-						"text-lg font-medium transition-colors",
+						"font-medium text-lg transition-colors",
 						isCompleted
 							? "text-gray-400 line-through decoration-gray-300"
 							: "text-gray-900",
@@ -70,7 +70,7 @@ export function TaskCard({ task }: TaskCardProps) {
 				</h3>
 				<p
 					className={clsx(
-						"text-sm mt-1 line-clamp-2",
+						"mt-1 line-clamp-2 text-sm",
 						isCompleted ? "text-gray-300" : "text-gray-500",
 					)}
 				>
@@ -79,10 +79,10 @@ export function TaskCard({ task }: TaskCardProps) {
 				<div className="mt-3 flex items-center gap-2">
 					<span
 						className={clsx(
-							"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border",
+							"inline-flex items-center rounded-full border px-2.5 py-0.5 font-medium text-xs",
 							task.priority === "urgent" && !isCompleted
-								? "bg-red-50 text-red-700 border-red-100"
-								: "bg-gray-50 text-gray-600 border-gray-100",
+								? "border-red-100 bg-red-50 text-red-700"
+								: "border-gray-100 bg-gray-50 text-gray-600",
 						)}
 					>
 						{task.priority}

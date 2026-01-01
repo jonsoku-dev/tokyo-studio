@@ -133,11 +133,8 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 
 	return (
 		<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-			<div className="flex items-center justify-between mb-4">
-				<Dialog.Title
-					as="h3"
-					className="heading-5 leading-6"
-				>
+			<div className="mb-4 flex items-center justify-between">
+				<Dialog.Title as="h3" className="heading-5 leading-6">
 					New Application
 				</Dialog.Title>
 				<button
@@ -145,7 +142,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 					onClick={onClose}
 					className="text-gray-400 hover:text-gray-500"
 				>
-					<X className="w-5 h-5" />
+					<X className="h-5 w-5" />
 				</button>
 			</div>
 
@@ -153,7 +150,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 			<div className="mb-6">
 				<label
 					htmlFor="magicUrl"
-					className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2"
+					className="mb-2 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
 				>
 					Magic Paste (URL)
 				</label>
@@ -164,18 +161,18 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 						placeholder="https://linkedin.com/jobs/..."
 						value={url}
 						onChange={(e) => setUrl(e.target.value)}
-						className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none transition-all"
+						className="flex-1 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm outline-none transition-all focus:ring-2 focus:ring-primary-500"
 					/>
 					<button
 						type="button"
 						onClick={() => handleParse(false)}
 						disabled={parserFetcher.state !== "idle" || !url}
-						className="flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded-lg body-sm hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-sm"
+						className="body-sm flex items-center gap-2 rounded-lg bg-indigo-600 px-3 py-2 text-white shadow-sm transition-all hover:bg-indigo-700 disabled:opacity-50"
 					>
 						{parserFetcher.state !== "idle" ? (
-							<Loader2 className="w-4 h-4 animate-spin" />
+							<Loader2 className="h-4 w-4 animate-spin" />
 						) : (
-							<Sparkles className="w-4 h-4" />
+							<Sparkles className="h-4 w-4" />
 						)}
 						Magic
 					</button>
@@ -185,16 +182,16 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 							type="button"
 							onClick={() => handleParse(true)}
 							disabled={parserFetcher.state !== "idle"}
-							className="px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 disabled:opacity-50 transition-all"
+							className="rounded-lg border border-gray-200 px-3 py-2 font-medium text-gray-600 text-sm transition-all hover:bg-gray-50 disabled:opacity-50"
 							title="Refresh data from source"
 						>
-							<RefreshCw className="w-4 h-4" />
+							<RefreshCw className="h-4 w-4" />
 						</button>
 					)}
 				</div>
 				{/* Error display */}
 				{parseError && (
-					<p className="mt-2 text-xs text-red-500 bg-red-50 px-3 py-2 rounded-lg">
+					<p className="mt-2 rounded-lg bg-red-50 px-3 py-2 text-red-500 text-xs">
 						{parseError}
 					</p>
 				)}
@@ -203,14 +200,14 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 				</p>
 			</div>
 
-			<div className="w-full border-t border-gray-100 mb-6" />
+			<div className="mb-6 w-full border-gray-100 border-t" />
 
 			{/* Manual Form */}
 			<form onSubmit={handleSubmit} className="stack">
 				<div>
 					<label
 						htmlFor="company"
-						className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5"
+						className="mb-1.5 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
 					>
 						Company
 					</label>
@@ -220,14 +217,14 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 						type="text"
 						value={displayCompany}
 						onChange={(e) => setCompany(e.target.value)}
-						className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+						className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
 					/>
 				</div>
 
 				<div>
 					<label
 						htmlFor="position"
-						className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5"
+						className="mb-1.5 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
 					>
 						Position
 					</label>
@@ -237,7 +234,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 						type="text"
 						value={displayPosition}
 						onChange={(e) => setPosition(e.target.value)}
-						className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+						className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
 					/>
 				</div>
 
@@ -245,7 +242,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 					<div>
 						<label
 							htmlFor="stage"
-							className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5"
+							className="mb-1.5 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
 						>
 							Stage
 						</label>
@@ -253,7 +250,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 							id="stage"
 							value={stage}
 							onChange={(e) => setStage(e.target.value)}
-							className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none bg-white"
+							className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
 						>
 							<option value="applied">Applied</option>
 							<option value="interview">Interview</option>
@@ -264,7 +261,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 					<div>
 						<label
 							htmlFor="date"
-							className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5"
+							className="mb-1.5 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
 						>
 							Date
 						</label>
@@ -274,7 +271,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 							type="date"
 							value={date}
 							onChange={(e) => setDate(e.target.value)}
-							className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+							className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
 						/>
 					</div>
 				</div>
@@ -282,7 +279,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 				<div>
 					<label
 						htmlFor="nextAction"
-						className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5"
+						className="mb-1.5 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
 					>
 						Next Action
 					</label>
@@ -292,7 +289,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 						value={nextAction}
 						onChange={(e) => setNextAction(e.target.value)}
 						placeholder="e.g. Follow up in 3 days"
-						className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+						className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
 					/>
 				</div>
 
@@ -302,7 +299,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 						disabled={
 							addFetcher.state !== "idle" || !displayCompany || !displayPosition
 						}
-						className="w-full py-3 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 disabled:opacity-50 transition-all shadow-md active:scale-95"
+						className="w-full rounded-xl bg-primary-600 py-3 font-bold text-white shadow-md transition-all hover:bg-primary-700 active:scale-95 disabled:opacity-50"
 					>
 						{addFetcher.state !== "idle" ? "Submitting..." : "Add Application"}
 					</button>

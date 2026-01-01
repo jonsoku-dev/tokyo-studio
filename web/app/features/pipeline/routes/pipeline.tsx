@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLoaderData } from "react-router";
-import { Shell } from "~/shared/components/layout/Shell";
+
 import { requireUserId } from "../../auth/utils/session.server";
 import { AddApplicationModal } from "../components/AddApplicationModal";
 import { KanbanBoard } from "../components/KanbanBoard";
@@ -54,26 +54,24 @@ export default function Pipeline() {
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
 	return (
-		<Shell>
-			<div className="stack">
-				<div className="flex items-center justify-between">
-					<h1 className="heading-3">Pipeline</h1>
-					<button
-						type="button"
-						onClick={() => setIsAddModalOpen(true)}
-						className="px-4 py-2 bg-primary-600 text-white rounded-md text-sm font-medium hover:bg-primary-700 transition-colors shadow-sm"
-					>
-						Add Application
-					</button>
-				</div>
-
-				<KanbanBoard items={items} />
-
-				<AddApplicationModal
-					isOpen={isAddModalOpen}
-					onClose={() => setIsAddModalOpen(false)}
-				/>
+		<div className="stack">
+			<div className="flex items-center justify-between">
+				<h1 className="heading-3">Pipeline</h1>
+				<button
+					type="button"
+					onClick={() => setIsAddModalOpen(true)}
+					className="rounded-md bg-primary-600 px-4 py-2 font-medium text-sm text-white shadow-sm transition-colors hover:bg-primary-700"
+				>
+					Add Application
+				</button>
 			</div>
-		</Shell>
+
+			<KanbanBoard items={items} />
+
+			<AddApplicationModal
+				isOpen={isAddModalOpen}
+				onClose={() => setIsAddModalOpen(false)}
+			/>
+		</div>
 	);
 }

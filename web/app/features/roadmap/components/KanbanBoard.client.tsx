@@ -59,7 +59,7 @@ function DroppableColumn({
 	return (
 		<div
 			ref={setNodeRef}
-			className={`bg-gray-50/50 rounded-2xl p-4 flex flex-col min-h-[500px] transition-colors ${
+			className={`flex min-h-[500px] flex-col rounded-2xl bg-gray-50/50 p-4 transition-colors ${
 				isOver ? "bg-indigo-50/50 ring-2 ring-indigo-200" : ""
 			}`}
 		>
@@ -371,9 +371,9 @@ export function KanbanBoard({
 		<div className="relative">
 			{/* Pending Changes Banner */}
 			{hasChanges && (
-				<div className="sticky top-0 z-20 mb-4 bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-center justify-between">
+				<div className="sticky top-0 z-20 mb-4 flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 p-3">
 					<div className="flex items-center gap-2">
-						<span className="text-amber-600 font-medium">
+						<span className="font-medium text-amber-600">
 							{pendingChanges.size}개의 변경사항
 						</span>
 						<span className="text-amber-500 text-sm">
@@ -385,7 +385,7 @@ export function KanbanBoard({
 							type="button"
 							onClick={handleDiscardChanges}
 							disabled={isSaving}
-							className="px-3 py-1.5 body-sm hover:text-gray-800 disabled:opacity-50"
+							className="body-sm px-3 py-1.5 hover:text-gray-800 disabled:opacity-50"
 						>
 							취소
 						</button>
@@ -393,7 +393,7 @@ export function KanbanBoard({
 							type="button"
 							onClick={handleSaveChanges}
 							disabled={isSaving}
-							className="px-4 py-1.5 text-sm bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2"
+							className="flex items-center gap-2 rounded-md bg-indigo-600 px-4 py-1.5 text-sm text-white hover:bg-indigo-700 disabled:opacity-50"
 						>
 							{isSaving ? (
 								<>
@@ -420,7 +420,7 @@ export function KanbanBoard({
 				onDragOver={handleDragOver}
 				onDragEnd={handleDragEnd}
 			>
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+				<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
 					{columns.map((column) => {
 						const columnTaskIds = items[column.id] || [];
 
@@ -432,19 +432,17 @@ export function KanbanBoard({
 							>
 								<DroppableColumn id={column.id}>
 									{/* Column Header */}
-									<div className="flex items-center justify-between mb-4">
-										<h3 className="heading-5">
-											{column.title}
-										</h3>
-										<span className="caption bg-white px-2 py-1 rounded">
+									<div className="mb-4 flex items-center justify-between">
+										<h3 className="heading-5">{column.title}</h3>
+										<span className="caption rounded bg-white px-2 py-1">
 											{columnTaskIds.length}
 										</span>
 									</div>
 
 									{/* Tasks Container */}
-									<div className="flex-1 overflow-y-auto stack-sm">
+									<div className="flex-1 space-y-3 overflow-y-auto">
 										{columnTaskIds.length === 0 ? (
-											<div className="center h-32 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">
+											<div className="flex h-32 items-center justify-center rounded-lg border-2 border-gray-200 border-dashed text-gray-400">
 												태스크를 여기에 드롭하세요
 											</div>
 										) : (

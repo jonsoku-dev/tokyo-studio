@@ -20,17 +20,17 @@ export function VerificationBanner({ user }: VerificationBannerProps) {
 	}
 
 	return (
-		<div className="bg-yellow-50 border-b border-yellow-200">
-			<div className="container-wide py-3 px-4 sm:px-6 lg:px-8">
-				<div className="flex items-center justify-between flex-wrap">
-					<div className="flex-1 flex items-center gap-3">
-						<AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0" />
-						<p className="text-sm font-medium text-yellow-800">
+		<div className="border-yellow-200 border-b bg-yellow-50">
+			<div className="container-wide px-4 py-3 sm:px-6 lg:px-8">
+				<div className="flex flex-wrap items-center justify-between">
+					<div className="flex flex-1 items-center gap-3">
+						<AlertCircle className="h-5 w-5 flex-shrink-0 text-yellow-600" />
+						<p className="font-medium text-sm text-yellow-800">
 							Please verify your email address ({user.email}) to unlock all
 							features. Check your inbox for the verification link.
 						</p>
 					</div>
-					<div className="flex-shrink-0 mt-2 sm:mt-0">
+					<div className="mt-2 flex-shrink-0 sm:mt-0">
 						<Form
 							method="post"
 							action="/auth/resend-verification"
@@ -38,7 +38,7 @@ export function VerificationBanner({ user }: VerificationBannerProps) {
 						>
 							<button
 								type="submit"
-								className="px-4 py-1.5 text-sm font-medium text-yellow-800 bg-yellow-100 hover:bg-yellow-200 rounded-md border border-yellow-300 transition-colors"
+								className="rounded-md border border-yellow-300 bg-yellow-100 px-4 py-1.5 font-medium text-sm text-yellow-800 transition-colors hover:bg-yellow-200"
 							>
 								Resend Email
 							</button>

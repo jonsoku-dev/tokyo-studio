@@ -15,8 +15,8 @@ export function NotificationList({ notifications }: NotificationListProps) {
 
 	if (notifications.length === 0) {
 		return (
-			<div className="text-center py-8 text-gray-500">
-				<Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
+			<div className="py-8 text-center text-gray-500">
+				<Bell className="mx-auto mb-2 h-8 w-8 opacity-50" />
 				No notifications
 			</div>
 		);
@@ -24,7 +24,7 @@ export function NotificationList({ notifications }: NotificationListProps) {
 
 	return (
 		<div className="stack">
-			<div className="flex justify-between items-center mb-2 px-2">
+			<div className="mb-2 flex items-center justify-between px-2">
 				<h3 className="heading-5">Notifications</h3>
 				<fetcher.Form method="POST" action="/api/notifications">
 					<input type="hidden" name="intent" value="markAllRead" />
@@ -32,7 +32,7 @@ export function NotificationList({ notifications }: NotificationListProps) {
 						variant="ghost"
 						size="sm"
 						type="submit"
-						className="text-xs h-7"
+						className="h-7 text-xs"
 					>
 						Mark all read
 					</Button>
@@ -80,7 +80,7 @@ function NotificationItem({
 	return (
 		<div
 			className={cn(
-				"p-3 rounded-lg flex gap-3 text-sm transition-colors",
+				"flex gap-3 rounded-lg p-3 text-sm transition-colors",
 				isRead ? "bg-white" : "bg-primary-50",
 			)}
 		>
@@ -93,12 +93,12 @@ function NotificationItem({
 				alt={notification.actor.name}
 				className="h-8 w-8 flex-shrink-0"
 			/>
-			<div className="flex-1 min-w-0">
+			<div className="min-w-0 flex-1">
 				<p className="text-gray-900">
 					<span className="font-semibold">{notification.actor.name}</span>{" "}
 					{text}
 				</p>
-				<div className="flex justify-between items-center mt-1">
+				<div className="mt-1 flex items-center justify-between">
 					<span className="caption">
 						{notification.createdAt
 							? formatDistanceToNow(new Date(notification.createdAt), {
@@ -109,7 +109,7 @@ function NotificationItem({
 					<Link
 						to={href}
 						onClick={handleRead}
-						className="text-xs link hover:text-primary-700"
+						className="link text-xs hover:text-primary-700"
 					>
 						View
 					</Link>

@@ -32,18 +32,13 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function Signup({ actionData }: Route.ComponentProps) {
 	return (
-		<div className="flex min-h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-			<div className="w-full max-w-md stack-lg bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-				<div className="text-center mb-6">
-					<h1 className="heading-3">
-						Create an account
-					</h1>
-					<p className="mt-2 body-sm">
+		<div className="flex min-h-screen items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+			<div className="stack-lg w-full max-w-md rounded-xl border border-gray-100 bg-white p-8 shadow-lg">
+				<div className="mb-6 text-center">
+					<h1 className="heading-3">Create an account</h1>
+					<p className="body-sm mt-2">
 						Already have an account?{" "}
-						<Link
-							to="/login"
-							className="link"
-						>
+						<Link to="/login" className="link">
 							Sign in
 						</Link>
 					</p>
@@ -51,7 +46,7 @@ export default function Signup({ actionData }: Route.ComponentProps) {
 
 				<Form method="post" className="stack-md">
 					{actionData?.error && (
-						<div className="bg-red-50 text-red-600 text-sm p-3 rounded-md">
+						<div className="rounded-md bg-red-50 p-3 text-red-600 text-sm">
 							{actionData.error}
 						</div>
 					)}

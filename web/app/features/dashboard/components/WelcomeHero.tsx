@@ -31,9 +31,9 @@ function FloatingLogo() {
 
 export function WelcomeHero() {
 	return (
-		<div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-xl mb-8 relative h-[240px] flex items-center">
+		<div className="relative mb-8 flex h-[240px] items-center overflow-hidden rounded-2xl bg-gradient-to-r from-gray-900 to-gray-800 shadow-xl">
 			{/* 3D Scene */}
-			<div className="absolute inset-0 w-full h-full">
+			<div className="absolute inset-0 h-full w-full">
 				<Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
 					<ambientLight intensity={0.5} />
 					<pointLight position={[10, 10, 10]} intensity={1} />
@@ -47,17 +47,15 @@ export function WelcomeHero() {
 			</div>
 
 			{/* Content overlay */}
-			<div className="relative z-10 px-8 max-w-lg pointer-events-none">
-				<h1 className="heading-2 text-white mb-2">
-					Welcome back, Jongseok!
-				</h1>
+			<div className="pointer-events-none relative z-10 max-w-lg px-8">
+				<h1 className="heading-2 mb-2 text-white">Welcome back, Jongseok!</h1>
 				<p className="text-gray-300 text-lg">
 					You're on track. 2 tasks pending and 3 new job matches found today.
 				</p>
-				<div className="mt-6 pointer-events-auto">
+				<div className="pointer-events-auto mt-6">
 					<button
 						type="button"
-						className="px-5 py-2.5 bg-white text-gray-900 rounded-lg font-semibold hover:bg-gray-100 transition shadow-lg text-sm"
+						className="rounded-lg bg-white px-5 py-2.5 font-semibold text-gray-900 text-sm shadow-lg transition hover:bg-gray-100"
 					>
 						View Roadmap
 					</button>

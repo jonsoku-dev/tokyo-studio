@@ -1,6 +1,6 @@
 import { CheckCircle, XCircle } from "lucide-react";
 import { useNavigate } from "react-router";
-import { Shell } from "~/shared/components/layout/Shell";
+
 import { Button } from "~/shared/components/ui/Button";
 import { requireUserId } from "../../auth/utils/session.server";
 import { paymentService } from "../domain/payment.service.server";
@@ -58,31 +58,27 @@ export default function Success({ loaderData }: Route.ComponentProps) {
 	const navigate = useNavigate();
 
 	return (
-		<Shell>
-			<div className="max-w-md mx-auto py-20 text-center">
-				{loaderData.success ? (
-					<div className="stack-md">
-						<CheckCircle className="w-20 h-20 text-accent-500 mx-auto" />
-						<h1 className="heading-2 text-gray-900">
-							Payment Successful!
-						</h1>
-						<p className="text-gray-600">Your session has been booked.</p>
-						<Button onClick={() => navigate("/")}>Go to Dashboard</Button>
-					</div>
-				) : (
-					<div className="stack-md">
-						<XCircle className="w-20 h-20 text-red-500 mx-auto" />
-						<h1 className="heading-2 text-gray-900">Payment Failed</h1>
-						<p className="text-gray-600">{loaderData.message}</p>
-						<Button
-							variant="outline"
-							onClick={() => navigate("/payment/checkout")}
-						>
-							Try Again
-						</Button>
-					</div>
-				)}
-			</div>
-		</Shell>
+		<div className="mx-auto max-w-md py-20 text-center">
+			{loaderData.success ? (
+				<div className="stack-md">
+					<CheckCircle className="mx-auto h-20 w-20 text-accent-500" />
+					<h1 className="heading-2 text-gray-900">Payment Successful!</h1>
+					<p className="text-gray-600">Your session has been booked.</p>
+					<Button onClick={() => navigate("/")}>Go to Dashboard</Button>
+				</div>
+			) : (
+				<div className="stack-md">
+					<XCircle className="mx-auto h-20 w-20 text-red-500" />
+					<h1 className="heading-2 text-gray-900">Payment Failed</h1>
+					<p className="text-gray-600">{loaderData.message}</p>
+					<Button
+						variant="outline"
+						onClick={() => navigate("/payment/checkout")}
+					>
+						Try Again
+					</Button>
+				</div>
+			)}
+		</div>
 	);
 }

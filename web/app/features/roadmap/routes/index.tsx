@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { data, redirect } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { KanbanBoard, type KanbanColumnConfig } from "../components";
@@ -82,28 +81,28 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 	return (
 		<div className="min-h-screen bg-gray-50">
 			{/* Header */}
-			<div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+			<div className="sticky top-0 z-10 border-gray-200 border-b bg-white">
 				<div className="container-wide px-4 py-4 sm:py-6">
 					<div className="flex items-center justify-between">
 						<div>
-							<h1 className="text-xl sm:heading-3 tracking-tight">
+							<h1 className="sm:heading-3 text-xl tracking-tight">
 								나의 로드맵
 							</h1>
-							<p className="text-xs sm:caption mt-1 font-medium">
+							<p className="sm:caption mt-1 font-medium text-xs">
 								{profile.jobFamily} · {profile.level} · 일본어 {profile.jpLevel}
 							</p>
 						</div>
 						<div className="flex items-center gap-4">
 							{/* Progress */}
-							<div className="text-right hidden sm:block">
+							<div className="hidden text-right sm:block">
 								<p className="caption font-medium">전체 진행률</p>
 								<p className="heading-4 text-indigo-600">
 									{displayProgress.percent}%
 								</p>
 							</div>
-							<div className="w-24 sm:w-32 bg-gray-100 rounded-full h-2.5 overflow-hidden">
+							<div className="h-2.5 w-24 overflow-hidden rounded-full bg-gray-100 sm:w-32">
 								<div
-									className="bg-indigo-600 h-full rounded-full transition-all duration-500 ease-out"
+									className="h-full rounded-full bg-indigo-600 transition-all duration-500 ease-out"
 									style={{ width: `${displayProgress.percent}%` }}
 								/>
 							</div>
@@ -111,26 +110,26 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 					</div>
 
 					{/* Category Progress */}
-					<div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+					<div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
 						{(
 							["Learning", "Application", "Preparation", "Settlement"] as const
 						).map((cat) => (
 							<div
 								key={cat}
-								className="bg-gray-50/50 rounded-lg p-2.5 border border-gray-100/50"
+								className="rounded-lg border border-gray-100/50 bg-gray-50/50 p-2.5"
 							>
-								<div className="flex items-center justify-between mb-1.5">
-									<span className="text-xs font-semibold text-gray-600">
+								<div className="mb-1.5 flex items-center justify-between">
+									<span className="font-semibold text-gray-600 text-xs">
 										{cat}
 									</span>
-									<span className="text-[10px] text-gray-400 font-medium">
+									<span className="font-medium text-[10px] text-gray-400">
 										{displayProgress.byCategory[cat].completed}/
 										{displayProgress.byCategory[cat].total}
 									</span>
 								</div>
-								<div className="w-full bg-gray-200/50 rounded-full h-1">
+								<div className="h-1 w-full rounded-full bg-gray-200/50">
 									<div
-										className="bg-indigo-500 h-1 rounded-full text-[0px]"
+										className="h-1 rounded-full bg-indigo-500 text-[0px]"
 										style={{
 											width: `${displayProgress.byCategory[cat].percent}%`,
 										}}

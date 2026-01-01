@@ -28,7 +28,7 @@ export function SearchBar() {
 	return (
 		<div className="relative w-full max-w-lg">
 			<Form action="/community/search" method="get" className="relative">
-				<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+				<Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-500" />
 				<Input
 					name="q"
 					value={query}
@@ -38,13 +38,13 @@ export function SearchBar() {
 					}}
 					onBlur={() => setTimeout(() => setIsOpen(false), 200)}
 					placeholder="Search titles, content, tags..."
-					className="pl-9 pr-10 w-full"
+					className="w-full pr-10 pl-9"
 					autoComplete="off"
 				/>
 				<button
 					type="button"
 					onClick={() => setShowHelp(!showHelp)}
-					className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+					className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
 					title="Search help"
 				>
 					<HelpCircle className="h-4 w-4" />
@@ -53,8 +53,8 @@ export function SearchBar() {
 
 			{/* Search Help Popover */}
 			{showHelp && (
-				<div className="absolute top-full mt-1 right-0 w-80 bg-white rounded-lg border shadow-lg z-50 p-4">
-					<div className="flex items-center justify-between mb-3">
+				<div className="absolute top-full right-0 z-50 mt-1 w-80 rounded-lg border bg-white p-4 shadow-lg">
+					<div className="mb-3 flex items-center justify-between">
 						<h3 className="heading-5">Search Tips</h3>
 						<button
 							type="button"
@@ -64,27 +64,27 @@ export function SearchBar() {
 							×
 						</button>
 					</div>
-					<ul className="stack-sm text-sm text-gray-700">
+					<ul className="stack-sm text-gray-700 text-sm">
 						<li className="flex items-start gap-2">
-							<code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded font-mono whitespace-nowrap">
+							<code className="whitespace-nowrap rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">
 								react hooks
 							</code>
 							<span className="text-gray-600">Find posts with both words</span>
 						</li>
 						<li className="flex items-start gap-2">
-							<code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded font-mono whitespace-nowrap">
+							<code className="whitespace-nowrap rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">
 								react OR vue
 							</code>
 							<span className="text-gray-600">Find posts with either word</span>
 						</li>
 						<li className="flex items-start gap-2">
-							<code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded font-mono whitespace-nowrap">
+							<code className="whitespace-nowrap rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">
 								react -vue
 							</code>
 							<span className="text-gray-600">Exclude a word</span>
 						</li>
 						<li className="flex items-start gap-2">
-							<code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded font-mono whitespace-nowrap">
+							<code className="whitespace-nowrap rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">
 								"exact phrase"
 							</code>
 							<span className="text-gray-600">Search exact phrase</span>
@@ -94,14 +94,14 @@ export function SearchBar() {
 			)}
 
 			{isOpen && suggestions.length > 0 && (
-				<div className="absolute top-full mt-1 w-full bg-white rounded-md border shadow-lg z-50 overflow-hidden">
+				<div className="absolute top-full z-50 mt-1 w-full overflow-hidden rounded-md border bg-white shadow-lg">
 					<ul className="py-1">
 						{suggestions.map((suggestion, idx) => (
 							// biome-ignore lint/suspicious/noArrayIndexKey: simple list
 							<li key={idx}>
 								<button
 									type="button"
-									className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+									className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
 									onClick={() => {
 										setQuery(suggestion);
 										setIsOpen(false);

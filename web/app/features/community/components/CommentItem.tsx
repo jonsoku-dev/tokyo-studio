@@ -45,7 +45,7 @@ export function CommentItem({
 	const isDeleted = !comment.author;
 
 	return (
-		<div className="flex gap-3 group">
+		<div className="group flex gap-3">
 			{/* Avatar Column */}
 			<div className="flex flex-col items-center">
 				<Avatar
@@ -63,9 +63,9 @@ export function CommentItem({
 			</div>
 
 			{/* Content Column */}
-			<div className="flex-1 min-w-0 stack-xs.5">
+			<div className="stack-xs.5 min-w-0 flex-1">
 				{/* Request: Header */}
-				<div className="flex items-center caption gap-2">
+				<div className="caption flex items-center gap-2">
 					<span
 						className={cn(
 							"font-medium",
@@ -87,11 +87,11 @@ export function CommentItem({
 				</div>
 
 				{/* Body */}
-				<div className="text-sm text-gray-800 prose prose-sm max-w-none prose-p:my-1 prose-a:text-primary-600">
+				<div className="prose prose-sm prose-p:my-1 max-w-none prose-a:text-primary-600 text-gray-800 text-sm">
 					{isEditing ? (
 						<div className="stack-sm">
 							<textarea
-								className="w-full p-2 border rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none"
+								className="w-full rounded-md border p-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
 								rows={3}
 								value={editContent}
 								onChange={(e) => setEditContent(e.target.value)}
@@ -134,7 +134,7 @@ export function CommentItem({
 						<button
 							type="button"
 							onClick={() => onReply(comment.id)}
-							className="flex items-center gap-1 text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors"
+							className="flex items-center gap-1 font-medium text-gray-500 text-xs transition-colors hover:text-gray-900"
 						>
 							<MessageSquare className="h-4 w-4" />
 							Reply
@@ -146,7 +146,7 @@ export function CommentItem({
 								<button
 									type="button"
 									onClick={() => setIsEditing(true)}
-									className="flex items-center gap-1 text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors"
+									className="flex items-center gap-1 font-medium text-gray-500 text-xs transition-colors hover:text-gray-900"
 								>
 									<Edit2 className="h-3.5 w-3.5" />
 									Edit
@@ -154,7 +154,7 @@ export function CommentItem({
 								<button
 									type="button"
 									onClick={handleDelete}
-									className="flex items-center gap-1 text-xs font-medium text-gray-500 hover:text-red-600 transition-colors"
+									className="flex items-center gap-1 font-medium text-gray-500 text-xs transition-colors hover:text-red-600"
 								>
 									<Trash2 className="h-3.5 w-3.5" />
 									Delete
@@ -193,11 +193,11 @@ function ReportAction({ commentId }: { commentId: string }) {
 
 	if (isOpen) {
 		return (
-			<div className="fixed inset-0 z-50 center bg-black/50 p-4">
-				<div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg">
+			<div className="center fixed inset-0 z-50 bg-black/50 p-4">
+				<div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-lg">
 					<h3 className="heading-5 mb-4">Report Comment</h3>
 					{isSubmitted ? (
-						<div className="text-center text-accent-600 py-4 font-medium">
+						<div className="py-4 text-center font-medium text-accent-600">
 							Report submitted. Thank you.
 						</div>
 					) : (
@@ -208,7 +208,7 @@ function ReportAction({ commentId }: { commentId: string }) {
 						>
 							<select
 								name="reason"
-								className="w-full p-2 border rounded-md mb-4 text-sm"
+								className="mb-4 w-full rounded-md border p-2 text-sm"
 								required
 							>
 								<option value="">Select a reason...</option>
@@ -227,7 +227,7 @@ function ReportAction({ commentId }: { commentId: string }) {
 								</Button>
 								<Button
 									type="submit"
-									className="bg-red-600 hover:bg-red-700 text-white border-transparent"
+									className="border-transparent bg-red-600 text-white hover:bg-red-700"
 								>
 									Submit Report
 								</Button>
@@ -243,7 +243,7 @@ function ReportAction({ commentId }: { commentId: string }) {
 		<button
 			type="button"
 			onClick={() => setIsOpen(true)}
-			className="flex items-center gap-1 text-xs font-medium text-gray-400 hover:text-red-500 transition-colors ml-auto group-hover:block hidden"
+			className="ml-auto flex hidden items-center gap-1 font-medium text-gray-400 text-xs transition-colors hover:text-red-500 group-hover:block"
 		>
 			Flag
 		</button>

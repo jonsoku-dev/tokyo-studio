@@ -28,12 +28,9 @@ export function KanbanCard({ item }: KanbanCardProps) {
 		: item.stage;
 
 	return (
-		<div className="bg-white p-3 rounded shadow-sm border border-gray-200 cursor-move hover:shadow-md transition-shadow group">
-			<div className="flex justify-between items-start mb-2">
-				<h4
-					className="heading-5 truncate"
-					title={item.position}
-				>
+		<div className="group cursor-move rounded border border-gray-200 bg-white p-3 shadow-sm transition-shadow hover:shadow-md">
+			<div className="mb-2 flex items-start justify-between">
+				<h4 className="heading-5 truncate" title={item.position}>
 					{item.position}
 				</h4>
 			</div>
@@ -42,12 +39,12 @@ export function KanbanCard({ item }: KanbanCardProps) {
 			</div>
 
 			{item.nextAction && (
-				<div className="text-xs bg-primary-50 text-primary-700 px-2 py-1 rounded mb-2">
+				<div className="mb-2 rounded bg-primary-50 px-2 py-1 text-primary-700 text-xs">
 					Next: {item.nextAction}
 				</div>
 			)}
 
-			<div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity">
+			<div className="mt-2 flex items-center justify-between border-gray-100 border-t pt-2 opacity-0 transition-opacity group-hover:opacity-100">
 				<div className="caption">
 					{new Date(item.date).toLocaleDateString()}
 				</div>
@@ -57,7 +54,7 @@ export function KanbanCard({ item }: KanbanCardProps) {
 					<select
 						name="stage"
 						defaultValue={stage}
-						className="text-xs border border-gray-200 rounded px-1 py-0.5 bg-white max-w-[100px]"
+						className="max-w-[100px] rounded border border-gray-200 bg-white px-1 py-0.5 text-xs"
 						onChange={(e) => fetcher.submit(e.target.form)}
 					>
 						{STAGES.map((s) => (

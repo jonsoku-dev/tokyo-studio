@@ -25,23 +25,23 @@ export function DocumentPreview({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="max-w-5xl h-[85vh] flex flex-col p-0 overflow-hidden">
-				<DialogHeader className="p-4 border-b border-gray-200 flex items-center justify-between m-0">
+			<DialogContent className="flex h-[85vh] max-w-5xl flex-col overflow-hidden p-0">
+				<DialogHeader className="m-0 flex items-center justify-between border-gray-200 border-b p-4">
 					<DialogTitle>{document.title}</DialogTitle>
 					<Button
 						variant="ghost"
 						size="sm"
 						onClick={onClose}
-						className="rounded-full h-8 w-8 p-0"
+						className="h-8 w-8 rounded-full p-0"
 					>
 						<X className="h-5 w-5" />
 					</Button>
 				</DialogHeader>
 
-				<div className="flex-1 bg-gray-100 relative">
+				<div className="relative flex-1 bg-gray-100">
 					<iframe
 						src={document.url}
-						className="w-full h-full border-none"
+						className="h-full w-full border-none"
 						title={document.title}
 					/>
 				</div>

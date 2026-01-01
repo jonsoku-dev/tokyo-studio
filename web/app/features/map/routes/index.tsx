@@ -9,12 +9,10 @@ import { MapPage } from "../components/MapPage.client";
  */
 export default function MapRoute() {
 	return (
-		<div className="h-screen flex flex-col bg-gray-50">
+		<div className="flex h-screen flex-col bg-gray-50">
 			{/* 헤더 */}
-			<div className="bg-white border-b px-4 py-4 shadow-sm">
-				<h1 className="heading-3">
-					도쿄 정착 가이드 지도
-				</h1>
+			<div className="border-b bg-white px-4 py-4 shadow-sm">
+				<h1 className="heading-3">도쿄 정착 가이드 지도</h1>
 				<p className="body-sm mt-1">
 					구청, 은행, 이민국 등 필수 위치를 지도에서 확인하세요
 				</p>

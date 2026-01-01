@@ -3,7 +3,6 @@ import { requireUserId } from "~/features/auth/utils/session.server";
 import { actionHandler, BadRequestError } from "~/shared/lib";
 import type { KanbanColumn } from "../services/roadmap.server";
 import { updateTaskColumn } from "../services/roadmap.server";
-import type { Route } from "./+types/api.task.$id.server";
 
 export const action = actionHandler(
 	async ({ request, params }: ActionFunctionArgs) => {

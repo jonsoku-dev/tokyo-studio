@@ -21,7 +21,7 @@ export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 		let subscription;
 		try {
 			subscription = JSON.parse(subscriptionString);
-		} catch (e) {
+		} catch (_e) {
 			throw new BadRequestError("Invalid JSON in subscription data");
 		}
 

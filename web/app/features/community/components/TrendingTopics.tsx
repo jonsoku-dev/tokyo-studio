@@ -43,11 +43,11 @@ export function TrendingTopics({
 
 	if (loading) {
 		return (
-			<div className="animate-pulse stack-sm">
+			<div className="stack-sm animate-pulse">
 				{Array.from({ length: 3 }).map((_, i) => (
 					<div
 						key={i}
-						className="h-10 bg-gray-200 rounded-md dark:bg-gray-700"
+						className="h-10 rounded-md bg-gray-200 dark:bg-gray-700"
 					/>
 				))}
 			</div>
@@ -60,7 +60,7 @@ export function TrendingTopics({
 
 	return (
 		<div className="stack-sm">
-			<div className="flex items-center gap-2 mb-3">
+			<div className="mb-3 flex items-center gap-2">
 				<TrendingUp className="h-5 w-5 text-primary-500" />
 				<h3 className="font-semibold text-sm">Trending Topics</h3>
 			</div>
@@ -70,18 +70,18 @@ export function TrendingTopics({
 					<li key={topic.query}>
 						<button
 							onClick={() => onSelectTopic?.(topic.query)}
-							className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
+							className="group w-full rounded-md px-3 py-2 text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
 						>
 							<div className="flex items-center justify-between">
-								<div className="flex items-center gap-2 flex-1 min-w-0">
-									<Search className="h-4 w-4 text-gray-400 flex-shrink-0" />
-									<span className="text-sm font-medium truncate group-hover:text-primary-600">
+								<div className="flex min-w-0 flex-1 items-center gap-2">
+									<Search className="h-4 w-4 flex-shrink-0 text-gray-400" />
+									<span className="truncate font-medium text-sm group-hover:text-primary-600">
 										{topic.query}
 									</span>
 								</div>
 
 								{topic.trending && (
-									<span className="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded-full flex-shrink-0 ml-2">
+									<span className="ml-2 flex-shrink-0 rounded-full bg-primary-100 px-2 py-1 text-primary-700 text-xs">
 										↑ Trending
 									</span>
 								)}

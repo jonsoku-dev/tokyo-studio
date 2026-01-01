@@ -3,8 +3,6 @@
  * Handles automatic video meeting link generation for different providers
  */
 
-import { v4 as uuidv4 } from "uuid";
-
 export type VideoProvider = "jitsi" | "google" | "zoom" | "manual";
 
 export interface GeneratedLink {

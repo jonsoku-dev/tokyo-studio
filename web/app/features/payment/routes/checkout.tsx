@@ -4,7 +4,7 @@ import {
 } from "@tosspayments/payment-widget-sdk";
 import { nanoid } from "nanoid";
 import { useEffect, useRef, useState } from "react";
-import { Shell } from "~/shared/components/layout/Shell";
+
 import { Button } from "~/shared/components/ui/Button";
 import { requireUserId } from "../../auth/utils/session.server";
 import type { Route } from "./+types/checkout";
@@ -70,20 +70,18 @@ export default function Checkout({ loaderData }: Route.ComponentProps) {
 	};
 
 	return (
-		<Shell>
-			<div className="max-w-2xl mx-auto py-12">
-				<h1 className="heading-2 mb-8 text-center">Checkout</h1>
-				<div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-					<div id="payment-widget" />
-					<div id="agreement" />
+		<div className="mx-auto max-w-2xl py-12">
+			<h1 className="heading-2 mb-8 text-center">Checkout</h1>
+			<div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+				<div id="payment-widget" />
+				<div id="agreement" />
 
-					<div className="mt-8 flex justify-end">
-						<Button onClick={handlePayment} className="w-full text-lg py-6">
-							Pay {price.toLocaleString()} KRW
-						</Button>
-					</div>
+				<div className="mt-8 flex justify-end">
+					<Button onClick={handlePayment} className="w-full py-6 text-lg">
+						Pay {price.toLocaleString()} KRW
+					</Button>
 				</div>
 			</div>
-		</Shell>
+		</div>
 	);
 }

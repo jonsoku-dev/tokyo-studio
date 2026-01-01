@@ -36,7 +36,7 @@ export function TaskItemWrapper({ task, isDragging }: TaskItemWrapperProps) {
 			style={style}
 			{...attributes}
 			{...listeners}
-			className="touch-none cursor-grab active:cursor-grabbing"
+			className="cursor-grab touch-none active:cursor-grabbing"
 		>
 			<TaskCard task={task} isDragging={isSortableDragging || isDragging} />
 		</div>

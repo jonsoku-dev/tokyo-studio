@@ -171,16 +171,16 @@ export function MapComponent({ locations, isLoading }: MapProps) {
 			/>
 
 			{isLoading && (
-				<div className="absolute inset-0 center bg-white/50 rounded-lg">
+				<div className="center absolute inset-0 rounded-lg bg-white/50">
 					<div className="text-center">
 						<div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500" />
-						<p className="mt-2 body-sm">지도 로딩 중...</p>
+						<p className="body-sm mt-2">지도 로딩 중...</p>
 					</div>
 				</div>
 			)}
 
 			{!isLoading && locations.length === 0 && (
-				<div className="absolute inset-0 center bg-white/50 rounded-lg">
+				<div className="center absolute inset-0 rounded-lg bg-white/50">
 					<p className="text-gray-500">검색 결과가 없습니다</p>
 				</div>
 			)}

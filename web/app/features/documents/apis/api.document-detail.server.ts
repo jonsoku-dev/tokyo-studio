@@ -7,7 +7,6 @@ import {
 	InternalError,
 	loaderHandler,
 } from "~/shared/lib";
-import type { Route } from "./+types/api.document-detail.server";
 
 export const loader = loaderHandler(
 	async ({ request, params }: LoaderFunctionArgs) => {

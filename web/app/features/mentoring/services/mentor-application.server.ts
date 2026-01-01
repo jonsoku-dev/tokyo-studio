@@ -10,7 +10,7 @@ import {
 	mentors,
 	users,
 } from "@itcom/db/schema";
-import { and, desc, eq, gte, isNull } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 
 export type ApplicationStatus =
 	| "pending"
@@ -68,7 +68,7 @@ export async function canUserApply(userId: string): Promise<{
 		orderBy: desc(mentorApplications.rejectedAt),
 	});
 
-	if (lastRejection && lastRejection.rejectedAt) {
+	if (lastRejection?.rejectedAt) {
 		const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 		if (new Date(lastRejection.rejectedAt) > thirtyDaysAgo) {
 			const reapplyDate = new Date(

@@ -55,11 +55,11 @@ export function FilterBar({
 		category !== "all" || status !== "all" || urgency !== "all";
 
 	return (
-		<div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+		<div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
 			<div className="flex flex-wrap items-center gap-3">
 				<div className="flex items-center gap-2 text-gray-600">
-					<Filter className="w-4 h-4" />
-					<span className="text-sm font-medium">필터</span>
+					<Filter className="h-4 w-4" />
+					<span className="font-medium text-sm">필터</span>
 				</div>
 
 				{/* Category Filter */}
@@ -100,9 +100,9 @@ export function FilterBar({
 					<button
 						type="button"
 						onClick={onReset}
-						className="flex items-center gap-1 px-3 py-1.5 caption hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+						className="caption flex items-center gap-1 rounded-lg px-3 py-1.5 transition-colors hover:bg-gray-100 hover:text-gray-700"
 					>
-						<X className="w-3 h-3" />
+						<X className="h-3 w-3" />
 						초기화
 					</button>
 				)}
@@ -129,14 +129,14 @@ function FilterDropdown<T extends string>({
 	return (
 		<Menu as="div" className="relative">
 			<Menu.Button
-				className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+				className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium text-sm transition-colors ${
 					isActive
 						? "bg-primary-100 text-primary-700"
 						: "bg-gray-100 text-gray-600 hover:bg-gray-200"
 				}`}
 			>
 				{label}
-				<ChevronDown className="w-3.5 h-3.5" />
+				<ChevronDown className="h-3.5 w-3.5" />
 			</Menu.Button>
 
 			<Transition
@@ -148,16 +148,16 @@ function FilterDropdown<T extends string>({
 				leaveFrom="transform opacity-100 scale-100"
 				leaveTo="transform opacity-0 scale-95"
 			>
-				<Menu.Items className="absolute left-0 mt-2 w-48 origin-top-left card-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10 overflow-hidden">
+				<Menu.Items className="card-lg absolute left-0 z-10 mt-2 w-48 origin-top-left overflow-hidden ring-1 ring-black ring-opacity-5 focus:outline-none">
 					{options.map((option) => (
 						<Menu.Item key={option.value}>
 							{({ active }) => (
 								<button
 									type="button"
 									onClick={() => onChange(option.value)}
-									className={`w-full text-left px-4 py-2.5 text-sm ${
+									className={`w-full px-4 py-2.5 text-left text-sm ${
 										active ? "bg-gray-50" : ""
-									} ${option.value === value ? "text-primary-600 font-medium" : "text-gray-700"}`}
+									} ${option.value === value ? "font-medium text-primary-600" : "text-gray-700"}`}
 								>
 									{option.label}
 								</button>

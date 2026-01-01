@@ -1,6 +1,6 @@
 import { db } from "@itcom/db/client";
 import { mapLocations } from "@itcom/db/schema";
-import { and, eq, ilike } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export type GetLocationsQuery = {
 	categories?: string[];

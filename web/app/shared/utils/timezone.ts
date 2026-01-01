@@ -117,7 +117,7 @@ export function convertTimezone(
 
 		// Now format in target timezone to verify conversion
 		// This is a workaround since JavaScript doesn't have direct timezone conversion
-		const formattedInTarget = formatDateInTimezone(
+		const _formattedInTarget = formatDateInTimezone(
 			utcDate,
 			toTimezone,
 			"short",

@@ -57,4 +57,7 @@ export type SuccessResponse<T> = ApiResponse<T> & { success: true; data: T };
 /**
  * 에러 응답 타입 헬퍼
  */
-export type ErrorResponse = ApiResponse<never> & { success: false; error: ApiError };
+export type ErrorResponse = ApiResponse<never> & {
+	success: false;
+	error: ApiError;
+};

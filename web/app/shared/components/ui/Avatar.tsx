@@ -13,7 +13,7 @@ export function Avatar({ src, alt, className, fallback }: AvatarProps) {
 	return (
 		<div
 			className={cn(
-				"relative inline-block rounded-full overflow-hidden bg-gray-100 border border-gray-200",
+				"relative inline-block overflow-hidden rounded-full border border-gray-200 bg-gray-100",
 				className,
 			)}
 		>
@@ -21,7 +21,7 @@ export function Avatar({ src, alt, className, fallback }: AvatarProps) {
 				<img
 					src={src}
 					alt={alt}
-					className="w-full h-full object-cover"
+					className="h-full w-full object-cover"
 					onError={(e) => {
 						e.currentTarget.style.display = "none";
 						const parent = e.currentTarget.parentElement;
@@ -35,7 +35,7 @@ export function Avatar({ src, alt, className, fallback }: AvatarProps) {
 					}}
 				/>
 			) : (
-				<div className="w-full h-full flex items-center justify-center font-bold text-gray-400">
+				<div className="flex h-full w-full items-center justify-center font-bold text-gray-400">
 					{initials}
 				</div>
 			)}

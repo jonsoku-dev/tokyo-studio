@@ -19,7 +19,7 @@ export function SearchFilters() {
 	return (
 		<div className="stack-md">
 			<div>
-				<h3 className="text-sm font-medium text-gray-500 mb-2">Category</h3>
+				<h3 className="mb-2 font-medium text-gray-500 text-sm">Category</h3>
 				<div className="cluster-sm">
 					{["all", "general", "qna", "review"].map((c) => (
 						<Button
@@ -36,7 +36,7 @@ export function SearchFilters() {
 			</div>
 
 			<div>
-				<h3 className="text-sm font-medium text-gray-500 mb-2">Time Range</h3>
+				<h3 className="mb-2 font-medium text-gray-500 text-sm">Time Range</h3>
 				<div className="cluster-sm">
 					{[
 						{ label: "All Time", value: "all" },

@@ -62,15 +62,12 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 	return (
 		<button
 			type="button"
-			className="fixed inset-0 z-50 bg-black/95 flex flex-col"
+			className="fixed inset-0 z-50 flex flex-col bg-black/95"
 			onKeyDown={handleKeyDown}
 		>
 			{/* Header */}
-			<div className="flex items-center justify-between p-4 bg-gray-900 text-white border-b border-gray-700">
-				<h2
-					className="heading-5 truncate max-w-md"
-					title={filename}
-				>
+			<div className="flex items-center justify-between border-gray-700 border-b bg-gray-900 p-4 text-white">
+				<h2 className="heading-5 max-w-md truncate" title={filename}>
 					{filename}
 				</h2>
 
@@ -81,7 +78,7 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 							type="button"
 							onClick={zoomOut}
 							disabled={scale <= 0.5}
-							className="p-2 hover:bg-gray-800 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+							className="rounded p-2 transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
 							aria-label="Zoom out"
 						>
 							<ZoomOut className="h-5 w-5" />
@@ -93,7 +90,7 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 							type="button"
 							onClick={zoomIn}
 							disabled={scale >= 3.0}
-							className="p-2 hover:bg-gray-800 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+							className="rounded p-2 transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
 							aria-label="Zoom in"
 						>
 							<ZoomIn className="h-5 w-5" />
@@ -101,7 +98,7 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 						<button
 							type="button"
 							onClick={resetZoom}
-							className="px-3 py-1 text-sm hover:bg-gray-800 rounded transition-colors"
+							className="rounded px-3 py-1 text-sm transition-colors hover:bg-gray-800"
 						>
 							Reset
 						</button>
@@ -114,7 +111,7 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 								type="button"
 								onClick={goToPrevPage}
 								disabled={pageNumber <= 1}
-								className="p-2 hover:bg-gray-800 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+								className="rounded p-2 transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
 								aria-label="Previous page"
 							>
 								<ChevronLeft className="h-5 w-5" />
@@ -126,7 +123,7 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 								type="button"
 								onClick={goToNextPage}
 								disabled={pageNumber >= numPages}
-								className="p-2 hover:bg-gray-800 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+								className="rounded p-2 transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
 								aria-label="Next page"
 							>
 								<ChevronRight className="h-5 w-5" />
@@ -138,7 +135,7 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 					<button
 						type="button"
 						onClick={onClose}
-						className="p-2 hover:bg-gray-800 rounded transition-colors"
+						className="rounded p-2 transition-colors hover:bg-gray-800"
 						aria-label="Close viewer"
 					>
 						<X className="h-5 w-5" />
@@ -147,10 +144,10 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 			</div>
 
 			{/* PDF Document */}
-			<div className="flex-1 overflow-auto bg-gray-800 center p-8">
+			<div className="center flex-1 overflow-auto bg-gray-800 p-8">
 				{isLoading && (
-					<div className="text-white text-center">
-						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4" />
+					<div className="text-center text-white">
+						<div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-white border-b-2" />
 						<p>Loading PDF...</p>
 					</div>
 				)}
@@ -161,9 +158,9 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 					onLoadError={handleDocumentLoadError}
 					loading={null} // We handle loading state above
 					error={
-						<div className="text-white text-center">
-							<p className="text-red-500 mb-4">Failed to load PDF</p>
-							<p className="text-sm text-gray-400">
+						<div className="text-center text-white">
+							<p className="mb-4 text-red-500">Failed to load PDF</p>
+							<p className="text-gray-400 text-sm">
 								The PDF file could not be loaded. Please try again or contact
 								support.
 							</p>
@@ -181,10 +178,10 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 			</div>
 
 			{/* Keyboard Shortcuts Info */}
-			<div className="p-2 bg-gray-900 text-gray-400 text-xs text-center border-t border-gray-700">
-				<span className="inline-block mr-4">Arrow keys: Navigate pages</span>
-				<span className="inline-block mr-4">+/- : Zoom in/out</span>
-				<span className="inline-block mr-4">0: Reset zoom</span>
+			<div className="border-gray-700 border-t bg-gray-900 p-2 text-center text-gray-400 text-xs">
+				<span className="mr-4 inline-block">Arrow keys: Navigate pages</span>
+				<span className="mr-4 inline-block">+/- : Zoom in/out</span>
+				<span className="mr-4 inline-block">0: Reset zoom</span>
 				<span className="inline-block">Esc: Close</span>
 			</div>
 		</button>

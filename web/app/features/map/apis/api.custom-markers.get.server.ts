@@ -43,7 +43,7 @@ export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 				...body,
 			});
 			return result;
-		} catch (error) {
+		} catch (_error) {
 			throw new BadRequestError("요청 처리 실패");
 		}
 	}
@@ -57,7 +57,7 @@ export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 				...body,
 			});
 			return result;
-		} catch (error) {
+		} catch (_error) {
 			throw new BadRequestError("요청 처리 실패");
 		}
 	}
@@ -74,7 +74,7 @@ export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 
 			const result = await deleteCustomMarker(id, userId);
 			return result;
-		} catch (error) {
+		} catch (_error) {
 			throw new BadRequestError("요청 처리 실패");
 		}
 	}

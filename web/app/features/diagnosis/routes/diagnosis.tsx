@@ -1,5 +1,5 @@
 import { redirect } from "react-router";
-import { Shell } from "~/shared/components/layout/Shell";
+
 import { requireUserId } from "../../auth/utils/session.server";
 import { DiagnosisWizard } from "../components/DiagnosisWizard";
 import { diagnosisService } from "../domain/diagnosis.service.server";
@@ -46,18 +46,16 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function Diagnosis({ loaderData }: Route.ComponentProps) {
 	return (
-		<Shell>
-			<div className="py-10">
-				<div className="text-center mb-10">
-					<h1 className="heading-2 text-gray-900 mb-2">
-						Let's build your strategy
-					</h1>
-					<p className="text-gray-600">
-						Answer 3 simple questions to get a personalized roadmap.
-					</p>
-				</div>
-				<DiagnosisWizard defaultValues={loaderData.existingProfile} />
+		<div className="py-10">
+			<div className="mb-10 text-center">
+				<h1 className="heading-2 mb-2 text-gray-900">
+					Let's build your strategy
+				</h1>
+				<p className="text-gray-600">
+					Answer 3 simple questions to get a personalized roadmap.
+				</p>
 			</div>
-		</Shell>
+			<DiagnosisWizard defaultValues={loaderData.existingProfile} />
+		</div>
 	);
 }
