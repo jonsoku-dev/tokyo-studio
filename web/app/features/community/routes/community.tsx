@@ -26,9 +26,9 @@ export default function Community() {
 
 	return (
 		<Shell>
-			<div className="space-y-4">
+			<div className="stack">
 				<div className="flex items-center justify-between">
-					<h1 className="text-2xl font-bold text-gray-900">Community</h1>
+					<h1 className="heading-3">Community</h1>
 					<div className="flex items-center space-x-4">
 						<div className="flex bg-gray-100 rounded-lg p-1">
 							<Link
@@ -36,7 +36,7 @@ export default function Community() {
 								className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
 									sortBy === "recent"
 										? "bg-white text-gray-900 shadow-sm"
-										: "text-gray-500 hover:text-gray-700"
+										: "link-subtle"
 								}`}
 							>
 								Recent
@@ -46,7 +46,7 @@ export default function Community() {
 								className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
 									sortBy === "best"
 										? "bg-white text-gray-900 shadow-sm"
-										: "text-gray-500 hover:text-gray-700"
+										: "link-subtle"
 								}`}
 							>
 								Best
@@ -54,14 +54,14 @@ export default function Community() {
 						</div>
 						<Link
 							to="/community/new"
-							className="px-4 py-2 bg-orange-600 text-white rounded-md text-sm font-medium hover:bg-orange-700"
+							className="px-4 py-2 bg-primary-600 text-white rounded-md text-sm font-medium hover:bg-primary-700"
 						>
 							Write Post
 						</Link>
 					</div>
 				</div>
 
-				<div className="space-y-4">
+				<div className="stack">
 					{posts.map((post) => (
 						<div
 							key={post.id}
@@ -75,34 +75,34 @@ export default function Community() {
 												post.category === "review"
 													? "bg-purple-100 text-purple-800"
 													: post.category === "qna"
-														? "bg-blue-100 text-blue-800"
+														? "bg-primary-100 text-primary-800"
 														: "bg-gray-100 text-gray-800"
 											}`}
 										>
 											{post.category?.toUpperCase()}
 										</span>
-										<span className="text-xs text-gray-500">
+										<span className="caption">
 											Posted by {post.author?.name || "Unknown"}
 										</span>
-										<span className="text-xs text-gray-400">•</span>
-										<span className="text-xs text-gray-500">
+										<span className="caption">•</span>
+										<span className="caption">
 											{post.createdAt
 												? new Date(post.createdAt).toLocaleDateString()
 												: ""}
 										</span>
 									</div>
-									<h3 className="text-lg font-semibold text-gray-900 mb-1">
+									<h3 className="heading-5 mb-1">
 										{post.title}
 									</h3>
-									<div className="text-sm text-gray-600 line-clamp-3">
+									<div className="body-sm line-clamp-3">
 										<PostContent content={`${post.content.slice(0, 200)}...`} />
 									</div>
 								</div>
 								<div className="flex flex-col items-center justify-center bg-gray-50 p-2 rounded min-w-[60px]">
-									<span className="text-lg font-bold text-gray-700">
+									<span className="heading-5 text-gray-700">
 										{post._count?.comments || 0}
 									</span>
-									<span className="text-xs text-gray-500">Cmts</span>
+									<span className="caption">Cmts</span>
 								</div>
 							</div>
 						</div>

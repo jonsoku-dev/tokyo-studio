@@ -1,0 +1,274 @@
+/*
+  =============================================================================
+  Layout - Container, Grid, and Spacing Utilities
+  =============================================================================
+  
+  Import this file in app.css for consistent layouts across the app.
+  Usage: <div class="container-page"> or <section class="section">
+*/
+
+@layer components {
+	/* -------------------------------------------------------------------------
+	   CONTAINERS - Consistent max-widths and padding for page layouts
+	   ------------------------------------------------------------------------- */
+
+	/* Full-width container with responsive padding */
+	.container-wide {
+		width: 100%;
+		max-width: 1536px;
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: --spacing(4);
+		padding-right: --spacing(4);
+
+		@media (min-width: 640px) {
+			padding-left: --spacing(6);
+			padding-right: --spacing(6);
+		}
+
+		@media (min-width: 1024px) {
+			padding-left: --spacing(8);
+			padding-right: --spacing(8);
+		}
+	}
+
+	/* Standard page container - most common use case */
+	.container-page {
+		width: 100%;
+		max-width: 1280px;
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: --spacing(4);
+		padding-right: --spacing(4);
+
+		@media (min-width: 640px) {
+			padding-left: --spacing(6);
+			padding-right: --spacing(6);
+		}
+
+		@media (min-width: 1024px) {
+			padding-left: --spacing(8);
+			padding-right: --spacing(8);
+		}
+	}
+
+	/* Narrow container for focused content (forms, articles) */
+	.container-narrow {
+		width: 100%;
+		max-width: 768px;
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: --spacing(4);
+		padding-right: --spacing(4);
+
+		@media (min-width: 640px) {
+			padding-left: --spacing(6);
+			padding-right: --spacing(6);
+		}
+	}
+
+	/* Extra narrow for text-heavy content */
+	.container-prose {
+		width: 100%;
+		max-width: 65ch;
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: --spacing(4);
+		padding-right: --spacing(4);
+	}
+
+	/* -------------------------------------------------------------------------
+	   SECTIONS - Vertical spacing for page sections
+	   ------------------------------------------------------------------------- */
+	.section {
+		padding-top: --spacing(16);
+		padding-bottom: --spacing(16);
+
+		@media (min-width: 768px) {
+			padding-top: --spacing(24);
+			padding-bottom: --spacing(24);
+		}
+	}
+
+	.section-sm {
+		padding-top: --spacing(8);
+		padding-bottom: --spacing(8);
+
+		@media (min-width: 768px) {
+			padding-top: --spacing(12);
+			padding-bottom: --spacing(12);
+		}
+	}
+
+	.section-lg {
+		padding-top: --spacing(24);
+		padding-bottom: --spacing(24);
+
+		@media (min-width: 768px) {
+			padding-top: --spacing(32);
+			padding-bottom: --spacing(32);
+		}
+	}
+
+	/* -------------------------------------------------------------------------
+	   STACK - Vertical spacing between children
+	   ------------------------------------------------------------------------- */
+	.stack-xs {
+		display: flex;
+		flex-direction: column;
+		gap: --spacing(1);
+	}
+
+	.stack-sm {
+		display: flex;
+		flex-direction: column;
+		gap: --spacing(2);
+	}
+
+	.stack {
+		display: flex;
+		flex-direction: column;
+		gap: --spacing(4);
+	}
+
+	.stack-md {
+		display: flex;
+		flex-direction: column;
+		gap: --spacing(6);
+	}
+
+	.stack-lg {
+		display: flex;
+		flex-direction: column;
+		gap: --spacing(8);
+	}
+
+	.stack-xl {
+		display: flex;
+		flex-direction: column;
+		gap: --spacing(12);
+	}
+
+	/* -------------------------------------------------------------------------
+	   CLUSTER - Horizontal spacing with wrap
+	   ------------------------------------------------------------------------- */
+	.cluster-sm {
+		display: flex;
+		flex-wrap: wrap;
+		gap: --spacing(2);
+	}
+
+	.cluster {
+		display: flex;
+		flex-wrap: wrap;
+		gap: --spacing(4);
+	}
+
+	.cluster-lg {
+		display: flex;
+		flex-wrap: wrap;
+		gap: --spacing(6);
+	}
+
+	/* -------------------------------------------------------------------------
+	   GRID LAYOUTS - Common grid patterns
+	   ------------------------------------------------------------------------- */
+
+	/* Auto-fit grid for cards (responsive) */
+	.grid-cards {
+		display: grid;
+		gap: --spacing(6);
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	}
+
+	.grid-cards-sm {
+		display: grid;
+		gap: --spacing(4);
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	}
+
+	.grid-cards-lg {
+		display: grid;
+		gap: --spacing(8);
+		grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	}
+
+	/* Fixed column grids */
+	.grid-2 {
+		display: grid;
+		gap: --spacing(6);
+		grid-template-columns: 1fr;
+
+		@media (min-width: 768px) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	.grid-3 {
+		display: grid;
+		gap: --spacing(6);
+		grid-template-columns: 1fr;
+
+		@media (min-width: 640px) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		@media (min-width: 1024px) {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	.grid-4 {
+		display: grid;
+		gap: --spacing(6);
+		grid-template-columns: repeat(2, 1fr);
+
+		@media (min-width: 768px) {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		@media (min-width: 1024px) {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+
+	/* Sidebar layout */
+	.grid-sidebar {
+		display: grid;
+		gap: --spacing(8);
+		grid-template-columns: 1fr;
+
+		@media (min-width: 1024px) {
+			grid-template-columns: 280px 1fr;
+		}
+	}
+
+	.grid-sidebar-right {
+		display: grid;
+		gap: --spacing(8);
+		grid-template-columns: 1fr;
+
+		@media (min-width: 1024px) {
+			grid-template-columns: 1fr 320px;
+		}
+	}
+
+	/* -------------------------------------------------------------------------
+	   CENTER - Centering utilities
+	   ------------------------------------------------------------------------- */
+	.center {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.center-x {
+		display: flex;
+		justify-content: center;
+	}
+
+	.center-y {
+		display: flex;
+		align-items: center;
+	}
+}

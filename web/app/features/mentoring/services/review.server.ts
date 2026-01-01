@@ -172,7 +172,11 @@ export const reviewService = {
 	},
 
 	// FR-008: Mentor can respond to review
-	async addMentorResponse(reviewId: string, mentorId: string, response: string) {
+	async addMentorResponse(
+		reviewId: string,
+		mentorId: string,
+		response: string,
+	) {
 		const review = await db.query.mentorReviews.findFirst({
 			where: eq(mentorReviews.id, reviewId),
 		});

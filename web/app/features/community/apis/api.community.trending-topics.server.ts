@@ -1,4 +1,4 @@
-import { type LoaderFunctionArgs } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 import { loaderHandler, ServiceUnavailableError } from "~/shared/lib";
 
 import {

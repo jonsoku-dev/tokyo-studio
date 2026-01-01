@@ -46,7 +46,7 @@ export function NotificationsPopover() {
 						className="fixed inset-0 z-10"
 						onClick={() => setIsOpen(false)}
 					/>
-					<div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-100 z-20 overflow-hidden">
+					<div className="absolute right-0 mt-2 w-80 card-xl border border-gray-100 z-20 overflow-hidden">
 						<div className="p-2">
 							<NotificationList notifications={notifications} />
 						</div>

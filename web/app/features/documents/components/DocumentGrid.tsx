@@ -69,10 +69,10 @@ export function DocumentGrid({
 						)}
 
 						{/* Overlay Actions */}
-						<div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+						<div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity center gap-2">
 							<button
 								type="button"
-								className="flex items-center justify-center h-9 w-9 rounded-full bg-white/90 hover:bg-white text-gray-700 transition-colors cursor-pointer border-0 p-0"
+								className="center h-9 w-9 rounded-full bg-white/90 hover:bg-white text-gray-700 transition-colors cursor-pointer border-0 p-0"
 								onClick={(e) => {
 									e.stopPropagation();
 									onPreview(doc);
@@ -86,7 +86,7 @@ export function DocumentGrid({
 									href={doc.url}
 									target="_blank"
 									rel="noreferrer"
-									className="flex items-center justify-center h-9 w-9 rounded-full bg-white/90 hover:bg-white text-gray-700 transition-colors"
+									className="center h-9 w-9 rounded-full bg-white/90 hover:bg-white text-gray-700 transition-colors"
 									onClick={(e) => e.stopPropagation()}
 									title="Download"
 								>
@@ -113,19 +113,19 @@ export function DocumentGrid({
 											if (e.key === "Enter") saveTitle(doc.id);
 											if (e.key === "Escape") setEditingId(null);
 										}}
-										className="w-full text-sm font-medium border-gray-300 rounded focus:ring-orange-500 focus:border-orange-500 px-1 py-0.5"
+										className="w-full text-sm font-medium border-gray-300 rounded focus:ring-primary-500 focus:border-primary-500 px-1 py-0.5"
 									/>
 								) : (
 									<button
 										type="button"
-										className="text-sm font-medium text-gray-900 truncate cursor-pointer hover:text-orange-600 text-left p-0 border-0 bg-transparent"
+										className="text-sm heading-5 truncate cursor-pointer hover:text-primary-600 text-left p-0 border-0 bg-transparent"
 										onClick={() => startEditing(doc)}
 										title={doc.title}
 									>
 										{doc.title}
 									</button>
 								)}
-								<p className="text-xs text-gray-500 truncate">
+								<p className="caption truncate">
 									{doc.originalName}
 								</p>
 							</div>
@@ -142,7 +142,7 @@ export function DocumentGrid({
 								className={cn(
 									"px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide rounded-full border transition-colors",
 									doc.status === "final"
-										? "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
+										? "bg-accent-50 text-accent-700 border-accent-200 hover:bg-accent-100"
 										: "bg-yellow-200 text-yellow-800 border-yellow-300 hover:bg-yellow-300",
 								)}
 							>
@@ -158,7 +158,7 @@ export function DocumentGrid({
 						)}
 
 						{/* Footer: Metadata & Actions */}
-						<div className="mt-auto flex items-center justify-between pt-2 border-t border-gray-100 text-xs text-gray-500">
+						<div className="mt-auto flex items-center justify-between pt-2 border-t border-gray-100 caption">
 							<div className="flex gap-2 items-center">
 								<span>
 									{((Number(doc.size) || 0) / 1024 / 1024).toFixed(1)} MB

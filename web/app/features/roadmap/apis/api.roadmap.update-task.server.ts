@@ -21,7 +21,9 @@ export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 		const { taskId, kanbanColumn, orderIndex } = body;
 
 		if (!taskId || !kanbanColumn) {
-			throw new BadRequestError("Missing required fields: taskId, kanbanColumn");
+			throw new BadRequestError(
+				"Missing required fields: taskId, kanbanColumn",
+			);
 		}
 
 		const updatedTask = await updateTaskPosition(taskId, userId, {

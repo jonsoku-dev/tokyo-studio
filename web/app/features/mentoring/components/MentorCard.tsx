@@ -38,13 +38,13 @@ export function MentorCard({ mentor }: MentorCardProps) {
 				</div>
 
 				<div className="flex-1">
-					<h3 className="font-outfit text-lg font-bold text-gray-900 group-hover:text-primary dark:text-gray-100">
+					<h3 className="font-outfit heading-5 group-hover:text-primary dark:text-gray-100">
 						{mentor.name}
 					</h3>
 					<p className="text-sm font-medium text-gray-600 dark:text-gray-400">
 						{mentor.profile.jobTitle}
 					</p>
-					<p className="text-xs text-gray-500 dark:text-gray-500">
+					<p className="caption dark:text-gray-500">
 						{mentor.profile.company}
 					</p>
 
@@ -67,7 +67,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
 				</div>
 
 				<div className="text-right">
-					<div className="text-lg font-bold text-gray-900 dark:text-white">
+					<div className="heading-5 dark:text-white">
 						${((mentor.profile.hourlyRate || 0) / 100).toFixed(0)}
 						<span className="text-xs font-normal text-gray-500">/h</span>
 					</div>
@@ -88,7 +88,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
                  */}
 			</div>
 
-			<div className="mt-4 flex items-center justify-between border-t border-white/5 pt-4 text-xs text-gray-500">
+			<div className="mt-4 flex items-center justify-between border-t border-white/5 pt-4 caption">
 				<div className="flex items-center gap-2">
 					<span>{mentor.profile.yearsOfExperience} years exp.</span>
 				</div>

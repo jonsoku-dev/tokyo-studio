@@ -18,10 +18,10 @@ function FloatingLogo() {
 			<mesh ref={meshRef} scale={1.5}>
 				<torusKnotGeometry args={[1, 0.3, 100, 16]} />
 				<meshStandardMaterial
-					color="#f97316" // Orange-500
+					color="#3b82f6" // Primary-500 (Blue)
 					roughness={0.1}
 					metalness={0.6}
-					emissive="#f97316"
+					emissive="#3b82f6"
 					emissiveIntensity={0.2}
 				/>
 			</mesh>
@@ -48,7 +48,7 @@ export function WelcomeHero() {
 
 			{/* Content overlay */}
 			<div className="relative z-10 px-8 max-w-lg pointer-events-none">
-				<h1 className="text-3xl font-bold text-white mb-2">
+				<h1 className="heading-2 text-white mb-2">
 					Welcome back, Jongseok!
 				</h1>
 				<p className="text-gray-300 text-lg">

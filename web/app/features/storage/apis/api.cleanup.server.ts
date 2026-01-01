@@ -10,8 +10,8 @@
 
 import type { ActionFunctionArgs } from "react-router";
 import { getUserFromRequest } from "~/features/auth/services/require-verified-email.server";
-import { runStorageCleanup } from "../jobs/cleanup-orphaned-files.server";
 import { actionHandler, UnauthorizedError } from "~/shared/lib";
+import { runStorageCleanup } from "../jobs/cleanup-orphaned-files.server";
 
 export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 	// Authenticate user

@@ -16,26 +16,26 @@ export function TaskCard({ task, isDragging, isOverlay }: TaskCardProps) {
 				${isOverlay ? "shadow-lg" : ""}
 			`}
 		>
-			<div className="space-y-2">
+			<div className="stack-sm">
 				<div className="flex items-start justify-between gap-2">
-					<h4 className="font-medium text-gray-900 text-sm flex-1 line-clamp-2">
+					<h4 className="heading-5 text-sm flex-1 line-clamp-2">
 						{task.title}
 					</h4>
-					<span className="inline-flex px-1.5 py-0.5 text-xs font-medium rounded bg-blue-50 text-blue-700 flex-shrink-0">
+					<span className="inline-flex px-1.5 py-0.5 text-xs font-medium rounded bg-primary-50 text-primary-700 flex-shrink-0">
 						{task.priority}
 					</span>
 				</div>
 
 				{task.description && (
-					<p className="text-xs text-gray-500 line-clamp-2">
+					<p className="caption line-clamp-2">
 						{task.description}
 					</p>
 				)}
 
 				<div className="flex items-center justify-between gap-2 pt-2 border-t border-gray-100">
-					<span className="text-xs text-gray-400">{task.category}</span>
+					<span className="caption">{task.category}</span>
 					{task.estimatedMinutes > 0 && (
-						<span className="text-xs text-gray-400">
+						<span className="caption">
 							{task.estimatedMinutes}min
 						</span>
 					)}

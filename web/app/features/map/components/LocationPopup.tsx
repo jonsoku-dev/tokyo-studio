@@ -57,19 +57,19 @@ export function LocationPopup({ location, onClose }: LocationPopupProps) {
 			</button>
 
 			{/* 카테고리 배지 */}
-			<div className="mb-2 inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-semibold">
+			<div className="mb-2 inline-block bg-primary-100 text-primary-800 px-2 py-1 rounded text-xs font-semibold">
 				{categoryName}
 			</div>
 
 			{/* 위치명 (다국어) */}
 			<div className="mb-4">
-				<h2 className="text-lg font-bold text-gray-900">{location.nameEn}</h2>
-				<p className="text-sm text-gray-600">{location.nameJa}</p>
-				<p className="text-sm text-gray-600">{location.nameKo}</p>
+				<h2 className="heading-5">{location.nameEn}</h2>
+				<p className="body-sm">{location.nameJa}</p>
+				<p className="body-sm">{location.nameKo}</p>
 			</div>
 
 			{/* 상세 정보 */}
-			<div className="space-y-2 text-sm mb-4">
+			<div className="stack-sm text-sm mb-4">
 				{/* 주소 */}
 				<div className="flex items-start gap-2">
 					<span className="text-gray-500 w-12">📍</span>
@@ -77,7 +77,7 @@ export function LocationPopup({ location, onClose }: LocationPopupProps) {
 						<p className="text-gray-900 break-words">{location.address}</p>
 						<button
 							onClick={handleCopyAddress}
-							className="text-blue-600 hover:text-blue-800 text-xs mt-1"
+							className="text-primary-600 hover:text-primary-800 text-xs mt-1"
 						>
 							복사
 						</button>
@@ -90,7 +90,7 @@ export function LocationPopup({ location, onClose }: LocationPopupProps) {
 						<span className="text-gray-500 w-12">📞</span>
 						<a
 							href={`tel:${location.phone}`}
-							className="text-blue-600 hover:text-blue-800"
+							className="text-primary-600 hover:text-primary-800"
 						>
 							{location.phone}
 						</a>
@@ -118,7 +118,7 @@ export function LocationPopup({ location, onClose }: LocationPopupProps) {
 			<div className="flex gap-2">
 				<button
 					onClick={handleGetDirections}
-					className="flex-1 bg-blue-600 text-white py-2 px-3 rounded hover:bg-blue-700 text-sm font-medium transition"
+					className="flex-1 bg-primary-600 text-white py-2 px-3 rounded hover:bg-primary-700 text-sm font-medium transition"
 				>
 					길안내
 				</button>

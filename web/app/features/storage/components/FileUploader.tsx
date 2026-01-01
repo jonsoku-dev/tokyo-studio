@@ -144,22 +144,22 @@ export function FileUploader({ onUploadComplete }: FileUploaderProps) {
 	});
 
 	return (
-		<div className="space-y-4">
+		<div className="stack">
 			<div
 				{...getRootProps()}
 				className={cn(
 					"border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors",
 					isDragActive
-						? "border-orange-500 bg-orange-50"
-						: "border-gray-300 hover:border-orange-400 hover:bg-gray-50",
+						? "border-primary-500 bg-primary-50"
+						: "border-gray-300 hover:border-primary-400 hover:bg-gray-50",
 				)}
 			>
 				<input {...getInputProps()} />
 				<UploadCloud className="mx-auto h-10 w-10 text-gray-400" />
-				<p className="mt-2 text-sm font-medium text-gray-900">
+				<p className="mt-2 text-sm heading-5">
 					Click to upload or drag and drop
 				</p>
-				<p className="mt-1 text-xs text-gray-500">PDF, DOCX, TXT up to 10MB</p>
+				<p className="mt-1 caption">PDF, DOCX, TXT up to 10MB</p>
 			</div>
 
 			{globalError && (
@@ -175,11 +175,11 @@ export function FileUploader({ onUploadComplete }: FileUploaderProps) {
 							<div className="flex items-center justify-between mb-1">
 								<div className="flex items-center min-w-0">
 									<FileIcon className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
-									<p className="text-sm font-medium text-gray-900 truncate">
+									<p className="text-sm heading-5 truncate">
 										{item.file.name}
 									</p>
 								</div>
-								<span className="text-xs text-gray-500 whitespace-nowrap ml-2">
+								<span className="caption whitespace-nowrap ml-2">
 									{item.error ? "Failed" : `${item.progress}%`}
 								</span>
 							</div>
@@ -206,7 +206,7 @@ export function FileUploader({ onUploadComplete }: FileUploaderProps) {
 							) : (
 								<div className="w-full bg-gray-200 rounded-full h-1.5">
 									<div
-										className="bg-orange-500 h-1.5 rounded-full transition-all duration-300"
+										className="bg-primary-500 h-1.5 rounded-full transition-all duration-300"
 										style={{ width: `${item.progress}%` }}
 									/>
 								</div>

@@ -36,7 +36,7 @@ export default function SearchPage() {
 		<Shell>
 			<div className="max-w-5xl mx-auto py-8 px-4">
 				<div className="mb-8">
-					<h1 className="text-2xl font-bold mb-4">Search Results</h1>
+					<h1 className="heading-3 mb-4">Search Results</h1>
 					<SearchBar />
 				</div>
 
@@ -47,7 +47,7 @@ export default function SearchPage() {
 					</div>
 
 					{/* Results List */}
-					<div className="md:col-span-3 space-y-6">
+					<div className="md:col-span-3 stack-md">
 						{query && results.length === 0 && (
 							<div className="text-center py-12 bg-gray-50 rounded-lg">
 								<p className="text-gray-500">No results found for "{query}"</p>
@@ -64,7 +64,7 @@ export default function SearchPage() {
 								className="block bg-white p-6 rounded-lg border hover:shadow-md transition-shadow"
 							>
 								<div className="flex justify-between items-start mb-2">
-									<h2 className="text-lg font-semibold text-blue-600 hover:underline">
+									<h2 className="heading-5 text-primary-600 hover:underline">
 										{post.title}
 									</h2>
 									<Badge variant="outline" className="capitalize">
@@ -79,7 +79,7 @@ export default function SearchPage() {
 									dangerouslySetInnerHTML={{ __html: post.excerpt }}
 								/>
 
-								<div className="flex items-center text-xs text-gray-500 gap-4">
+								<div className="flex items-center caption gap-4">
 									<div className="flex items-center gap-2">
 										<Avatar
 											src={post.authorAvatar || undefined}

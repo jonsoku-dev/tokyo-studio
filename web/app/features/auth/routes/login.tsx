@@ -33,24 +33,20 @@ export async function action({ request }: Route.ActionArgs) {
 export default function Login({ actionData }: Route.ComponentProps) {
 	return (
 		<div className="flex min-h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-			<div className="w-full max-w-md space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+			<div className="w-full max-w-md stack-lg bg-white p-8 rounded-xl shadow-lg border border-gray-100">
 				<div className="text-center">
-					<h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900">
-						Welcome back
-					</h2>
-					<p className="mt-2 text-sm text-gray-500">
-						Sign in to continue your journey
-					</p>
+					<h2 className="mt-2 heading-2">Welcome back</h2>
+					<p className="mt-2 caption">Sign in to continue your journey</p>
 				</div>
 
 				{/* Social Login Grid */}
-				<div className="mt-8 space-y-4">
+				<div className="mt-8 stack">
 					<div className="grid grid-cols-2 gap-3">
 						<Form action="/api/auth/google" method="post">
 							<Button
 								variant="outline"
 								type="submit"
-								className="w-full flex items-center justify-center gap-2 h-11 border-gray-300 hover:bg-gray-50 transition-colors"
+								className="w-full center gap-2 h-11 border-gray-300 hover:bg-gray-50 transition-colors"
 							>
 								<svg className="w-5 h-5" viewBox="0 0 24 24">
 									<title>Google</title>
@@ -78,7 +74,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
 						<Form action="/api/auth/github" method="post">
 							<Button
 								type="submit"
-								className="w-full flex items-center justify-center gap-2 h-11 bg-[#24292F] hover:bg-[#24292F]/90 text-white border-none transition-colors"
+								className="w-full center gap-2 h-11 bg-[#24292F] hover:bg-[#24292F]/90 text-white border-none transition-colors"
 							>
 								<svg
 									className="h-5 w-5"
@@ -99,7 +95,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
 						<Form action="/api/auth/kakao" method="post">
 							<Button
 								type="submit"
-								className="w-full flex items-center justify-center gap-2 h-11 bg-[#FEE500] hover:bg-[#FDD835] text-[#191919] border-none transition-colors"
+								className="w-full center gap-2 h-11 bg-[#FEE500] hover:bg-[#FDD835] text-[#191919] border-none transition-colors"
 							>
 								<svg
 									className="w-5 h-5"
@@ -116,7 +112,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
 						<Form action="/api/auth/line" method="post">
 							<Button
 								type="submit"
-								className="w-full flex items-center justify-center gap-2 h-11 bg-[#06C755] hover:bg-[#05b54c] text-white border-none transition-colors"
+								className="w-full center gap-2 h-11 bg-[#06C755] hover:bg-[#05b54c] text-white border-none transition-colors"
 							>
 								<svg
 									className="h-5 w-5"
@@ -138,7 +134,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
 
 					<div className="relative">
 						<div className="absolute inset-0 flex items-center">
-							<div className="w-full border-t border-gray-200"></div>
+							<div className="w-full divider"></div>
 						</div>
 						<div className="relative flex justify-center text-sm">
 							<span className="px-2 bg-white text-gray-500">
@@ -148,7 +144,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
 					</div>
 				</div>
 
-				<Form method="post" className="mt-8 space-y-6">
+				<Form method="post" className="mt-8 stack-md">
 					{actionData?.error && (
 						<div className="bg-red-50 text-red-600 text-sm p-3 rounded-md border border-red-100 flex items-start gap-2">
 							{/* Error Icon */}
@@ -170,7 +166,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
 						</div>
 					)}
 
-					<div className="space-y-4">
+					<div className="stack">
 						<Input
 							id="email"
 							name="email"
@@ -194,7 +190,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
 							<div className="absolute top-0 right-0">
 								<Link
 									to="/forgot-password"
-									className="text-sm font-medium text-orange-600 hover:text-orange-500"
+									className="text-sm link"
 								>
 									Forgot?
 								</Link>
@@ -204,16 +200,16 @@ export default function Login({ actionData }: Route.ComponentProps) {
 
 					<Button
 						type="submit"
-						className="w-full h-11 text-base shadow-orange-100 shadow-lg"
+						className="w-full h-11 text-base shadow-primary-100 shadow-lg"
 					>
 						Sign in
 					</Button>
 
-					<p className="text-center text-sm text-gray-600">
+					<p className="text-center body-sm">
 						Don't have an account?{" "}
 						<Link
 							to="/signup"
-							className="font-medium text-orange-600 hover:text-orange-500"
+							className="link"
 						>
 							Sign up
 						</Link>

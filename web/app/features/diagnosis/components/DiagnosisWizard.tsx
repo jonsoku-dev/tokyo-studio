@@ -45,21 +45,23 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 			{/* Progress Bar */}
 			<div className="mb-8">
 				<div className="flex justify-between text-sm font-medium text-gray-500 mb-2">
-					<span className={clsx(step >= 1 && "text-orange-600")}>Career</span>
-					<span className={clsx(step >= 2 && "text-orange-600")}>Language</span>
-					<span className={clsx(step >= 3 && "text-orange-600")}>
+					<span className={clsx(step >= 1 && "text-primary-600")}>Career</span>
+					<span className={clsx(step >= 2 && "text-primary-600")}>
+						Language
+					</span>
+					<span className={clsx(step >= 3 && "text-primary-600")}>
 						Preferences
 					</span>
 				</div>
 				<div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
 					<div
-						className="h-full bg-orange-600 transition-all duration-300 ease-in-out"
+						className="h-full bg-primary-600 transition-all duration-300 ease-in-out"
 						style={{ width: `${(step / 3) * 100}%` }}
 					/>
 				</div>
 			</div>
 
-			<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 min-h-[400px] relative overflow-hidden">
+			<div className="card-sm border border-gray-200 p-8 min-h-[400px] relative overflow-hidden">
 				<AnimatePresence mode="wait">
 					{step === 1 && (
 						<motion.div
@@ -67,9 +69,9 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 							initial={{ x: 50, opacity: 0 }}
 							animate={{ x: 0, opacity: 1 }}
 							exit={{ x: -50, opacity: 0 }}
-							className="space-y-6"
+							className="stack-md"
 						>
-							<h2 className="text-xl font-bold text-gray-900">
+							<h2 className="heading-4">
 								Tell us about your career
 							</h2>
 
@@ -107,7 +109,7 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 											className={clsx(
 												"p-3 rounded-lg border text-sm font-medium capitalize transition-colors",
 												formData.level === lvl
-													? "border-orange-500 bg-orange-50 text-orange-700"
+													? "border-primary-500 bg-primary-50 text-primary-700"
 													: "border-gray-200 hover:border-gray-300 text-gray-700",
 											)}
 										>
@@ -125,9 +127,9 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 							initial={{ x: 50, opacity: 0 }}
 							animate={{ x: 0, opacity: 1 }}
 							exit={{ x: -50, opacity: 0 }}
-							className="space-y-6"
+							className="stack-md"
 						>
-							<h2 className="text-xl font-bold text-gray-900">
+							<h2 className="heading-4">
 								Language Skills
 							</h2>
 
@@ -145,7 +147,7 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 												className={clsx(
 													"p-3 rounded-lg border text-sm font-medium transition-colors",
 													formData.jpLevel === lvl
-														? "border-orange-500 bg-orange-50 text-orange-700"
+														? "border-primary-500 bg-primary-50 text-primary-700"
 														: "border-gray-200 hover:border-gray-300 text-gray-700",
 												)}
 											>
@@ -184,9 +186,9 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 							initial={{ x: 50, opacity: 0 }}
 							animate={{ x: 0, opacity: 1 }}
 							exit={{ x: -50, opacity: 0 }}
-							className="space-y-6"
+							className="stack-md"
 						>
-							<h2 className="text-xl font-bold text-gray-900">Preferences</h2>
+							<h2 className="heading-4">Preferences</h2>
 
 							<div>
 								<label
@@ -210,10 +212,10 @@ export function DiagnosisWizard({ defaultValues }: DiagnosisWizardProps) {
 							</div>
 
 							<div className="bg-gray-50 p-4 rounded-lg">
-								<h3 className="text-sm font-medium text-gray-900 mb-2">
+								<h3 className="text-sm heading-5 mb-2">
 									Summary
 								</h3>
-								<ul className="text-sm text-gray-600 space-y-1">
+								<ul className="body-sm stack-xs">
 									<li>
 										Role:{" "}
 										<span className="font-semibold">

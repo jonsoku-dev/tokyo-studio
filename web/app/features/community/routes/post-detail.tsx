@@ -38,7 +38,7 @@ export default function PostDetail() {
 
 	return (
 		<Shell>
-			<div className="max-w-4xl mx-auto space-y-8">
+			<div className="max-w-4xl mx-auto stack-lg">
 				{/* Post Header */}
 				{/* Post Header & Content */}
 				<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex gap-4">
@@ -68,13 +68,13 @@ export default function PostDetail() {
 									post.category === "review"
 										? "bg-purple-100 text-purple-800"
 										: post.category === "qna"
-											? "bg-blue-100 text-blue-800"
+											? "bg-primary-100 text-primary-800"
 											: "bg-gray-100 text-gray-800"
 								}`}
 							>
 								{post.category?.toUpperCase()}
 							</span>
-							<span className="text-sm text-gray-500">
+							<span className="caption">
 								{post.createdAt
 									? formatDistanceToNow(new Date(post.createdAt), {
 											addSuffix: true,
@@ -83,7 +83,7 @@ export default function PostDetail() {
 							</span>
 						</div>
 
-						<h1 className="text-3xl font-bold text-gray-900 mb-4">
+						<h1 className="heading-2 text-gray-900 mb-4">
 							{post.title}
 						</h1>
 
@@ -95,10 +95,10 @@ export default function PostDetail() {
 								className="h-10 w-10"
 							/>
 							<div>
-								<div className="text-sm font-medium text-gray-900">
+								<div className="text-sm heading-5">
 									{post.author?.name || "Unknown"}
 								</div>
-								<div className="text-xs text-gray-500">Author</div>
+								<div className="caption">Author</div>
 							</div>
 						</div>
 
@@ -111,7 +111,7 @@ export default function PostDetail() {
 				{/* Comments Section */}
 				<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
 					<div className="flex items-center justify-between mb-6">
-						<h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+						<h2 className="heading-4 flex items-center gap-2">
 							Comments
 							<span className="bg-gray-100 text-gray-600 text-sm font-normal py-0.5 px-2 rounded-full">
 								{post._count?.comments || 0}
@@ -123,7 +123,7 @@ export default function PostDetail() {
 								className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
 									commentSort === "oldest"
 										? "bg-white text-gray-900 shadow-sm"
-										: "text-gray-500 hover:text-gray-700"
+										: "link-subtle"
 								}`}
 							>
 								Oldest
@@ -133,7 +133,7 @@ export default function PostDetail() {
 								className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
 									commentSort === "newest"
 										? "bg-white text-gray-900 shadow-sm"
-										: "text-gray-500 hover:text-gray-700"
+										: "link-subtle"
 								}`}
 							>
 								Newest
@@ -143,7 +143,7 @@ export default function PostDetail() {
 								className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
 									commentSort === "best"
 										? "bg-white text-gray-900 shadow-sm"
-										: "text-gray-500 hover:text-gray-700"
+										: "link-subtle"
 								}`}
 							>
 								Best

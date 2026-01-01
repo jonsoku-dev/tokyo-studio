@@ -385,7 +385,7 @@ export function KanbanBoard({
 							type="button"
 							onClick={handleDiscardChanges}
 							disabled={isSaving}
-							className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 disabled:opacity-50"
+							className="px-3 py-1.5 body-sm hover:text-gray-800 disabled:opacity-50"
 						>
 							취소
 						</button>
@@ -433,18 +433,18 @@ export function KanbanBoard({
 								<DroppableColumn id={column.id}>
 									{/* Column Header */}
 									<div className="flex items-center justify-between mb-4">
-										<h3 className="font-semibold text-gray-900">
+										<h3 className="heading-5">
 											{column.title}
 										</h3>
-										<span className="text-sm text-gray-500 bg-white px-2 py-1 rounded">
+										<span className="caption bg-white px-2 py-1 rounded">
 											{columnTaskIds.length}
 										</span>
 									</div>
 
 									{/* Tasks Container */}
-									<div className="flex-1 overflow-y-auto space-y-3">
+									<div className="flex-1 overflow-y-auto stack-sm">
 										{columnTaskIds.length === 0 ? (
-											<div className="flex items-center justify-center h-32 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">
+											<div className="center h-32 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">
 												태스크를 여기에 드롭하세요
 											</div>
 										) : (

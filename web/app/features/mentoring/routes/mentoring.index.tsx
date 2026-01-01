@@ -54,7 +54,7 @@ export default function MentoringDirectory() {
 				</div>
 			</div>
 
-			<div className="container mx-auto px-4 py-12">
+			<div className="container-page px-4 py-12">
 				<div className="grid gap-8 lg:grid-cols-[280px_1fr]">
 					{/* Sidebar Filters */}
 					<aside>
@@ -64,9 +64,9 @@ export default function MentoringDirectory() {
 					{/* Mentor Grid */}
 					<main>
 						<div className="mb-6 flex items-center justify-between">
-							<h2 className="text-xl font-bold flex items-center gap-2">
+							<h2 className="heading-4 flex items-center gap-2">
 								Available Mentors
-								<span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-gray-400">
+								<span className="rounded-full bg-white/10 px-2 py-0.5 caption">
 									{mentors.length}
 								</span>
 							</h2>

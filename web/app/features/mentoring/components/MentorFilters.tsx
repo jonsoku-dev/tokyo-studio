@@ -28,12 +28,12 @@ export function MentorFilters() {
 	};
 
 	return (
-		<div className="space-y-6 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
+		<div className="stack-md rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
 			<div>
-				<h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">
+				<h3 className="mb-3 body-sm uppercase tracking-wider text-gray-500">
 					Job Family
 				</h3>
-				<div className="flex flex-wrap gap-2">
+				<div className="cluster-sm">
 					<Button
 						variant={!currentJob ? "primary" : "outline"}
 						size="sm"
@@ -56,7 +56,7 @@ export function MentorFilters() {
 
 			{/* Price Filter - Simplified Inputs */}
 			<div>
-				<h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">
+				<h3 className="mb-3 body-sm uppercase tracking-wider text-gray-500">
 					Hourly Rate ($)
 				</h3>
 				<div className="flex items-center gap-2">

@@ -36,17 +36,17 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 	return (
 		<Shell>
 			<div className="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-				<div className="space-y-6">
+				<div className="stack-md">
 					<div>
-						<h1 className="text-2xl font-bold text-gray-900">
+						<h1 className="heading-3">
 							Profile Settings
 						</h1>
-						<p className="mt-1 text-sm text-gray-500">
+						<p className="mt-1 caption">
 							Update your photo and personal details.
 						</p>
 					</div>
 
-					<div className="bg-white shadow rounded-lg p-6 space-y-8">
+					<div className="bg-white shadow rounded-lg p-6 stack-lg">
 						<div>
 							<h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
 								Profile Picture
@@ -57,7 +57,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 							/>
 						</div>
 
-						<div className="border-t border-gray-200 pt-6">
+						<div className="divider pt-6">
 							<h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
 								Public Profile Info
 							</h3>
@@ -65,7 +65,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 							<fetcher.Form
 								method="post"
 								action="/api/users/me/profile"
-								className="space-y-6"
+								className="stack-md"
 							>
 								{fetcher.data?.error && (
 									<div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
@@ -73,7 +73,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 									</div>
 								)}
 								{fetcher.data?.success && (
-									<div className="bg-green-50 text-green-600 p-3 rounded-md text-sm">
+									<div className="bg-accent-50 text-accent-600 p-3 rounded-md text-sm">
 										Profile updated successfully!
 									</div>
 								)}
@@ -90,21 +90,21 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 											id="bio"
 											name="bio"
 											rows={4}
-											className="block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+											className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
 											defaultValue={profile?.bio || ""}
 											placeholder="Tell us about yourself..."
 										/>
 									</div>
 								</div>
 
-								<div className="space-y-1">
+								<div className="stack-xs">
 									<Input
 										label="Custom URL Slug"
 										name="slug"
 										placeholder="john-doe"
 										defaultValue={profile?.slug || ""}
 									/>
-									<p className="text-sm text-gray-500">
+									<p className="caption">
 										Your profile will be at /profile/your-slug
 									</p>
 								</div>
@@ -135,7 +135,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 										<Link
 											to={`/profile/${profile.slug}`}
 											target="_blank"
-											className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+											className="inline-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
 										>
 											View Public Profile
 										</Link>
@@ -147,7 +147,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 							</fetcher.Form>
 						</div>
 
-						<div className="border-t border-gray-200 pt-6">
+						<div className="divider pt-6">
 							<h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
 								Account Information
 							</h3>
@@ -167,7 +167,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 								<div className="sm:col-span-2">
 									<Link
 										to="/settings/privacy"
-										className="text-sm font-medium text-orange-600 hover:text-orange-500"
+										className="text-sm link"
 									>
 										Manage Privacy Settings &rarr;
 									</Link>
@@ -175,7 +175,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 								<div className="sm:col-span-2">
 									<Link
 										to="/mentoring/settings"
-										className="text-sm font-medium text-orange-600 hover:text-orange-500"
+										className="text-sm link"
 									>
 										Manage Mentor Settings &rarr;
 									</Link>

@@ -110,12 +110,12 @@ export default function Documents({ loaderData }: Route.ComponentProps) {
 
 	return (
 		<Shell>
-			<div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 space-y-8">
+			<div className="container-wide py-8 px-4 sm:px-6 lg:px-8 stack-lg">
 				{/* Header & Stats */}
 				<div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
 					<div>
-						<h1 className="text-2xl font-bold text-gray-900">Documents</h1>
-						<p className="mt-1 text-sm text-gray-500">
+						<h1 className="heading-3">Documents</h1>
+						<p className="mt-1 caption">
 							Manage your career documents with version control.
 						</p>
 					</div>
@@ -136,10 +136,8 @@ export default function Documents({ loaderData }: Route.ComponentProps) {
 
 				{/* Upload Expandable Area */}
 				{isUploadOpen && (
-					<div className="bg-white rounded-lg shadow p-6 border border-gray-100 animate-in slide-in-from-top-4 fade-in duration-200">
-						<h2 className="text-lg font-medium text-gray-900 mb-4">
-							Upload Documents
-						</h2>
+					<div className="card p-6 border border-gray-100 animate-in slide-in-from-top-4 fade-in duration-200">
+						<h2 className="heading-5 mb-4">Upload Documents</h2>
 						<FileUploader
 							onUploadComplete={() => {
 								// revalidate
@@ -162,14 +160,14 @@ export default function Documents({ loaderData }: Route.ComponentProps) {
 								name="q"
 								defaultValue={searchParams.get("q") || ""}
 								placeholder="Search documents..."
-								className="w-full pl-9 pr-4 py-2 text-sm border-gray-200 rounded-md focus:ring-orange-500 focus:border-orange-500"
+								className="w-full pl-9 pr-4 py-2 text-sm border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500"
 							/>
 						</form>
 					</div>
 					<div className="flex gap-2">
 						<div className="relative">
 							<select
-								className="pl-3 pr-8 py-2 text-sm border-gray-200 rounded-md focus:ring-orange-500 focus:border-orange-500 appearance-none bg-white"
+								className="pl-3 pr-8 py-2 text-sm border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500 appearance-none bg-white"
 								value={searchParams.get("type") || "All"}
 								onChange={(e) => handleFilterChange("type", e.target.value)}
 							>
@@ -184,7 +182,7 @@ export default function Documents({ loaderData }: Route.ComponentProps) {
 						</div>
 						<div className="relative">
 							<select
-								className="pl-3 pr-8 py-2 text-sm border-gray-200 rounded-md focus:ring-orange-500 focus:border-orange-500 appearance-none bg-white"
+								className="pl-3 pr-8 py-2 text-sm border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500 appearance-none bg-white"
 								value={searchParams.get("status") || "All"}
 								onChange={(e) => handleFilterChange("status", e.target.value)}
 							>
@@ -201,9 +199,7 @@ export default function Documents({ loaderData }: Route.ComponentProps) {
 				{files.length === 0 ? (
 					<div className="text-center py-20 bg-white rounded-lg border border-dashed border-gray-300">
 						<FileText className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-						<h3 className="text-lg font-medium text-gray-900">
-							No documents found
-						</h3>
+						<h3 className="heading-5">No documents found</h3>
 						<p className="text-gray-500 mt-1">
 							Try adjusting your filters or upload a new document.
 						</p>
@@ -222,7 +218,7 @@ export default function Documents({ loaderData }: Route.ComponentProps) {
 				{previewDoc?.mimeType === "application/pdf" && pdfUrl ? (
 					<Suspense
 						fallback={
-							<div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center">
+							<div className="fixed inset-0 z-50 bg-black/90 center">
 								<div className="text-white text-center">
 									<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4" />
 									<p>Loading PDF Viewer...</p>

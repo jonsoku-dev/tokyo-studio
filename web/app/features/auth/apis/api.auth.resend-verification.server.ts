@@ -3,7 +3,7 @@ import { db } from "@itcom/db/client";
 import { verificationTokens } from "@itcom/db/schema";
 import { eq } from "drizzle-orm";
 import type { ActionFunctionArgs } from "react-router";
-import { actionHandler, UnauthorizedError, ConflictError } from "~/shared/lib";
+import { actionHandler, ConflictError, UnauthorizedError } from "~/shared/lib";
 
 /**
  * SPEC 002: Resend Email Verification

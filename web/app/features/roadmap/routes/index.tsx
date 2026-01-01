@@ -83,21 +83,21 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 		<div className="min-h-screen bg-gray-50">
 			{/* Header */}
 			<div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-				<div className="max-w-7xl mx-auto px-4 py-4 sm:py-6">
+				<div className="container-wide px-4 py-4 sm:py-6">
 					<div className="flex items-center justify-between">
 						<div>
-							<h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
+							<h1 className="text-xl sm:heading-3 tracking-tight">
 								나의 로드맵
 							</h1>
-							<p className="text-xs sm:text-sm text-gray-500 mt-1 font-medium">
+							<p className="text-xs sm:caption mt-1 font-medium">
 								{profile.jobFamily} · {profile.level} · 일본어 {profile.jpLevel}
 							</p>
 						</div>
 						<div className="flex items-center gap-4">
 							{/* Progress */}
 							<div className="text-right hidden sm:block">
-								<p className="text-xs text-gray-500 font-medium">전체 진행률</p>
-								<p className="text-xl font-bold text-indigo-600">
+								<p className="caption font-medium">전체 진행률</p>
+								<p className="heading-4 text-indigo-600">
 									{displayProgress.percent}%
 								</p>
 							</div>
@@ -145,7 +145,7 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 			</div>
 
 			{/* Kanban Board */}
-			<div className="max-w-7xl mx-auto px-4 py-8">
+			<div className="container-wide px-4 py-8">
 				<KanbanBoard tasks={displayTasks} columns={columns} />
 			</div>
 		</div>

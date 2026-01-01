@@ -136,7 +136,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 			<div className="flex items-center justify-between mb-4">
 				<Dialog.Title
 					as="h3"
-					className="text-lg font-bold text-gray-900 leading-6"
+					className="heading-5 leading-6"
 				>
 					New Application
 				</Dialog.Title>
@@ -164,13 +164,13 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 						placeholder="https://linkedin.com/jobs/..."
 						value={url}
 						onChange={(e) => setUrl(e.target.value)}
-						className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+						className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none transition-all"
 					/>
 					<button
 						type="button"
 						onClick={() => handleParse(false)}
 						disabled={parserFetcher.state !== "idle" || !url}
-						className="flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-sm"
+						className="flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded-lg body-sm hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-sm"
 					>
 						{parserFetcher.state !== "idle" ? (
 							<Loader2 className="w-4 h-4 animate-spin" />
@@ -206,7 +206,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 			<div className="w-full border-t border-gray-100 mb-6" />
 
 			{/* Manual Form */}
-			<form onSubmit={handleSubmit} className="space-y-4">
+			<form onSubmit={handleSubmit} className="stack">
 				<div>
 					<label
 						htmlFor="company"
@@ -220,7 +220,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 						type="text"
 						value={displayCompany}
 						onChange={(e) => setCompany(e.target.value)}
-						className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 outline-none"
+						className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
 					/>
 				</div>
 
@@ -237,7 +237,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 						type="text"
 						value={displayPosition}
 						onChange={(e) => setPosition(e.target.value)}
-						className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 outline-none"
+						className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
 					/>
 				</div>
 
@@ -253,7 +253,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 							id="stage"
 							value={stage}
 							onChange={(e) => setStage(e.target.value)}
-							className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-white"
+							className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none bg-white"
 						>
 							<option value="applied">Applied</option>
 							<option value="interview">Interview</option>
@@ -274,7 +274,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 							type="date"
 							value={date}
 							onChange={(e) => setDate(e.target.value)}
-							className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 outline-none"
+							className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
 						/>
 					</div>
 				</div>
@@ -292,7 +292,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 						value={nextAction}
 						onChange={(e) => setNextAction(e.target.value)}
 						placeholder="e.g. Follow up in 3 days"
-						className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 outline-none"
+						className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
 					/>
 				</div>
 
@@ -302,7 +302,7 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 						disabled={
 							addFetcher.state !== "idle" || !displayCompany || !displayPosition
 						}
-						className="w-full py-3 bg-orange-600 text-white rounded-xl font-bold hover:bg-orange-700 disabled:opacity-50 transition-all shadow-md active:scale-95"
+						className="w-full py-3 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 disabled:opacity-50 transition-all shadow-md active:scale-95"
 					>
 						{addFetcher.state !== "idle" ? "Submitting..." : "Add Application"}
 					</button>

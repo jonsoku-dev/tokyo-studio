@@ -7,12 +7,6 @@ export function Label({
 }: React.LabelHTMLAttributes<HTMLLabelElement>) {
 	return (
 		// biome-ignore lint/a11y/noLabelWithoutControl: Generic label component
-		<label
-			className={cn(
-				"text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-				className,
-			)}
-			{...props}
-		/>
+		<label className={cn("label", className)} {...props} />
 	);
 }

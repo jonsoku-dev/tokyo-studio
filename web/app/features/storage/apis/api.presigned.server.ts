@@ -1,6 +1,6 @@
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { storageService } from "~/features/storage/services/storage.server";
-import { loaderHandler, BadRequestError } from "~/shared/lib";
+import { BadRequestError, loaderHandler } from "~/shared/lib";
 import type { Route } from "./+types/api.presigned.server";
 
 export const loader = loaderHandler(async ({ request }: Route.LoaderArgs) => {

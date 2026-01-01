@@ -17,10 +17,10 @@ export function SearchFilters() {
 	};
 
 	return (
-		<div className="space-y-6">
+		<div className="stack-md">
 			<div>
 				<h3 className="text-sm font-medium text-gray-500 mb-2">Category</h3>
-				<div className="flex flex-wrap gap-2">
+				<div className="cluster-sm">
 					{["all", "general", "qna", "review"].map((c) => (
 						<Button
 							key={c}
@@ -37,7 +37,7 @@ export function SearchFilters() {
 
 			<div>
 				<h3 className="text-sm font-medium text-gray-500 mb-2">Time Range</h3>
-				<div className="flex flex-wrap gap-2">
+				<div className="cluster-sm">
 					{[
 						{ label: "All Time", value: "all" },
 						{ label: "Past Week", value: "week" },

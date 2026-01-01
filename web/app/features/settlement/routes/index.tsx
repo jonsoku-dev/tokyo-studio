@@ -202,10 +202,10 @@ export default function SettlementPage() {
 
 	return (
 		<Shell>
-			<div className="max-w-4xl mx-auto space-y-6">
+			<div className="max-w-4xl mx-auto stack-md">
 				{/* Header */}
-				<div className="space-y-2">
-					<h1 className="text-3xl font-bold text-gray-900">
+				<div className="stack-sm">
+					<h1 className="heading-2 text-gray-900">
 						🗼 도쿄 정착 체크리스트
 					</h1>
 					<p className="text-gray-500">
@@ -217,7 +217,7 @@ export default function SettlementPage() {
 				<div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
 					<label
 						htmlFor="arrivalDate"
-						className="block text-sm font-bold text-gray-700 mb-2"
+						className="block body-sm text-gray-700 mb-2"
 					>
 						📅 도착 예정일 / 到着予定日
 					</label>
@@ -227,13 +227,13 @@ export default function SettlementPage() {
 							type="date"
 							value={localArrivalDate}
 							onChange={(e) => setLocalArrivalDate(e.target.value)}
-							className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none text-lg"
+							className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none text-lg"
 						/>
 						<button
 							type="button"
 							onClick={handleSetArrivalDate}
 							disabled={!localArrivalDate || fetcher.state !== "idle"}
-							className="px-6 py-3 bg-orange-600 text-white rounded-xl font-bold hover:bg-orange-700 disabled:opacity-50 transition-all"
+							className="px-6 py-3 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 disabled:opacity-50 transition-all"
 						>
 							{arrivalDate ? "변경" : "설정"}
 						</button>
@@ -263,13 +263,13 @@ export default function SettlementPage() {
 
 				{/* Filter Results Info */}
 				{hasFiltersApplied && (
-					<p className="text-sm text-gray-500">
+					<p className="caption">
 						{filteredTasks.length}개의 태스크가 필터에 맞습니다
 					</p>
 				)}
 
 				{/* Task Sections */}
-				<div className="space-y-6">
+				<div className="stack-md">
 					{phases.map((phase) => {
 						const phaseTasks = groupedTasks[phase.key];
 						if (hasFiltersApplied && phaseTasks.length === 0) return null;

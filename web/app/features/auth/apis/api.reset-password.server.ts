@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { actionHandler, ValidationError } from "~/shared/lib";
 import { passwordResetService } from "../services/password-reset.server";
 import type { Route } from "./+types/api.reset-password.server";
-import { actionHandler, ValidationError } from "~/shared/lib";
 
 const ResetPasswordSchema = z.object({
 	token: z.string().min(1, "Token is required"),

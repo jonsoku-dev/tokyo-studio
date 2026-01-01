@@ -49,7 +49,7 @@ export default function Diagnosis({ loaderData }: Route.ComponentProps) {
 		<Shell>
 			<div className="py-10">
 				<div className="text-center mb-10">
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">
+					<h1 className="heading-2 text-gray-900 mb-2">
 						Let's build your strategy
 					</h1>
 					<p className="text-gray-600">

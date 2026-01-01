@@ -1,11 +1,16 @@
 import { requireUserId } from "~/features/auth/utils/session.server";
-import { avatarService } from "../services/avatar.server";
 import {
-	logAvatarChange,
-} from "../services/avatar-logger.server";
+	AppError,
+	actionHandler,
+	BadRequestError,
+	ErrorCode,
+	InternalError,
+	RateLimitError,
+} from "~/shared/lib";
+import { avatarService } from "../services/avatar.server";
+import { logAvatarChange } from "../services/avatar-logger.server";
 import { checkAvatarUploadRateLimit } from "../services/avatar-rate-limiter.server";
 import type { Route } from "./+types/api.avatar.server";
-import { actionHandler, BadRequestError, InternalError, AppError, ErrorCode, RateLimitError } from "~/shared/lib";
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -38,7 +43,7 @@ export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 			const rateLimitCheck = checkAvatarUploadRateLimit(userId);
 			if (!rateLimitCheck.allowed) {
 				throw new RateLimitError(
-					`Rate limit exceeded. Please try again in ${rateLimitCheck.retryAfter} seconds.`
+					`Rate limit exceeded. Please try again in ${rateLimitCheck.retryAfter} seconds.`,
 				);
 			}
 

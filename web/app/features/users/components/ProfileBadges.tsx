@@ -41,11 +41,11 @@ export function ProfileBadges({ badges }: ProfileBadgesProps) {
 	}
 
 	return (
-		<div className="space-y-2">
-			<h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
+		<div className="stack-sm">
+			<h3 className="body-sm text-gray-700 uppercase tracking-wider">
 				Badges
 			</h3>
-			<div className="flex flex-wrap gap-2">
+			<div className="cluster-sm">
 				{badges.map((badge) => {
 					const Icon = ICON_MAP[badge.icon] || ShieldCheck;
 

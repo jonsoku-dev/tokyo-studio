@@ -32,7 +32,7 @@ export function DefaultAvatar({
 
 	return (
 		<div
-			className={`flex items-center justify-center rounded-full font-bold flex-shrink-0 ${sizeMap[size]} ${className}`}
+			className={`center rounded-full font-bold flex-shrink-0 ${sizeMap[size]} ${className}`}
 			style={{
 				backgroundColor: colors.bg,
 				color: colors.text,

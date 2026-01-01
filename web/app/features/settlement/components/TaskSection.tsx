@@ -55,15 +55,15 @@ export function TaskSection({
 				<div className="flex items-center gap-3">
 					<span className="text-2xl">{phaseIcons[phase]}</span>
 					<div className="text-left">
-						<h2 className="text-lg font-bold text-gray-900">{titleKo}</h2>
-						<p className="text-sm text-gray-500">{titleEn}</p>
+						<h2 className="heading-5">{titleKo}</h2>
+						<p className="caption">{titleEn}</p>
 					</div>
 				</div>
 				<div className="flex items-center gap-4">
 					<span
 						className={`px-3 py-1 rounded-full text-sm font-medium ${
 							isPhaseComplete
-								? "bg-green-100 text-green-700"
+								? "bg-accent-100 text-accent-700"
 								: "bg-gray-100 text-gray-600"
 						}`}
 					>
@@ -117,9 +117,9 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 	}
 
 	const categoryColors: Record<string, string> = {
-		government: "bg-blue-100 text-blue-700",
+		government: "bg-primary-100 text-primary-700",
 		housing: "bg-purple-100 text-purple-700",
-		finance: "bg-green-100 text-green-700",
+		finance: "bg-accent-100 text-accent-700",
 		utilities: "bg-yellow-100 text-yellow-700",
 		other: "bg-gray-100 text-gray-700",
 	};
@@ -135,10 +135,10 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 				<button
 					type="button"
 					onClick={onToggle}
-					className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+					className={`mt-1 w-6 h-6 rounded-full border-2 center flex-shrink-0 transition-all ${
 						task.isCompleted
-							? "bg-green-500 border-green-500 text-white"
-							: "border-gray-300 hover:border-orange-500"
+							? "bg-accent-500 border-accent-500 text-white"
+							: "border-gray-300 hover:border-primary-500"
 					}`}
 				>
 					{task.isCompleted && <Check className="w-4 h-4" />}
@@ -157,7 +157,7 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 							>
 								{task.titleKo}
 							</h3>
-							<p className="text-sm text-gray-500">{task.titleJa}</p>
+							<p className="caption">{task.titleJa}</p>
 						</div>
 						<span
 							className={`px-2 py-0.5 rounded text-xs font-medium ${categoryColors[task.category]}`}
@@ -167,7 +167,7 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 					</div>
 
 					{/* Meta Info */}
-					<div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-gray-500">
+					<div className="flex flex-wrap items-center gap-3 mt-2 caption">
 						<span className="flex items-center gap-1">
 							<Clock className="w-3 h-3" />
 							{task.estimatedMinutes >= 60
@@ -192,14 +192,14 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 					<button
 						type="button"
 						onClick={() => setIsDetailOpen(!isDetailOpen)}
-						className="mt-2 text-xs text-orange-600 hover:text-orange-700 font-medium"
+						className="mt-2 text-xs text-primary-600 hover:text-primary-700 font-medium"
 					>
 						{isDetailOpen ? "접기 ▲" : "상세보기 ▼"}
 					</button>
 
 					{/* Details Panel */}
 					{isDetailOpen && (
-						<div className="mt-3 p-4 bg-gray-50 rounded-lg space-y-4 text-sm">
+						<div className="mt-3 p-4 bg-gray-50 rounded-lg stack text-sm">
 							{/* Instructions */}
 							<div>
 								<h4 className="font-semibold text-gray-700 mb-1">
@@ -239,7 +239,7 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 										target="_blank"
 										rel="noopener noreferrer"
 										download
-										className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
+										className="inline-flex items-center gap-2 px-4 py-2 bg-accent-600 text-white rounded-lg text-sm font-medium hover:bg-accent-700 transition-colors"
 									>
 										<Download className="w-4 h-4" />
 										양식 다운로드

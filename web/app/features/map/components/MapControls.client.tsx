@@ -110,7 +110,7 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 	}, [setShowSuggestions]);
 
 	return (
-		<div className="flex flex-col gap-3 p-3 bg-white rounded-lg shadow-md">
+		<div className="flex flex-col gap-3 p-3 card-md">
 			{/* 검색 입력 */}
 			<div className="relative">
 				<div className="flex gap-2">
@@ -123,7 +123,7 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 							onChange={(e) => handleSearchInput(e.target.value)}
 							onKeyDown={handleKeyDown}
 							disabled={isLoading}
-							className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+							className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-gray-100"
 						/>
 						{isLoading && (
 							<div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -135,7 +135,7 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 						type="button"
 						onClick={handleSearch}
 						disabled={isLoading}
-						className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition text-sm font-medium"
+						className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-gray-400 transition text-sm font-medium"
 					>
 						검색
 					</button>
@@ -157,7 +157,7 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 								className="w-full text-left px-3 py-2 hover:bg-gray-100 border-b last:border-b-0 transition"
 							>
 								<div className="flex items-center gap-2">
-									<span className="text-xs text-gray-500">
+									<span className="caption">
 										{suggestion.category}
 									</span>
 									<span className="text-sm">{suggestion.name}</span>
@@ -169,7 +169,7 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 			</div>
 
 			{/* 카테고리 필터 */}
-			<div className="flex flex-wrap gap-2">
+			<div className="cluster-sm">
 				{CATEGORIES.map((category) => (
 					<button
 						type="button"
@@ -177,7 +177,7 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 						onClick={() => toggleCategory(category.value)}
 						className={`flex items-center gap-1 px-3 py-2 rounded-full text-sm font-medium transition ${
 							selectedCategories.has(category.value)
-								? "bg-blue-600 text-white"
+								? "bg-primary-600 text-white"
 								: "bg-gray-200 text-gray-700 hover:bg-gray-300"
 						}`}
 					>
@@ -195,7 +195,7 @@ export function MapControls({ onSearch, isLoading }: MapControlsProps) {
 						clearCategories();
 						setSearchQuery("");
 					}}
-					className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition"
+					className="px-3 py-2 body-sm hover:text-gray-900 hover:bg-gray-100 rounded transition"
 				>
 					필터 초기화
 				</button>

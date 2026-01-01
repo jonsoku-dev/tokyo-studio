@@ -63,24 +63,24 @@ export default function MentorSettings() {
 	return (
 		<Shell>
 			<div className="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-				<div className="space-y-6">
+				<div className="stack-md">
 					<div>
-						<h1 className="text-2xl font-bold text-gray-900">
+						<h1 className="heading-3">
 							Mentor Settings
 						</h1>
-						<p className="mt-1 text-sm text-gray-500">
+						<p className="mt-1 caption">
 							Configure your mentoring preferences and video conferencing.
 						</p>
 					</div>
 
 					<div className="bg-white shadow rounded-lg p-6">
-						<Form method="post" className="space-y-6">
+						<Form method="post" className="stack-md">
 							<div>
 								<h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
 									Video Conferencing
 								</h3>
 
-								<div className="space-y-4">
+								<div className="stack">
 									<div>
 										<label
 											htmlFor="preferredVideoProvider"
@@ -92,7 +92,7 @@ export default function MentorSettings() {
 											id="preferredVideoProvider"
 											name="preferredVideoProvider"
 											defaultValue={profile.preferredVideoProvider || "jitsi"}
-											className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm rounded-md"
+											className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
 										>
 											<option value="jitsi">
 												Jitsi Meet (Automatic, Free)
@@ -101,7 +101,7 @@ export default function MentorSettings() {
 											<option value="zoom">Zoom (Coming Soon)</option>
 											<option value="manual">Manual URL</option>
 										</select>
-										<p className="mt-1 text-xs text-gray-500">
+										<p className="mt-1 caption">
 											"Manual" allows you to paste a permanent link (e.g., your
 											personal Zoom room).
 										</p>
@@ -114,18 +114,18 @@ export default function MentorSettings() {
 											placeholder="https://zoom.us/j/123456789"
 											defaultValue={profile.manualMeetingUrl || ""}
 										/>
-										<p className="mt-1 text-xs text-gray-500">
+										<p className="mt-1 caption">
 											Only used if "Manual URL" is selected above.
 										</p>
 									</div>
 								</div>
 							</div>
 
-							<div className="border-t border-gray-200 pt-6">
+							<div className="divider pt-6">
 								<h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
 									Session Details
 								</h3>
-								<div className="space-y-4">
+								<div className="stack">
 									<Input
 										label="Hourly Rate ($)"
 										name="hourlyRate"

@@ -68,7 +68,7 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 			{/* Header */}
 			<div className="flex items-center justify-between p-4 bg-gray-900 text-white border-b border-gray-700">
 				<h2
-					className="text-lg font-semibold truncate max-w-md"
+					className="heading-5 truncate max-w-md"
 					title={filename}
 				>
 					{filename}
@@ -147,7 +147,7 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 			</div>
 
 			{/* PDF Document */}
-			<div className="flex-1 overflow-auto bg-gray-800 flex items-center justify-center p-8">
+			<div className="flex-1 overflow-auto bg-gray-800 center p-8">
 				{isLoading && (
 					<div className="text-white text-center">
 						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4" />

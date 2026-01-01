@@ -49,21 +49,21 @@ export default function NewPost({ actionData }: Route.ComponentProps) {
 		<Shell>
 			<div className="max-w-2xl mx-auto">
 				<div className="mb-6">
-					<h1 className="text-2xl font-bold text-gray-900">Create a Post</h1>
+					<h1 className="heading-3">Create a Post</h1>
 					<p className="text-gray-500 text-sm">
 						Share your experience or ask a question.
 					</p>
 				</div>
 
-				<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+				<div className="card-sm border border-gray-200 p-6">
 					<TabGroup>
 						<TabList className="flex gap-4 border-b border-gray-200 mb-6">
 							<Tab
 								className={({ selected }) =>
 									`pb-2 text-sm font-medium border-b-2 focus:outline-none ${
 										selected
-											? "border-orange-500 text-orange-600"
-											: "border-transparent text-gray-500 hover:text-gray-700"
+											? "border-primary-500 text-primary-600"
+											: "border-transparent link-subtle"
 									}`
 								}
 							>
@@ -73,8 +73,8 @@ export default function NewPost({ actionData }: Route.ComponentProps) {
 								className={({ selected }) =>
 									`pb-2 text-sm font-medium border-b-2 focus:outline-none ${
 										selected
-											? "border-orange-500 text-orange-600"
-											: "border-transparent text-gray-500 hover:text-gray-700"
+											? "border-primary-500 text-primary-600"
+											: "border-transparent link-subtle"
 									}`
 								}
 							>
@@ -116,7 +116,7 @@ function PostForm({
 	const [content, setContent] = useState("");
 
 	return (
-		<Form method="post" className="space-y-6">
+		<Form method="post" className="stack-md">
 			<input type="hidden" name="category" value={category} />
 
 			{error && (

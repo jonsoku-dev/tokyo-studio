@@ -15,11 +15,11 @@ export default function MySessionsPage() {
 
 	return (
 		<div className="min-h-screen bg-black text-white pt-24 pb-12">
-			<div className="container mx-auto px-4">
-				<h1 className="text-3xl font-bold mb-8">My Sessions</h1>
+			<div className="container-page px-4">
+				<h1 className="heading-2 mb-8">My Sessions</h1>
 
 				{sessions.length > 0 ? (
-					<div className="space-y-4">
+					<div className="stack">
 						{sessions.map(({ session, mentor, isReviewed }) => {
 							const date = new Date(session.date);
 							const now = new Date();
@@ -45,7 +45,7 @@ export default function MySessionsPage() {
 											<p className="text-sm text-gray-400">
 												with <span className="text-white">{mentor?.name}</span>
 											</p>
-											<p className="text-xs text-gray-500 mt-1">
+											<p className="caption mt-1">
 												{format(
 													new Date(session.date),
 													"MMMM d, yyyy 'at' h:mm a",
@@ -59,7 +59,7 @@ export default function MySessionsPage() {
 										<div
 											className={`px-3 py-1 rounded-full text-xs font-bold ${
 												(session.status || "scheduled") === "confirmed"
-													? "bg-green-500/20 text-green-400"
+													? "bg-accent-500/20 text-accent-400"
 													: "bg-gray-500/20 text-gray-400"
 											}`}
 										>
@@ -71,7 +71,7 @@ export default function MySessionsPage() {
 												href={`/mentoring/session/${session.id}/join`}
 												target="_blank"
 												rel="noreferrer"
-												className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary/80"
+												className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 body-sm text-white hover:bg-primary/80"
 											>
 												<Video className="h-4 w-4" />
 												Join Call
@@ -81,7 +81,7 @@ export default function MySessionsPage() {
 										{canReview && (
 											<Link
 												to={`/mentoring/session/${session.id}/review`}
-												className="flex items-center gap-2 rounded-lg bg-amber-500/20 px-4 py-2 text-sm font-bold text-amber-500 hover:bg-amber-500/30"
+												className="flex items-center gap-2 rounded-lg bg-amber-500/20 px-4 py-2 body-sm text-amber-500 hover:bg-amber-500/30"
 											>
 												<Star className="h-4 w-4" />
 												Write Review

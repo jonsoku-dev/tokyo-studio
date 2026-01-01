@@ -49,7 +49,7 @@ export default function Home() {
 
 	return (
 		<Shell>
-			<div className="space-y-6">
+			<div className="stack-md">
 				{/* 3D Welcome Hero */}
 				<WelcomeHero />
 
@@ -58,21 +58,21 @@ export default function Home() {
 
 				{/* Create Post / Action Bar */}
 				<div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center gap-4">
-					<div className="w-10 h-10 rounded-full bg-orange-100 flex-shrink-0 border-2 border-white shadow-sm flex items-center justify-center text-orange-600 font-bold">
+					<div className="w-10 h-10 rounded-full bg-primary-100 flex-shrink-0 border-2 border-white shadow-sm center text-primary-600 font-bold">
 						J
 					</div>
 					<input
 						type="text"
 						placeholder="What's your next step today?"
-						className="flex-1 bg-gray-50 hover:bg-white border-transparent hover:border-gray-200 border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
+						className="flex-1 bg-gray-50 hover:bg-white border-transparent hover:border-gray-200 border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
 					/>
 				</div>
 
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 					{/* Feed - Today's Tasks */}
-					<div className="flex flex-col gap-4">
+					<div className="stack">
 						<div className="flex items-center justify-between px-1">
-							<h2 className="text-sm font-bold text-gray-500 uppercase tracking-wide">
+							<h2 className="body-sm text-gray-500 uppercase tracking-wide">
 								Today's Tasks
 							</h2>
 							<span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
@@ -81,7 +81,7 @@ export default function Home() {
 						</div>
 
 						{tasks.length === 0 && (
-							<div className="text-sm text-gray-500 p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+							<div className="caption p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
 								No tasks for today. Great job!
 							</div>
 						)}
@@ -94,12 +94,12 @@ export default function Home() {
 					</div>
 
 					{/* Feed - Job Recommendations */}
-					<div className="flex flex-col gap-4">
-						<h2 className="text-sm font-bold text-gray-500 uppercase tracking-wide px-1">
+					<div className="stack">
+						<h2 className="body-sm text-gray-500 uppercase tracking-wide px-1">
 							Recommended for you
 						</h2>
 
-						<div className="space-y-4">
+						<div className="stack">
 							{jobs.map((job, idx) => (
 								<JobCard key={job.id} job={job} index={idx} />
 							))}

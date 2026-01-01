@@ -1,10 +1,7 @@
 import type { ActionFunctionArgs } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { handleVote } from "~/features/community/services/vote.server";
-import {
-	actionHandler,
-	BadRequestError,
-} from "~/shared/lib";
+import { actionHandler, BadRequestError } from "~/shared/lib";
 
 export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 	const userId = await requireUserId(request);

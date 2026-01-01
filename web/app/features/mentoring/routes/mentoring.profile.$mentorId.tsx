@@ -73,10 +73,10 @@ export default function MentorProfilePage() {
 			{/* Background elements */}
 			<div className="fixed inset-0 bg-[url('/grid-pattern.svg')] opacity-10 pointer-events-none" />
 
-			<div className="container mx-auto px-4 relative z-10">
+			<div className="container-page px-4 relative z-10">
 				<div className="grid gap-10 lg:grid-cols-[1fr_360px]">
 					{/* Left Column: Profile Info */}
-					<div className="space-y-8">
+					<div className="stack-lg">
 						{/* Header Card */}
 						<div className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
 							<div className="flex flex-col md:flex-row gap-6 items-start">
@@ -88,13 +88,13 @@ export default function MentorProfilePage() {
 									alt={mentor.name}
 									className="h-32 w-32 rounded-full border-4 border-white/10 object-cover shadow-2xl"
 								/>
-								<div className="flex-1 space-y-2">
-									<h1 className="text-3xl font-bold">{mentor.name}</h1>
+								<div className="flex-1 stack-sm">
+									<h1 className="heading-2">{mentor.name}</h1>
 									<div className="text-xl text-gray-400 font-medium">
 										{mentor.profile.jobTitle}
 									</div>
 
-									<div className="flex flex-wrap gap-4 text-sm text-gray-500 mt-2">
+									<div className="cluster caption mt-2">
 										<div className="flex items-center gap-1">
 											<Building2 className="h-4 w-4" />
 											{mentor.profile.company}
@@ -112,26 +112,26 @@ export default function MentorProfilePage() {
 								</div>
 
 								<div className="text-right hidden md:block">
-									<div className="text-2xl font-bold">
+									<div className="heading-3">
 										${((mentor.profile.hourlyRate || 0) / 100).toFixed(0)}
 									</div>
-									<div className="text-sm text-gray-500">per hour</div>
+									<div className="caption">per hour</div>
 								</div>
 							</div>
 						</div>
 
 						{/* About Section */}
-						<div className="space-y-4">
-							<h2 className="text-xl font-bold">About</h2>
+						<div className="stack">
+							<h2 className="heading-4">About</h2>
 							<p className="text-gray-300 leading-relaxed whitespace-pre-wrap px-4">
 								{mentor.profile.bio}
 							</p>
 						</div>
 
 						{/* Expertise */}
-						<div className="space-y-4">
-							<h2 className="text-xl font-bold">Expertise</h2>
-							<div className="flex flex-wrap gap-2 px-4">
+						<div className="stack">
+							<h2 className="heading-4">Expertise</h2>
+							<div className="cluster-sm px-4">
 								{mentor.profile.specialties?.map((skill: string) => (
 									<Badge
 										key={skill}
@@ -145,9 +145,9 @@ export default function MentorProfilePage() {
 						</div>
 
 						{/* Reviews */}
-						<div className="space-y-4">
-							<h2 className="text-xl font-bold">Recent Reviews</h2>
-							<div className="space-y-4">
+						<div className="stack">
+							<h2 className="heading-4">Recent Reviews</h2>
+							<div className="stack">
 								{/* Assuming mentor.reviews is augmented in service */}
 								{mentor.reviews && mentor.reviews.length > 0 ? (
 									mentor.reviews.map((review) => (
@@ -179,7 +179,7 @@ export default function MentorProfilePage() {
 					</div>
 
 					{/* Right Column: Calendar */}
-					<div className="space-y-6">
+					<div className="stack-md">
 						<div className="sticky top-24">
 							<div className="rounded-2xl border border-gradient p-[1px] bg-gradient-to-br from-primary/50 to-purple-600/50">
 								<div className="rounded-2xl bg-black p-1">
@@ -190,7 +190,7 @@ export default function MentorProfilePage() {
 									/>
 								</div>
 							</div>
-							<p className="text-center text-xs text-gray-500 mt-4">
+							<p className="text-center caption mt-4">
 								Select a date to view available times.
 								<br />
 								All times are in your local timezone.

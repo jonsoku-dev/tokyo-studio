@@ -63,9 +63,9 @@ export function CommentItem({
 			</div>
 
 			{/* Content Column */}
-			<div className="flex-1 min-w-0 space-y-1.5">
+			<div className="flex-1 min-w-0 stack-xs.5">
 				{/* Request: Header */}
-				<div className="flex items-center text-xs text-gray-500 gap-2">
+				<div className="flex items-center caption gap-2">
 					<span
 						className={cn(
 							"font-medium",
@@ -87,11 +87,11 @@ export function CommentItem({
 				</div>
 
 				{/* Body */}
-				<div className="text-sm text-gray-800 prose prose-sm max-w-none prose-p:my-1 prose-a:text-orange-600">
+				<div className="text-sm text-gray-800 prose prose-sm max-w-none prose-p:my-1 prose-a:text-primary-600">
 					{isEditing ? (
-						<div className="space-y-2">
+						<div className="stack-sm">
 							<textarea
-								className="w-full p-2 border rounded-md text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none"
+								className="w-full p-2 border rounded-md text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none"
 								rows={3}
 								value={editContent}
 								onChange={(e) => setEditContent(e.target.value)}
@@ -193,11 +193,11 @@ function ReportAction({ commentId }: { commentId: string }) {
 
 	if (isOpen) {
 		return (
-			<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+			<div className="fixed inset-0 z-50 center bg-black/50 p-4">
 				<div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg">
-					<h3 className="text-lg font-bold mb-4">Report Comment</h3>
+					<h3 className="heading-5 mb-4">Report Comment</h3>
 					{isSubmitted ? (
-						<div className="text-center text-green-600 py-4 font-medium">
+						<div className="text-center text-accent-600 py-4 font-medium">
 							Report submitted. Thank you.
 						</div>
 					) : (

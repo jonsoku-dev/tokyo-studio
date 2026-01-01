@@ -95,9 +95,9 @@ export default function ReviewSessionPage() {
 	const [hoverRating, setHoverRating] = useState(0);
 
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+		<div className="fixed inset-0 z-50 center bg-black/80 backdrop-blur-sm p-4">
 			<div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0A0A0A] p-6 shadow-2xl">
-				<h2 className="text-2xl font-bold mb-2">Rate your session</h2>
+				<h2 className="heading-3 mb-2">Rate your session</h2>
 				<p className="text-gray-400 mb-6">
 					How was your session with{" "}
 					<span className="text-white font-medium">{session.mentor.name}</span>?
@@ -109,7 +109,7 @@ export default function ReviewSessionPage() {
 					</div>
 				)}
 
-				<Form method="post" className="space-y-6">
+				<Form method="post" className="stack-md">
 					{/* Star Rating */}
 					<div className="flex justify-center gap-2">
 						{[1, 2, 3, 4, 5].map((star) => (
@@ -153,7 +153,7 @@ export default function ReviewSessionPage() {
 					<div className="flex justify-end gap-3 pt-2">
 						<Link
 							to="/mentoring/bookings"
-							className="inline-flex items-center justify-center rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500 px-4 py-2 text-base"
+							className="inline-center rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500 px-4 py-2 text-base"
 						>
 							Cancel
 						</Link>

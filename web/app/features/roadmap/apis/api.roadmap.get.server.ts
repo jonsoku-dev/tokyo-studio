@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
-import { getRoadmap } from "../services/roadmap.server";
 import { loaderHandler } from "~/shared/lib";
+import { getRoadmap } from "../services/roadmap.server";
 
 /**
  * GET /api/roadmap

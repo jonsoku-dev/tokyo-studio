@@ -1,9 +1,16 @@
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import {
-	type ActionFunctionArgs,
-	type LoaderFunctionArgs,
-} from "react-router";
-import { addFavorite, getUserFavorites, removeFavorite } from "./api.favorites.server";
-import { actionHandler, loaderHandler, BadRequestError, UnauthorizedError, InternalError } from "~/shared/lib";
+	actionHandler,
+	BadRequestError,
+	InternalError,
+	loaderHandler,
+	UnauthorizedError,
+} from "~/shared/lib";
+import {
+	addFavorite,
+	getUserFavorites,
+	removeFavorite,
+} from "./api.favorites.server";
 
 export const loader = loaderHandler(async ({ request }: LoaderFunctionArgs) => {
 	// 사용자 ID 가져오기 (실제 구현 시 세션에서 가져옴)

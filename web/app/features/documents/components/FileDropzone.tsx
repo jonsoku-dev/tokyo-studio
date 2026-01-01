@@ -61,9 +61,9 @@ export function FileDropzone({ onFileSelect, currentFile }: FileDropzoneProps) {
 				className={clsx(
 					"relative border-2 border-dashed rounded-xl p-8 transition-all cursor-pointer flex flex-col items-center justify-center min-h-[200px] gap-3 text-center",
 					isDragActive
-						? "border-orange-500 bg-orange-50"
-						: "border-gray-300 hover:border-orange-400 hover:bg-gray-50",
-					currentFile && "border-green-500 bg-green-50",
+						? "border-primary-500 bg-primary-50"
+						: "border-gray-300 hover:border-primary-400 hover:bg-gray-50",
+					currentFile && "border-accent-500 bg-accent-50",
 				)}
 			>
 				<input {...getInputProps()} />
@@ -77,15 +77,15 @@ export function FileDropzone({ onFileSelect, currentFile }: FileDropzoneProps) {
 							exit={{ opacity: 0 }}
 							className="flex flex-col items-center gap-2"
 						>
-							<div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-2">
+							<div className="w-12 h-12 rounded-full bg-gray-100 center mb-2">
 								<Upload className="w-6 h-6 text-gray-500" />
 							</div>
-							<p className="text-sm font-medium text-gray-900">
+							<p className="text-sm heading-5">
 								{isDragActive
 									? "Drop the file here"
 									: "Click or drag file to upload"}
 							</p>
-							<p className="text-xs text-gray-500">PDF, DOC, DOCX up to 10MB</p>
+							<p className="caption">PDF, DOC, DOCX up to 10MB</p>
 						</motion.div>
 					) : (
 						<motion.div
@@ -95,19 +95,19 @@ export function FileDropzone({ onFileSelect, currentFile }: FileDropzoneProps) {
 							className="flex flex-col items-center w-full max-w-sm"
 						>
 							<div className="flex items-center gap-3 w-full bg-white p-3 rounded-lg shadow-sm border border-gray-200">
-								<div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0">
+								<div className="w-10 h-10 rounded-lg bg-red-50 center flex-shrink-0">
 									<FileText className="w-5 h-5 text-red-500" />
 								</div>
 								<div className="flex-1 text-left min-w-0">
-									<p className="text-sm font-medium text-gray-900 truncate">
+									<p className="text-sm heading-5 truncate">
 										{currentFile.name}
 									</p>
-									<p className="text-xs text-gray-500">
+									<p className="caption">
 										{(currentFile.size / 1024 / 1024).toFixed(2)} MB
 									</p>
 								</div>
 								{isUploading ? (
-									<div className="w-12 h-12 flex items-center justify-center relative">
+									<div className="w-12 h-12 center relative">
 										<svg
 											className="w-full h-full transform -rotate-90"
 											aria-labelledby="progress-title"
@@ -131,7 +131,7 @@ export function FileDropzone({ onFileSelect, currentFile }: FileDropzoneProps) {
 												fill="transparent"
 												strokeDasharray={113}
 												strokeDashoffset={113 - (113 * uploadProgress) / 100}
-												className="text-green-500 transition-all duration-300"
+												className="text-accent-500 transition-all duration-300"
 											/>
 										</svg>
 									</div>
@@ -150,7 +150,7 @@ export function FileDropzone({ onFileSelect, currentFile }: FileDropzoneProps) {
 								<motion.div
 									initial={{ opacity: 0, y: 5 }}
 									animate={{ opacity: 1, y: 0 }}
-									className="flex items-center gap-1 mt-2 text-green-600 text-xs font-medium"
+									className="flex items-center gap-1 mt-2 text-accent-600 text-xs font-medium"
 								>
 									<CheckCircle className="w-3 h-3" />
 									Upload Complete

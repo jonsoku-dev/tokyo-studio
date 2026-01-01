@@ -3,9 +3,11 @@ import { authenticator } from "~/features/auth/services/auth.server";
 import { actionHandler, loaderHandler } from "~/shared/lib";
 import type { Route } from "./+types/api.line.server";
 
-export const loader = loaderHandler(async ({ request: _request }: Route.LoaderArgs) => {
-	return redirect("/login");
-});
+export const loader = loaderHandler(
+	async ({ request: _request }: Route.LoaderArgs) => {
+		return redirect("/login");
+	},
+);
 
 export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 	return authenticator.authenticate("line", request);

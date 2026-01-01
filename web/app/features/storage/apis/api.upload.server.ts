@@ -6,15 +6,15 @@ import type { ActionFunctionArgs } from "react-router";
 import { getUserFromRequest } from "~/features/auth/services/require-verified-email.server";
 import { logFileOperation } from "~/features/storage/services/file-logger.server";
 import { generateUploadPresignedUrl } from "~/features/storage/services/presigned-urls.server";
-import { S3_CONFIG } from "~/shared/services/s3-client.server";
 import {
-	actionHandler,
-	UnauthorizedError,
-	BadRequestError,
-	PayloadTooLargeError,
 	AppError,
+	actionHandler,
+	BadRequestError,
 	ErrorCode,
+	PayloadTooLargeError,
+	UnauthorizedError,
 } from "~/shared/lib";
+import { S3_CONFIG } from "~/shared/services/s3-client.server";
 
 const MAX_STORAGE_QUOTA = 100 * 1024 * 1024; // 100MB
 
@@ -47,7 +47,9 @@ export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 
 	// 3. Validate required fields
 	if (!filename || !contentType || !fileSize) {
-		throw new BadRequestError("Missing required fields: filename, contentType, fileSize");
+		throw new BadRequestError(
+			"Missing required fields: filename, contentType, fileSize",
+		);
 	}
 
 	// 4. Validate file type

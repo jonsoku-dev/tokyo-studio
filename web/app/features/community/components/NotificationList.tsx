@@ -23,9 +23,9 @@ export function NotificationList({ notifications }: NotificationListProps) {
 	}
 
 	return (
-		<div className="space-y-4">
+		<div className="stack">
 			<div className="flex justify-between items-center mb-2 px-2">
-				<h3 className="font-semibold text-gray-900">Notifications</h3>
+				<h3 className="heading-5">Notifications</h3>
 				<fetcher.Form method="POST" action="/api/notifications">
 					<input type="hidden" name="intent" value="markAllRead" />
 					<Button
@@ -39,7 +39,7 @@ export function NotificationList({ notifications }: NotificationListProps) {
 				</fetcher.Form>
 			</div>
 
-			<div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
+			<div className="stack-sm max-h-[400px] overflow-y-auto pr-2">
 				{notifications.map((notification) => (
 					<NotificationItem key={notification.id} notification={notification} />
 				))}
@@ -81,7 +81,7 @@ function NotificationItem({
 		<div
 			className={cn(
 				"p-3 rounded-lg flex gap-3 text-sm transition-colors",
-				isRead ? "bg-white" : "bg-orange-50",
+				isRead ? "bg-white" : "bg-primary-50",
 			)}
 		>
 			<Avatar
@@ -99,7 +99,7 @@ function NotificationItem({
 					{text}
 				</p>
 				<div className="flex justify-between items-center mt-1">
-					<span className="text-xs text-gray-500">
+					<span className="caption">
 						{notification.createdAt
 							? formatDistanceToNow(new Date(notification.createdAt), {
 									addSuffix: true,
@@ -109,7 +109,7 @@ function NotificationItem({
 					<Link
 						to={href}
 						onClick={handleRead}
-						className="text-xs font-medium text-orange-600 hover:text-orange-700"
+						className="text-xs link hover:text-primary-700"
 					>
 						View
 					</Link>
@@ -121,9 +121,9 @@ function NotificationItem({
 						type="button"
 						onClick={handleRead}
 						title="Mark as read"
-						className="text-orange-400 hover:text-orange-600"
+						className="text-primary-400 hover:text-primary-600"
 					>
-						<div className="h-2 w-2 rounded-full bg-orange-500" />
+						<div className="h-2 w-2 rounded-full bg-primary-500" />
 					</button>
 				</div>
 			)}

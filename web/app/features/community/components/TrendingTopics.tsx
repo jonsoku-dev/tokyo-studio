@@ -43,7 +43,7 @@ export function TrendingTopics({
 
 	if (loading) {
 		return (
-			<div className="animate-pulse space-y-2">
+			<div className="animate-pulse stack-sm">
 				{Array.from({ length: 3 }).map((_, i) => (
 					<div
 						key={i}
@@ -59,13 +59,13 @@ export function TrendingTopics({
 	}
 
 	return (
-		<div className="space-y-3">
+		<div className="stack-sm">
 			<div className="flex items-center gap-2 mb-3">
-				<TrendingUp className="h-5 w-5 text-orange-500" />
+				<TrendingUp className="h-5 w-5 text-primary-500" />
 				<h3 className="font-semibold text-sm">Trending Topics</h3>
 			</div>
 
-			<ul className="space-y-2">
+			<ul className="stack-sm">
 				{topics.map((topic) => (
 					<li key={topic.query}>
 						<button
@@ -75,19 +75,19 @@ export function TrendingTopics({
 							<div className="flex items-center justify-between">
 								<div className="flex items-center gap-2 flex-1 min-w-0">
 									<Search className="h-4 w-4 text-gray-400 flex-shrink-0" />
-									<span className="text-sm font-medium truncate group-hover:text-blue-600">
+									<span className="text-sm font-medium truncate group-hover:text-primary-600">
 										{topic.query}
 									</span>
 								</div>
 
 								{topic.trending && (
-									<span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full flex-shrink-0 ml-2">
+									<span className="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded-full flex-shrink-0 ml-2">
 										↑ Trending
 									</span>
 								)}
 							</div>
 
-							<div className="text-xs text-gray-500 ml-6">
+							<div className="caption ml-6">
 								{topic.searches} searches • {topic.resultCount} results
 							</div>
 						</button>

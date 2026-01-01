@@ -80,10 +80,10 @@ export default function VerifyEmailRequired() {
 	const isSubmitting = navigation.state === "submitting";
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-			<div className="max-w-md w-full space-y-8">
+		<div className="min-h-screen center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+			<div className="max-w-md w-full stack-lg">
 				{/* Warning Icon */}
-				<div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100">
+				<div className="mx-auto center h-16 w-16 rounded-full bg-yellow-100">
 					<svg
 						className="h-10 w-10 text-yellow-600"
 						fill="none"
@@ -106,30 +106,30 @@ export default function VerifyEmailRequired() {
 					<h2 className="text-3xl font-extrabold text-gray-900">
 						Email Verification Required
 					</h2>
-					<p className="mt-2 text-sm text-gray-600">
+					<p className="mt-2 body-sm">
 						Please verify your email address to continue
 					</p>
 				</div>
 
 				{/* Main Content */}
 				<div className="bg-white shadow rounded-lg p-6">
-					<div className="space-y-4">
+					<div className="stack">
 						<p className="text-gray-700">
 							To protect our community, you need to verify your email address
 							before you can:
 						</p>
 
-						<ul className="list-disc list-inside space-y-2 text-gray-600 ml-4">
+						<ul className="list-disc list-inside stack-sm text-gray-600 ml-4">
 							<li>Post job opportunities</li>
 							<li>Book mentoring sessions</li>
 							<li>Write comments and participate in discussions</li>
 						</ul>
 
-						<div className="bg-blue-50 border-l-4 border-blue-400 p-4 mt-4">
+						<div className="bg-primary-50 border-l-4 border-blue-400 p-4 mt-4">
 							<div className="flex">
 								<div className="flex-shrink-0">
 									<svg
-										className="h-5 w-5 text-blue-400"
+										className="h-5 w-5 text-primary-400"
 										fill="currentColor"
 										viewBox="0 0 20 20"
 										aria-labelledby="info-icon"
@@ -143,7 +143,7 @@ export default function VerifyEmailRequired() {
 									</svg>
 								</div>
 								<div className="ml-3">
-									<p className="text-sm text-blue-700">
+									<p className="text-sm text-primary-700">
 										We sent a verification email to <strong>{email}</strong>
 									</p>
 								</div>
@@ -155,17 +155,17 @@ export default function VerifyEmailRequired() {
 							<button
 								type="submit"
 								disabled={isSubmitting}
-								className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+								className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								{isSubmitting ? "Sending..." : "Resend Verification Email"}
 							</button>
 						</Form>
 
-						<div className="text-center text-sm text-gray-500 mt-4">
+						<div className="text-center caption mt-4">
 							Already verified?{" "}
 							<a
 								href="/auth/login"
-								className="text-blue-600 hover:text-blue-500"
+								className="text-primary-600 hover:text-primary-500"
 							>
 								Log in again
 							</a>
@@ -174,11 +174,11 @@ export default function VerifyEmailRequired() {
 				</div>
 
 				{/* Help Text */}
-				<div className="text-center text-xs text-gray-500">
+				<div className="text-center caption">
 					<p>Didn't receive the email? Check your spam folder or</p>
 					<a
 						href="/support/contact"
-						className="text-blue-600 hover:text-blue-500"
+						className="text-primary-600 hover:text-primary-500"
 					>
 						contact support
 					</a>

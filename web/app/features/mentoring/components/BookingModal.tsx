@@ -106,7 +106,7 @@ function BookingForm({ slot, mentor, onClose }: BookingFormProps) {
 	};
 
 	const renderDurationStep = () => (
-		<div className="space-y-4 py-4">
+		<div className="stack py-4">
 			<div className="grid grid-cols-3 gap-3">
 				{[30, 60, 90].map((d) => (
 					<button
@@ -119,14 +119,14 @@ function BookingForm({ slot, mentor, onClose }: BookingFormProps) {
 								: "border-white/10 bg-white/5 hover:border-white/20"
 						}`}
 					>
-						<span className="text-lg font-bold">{d} min</span>
-						<span className="text-xs text-gray-400">
+						<span className="heading-5">{d} min</span>
+						<span className="caption">
 							${((hourlyRate * (d / 60)) / 100).toFixed(0)}
 						</span>
 					</button>
 				))}
 			</div>
-			<div className="rounded-lg bg-blue-900/20 p-3 text-sm text-blue-200">
+			<div className="rounded-lg bg-primary-900/20 p-3 text-sm text-primary-200">
 				<p>
 					Session with <strong>{mentor.name}</strong>
 				</p>
@@ -138,8 +138,8 @@ function BookingForm({ slot, mentor, onClose }: BookingFormProps) {
 	);
 
 	const renderDetailsStep = () => (
-		<div className="space-y-4 py-4">
-			<div className="space-y-2">
+		<div className="stack py-4">
+			<div className="stack-sm">
 				<label
 					htmlFor="booking-topic"
 					className="text-sm font-medium text-gray-300"
@@ -153,23 +153,23 @@ function BookingForm({ slot, mentor, onClose }: BookingFormProps) {
 					value={topic}
 					onChange={(e) => setTopic(e.target.value)}
 				/>
-				<p className="text-xs text-gray-500 text-right">{topic.length}/500</p>
+				<p className="caption text-right">{topic.length}/500</p>
 			</div>
 		</div>
 	);
 
 	const renderPaymentStep = () => (
-		<div className="space-y-4 py-4">
+		<div className="stack py-4">
 			<div className="rounded-xl border border-white/10 bg-white/5 p-4">
 				<div className="mb-4 flex items-center justify-between border-b border-white/10 pb-4">
 					<span className="text-gray-400">Total</span>
-					<span className="text-2xl font-bold">
+					<span className="heading-3">
 						${(price / 100).toFixed(2)}
 					</span>
 				</div>
 
 				{/* Mock Card */}
-				<div className="space-y-3">
+				<div className="stack-sm">
 					<div className="relative">
 						<CreditCard className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
 						<input
@@ -203,10 +203,10 @@ function BookingForm({ slot, mentor, onClose }: BookingFormProps) {
 
 	const renderSuccessStep = () => (
 		<div className="flex flex-col items-center justify-center py-8 text-center">
-			<div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/20 text-green-500">
+			<div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-500/20 text-accent-500">
 				<Check className="h-8 w-8" />
 			</div>
-			<h3 className="text-xl font-bold text-white">Booking Confirmed!</h3>
+			<h3 className="heading-4 text-white">Booking Confirmed!</h3>
 			<p className="mt-2 text-gray-400">
 				You're all set to meet {mentor.name}.<br />
 				Check your email for the calendar invite.

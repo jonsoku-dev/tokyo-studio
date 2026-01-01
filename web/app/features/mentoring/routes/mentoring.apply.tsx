@@ -126,9 +126,9 @@ export default function MentorApplicationPage() {
 	const isSubmitting = navigation.state === "submitting";
 
 	return (
-		<div className="container mx-auto max-w-2xl py-12 px-4">
+		<div className="container-page max-w-2xl py-12 px-4">
 			<div className="mb-8 text-center">
-				<h1 className="text-3xl font-bold mb-2">Become a Mentor</h1>
+				<h1 className="heading-2 mb-2">Become a Mentor</h1>
 				<p className="text-gray-400">
 					Share your expertise and help others grow in their IT career in Japan.
 				</p>
@@ -142,7 +142,7 @@ export default function MentorApplicationPage() {
 					</div>
 				)}
 
-				<Form method="post" encType="multipart/form-data" className="space-y-6">
+				<Form method="post" encType="multipart/form-data" className="stack-md">
 					{/* Professional Info */}
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 						<div>
@@ -242,7 +242,7 @@ export default function MentorApplicationPage() {
 						<label className="block text-sm font-medium text-gray-400 mb-2">
 							Verification Document
 						</label>
-						<p className="text-xs text-gray-500 mb-4">
+						<p className="caption mb-4">
 							Please upload a company ID or payslip. This file will be stored
 							securely and only visible to admins.
 						</p>

@@ -100,7 +100,7 @@ export function FilterBar({
 					<button
 						type="button"
 						onClick={onReset}
-						className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+						className="flex items-center gap-1 px-3 py-1.5 caption hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
 					>
 						<X className="w-3 h-3" />
 						초기화
@@ -131,7 +131,7 @@ function FilterDropdown<T extends string>({
 			<Menu.Button
 				className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
 					isActive
-						? "bg-orange-100 text-orange-700"
+						? "bg-primary-100 text-primary-700"
 						: "bg-gray-100 text-gray-600 hover:bg-gray-200"
 				}`}
 			>
@@ -148,7 +148,7 @@ function FilterDropdown<T extends string>({
 				leaveFrom="transform opacity-100 scale-100"
 				leaveTo="transform opacity-0 scale-95"
 			>
-				<Menu.Items className="absolute left-0 mt-2 w-48 origin-top-left bg-white rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10 overflow-hidden">
+				<Menu.Items className="absolute left-0 mt-2 w-48 origin-top-left card-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10 overflow-hidden">
 					{options.map((option) => (
 						<Menu.Item key={option.value}>
 							{({ active }) => (
@@ -157,7 +157,7 @@ function FilterDropdown<T extends string>({
 									onClick={() => onChange(option.value)}
 									className={`w-full text-left px-4 py-2.5 text-sm ${
 										active ? "bg-gray-50" : ""
-									} ${option.value === value ? "text-orange-600 font-medium" : "text-gray-700"}`}
+									} ${option.value === value ? "text-primary-600 font-medium" : "text-gray-700"}`}
 								>
 									{option.label}
 								</button>

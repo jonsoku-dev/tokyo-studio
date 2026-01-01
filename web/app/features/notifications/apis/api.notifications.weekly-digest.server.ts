@@ -1,5 +1,10 @@
-import { type ActionFunctionArgs } from "react-router";
-import { actionHandler, BadRequestError, UnauthorizedError, InternalError } from "~/shared/lib";
+import type { ActionFunctionArgs } from "react-router";
+import {
+	actionHandler,
+	BadRequestError,
+	InternalError,
+	UnauthorizedError,
+} from "~/shared/lib";
 
 import { weeklyDigestCronHandler } from "../services/weekly-digest.server";
 
@@ -49,6 +54,8 @@ export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 	} catch (error) {
 		console.error("[API] Weekly digest cron failed:", error);
 
-		throw new InternalError(error instanceof Error ? error.message : "Unknown error");
+		throw new InternalError(
+			error instanceof Error ? error.message : "Unknown error",
+		);
 	}
 });

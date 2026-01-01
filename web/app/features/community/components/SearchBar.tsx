@@ -55,7 +55,7 @@ export function SearchBar() {
 			{showHelp && (
 				<div className="absolute top-full mt-1 right-0 w-80 bg-white rounded-lg border shadow-lg z-50 p-4">
 					<div className="flex items-center justify-between mb-3">
-						<h3 className="font-semibold text-gray-900">Search Tips</h3>
+						<h3 className="heading-5">Search Tips</h3>
 						<button
 							type="button"
 							onClick={() => setShowHelp(false)}
@@ -64,7 +64,7 @@ export function SearchBar() {
 							×
 						</button>
 					</div>
-					<ul className="space-y-2 text-sm text-gray-700">
+					<ul className="stack-sm text-sm text-gray-700">
 						<li className="flex items-start gap-2">
 							<code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded font-mono whitespace-nowrap">
 								react hooks

@@ -145,7 +145,7 @@ export function AvatarUpload({
 				{...getRootProps()}
 				className={`relative w-32 h-32 rounded-full overflow-hidden border-2 cursor-pointer transition-colors ${
 					isDragActive
-						? "border-blue-500 bg-blue-50"
+						? "border-primary-500 bg-primary-50"
 						: "border-gray-200 hover:border-gray-300"
 				}`}
 			>
@@ -157,11 +157,11 @@ export function AvatarUpload({
 						className="w-full h-full object-cover"
 					/>
 				) : (
-					<div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-xl font-bold">
+					<div className="w-full h-full bg-gray-100 center text-gray-400 heading-4">
 						{userName.slice(0, 2).toUpperCase()}
 					</div>
 				)}
-				<div className="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-medium">
+				<div className="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition-opacity center text-white text-xs font-medium">
 					Change
 				</div>
 			</div>
@@ -200,7 +200,7 @@ export function AvatarUpload({
 					<DialogHeader>
 						<DialogTitle>Adjust Avatar</DialogTitle>
 					</DialogHeader>
-					<div className="space-y-6">
+					<div className="stack-md">
 						<div className="relative w-full h-[300px] bg-black/5 rounded-md overflow-hidden">
 							{imageSrc && (
 								<Cropper
@@ -218,7 +218,7 @@ export function AvatarUpload({
 						</div>
 
 						<div className="flex items-center gap-2">
-							<span className="text-xs text-gray-500">Zoom</span>
+							<span className="caption">Zoom</span>
 							<input
 								type="range"
 								value={zoom}

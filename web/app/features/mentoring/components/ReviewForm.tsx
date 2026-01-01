@@ -29,7 +29,7 @@ export function ReviewForm({
 
 	return (
 		<div className="max-w-2xl mx-auto p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
-			<h2 className="text-2xl font-bold mb-2">Share Your Experience</h2>
+			<h2 className="heading-3 mb-2">Share Your Experience</h2>
 			<p className="text-gray-600 mb-6">
 				Help us improve by sharing your feedback about your session with{" "}
 				<strong>{mentorName}</strong>
@@ -42,7 +42,7 @@ export function ReviewForm({
 			)}
 
 			{actionData?.success && (
-				<div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700">
+				<div className="mb-6 p-4 bg-accent-50 border border-accent-200 rounded-lg text-accent-700">
 					Thank you for your review! It helps mentors improve.
 				</div>
 			)}
@@ -51,7 +51,7 @@ export function ReviewForm({
 				method="post"
 				action={`/api/mentoring/session/${sessionId}/review`}
 				onSubmit={handleSubmit}
-				className="space-y-6"
+				className="stack-md"
 			>
 				{/* Hidden fields */}
 				<input type="hidden" name="sessionId" value={sessionId} />
@@ -59,7 +59,7 @@ export function ReviewForm({
 
 				{/* Star Rating */}
 				<div>
-					<label className="block text-sm font-semibold text-gray-900 mb-3">
+					<label className="block text-sm heading-5 mb-3">
 						How would you rate this session?
 					</label>
 					<div className="flex gap-3">
@@ -82,7 +82,7 @@ export function ReviewForm({
 							</button>
 						))}
 					</div>
-					<p className="text-sm text-gray-500 mt-2">
+					<p className="caption mt-2">
 						{rating > 0 &&
 							`You rated: ${rating} star${rating !== 1 ? "s" : ""}`}
 					</p>
@@ -92,7 +92,7 @@ export function ReviewForm({
 				<div>
 					<label
 						htmlFor="text"
-						className="block text-sm font-semibold text-gray-900 mb-2"
+						className="block text-sm heading-5 mb-2"
 					>
 						Tell us more (optional)
 					</label>
@@ -101,10 +101,10 @@ export function ReviewForm({
 						name="text"
 						rows={4}
 						placeholder="What did you like? What could be improved? Be specific..."
-						className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+						className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
 						maxLength={2000}
 					/>
-					<p className="text-xs text-gray-500 mt-1">Max 2000 characters</p>
+					<p className="caption mt-1">Max 2000 characters</p>
 				</div>
 
 				{/* Anonymous Option */}
@@ -119,7 +119,7 @@ export function ReviewForm({
 							Post this review anonymously
 						</span>
 					</label>
-					<p className="text-xs text-gray-500 mt-1">
+					<p className="caption mt-1">
 						Your name won't be displayed, but the mentor can see your rating.
 					</p>
 				</div>
@@ -128,7 +128,7 @@ export function ReviewForm({
 				<button
 					type="submit"
 					disabled={isSubmitting || !rating}
-					className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+					className="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
 				>
 					{isSubmitting ? "Submitting..." : "Submit Review"}
 				</button>

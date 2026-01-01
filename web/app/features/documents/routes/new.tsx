@@ -50,14 +50,14 @@ export default function NewDocument({ actionData }: Route.ComponentProps) {
 		<Shell>
 			<div className="max-w-2xl mx-auto">
 				<div className="mb-6">
-					<h1 className="text-2xl font-bold text-gray-900">Add New Document</h1>
+					<h1 className="heading-3">Add New Document</h1>
 					<p className="text-gray-500 text-sm">
 						Upload or link your resume, CV, or portfolio.
 					</p>
 				</div>
 
-				<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-					<Form method="post" className="space-y-6">
+				<div className="card-sm border border-gray-200 p-6">
+					<Form method="post" className="stack-md">
 						{actionData?.error && (
 							<div className="bg-red-50 text-red-600 text-sm p-3 rounded-md">
 								{actionData.error}
@@ -82,7 +82,7 @@ export default function NewDocument({ actionData }: Route.ComponentProps) {
 							<select
 								id="type"
 								name="type"
-								className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 sm:text-sm bg-white"
+								className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white"
 							>
 								<option value="Resume">Resume</option>
 								<option value="CV">CV</option>

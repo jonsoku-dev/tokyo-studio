@@ -128,7 +128,7 @@ export function MapPage() {
 			<MapControls onSearch={handleSearch} isLoading={isLoading} />
 
 			{/* 결과 개수 */}
-			<div className="text-sm text-gray-600 px-3">
+			<div className="body-sm px-3">
 				검색 결과: {filteredLocations.length}개
 			</div>
 

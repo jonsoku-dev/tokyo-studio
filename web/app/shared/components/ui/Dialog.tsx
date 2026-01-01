@@ -31,11 +31,11 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
 					leaveFrom="opacity-100"
 					leaveTo="opacity-0"
 				>
-					<div className="fixed inset-0 bg-black/25 backdrop-blur-sm" />
+					<div className="dialog-overlay" />
 				</TransitionChild>
 
 				<div className="fixed inset-0 overflow-y-auto">
-					<div className="flex min-h-full items-center justify-center p-4 text-center">
+					<div className="center min-h-full p-4 text-center">
 						<TransitionChild
 							as={Fragment}
 							enter="ease-out duration-300"
@@ -62,12 +62,7 @@ export function DialogContent({
 	children: ReactNode;
 }) {
 	return (
-		<DialogPanel
-			className={cn(
-				"w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all",
-				className,
-			)}
-		>
+		<DialogPanel className={cn("dialog-content", className)}>
 			{children}
 		</DialogPanel>
 	);
@@ -91,10 +86,7 @@ export function DialogTitle({
 	children: ReactNode;
 }) {
 	return (
-		<HeadlessDialogTitle
-			as="h3"
-			className={cn("text-lg font-medium leading-6 text-gray-900", className)}
-		>
+		<HeadlessDialogTitle as="h3" className={cn("dialog-title", className)}>
 			{children}
 		</HeadlessDialogTitle>
 	);
@@ -107,9 +99,7 @@ export function DialogDescription({
 	className?: string;
 	children: ReactNode;
 }) {
-	return (
-		<div className={cn("text-sm text-gray-500", className)}>{children}</div>
-	);
+	return <div className={cn("dialog-description", className)}>{children}</div>;
 }
 
 export function DialogFooter({
@@ -122,7 +112,7 @@ export function DialogFooter({
 	return (
 		<div
 			className={cn(
-				"mt-6 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+				"mt-6 flex flex-col-reverse sm:flex-row sm:justify-end sm:gap-2",
 				className,
 			)}
 		>

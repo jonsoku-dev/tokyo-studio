@@ -65,7 +65,7 @@ export function ErrorBoundary({ error }: { error: unknown }) {
 	return (
 		<div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
 			<div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full text-center">
-				<h1 className="text-2xl font-bold text-red-600 mb-4">
+				<h1 className="heading-3 text-red-600 mb-4">
 					Cannot Join Session
 				</h1>
 				<p className="text-gray-700 mb-6">
@@ -75,7 +75,7 @@ export function ErrorBoundary({ error }: { error: unknown }) {
 							"An error occurred"
 						: "An unexpected error occurred."}
 				</p>
-				<a href="/mentoring/bookings" className="text-blue-600 hover:underline">
+				<a href="/mentoring/bookings" className="text-primary-600 hover:underline">
 					Back to My Sessions
 				</a>
 			</div>

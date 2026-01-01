@@ -1,0 +1,123 @@
+/*
+  =============================================================================
+  Fonts - Local Font Definitions
+  =============================================================================
+  
+  LINE Seed fonts for multi-language support:
+  - LINE Seed Sans: English/Latin characters
+  - LINE Seed KR: Korean characters
+  - LINE Seed JP: Japanese characters
+  
+  Weight mappings:
+  - Th (Thin): 300
+  - Rg (Regular): 400
+  - Bd (Bold): 700
+  - Eb (Extra Bold): 800
+  - He (Heavy): 900
+  - XBd (Extra Bold): 800
+*/
+
+/* =============================================================================
+   LINE Seed Sans - English/Latin
+   ============================================================================= */
+@font-face {
+	font-family: "LINE Seed";
+	font-style: normal;
+	font-weight: 300;
+	font-display: swap;
+	src: url("/fonts/LINESeedSans_W_Th.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "LINE Seed";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("/fonts/LINESeedSans_W_Rg.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "LINE Seed";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url("/fonts/LINESeedSans_W_Bd.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "LINE Seed";
+	font-style: normal;
+	font-weight: 800;
+	font-display: swap;
+	src: url("/fonts/LINESeedSans_W_XBd.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "LINE Seed";
+	font-style: normal;
+	font-weight: 900;
+	font-display: swap;
+	src: url("/fonts/LINESeedSans_W_He.woff2") format("woff2");
+}
+
+/* =============================================================================
+   LINE Seed KR - Korean
+   ============================================================================= */
+@font-face {
+	font-family: "LINE Seed KR";
+	font-style: normal;
+	font-weight: 300;
+	font-display: swap;
+	src: url("/fonts/LINESeedKR-Th.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "LINE Seed KR";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("/fonts/LINESeedKR-Rg.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "LINE Seed KR";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url("/fonts/LINESeedKR-Bd.woff2") format("woff2");
+}
+
+/* =============================================================================
+   LINE Seed JP - Japanese
+   ============================================================================= */
+@font-face {
+	font-family: "LINE Seed JP";
+	font-style: normal;
+	font-weight: 300;
+	font-display: swap;
+	src: url("/fonts/LINESeedJP_OTF_Th.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "LINE Seed JP";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("/fonts/LINESeedJP_OTF_Rg.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "LINE Seed JP";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url("/fonts/LINESeedJP_OTF_Bd.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "LINE Seed JP";
+	font-style: normal;
+	font-weight: 800;
+	font-display: swap;
+	src: url("/fonts/LINESeedJP_OTF_Eb.woff2") format("woff2");
+}

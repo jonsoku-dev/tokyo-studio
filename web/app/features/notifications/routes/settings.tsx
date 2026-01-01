@@ -105,7 +105,7 @@ export default function NotificationSettings() {
 	return (
 		<div className="max-w-2xl mx-auto p-6">
 			<div className="mb-8">
-				<h1 className="text-2xl font-bold text-gray-900">
+				<h1 className="heading-3">
 					Notification Settings
 				</h1>
 				<p className="text-gray-600 mt-1">
@@ -113,10 +113,10 @@ export default function NotificationSettings() {
 				</p>
 			</div>
 
-			<Form method="POST" className="space-y-8">
+			<Form method="POST" className="stack-lg">
 				{/* Notification Types */}
-				<div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
-					<h2 className="text-lg font-semibold text-gray-900">
+				<div className="bg-white rounded-lg border border-gray-200 p-6 stack">
+					<h2 className="heading-5">
 						Notification Types
 					</h2>
 
@@ -164,12 +164,12 @@ export default function NotificationSettings() {
 				</div>
 
 				{/* Quiet Hours */}
-				<div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
+				<div className="bg-white rounded-lg border border-gray-200 p-6 stack">
 					<div className="flex items-center gap-2">
 						<Moon className="h-5 w-5 text-gray-700" />
-						<h2 className="text-lg font-semibold text-gray-900">Quiet Hours</h2>
+						<h2 className="heading-5">Quiet Hours</h2>
 					</div>
-					<p className="text-sm text-gray-600">
+					<p className="body-sm">
 						Don't send notifications during these hours. Notifications will be
 						queued and sent after quiet hours end.
 					</p>
@@ -189,7 +189,7 @@ export default function NotificationSettings() {
 									id="quietHoursStart"
 									name="quietHoursStart"
 									defaultValue={preferences.quietHoursStart || ""}
-									className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+									className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
 								/>
 							</div>
 						</div>
@@ -208,7 +208,7 @@ export default function NotificationSettings() {
 									id="quietHoursEnd"
 									name="quietHoursEnd"
 									defaultValue={preferences.quietHoursEnd || ""}
-									className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+									className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
 								/>
 							</div>
 						</div>
@@ -226,7 +226,7 @@ export default function NotificationSettings() {
 							id="timezone"
 							name="timezone"
 							defaultValue={preferences.timezone || "UTC"}
-							className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+							className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
 						>
 							<option value="UTC">UTC (Coordinated Universal Time)</option>
 							<option value="America/New_York">Eastern Time (New York)</option>
@@ -270,10 +270,10 @@ function Toggle({
 	return (
 		<div className="flex items-start justify-between py-3 border-b border-gray-100 last:border-0">
 			<div className="flex-1">
-				<label htmlFor={name} className="font-medium text-gray-900 block">
+				<label htmlFor={name} className="heading-5 block">
 					{label}
 				</label>
-				<p className="text-sm text-gray-500 mt-0.5">{description}</p>
+				<p className="caption mt-0.5">{description}</p>
 			</div>
 			<div className="ml-4">
 				<input
@@ -281,7 +281,7 @@ function Toggle({
 					id={name}
 					name={name}
 					defaultChecked={defaultChecked}
-					className="h-5 w-5 text-orange-600 focus:ring-orange-500 border-gray-300 rounded cursor-pointer"
+					className="h-5 w-5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded cursor-pointer"
 				/>
 			</div>
 		</div>

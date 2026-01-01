@@ -13,16 +13,16 @@ export function MentorApplicationStatus({
 		return (
 			<Link
 				to="/mentoring/apply"
-				className="block p-4 rounded-xl border border-dashed border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors"
+				className="block p-4 rounded-xl border border-dashed border-primary-200 bg-primary-50 hover:bg-primary-100 transition-colors"
 			>
 				<div className="flex items-center justify-between">
 					<div>
-						<h3 className="font-semibold text-blue-900">Become a Mentor</h3>
-						<p className="text-sm text-blue-700 mt-1">
+						<h3 className="font-semibold text-primary-900">Become a Mentor</h3>
+						<p className="text-sm text-primary-700 mt-1">
 							Share your expertise and earn by mentoring others
 						</p>
 					</div>
-					<ArrowRight className="h-5 w-5 text-blue-600 flex-shrink-0" />
+					<ArrowRight className="h-5 w-5 text-primary-600 flex-shrink-0" />
 				</div>
 			</Link>
 		);
@@ -39,18 +39,18 @@ export function MentorApplicationStatus({
 		},
 		under_review: {
 			icon: Clock,
-			color: "bg-blue-50 border-blue-200",
-			textColor: "text-blue-900",
-			subColor: "text-blue-700",
-			badge: "bg-blue-100 text-blue-800",
+			color: "bg-primary-50 border-primary-200",
+			textColor: "text-primary-900",
+			subColor: "text-primary-700",
+			badge: "bg-primary-100 text-primary-800",
 			message: "Our team is actively reviewing your application",
 		},
 		approved: {
 			icon: CheckCircle2,
-			color: "bg-green-50 border-green-200",
-			textColor: "text-green-900",
-			subColor: "text-green-700",
-			badge: "bg-green-100 text-green-800",
+			color: "bg-accent-50 border-accent-200",
+			textColor: "text-accent-900",
+			subColor: "text-accent-700",
+			badge: "bg-accent-100 text-accent-800",
 			message: "Congratulations! You are now a mentor",
 		},
 		rejected: {
@@ -77,7 +77,7 @@ export function MentorApplicationStatus({
 	const Icon = config.icon;
 
 	return (
-		<div className={`p-4 rounded-xl border ${config.color} space-y-3`}>
+		<div className={`p-4 rounded-xl border ${config.color} stack-sm`}>
 			<div className="flex items-start justify-between">
 				<div className="flex items-start gap-3">
 					<Icon
@@ -108,7 +108,7 @@ export function MentorApplicationStatus({
 				<div className="flex gap-2 pt-2">
 					<Link
 						to="/mentoring/settings"
-						className="text-sm font-medium px-3 py-1.5 rounded-lg bg-green-100 text-green-700 hover:bg-green-200 transition-colors"
+						className="text-sm font-medium px-3 py-1.5 rounded-lg bg-accent-100 text-accent-700 hover:bg-accent-200 transition-colors"
 					>
 						Complete Profile
 					</Link>
@@ -122,7 +122,7 @@ export function MentorApplicationStatus({
 					const canReapply = new Date() >= reapplyDate;
 
 					return (
-						<div className="space-y-2 pt-2">
+						<div className="stack-sm pt-2">
 							<p className={`text-xs ${config.subColor}`}>
 								You can reapply on{" "}
 								<strong>{reapplyDate.toLocaleDateString()}</strong>

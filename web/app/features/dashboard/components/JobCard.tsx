@@ -17,12 +17,12 @@ export function JobCard({ job, index }: JobCardProps) {
 			className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 transition-all cursor-pointer flex gap-4 group"
 		>
 			<div className="flex flex-col items-center gap-1 pt-1 min-w-[40px]">
-				<div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold shadow-inner">
+				<div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 text-indigo-600 center body-sm shadow-inner">
 					{job.company[0]}
 				</div>
 			</div>
 			<div className="flex-1">
-				<div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
+				<div className="flex items-center gap-2 caption mb-1">
 					<span className="font-medium text-gray-700">{job.company}</span>
 					<span>•</span>
 					<span>{job.location}</span>
@@ -35,10 +35,10 @@ export function JobCard({ job, index }: JobCardProps) {
 						</>
 					)}
 				</div>
-				<h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+				<h3 className="heading-5 group-hover:text-primary-600 transition-colors">
 					{job.title}
 				</h3>
-				<div className="mt-3 flex flex-wrap gap-2">
+				<div className="mt-3 cluster-sm">
 					{job.tags.map((tag) => (
 						<span
 							key={tag}
@@ -53,7 +53,7 @@ export function JobCard({ job, index }: JobCardProps) {
 				<motion.button
 					whileTap={{ scale: 0.9 }}
 					type="button"
-					className="p-2 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-full transition-colors"
+					className="p-2 text-gray-400 hover:text-primary-500 hover:bg-primary-50 rounded-full transition-colors"
 				>
 					<span className="sr-only">Save</span>
 					<Bookmark className="w-5 h-5" />

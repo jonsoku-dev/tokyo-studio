@@ -34,7 +34,7 @@ export function StorageUsageIndicator({
 			).toFixed(1);
 
 			// Determine color based on usage
-			let color = "bg-blue-500";
+			let color = "bg-primary-500";
 			if (percentage >= 90) {
 				color = "bg-red-500";
 			} else if (percentage >= 75) {
@@ -54,7 +54,7 @@ export function StorageUsageIndicator({
 		<div className="rounded-lg bg-gray-50 p-4">
 			<div className="mb-2 flex items-center justify-between">
 				<span className="text-sm font-medium text-gray-700">Storage Used</span>
-				<span className="text-sm text-gray-600">
+				<span className="body-sm">
 					{usedMB} / {limitMB} MB
 				</span>
 			</div>
@@ -81,7 +81,7 @@ export function StorageUsageIndicator({
 
 			{/* Detailed Breakdown */}
 			{detailed && (
-				<div className="mt-3 space-y-1 border-t border-gray-200 pt-3 text-xs text-gray-600">
+				<div className="mt-3 stack-xs divider pt-3 text-xs text-gray-600">
 					<div className="flex justify-between">
 						<span>Used:</span>
 						<span className="font-medium">{usedMB} MB</span>
@@ -112,7 +112,7 @@ export function StorageUsageCompact({
 		const usedMB = (storageUsed / (1024 * 1024)).toFixed(0);
 		const limitMB = (storageLimit / (1024 * 1024)).toFixed(0);
 
-		let color = "bg-blue-500";
+		let color = "bg-primary-500";
 		if (percentage >= 90) {
 			color = "bg-red-500";
 		} else if (percentage >= 75) {

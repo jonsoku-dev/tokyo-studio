@@ -72,7 +72,7 @@ export default function Checkout({ loaderData }: Route.ComponentProps) {
 	return (
 		<Shell>
 			<div className="max-w-2xl mx-auto py-12">
-				<h1 className="text-3xl font-bold mb-8 text-center">Checkout</h1>
+				<h1 className="heading-2 mb-8 text-center">Checkout</h1>
 				<div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
 					<div id="payment-widget" />
 					<div id="agreement" />

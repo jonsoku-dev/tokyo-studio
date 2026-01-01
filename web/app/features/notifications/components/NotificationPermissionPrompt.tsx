@@ -45,12 +45,12 @@ export function NotificationPermissionPrompt() {
 	return (
 		<div className="fixed bottom-4 right-4 z-50 max-w-sm w-full bg-white border border-gray-200 shadow-lg rounded-xl p-4 animate-in fade-in slide-in-from-bottom-4">
 			<div className="flex items-start gap-3">
-				<div className="bg-orange-100 p-2 rounded-lg text-orange-600">
+				<div className="bg-primary-100 p-2 rounded-lg text-primary-600">
 					<Bell className="h-5 w-5" />
 				</div>
-				<div className="flex-1 space-y-1">
-					<h3 className="font-semibold text-gray-900">Enable Notifications?</h3>
-					<p className="text-sm text-gray-500">
+				<div className="flex-1 stack-xs">
+					<h3 className="heading-5">Enable Notifications?</h3>
+					<p className="caption">
 						Get timely updates on replies, mentor sessions, and application
 						deadlines.
 					</p>

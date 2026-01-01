@@ -1,7 +1,7 @@
 import type { ActionFunctionArgs } from "react-router";
 import { z } from "zod";
-import { passwordResetService } from "../services/password-reset.server";
 import { actionHandler, ValidationError } from "~/shared/lib";
+import { passwordResetService } from "../services/password-reset.server";
 
 const ForgotPasswordSchema = z.object({
 	email: z.string().email("Invalid email address"),

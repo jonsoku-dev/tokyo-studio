@@ -7,10 +7,10 @@ import { requireUserId } from "~/features/auth/utils/session.server";
 import {
 	actionHandler,
 	BadRequestError,
-	NotFoundError,
-	ForbiddenError,
-	ValidationError,
 	ConflictError,
+	ForbiddenError,
+	NotFoundError,
+	ValidationError,
 } from "~/shared/lib";
 
 /**
@@ -22,57 +22,61 @@ const responseSchema = z.object({
 	text: z.string().min(10).max(1000),
 });
 
-export const action = actionHandler(async ({ request, params }: ActionFunctionArgs) => {
-	const mentorId = await requireUserId(request);
+export const action = actionHandler(
+	async ({ request, params }: ActionFunctionArgs) => {
+		const mentorId = await requireUserId(request);
 
-	if (!params.reviewId) {
-		throw new BadRequestError("Review ID is required");
-	}
+		if (!params.reviewId) {
+			throw new BadRequestError("Review ID is required");
+		}
 
-	const body = await request.json();
-	const validationResult = responseSchema.safeParse(body);
+		const body = await request.json();
+		const validationResult = responseSchema.safeParse(body);
 
-	if (!validationResult.success) {
-		throw new ValidationError(validationResult.error.flatten().fieldErrors);
-	}
+		if (!validationResult.success) {
+			throw new ValidationError(validationResult.error.flatten().fieldErrors);
+		}
 
-	const { text } = validationResult.data;
+		const { text } = validationResult.data;
 
-	// Verify review exists and user is the mentor
-	const review = await db.query.mentorReviews.findFirst({
-		where: eq(mentorReviews.id, params.reviewId),
-	});
+		// Verify review exists and user is the mentor
+		const review = await db.query.mentorReviews.findFirst({
+			where: eq(mentorReviews.id, params.reviewId),
+		});
 
-	if (!review) {
-		throw new NotFoundError("Review");
-	}
+		if (!review) {
+			throw new NotFoundError("Review");
+		}
 
-	if (review.mentorId !== mentorId) {
-		throw new ForbiddenError("You are not authorized to respond to this review");
-	}
+		if (review.mentorId !== mentorId) {
+			throw new ForbiddenError(
+				"You are not authorized to respond to this review",
+			);
+		}
 
-	// Check if response already exists
-	const existingResponse = await db.query.mentorReviewResponses.findFirst({
-		where: eq(mentorReviewResponses.reviewId, params.reviewId),
-	});
+		// Check if response already exists
+		const existingResponse = await db.query.mentorReviewResponses.findFirst({
+			where: eq(mentorReviewResponses.reviewId, params.reviewId),
+		});
 
-	if (existingResponse) {
-		throw new ConflictError("You have already responded to this review");
-	}
+		if (existingResponse) {
+			throw new ConflictError("You have already responded to this review");
+		}
 
-	// Insert response
-	const [response] = await db
-		.insert(mentorReviewResponses)
-		.values({
-			reviewId: params.reviewId,
-			mentorId,
-			text,
-		})
-		.returning();
+		// Insert response
+		const [response] = await db
+			.insert(mentorReviewResponses)
+			.values({
+				reviewId: params.reviewId,
+				mentorId,
+				text,
+			})
+			.returning();
 
-	// TODO: Send notification to mentee
+		// TODO: Send notification to mentee
 
-	return {
-		responseId: response.id,
-	};
-});
+		return {
+			responseId: response.id,
+		};
+	},
+);

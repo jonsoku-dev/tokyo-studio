@@ -21,7 +21,7 @@ export function VerificationBanner({ user }: VerificationBannerProps) {
 
 	return (
 		<div className="bg-yellow-50 border-b border-yellow-200">
-			<div className="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8">
+			<div className="container-wide py-3 px-4 sm:px-6 lg:px-8">
 				<div className="flex items-center justify-between flex-wrap">
 					<div className="flex-1 flex items-center gap-3">
 						<AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0" />

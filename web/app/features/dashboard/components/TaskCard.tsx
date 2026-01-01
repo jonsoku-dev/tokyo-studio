@@ -27,7 +27,7 @@ export function TaskCard({ task }: TaskCardProps) {
 				"bg-white p-4 rounded-xl shadow-sm border transition-colors flex gap-4",
 				isCompleted
 					? "border-gray-100 bg-gray-50/50"
-					: "border-gray-200 hover:border-orange-200",
+					: "border-gray-200 hover:border-primary-200",
 			)}
 		>
 			<div className="flex flex-col items-center gap-1 pt-1">
@@ -42,12 +42,12 @@ export function TaskCard({ task }: TaskCardProps) {
 						type="checkbox"
 						checked={isCompleted}
 						onChange={(e) => fetcher.submit(e.target.form)}
-						className="w-5 h-5 text-orange-500 rounded-md focus:ring-orange-500 border-gray-300 cursor-pointer transition-all hover:scale-110"
+						className="w-5 h-5 text-primary-500 rounded-md focus:ring-primary-500 border-gray-300 cursor-pointer transition-all hover:scale-110"
 					/>
 				</fetcher.Form>
 			</div>
 			<div className="flex-1">
-				<div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
+				<div className="flex items-center gap-2 caption mb-1">
 					<span className="font-bold text-gray-700">{task.category}</span>
 					{task.dueDate && (
 						<>

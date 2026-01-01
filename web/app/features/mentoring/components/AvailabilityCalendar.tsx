@@ -48,7 +48,7 @@ export function AvailabilityCalendar({
 	const renderHeader = () => {
 		return (
 			<div className="flex items-center justify-between mb-4">
-				<h3 className="font-bold text-gray-900 dark:text-white">
+				<h3 className="heading-5 dark:text-white">
 					{format(currentMonth, "MMMM yyyy")}
 				</h3>
 				{/* Navigation omitted for simple 30-day view, or implemented if needed */}
@@ -141,11 +141,11 @@ export function AvailabilityCalendar({
 
 			<div className="mt-6 border-t border-white/10 pt-4">
 				<div className="mb-2 flex items-center justify-between">
-					<h4 className="text-sm font-semibold text-gray-300">
+					<h4 className="body-sm text-gray-300">
 						Available Times (
 						{selectedDate ? format(selectedDate, "MMM d") : "-"})
 					</h4>
-					<span className="text-xs text-gray-500">{timezone}</span>
+					<span className="caption">{timezone}</span>
 				</div>
 
 				{activeSlots.length > 0 ? (
@@ -164,7 +164,7 @@ export function AvailabilityCalendar({
 						))}
 					</div>
 				) : (
-					<p className="text-center text-xs text-gray-500 py-4">
+					<p className="text-center caption py-4">
 						No slots available for this date.
 					</p>
 				)}

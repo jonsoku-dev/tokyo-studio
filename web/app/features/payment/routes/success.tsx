@@ -61,18 +61,18 @@ export default function Success({ loaderData }: Route.ComponentProps) {
 		<Shell>
 			<div className="max-w-md mx-auto py-20 text-center">
 				{loaderData.success ? (
-					<div className="space-y-6">
-						<CheckCircle className="w-20 h-20 text-green-500 mx-auto" />
-						<h1 className="text-3xl font-bold text-gray-900">
+					<div className="stack-md">
+						<CheckCircle className="w-20 h-20 text-accent-500 mx-auto" />
+						<h1 className="heading-2 text-gray-900">
 							Payment Successful!
 						</h1>
 						<p className="text-gray-600">Your session has been booked.</p>
 						<Button onClick={() => navigate("/")}>Go to Dashboard</Button>
 					</div>
 				) : (
-					<div className="space-y-6">
+					<div className="stack-md">
 						<XCircle className="w-20 h-20 text-red-500 mx-auto" />
-						<h1 className="text-3xl font-bold text-gray-900">Payment Failed</h1>
+						<h1 className="heading-2 text-gray-900">Payment Failed</h1>
 						<p className="text-gray-600">{loaderData.message}</p>
 						<Button
 							variant="outline"

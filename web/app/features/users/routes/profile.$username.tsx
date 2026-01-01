@@ -98,10 +98,10 @@ export default function PublicProfile({ loaderData }: Route.ComponentProps) {
 
 	return (
 		<Shell>
-			<div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8 space-y-8">
+			<div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8 stack-lg">
 				{/* Standard Profile Header */}
 				<div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-					<div className="h-32 bg-gradient-to-r from-orange-100 to-amber-100" />
+					<div className="h-32 bg-gradient-to-r from-primary-100 to-amber-100" />
 					<div className="px-8 pb-8">
 						<div className="relative flex justify-between items-end -mt-12 mb-6">
 							<div className="relative">
@@ -113,7 +113,7 @@ export default function PublicProfile({ loaderData }: Route.ComponentProps) {
 											className="w-full h-full object-cover"
 										/>
 									) : (
-										<div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-2xl font-bold">
+										<div className="w-full h-full bg-gray-100 center text-gray-400 heading-3">
 											{(user.name ?? "User").slice(0, 2).toUpperCase()}
 										</div>
 									)}
@@ -122,7 +122,7 @@ export default function PublicProfile({ loaderData }: Route.ComponentProps) {
 						</div>
 
 						<div>
-							<h1 className="text-2xl font-bold text-gray-900">{user.name}</h1>
+							<h1 className="heading-3">{user.name}</h1>
 							<p className="text-gray-500 font-medium">
 								{profile.jobFamily} • {profile.level}
 							</p>
@@ -143,28 +143,28 @@ export default function PublicProfile({ loaderData }: Route.ComponentProps) {
 							{/* Activity Stats */}
 							<div className="mt-6 grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
 								<div className="text-center">
-									<div className="text-2xl font-bold text-gray-900">
+									<div className="heading-3">
 										{activityStats.communityPosts}
 									</div>
-									<div className="text-xs text-gray-500 mt-1">Posts</div>
+									<div className="caption mt-1">Posts</div>
 								</div>
 								<div className="text-center">
-									<div className="text-2xl font-bold text-gray-900">
+									<div className="heading-3">
 										{activityStats.comments}
 									</div>
-									<div className="text-xs text-gray-500 mt-1">Comments</div>
+									<div className="caption mt-1">Comments</div>
 								</div>
 								<div className="text-center">
-									<div className="text-2xl font-bold text-gray-900">
+									<div className="heading-3">
 										{activityStats.mentoringSessions}
 									</div>
-									<div className="text-xs text-gray-500 mt-1">
+									<div className="caption mt-1">
 										Mentor Sessions
 									</div>
 								</div>
 							</div>
 
-							<div className="mt-6 flex flex-wrap gap-4 text-sm text-gray-500">
+							<div className="mt-6 cluster caption">
 								{profile.targetCity && (
 									<div className="flex items-center gap-1.5">
 										<MapPin className="w-4 h-4" />
@@ -182,7 +182,7 @@ export default function PublicProfile({ loaderData }: Route.ComponentProps) {
 										href={profile.website}
 										target="_blank"
 										rel="noopener noreferrer"
-										className="flex items-center gap-1.5 hover:text-orange-600 transition-colors"
+										className="flex items-center gap-1.5 hover:text-primary-600 transition-colors"
 									>
 										<Globe className="w-4 h-4" />
 										Website
@@ -193,7 +193,7 @@ export default function PublicProfile({ loaderData }: Route.ComponentProps) {
 										href={profile.linkedinUrl}
 										target="_blank"
 										rel="noopener noreferrer"
-										className="flex items-center gap-1.5 hover:text-blue-600 transition-colors"
+										className="flex items-center gap-1.5 hover:text-primary-600 transition-colors"
 									>
 										<Linkedin className="w-4 h-4" />
 										LinkedIn
@@ -219,9 +219,9 @@ export default function PublicProfile({ loaderData }: Route.ComponentProps) {
 
 				{!mentorProfile && (
 					<div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-						<div className="md:col-span-2 space-y-6">
-							<section className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-								<h2 className="text-lg font-bold text-gray-900 mb-4">
+						<div className="md:col-span-2 stack-md">
+							<section className="card-sm border border-gray-100 p-6">
+								<h2 className="heading-5 mb-4">
 									Activity
 								</h2>
 								<div className="text-center py-8 text-gray-500 bg-gray-50 rounded-lg border border-dashed border-gray-200">
@@ -230,9 +230,9 @@ export default function PublicProfile({ loaderData }: Route.ComponentProps) {
 							</section>
 						</div>
 
-						<div className="space-y-6">
-							<section className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-								<h2 className="text-lg font-bold text-gray-900 mb-4">Badges</h2>
+						<div className="stack-md">
+							<section className="card-sm border border-gray-100 p-6">
+								<h2 className="heading-5 mb-4">Badges</h2>
 								<div className="text-center py-8 text-gray-500 bg-gray-50 rounded-lg border border-dashed border-gray-200">
 									No badges earned yet.
 								</div>

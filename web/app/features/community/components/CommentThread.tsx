@@ -51,14 +51,14 @@ export function CommentThread({
 	const [replyingTo, setReplyingTo] = useState<string | null>(null);
 
 	return (
-		<div className="space-y-8">
+		<div className="stack-lg">
 			{/* Root Comment Form */}
 			<div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
 				<CommentForm postId={postId} />
 			</div>
 
 			{/* List */}
-			<div className="space-y-6">
+			<div className="stack-md">
 				{rootComments.length === 0 && (
 					<div className="text-center text-gray-500 py-8">
 						<MessageCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
@@ -127,7 +127,7 @@ function CommentNode({
 				<button
 					type="button"
 					onClick={() => setShowReplies(!showReplies)}
-					className="mt-2 ml-11 text-sm text-orange-600 hover:text-orange-700 font-medium flex items-center gap-1 transition-colors"
+					className="mt-2 ml-11 text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1 transition-colors"
 				>
 					{showReplies ? (
 						<>
@@ -171,7 +171,7 @@ function CommentNode({
 
 			{/* Children */}
 			{hasReplies && showReplies && (
-				<div className="mt-3 ml-4 pl-4 border-l-2 border-gray-100 space-y-3">
+				<div className="mt-3 ml-4 pl-4 border-l-2 border-gray-100 stack-sm">
 					{/* biome-ignore lint/suspicious/noExplicitAny: Recursive type structure difficult to type perfectly here */}
 					{(comment as any).children.map((child: any) => (
 						<CommentNode
@@ -212,7 +212,7 @@ function CommentForm({
 		<fetcher.Form
 			method="POST"
 			action="/api/comments"
-			className="space-y-3"
+			className="stack-sm"
 			ref={(form) => {
 				// simple reset on success handling usually done via useEffect on fetcher.data
 				if (fetcher.state === "idle" && fetcher.data?.success) {
@@ -229,7 +229,7 @@ function CommentForm({
 				name="content"
 				rows={parentId ? 2 : 3}
 				placeholder={parentId ? "Write a reply..." : "What are your thoughts?"}
-				className="w-full p-3 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+				className="w-full p-3 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
 				required
 				// biome-ignore lint/a11y/noAutofocus: Intentional for reply UX
 				autoFocus={autoFocus}

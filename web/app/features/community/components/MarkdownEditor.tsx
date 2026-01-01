@@ -22,7 +22,7 @@ export function MarkdownEditor({
 	const [isPreview, setIsPreview] = useState(false);
 
 	return (
-		<div className="w-full space-y-2">
+		<div className="w-full stack-sm">
 			<div className="flex items-center justify-between">
 				<label htmlFor={id} className="block text-sm font-medium text-gray-700">
 					{label}
@@ -62,7 +62,7 @@ export function MarkdownEditor({
 					"w-full rounded-md border min-h-[200px] transition-all overflow-hidden",
 					isPreview
 						? "bg-gray-50 border-gray-200 p-4"
-						: "bg-white border-gray-300 focus-within:ring-1 focus-within:ring-orange-500 focus-within:border-orange-500",
+						: "bg-white border-gray-300 focus-within:ring-1 focus-within:ring-primary-500 focus-within:border-primary-500",
 				)}
 			>
 				{isPreview ? (
@@ -85,7 +85,7 @@ export function MarkdownEditor({
 					/>
 				)}
 			</div>
-			<p className="text-xs text-gray-500 text-right">Markdown supported</p>
+			<p className="caption text-right">Markdown supported</p>
 		</div>
 	);
 }

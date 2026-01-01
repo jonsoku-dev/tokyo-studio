@@ -6,9 +6,9 @@ import { getUserFromRequest } from "~/features/auth/services/require-verified-em
 import { logFileOperation } from "~/features/storage/services/file-logger.server";
 import {
 	actionHandler,
-	UnauthorizedError,
 	BadRequestError,
 	NotFoundError,
+	UnauthorizedError,
 } from "~/shared/lib";
 
 /**
@@ -45,7 +45,9 @@ export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 
 	// 4. Verify document is in pending status
 	if (document.status !== "pending") {
-		throw new BadRequestError(`Document is not in pending status (current: ${document.status})`);
+		throw new BadRequestError(
+			`Document is not in pending status (current: ${document.status})`,
+		);
 	}
 
 	// 5. Update document status to uploaded

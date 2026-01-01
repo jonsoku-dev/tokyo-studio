@@ -33,23 +33,23 @@ export async function action({ request }: Route.ActionArgs) {
 export default function Signup({ actionData }: Route.ComponentProps) {
 	return (
 		<div className="flex min-h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-			<div className="w-full max-w-md space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+			<div className="w-full max-w-md stack-lg bg-white p-8 rounded-xl shadow-lg border border-gray-100">
 				<div className="text-center mb-6">
-					<h1 className="text-2xl font-bold text-gray-900">
+					<h1 className="heading-3">
 						Create an account
 					</h1>
-					<p className="mt-2 text-sm text-gray-600">
+					<p className="mt-2 body-sm">
 						Already have an account?{" "}
 						<Link
 							to="/login"
-							className="font-medium text-orange-600 hover:text-orange-500"
+							className="link"
 						>
 							Sign in
 						</Link>
 					</p>
 				</div>
 
-				<Form method="post" className="space-y-6">
+				<Form method="post" className="stack-md">
 					{actionData?.error && (
 						<div className="bg-red-50 text-red-600 text-sm p-3 rounded-md">
 							{actionData.error}

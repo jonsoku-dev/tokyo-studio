@@ -32,18 +32,18 @@ export default function PrivacySettings({ loaderData }: Route.ComponentProps) {
 	return (
 		<Shell>
 			<div className="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-				<h1 className="text-2xl font-bold text-gray-900 mb-6">
+				<h1 className="heading-3 mb-6">
 					Privacy Settings
 				</h1>
 
 				<div className="bg-white shadow rounded-lg overflow-hidden">
-					<div className="p-6 space-y-6">
+					<div className="p-6 stack-md">
 						<div className="flex items-center justify-between">
 							<div>
 								<h3 className="text-lg font-medium leading-6 text-gray-900">
 									Public Profile Visibility
 								</h3>
-								<p className="mt-1 text-sm text-gray-500">
+								<p className="mt-1 caption">
 									Control what information is visible to other users.
 								</p>
 							</div>
@@ -52,9 +52,9 @@ export default function PrivacySettings({ loaderData }: Route.ComponentProps) {
 						<fetcher.Form
 							method="post"
 							action="/api/users/me/privacy"
-							className="space-y-6"
+							className="stack-md"
 						>
-							<div className="space-y-4">
+							<div className="stack">
 								<div className="flex items-start">
 									<div className="flex items-center h-5">
 										<input
@@ -63,7 +63,7 @@ export default function PrivacySettings({ loaderData }: Route.ComponentProps) {
 											type="checkbox"
 											value="true"
 											defaultChecked={settings.hideEmail}
-											className="focus:ring-orange-500 h-4 w-4 text-orange-600 border-gray-300 rounded"
+											className="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
 										/>
 									</div>
 									<div className="ml-3 text-sm">
@@ -88,7 +88,7 @@ export default function PrivacySettings({ loaderData }: Route.ComponentProps) {
 											type="checkbox"
 											value="true"
 											defaultChecked={settings.hideFullName}
-											className="focus:ring-orange-500 h-4 w-4 text-orange-600 border-gray-300 rounded"
+											className="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
 										/>
 									</div>
 									<div className="ml-3 text-sm">
@@ -113,7 +113,7 @@ export default function PrivacySettings({ loaderData }: Route.ComponentProps) {
 											type="checkbox"
 											value="true"
 											defaultChecked={settings.hideActivity}
-											className="focus:ring-orange-500 h-4 w-4 text-orange-600 border-gray-300 rounded"
+											className="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
 										/>
 									</div>
 									<div className="ml-3 text-sm">

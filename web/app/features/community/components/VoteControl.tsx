@@ -69,7 +69,7 @@ export function VoteControl({
 				onClick={() => handleVote(1)}
 				className={cn(
 					"p-1 rounded hover:bg-gray-200 transition-colors",
-					isUpvoted && "text-orange-500 hover:bg-orange-100",
+					isUpvoted && "text-primary-500 hover:bg-primary-100",
 				)}
 				aria-label="Upvote"
 			>
@@ -79,8 +79,8 @@ export function VoteControl({
 			<span
 				className={cn(
 					"font-bold text-sm",
-					isUpvoted && "text-orange-500",
-					isDownvoted && "text-blue-500",
+					isUpvoted && "text-primary-500",
+					isDownvoted && "text-primary-500",
 				)}
 			>
 				{score}
@@ -91,7 +91,7 @@ export function VoteControl({
 				onClick={() => handleVote(-1)}
 				className={cn(
 					"p-1 rounded hover:bg-gray-200 transition-colors",
-					isDownvoted && "text-blue-500 hover:bg-blue-100",
+					isDownvoted && "text-primary-500 hover:bg-primary-100",
 				)}
 				aria-label="Downvote"
 			>

@@ -55,13 +55,13 @@ export default function Pipeline() {
 
 	return (
 		<Shell>
-			<div className="space-y-4">
+			<div className="stack">
 				<div className="flex items-center justify-between">
-					<h1 className="text-2xl font-bold text-gray-900">Pipeline</h1>
+					<h1 className="heading-3">Pipeline</h1>
 					<button
 						type="button"
 						onClick={() => setIsAddModalOpen(true)}
-						className="px-4 py-2 bg-orange-600 text-white rounded-md text-sm font-medium hover:bg-orange-700 transition-colors shadow-sm"
+						className="px-4 py-2 bg-primary-600 text-white rounded-md text-sm font-medium hover:bg-primary-700 transition-colors shadow-sm"
 					>
 						Add Application
 					</button>
