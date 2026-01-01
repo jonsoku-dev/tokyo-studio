@@ -1,4 +1,4 @@
-import type { PARSING_PLUGINS, ParsingPluginId } from "../constants/parsing-plugins";
+import type { ParsingPluginId } from "../constants/parsing-plugins";
 
 /**
  * Parsing Plugin Configuration

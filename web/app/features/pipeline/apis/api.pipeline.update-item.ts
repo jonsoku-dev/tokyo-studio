@@ -1,5 +1,4 @@
 import type { ActionFunctionArgs } from "react-router";
-import { requireOwnerOrAdmin } from "~/features/auth/utils/permissions.server";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { actionHandler, BadRequestError, InternalError } from "~/shared/lib";
 import { pipelineService } from "../domain/pipeline.service.server";
@@ -15,7 +14,7 @@ import type { PipelineStatus } from "../domain/pipeline.types";
  * - orderIndex?: number
  */
 export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
-	const userId = await requireUserId(request);
+	const _userId = await requireUserId(request);
 
 	const method = request.method;
 	if (method !== "PATCH") {
@@ -44,7 +43,8 @@ export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 		return { success: true, item: updated };
 	} catch (error) {
 		console.error("[Pipeline Update API] Failed:", error);
-		const message = error instanceof Error ? error.message : "Failed to update item";
+		const message =
+			error instanceof Error ? error.message : "Failed to update item";
 		throw new InternalError(message);
 	}
 });

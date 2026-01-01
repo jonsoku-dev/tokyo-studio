@@ -6,13 +6,13 @@ import { DeletePipelineItemModal } from "../components/DeletePipelineItemModal";
 import { KanbanBoard } from "../components/KanbanBoardWrapper";
 import { PipelineItemModal } from "../components/PipelineItemModal";
 import { PARSING_PLUGINS } from "../constants/parsing-plugins";
+import type { ParsingPluginConfig } from "../domain/parsing.types";
 import { pipelineService } from "../domain/pipeline.service.server";
 import type {
 	PipelineItem,
 	PipelineStage,
 	PipelineStatus,
 } from "../domain/pipeline.types";
-import type { ParsingPluginConfig } from "../domain/parsing.types";
 
 export function meta() {
 	return [{ title: "Pipeline - Japan IT Job" }];

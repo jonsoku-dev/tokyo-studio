@@ -31,7 +31,6 @@ export default [
 		route("roadmap", "features/roadmap/routes/index.tsx"),
 		route("pipeline", "features/pipeline/routes/pipeline.tsx"),
 		route("documents", "features/documents/routes/documents.tsx"),
-		route("documents/new", "features/documents/routes/new.tsx"),
 
 		// Mentoring
 		route("mentoring", "features/mentoring/routes/mentoring.index.tsx"),
@@ -180,15 +179,15 @@ export default [
 	route("api/jobs/parse", "features/pipeline/apis/api.job-parser.ts"),
 	route(
 		"api/pipeline/items/update",
-		"features/pipeline/apis/api.pipeline.update-item.server.ts",
+		"features/pipeline/apis/api.pipeline.update-item.ts",
 	),
 	route(
 		"api/pipeline/stages",
-		"features/pipeline/apis/api.pipeline.get-stages.server.ts",
+		"features/pipeline/apis/api.pipeline.get-stages.ts",
 	),
 	route(
 		"api/pipeline/parsers",
-		"features/pipeline/apis/api.pipeline.parsers.server.ts",
+		"features/pipeline/apis/api.pipeline.parsers.ts",
 	),
 
 	// Map APIs (SPEC 020)

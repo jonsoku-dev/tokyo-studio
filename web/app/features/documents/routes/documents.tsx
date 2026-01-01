@@ -6,11 +6,18 @@ import { DocumentGrid } from "~/features/documents/components/DocumentGrid";
 import { DocumentPreview } from "~/features/documents/components/DocumentPreview";
 import { documentsService } from "~/features/documents/services/documents.server";
 import type { SelectDocument } from "~/features/documents/services/types";
+import {
+	validateDocumentStatus,
+	validateDocumentType,
+	validatePaginationParams,
+	validateSearchQuery,
+} from "~/features/documents/validation";
 import { FileUploader } from "~/features/storage/components/FileUploader";
 import { StorageUsageCompact } from "~/features/storage/components/StorageUsageIndicator";
 import { getDownloadUrl } from "~/features/storage/services/s3-upload.client";
 import { storageService } from "~/features/storage/services/storage.server";
 import { Button } from "~/shared/components/ui/Button";
+import { BadRequestError } from "~/shared/lib";
 import type { Route } from "./+types/documents";
 
 // Lazy load PDF Viewer to reduce initial bundle size
@@ -31,19 +38,79 @@ export async function loader({ request }: Route.LoaderArgs) {
 	const type = url.searchParams.get("type") || undefined;
 	const status = url.searchParams.get("status") || undefined;
 
-	const files = await documentsService.searchDocuments(userId, {
-		query,
-		type,
-		status,
-	});
+	// Parse and validate pagination params
+	const pageParam = url.searchParams.get("page");
+	const pageSizeParam = url.searchParams.get("pageSize");
+
+	const page = pageParam ? Number.parseInt(pageParam, 10) : 1;
+	const pageSize = pageSizeParam ? Number.parseInt(pageSizeParam, 10) : 20;
+
+	// Validate pagination
+	const paginationValidation = validatePaginationParams(page, pageSize);
+	if (!paginationValidation.valid) {
+		throw new BadRequestError(
+			paginationValidation.error ?? "Invalid pagination parameters",
+		);
+	}
+
+	// Validate search query
+	if (query) {
+		const queryValidation = validateSearchQuery(query);
+		if (!queryValidation.valid) {
+			throw new BadRequestError(
+				queryValidation.error ?? "Invalid search query",
+			);
+		}
+	}
+
+	// Validate document type filter
+	if (type && type !== "All") {
+		const typeValidation = validateDocumentType(type);
+		if (!typeValidation.valid) {
+			throw new BadRequestError(
+				typeValidation.error ?? "Invalid document type",
+			);
+		}
+	}
+
+	// Validate status filter
+	if (status && status !== "All") {
+		const statusValidation = validateDocumentStatus(status);
+		if (!statusValidation.valid) {
+			throw new BadRequestError(statusValidation.error ?? "Invalid status");
+		}
+	}
+
+	// Calculate offset
+	const offset = (page - 1) * pageSize;
+
+	const { documents: files, totalCount } =
+		await documentsService.searchDocuments(userId, {
+			query,
+			type,
+			status,
+			limit: pageSize,
+			offset,
+		});
 
 	const usedQuota = await storageService.getUsedQuota(userId);
 
-	return { files, usedQuota };
+	// Calculate pagination metadata
+	const totalPages = Math.ceil(totalCount / pageSize);
+	const pagination = {
+		page,
+		pageSize,
+		totalCount,
+		totalPages,
+		hasNextPage: page < totalPages,
+		hasPreviousPage: page > 1,
+	};
+
+	return { files, usedQuota, pagination };
 }
 
 export default function Documents({ loaderData }: Route.ComponentProps) {
-	const { files, usedQuota } = loaderData;
+	const { files, usedQuota, pagination } = loaderData;
 	const fetcher = useFetcher();
 	const [searchParams] = useSearchParams();
 	const submit = useSubmit();
@@ -205,6 +272,7 @@ export default function Documents({ loaderData }: Route.ComponentProps) {
 			) : (
 				<DocumentGrid
 					documents={files as SelectDocument[]}
+					pagination={pagination}
 					onRename={handleRename}
 					onStatusChange={handleStatusChange}
 					onDelete={handleDelete}

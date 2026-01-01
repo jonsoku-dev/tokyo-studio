@@ -16,6 +16,10 @@
         "./client": {
             "import": "./src/client.ts",
             "types": "./src/client.ts"
+        },
+        "./transaction": {
+            "import": "./src/transaction.ts",
+            "types": "./src/transaction.ts"
         }
     },
     "scripts": {

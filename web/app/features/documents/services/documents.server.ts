@@ -1,9 +1,30 @@
 import { db } from "@itcom/db/client";
 import { documents, documentVersions } from "@itcom/db/schema";
+import { withTransaction } from "@itcom/db/transaction";
 import { and, desc, eq, ilike } from "drizzle-orm";
+import { DocumentInvalidInputError, DocumentNotFoundError } from "../errors";
 import type { InsertDocumentVersion } from "./types";
 
 class DocumentsService {
+	// Create Document
+	async createDocument(data: typeof documents.$inferInsert) {
+		try {
+			const [doc] = await db.insert(documents).values(data).returning();
+			console.log("[DocumentsService] Document created:", {
+				documentId: doc.id,
+				userId: doc.userId,
+				title: doc.title,
+			});
+			return doc;
+		} catch (error) {
+			console.error("[DocumentsService] Create failed:", {
+				data,
+				error: error instanceof Error ? error.message : String(error),
+			});
+			throw error;
+		}
+	}
+
 	// Search and Filter Documents
 	async searchDocuments(
 		userId: string,
@@ -11,27 +32,55 @@ class DocumentsService {
 			query?: string;
 			type?: string; // Resume | CV | Portfolio | Cover Letter
 			status?: string; // draft | final
+			limit?: number;
+			offset?: number;
 		},
 	) {
-		const filters = [eq(documents.userId, userId)];
+		try {
+			const filters = [eq(documents.userId, userId)];
 
-		if (params.query) {
-			filters.push(ilike(documents.title, `%${params.query}%`));
+			if (params.query) {
+				filters.push(ilike(documents.title, `%${params.query}%`));
+			}
+
+			if (params.type && params.type !== "All") {
+				filters.push(eq(documents.type, params.type));
+			}
+
+			if (params.status && params.status !== "All") {
+				filters.push(eq(documents.status, params.status));
+			}
+
+			const whereClause = and(...filters);
+
+			// Get total count BEFORE applying pagination
+			const countResult = await db
+				.select({ count: documents.id })
+				.from(documents)
+				.where(whereClause);
+			const totalCount = countResult.length;
+
+			// Get paginated results
+			const results = await db.query.documents.findMany({
+				where: whereClause,
+				// Order by upload date (newest first), fallback to creation date for pending uploads
+				orderBy: [desc(documents.uploadedAt), desc(documents.createdAt)],
+				limit: params.limit,
+				offset: params.offset,
+			});
+
+			console.log(
+				`[DocumentsService] Found ${results.length} of ${totalCount} documents for user ${userId}`,
+			);
+			return { documents: results, totalCount };
+		} catch (error) {
+			console.error("[DocumentsService] Search failed:", {
+				userId,
+				params,
+				error: error instanceof Error ? error.message : String(error),
+			});
+			throw error;
 		}
-
-		if (params.type && params.type !== "All") {
-			filters.push(eq(documents.type, params.type));
-		}
-
-		if (params.status && params.status !== "All") {
-			filters.push(eq(documents.status, params.status));
-		}
-
-		return db.query.documents.findMany({
-			where: and(...filters),
-			// Order by upload date (newest first), fallback to creation date for pending uploads
-			orderBy: [desc(documents.uploadedAt), desc(documents.createdAt)],
-		});
 	}
 
 	// Update Document (Rename, Change Status)
@@ -40,59 +89,144 @@ class DocumentsService {
 		documentId: string,
 		data: { title?: string; status?: string },
 	) {
-		// Verify ownership
-		const existing = await db.query.documents.findFirst({
-			where: and(eq(documents.id, documentId), eq(documents.userId, userId)),
-		});
+		try {
+			// Validate input
+			if (!data.title && !data.status) {
+				throw new DocumentInvalidInputError(
+					"update data",
+					"At least one field (title or status) must be provided",
+					{ userId, documentId, data },
+				);
+			}
 
-		if (!existing) {
-			throw new Error("Document not found or unauthorized");
+			if (data.title !== undefined && data.title.trim().length === 0) {
+				throw new DocumentInvalidInputError("title", "Title cannot be empty", {
+					userId,
+					documentId,
+				});
+			}
+
+			// Verify ownership
+			const existing = await db.query.documents.findFirst({
+				where: and(eq(documents.id, documentId), eq(documents.userId, userId)),
+			});
+
+			if (!existing) {
+				console.warn(`[DocumentsService] Document not found or unauthorized:`, {
+					userId,
+					documentId,
+				});
+				throw new DocumentNotFoundError(
+					documentId,
+					"Document not found or you don't have permission to access it",
+				);
+			}
+
+			// Use transaction to ensure atomicity of update + version log
+			return await withTransaction(async (tx) => {
+				const updates: Partial<typeof documents.$inferInsert> = {
+					updatedAt: new Date(),
+				};
+
+				const versionsToLog: InsertDocumentVersion[] = [];
+
+				if (data.title && data.title !== existing.title) {
+					updates.title = data.title;
+					versionsToLog.push({
+						documentId,
+						changeType: "rename",
+						oldValue: existing.title,
+						newValue: data.title,
+					});
+					console.log(`[DocumentsService] Document renamed:`, {
+						documentId,
+						oldTitle: existing.title,
+						newTitle: data.title,
+					});
+				}
+
+				if (data.status && data.status !== existing.status) {
+					updates.status = data.status;
+					versionsToLog.push({
+						documentId,
+						changeType: "status_change",
+						oldValue: existing.status,
+						newValue: data.status,
+					});
+					console.log(`[DocumentsService] Document status changed:`, {
+						documentId,
+						oldStatus: existing.status,
+						newStatus: data.status,
+					});
+				}
+
+				// Update document if there are changes
+				if (Object.keys(updates).length > 1) {
+					await tx
+						.update(documents)
+						.set(updates)
+						.where(eq(documents.id, documentId));
+				}
+
+				// Log all version changes in the same transaction
+				if (versionsToLog.length > 0) {
+					await tx.insert(documentVersions).values(versionsToLog);
+				}
+
+				return { success: true };
+			});
+		} catch (error) {
+			// Re-throw typed errors
+			if (
+				error instanceof DocumentNotFoundError ||
+				error instanceof DocumentInvalidInputError
+			) {
+				throw error;
+			}
+
+			// Log unexpected errors
+			console.error("[DocumentsService] Update failed:", {
+				userId,
+				documentId,
+				data,
+				error: error instanceof Error ? error.message : String(error),
+			});
+			throw error;
 		}
-
-		const updates: Partial<typeof documents.$inferInsert> = {
-			updatedAt: new Date(),
-		};
-		const versionLog: Partial<typeof documentVersions.$inferInsert> = {
-			documentId,
-		};
-
-		if (data.title && data.title !== existing.title) {
-			updates.title = data.title;
-			versionLog.changeType = "rename";
-			versionLog.oldValue = existing.title;
-			versionLog.newValue = data.title;
-			await this.logVersion(versionLog as InsertDocumentVersion);
-		}
-
-		if (data.status && data.status !== existing.status) {
-			updates.status = data.status;
-			versionLog.changeType = "status_change";
-			versionLog.oldValue = existing.status;
-			versionLog.newValue = data.status;
-			await this.logVersion(versionLog as InsertDocumentVersion);
-		}
-
-		if (Object.keys(updates).length > 1) {
-			await db
-				.update(documents)
-				.set(updates)
-				.where(eq(documents.id, documentId));
-		}
-
-		return { success: true };
 	}
 
 	// Log Version History
 	async logVersion(data: InsertDocumentVersion) {
-		await db.insert(documentVersions).values(data);
+		try {
+			await db.insert(documentVersions).values(data);
+		} catch (error) {
+			console.error("[DocumentsService] Failed to log version:", {
+				data,
+				error: error instanceof Error ? error.message : String(error),
+			});
+			throw error;
+		}
 	}
 
 	// Get Version History
 	async getVersions(documentId: string) {
-		return db.query.documentVersions.findMany({
-			where: eq(documentVersions.documentId, documentId),
-			orderBy: [desc(documentVersions.createdAt)],
-		});
+		try {
+			const versions = await db.query.documentVersions.findMany({
+				where: eq(documentVersions.documentId, documentId),
+				orderBy: [desc(documentVersions.createdAt)],
+			});
+
+			console.log(
+				`[DocumentsService] Retrieved ${versions.length} versions for document ${documentId}`,
+			);
+			return versions;
+		} catch (error) {
+			console.error("[DocumentsService] Failed to get versions:", {
+				documentId,
+				error: error instanceof Error ? error.message : String(error),
+			});
+			throw error;
+		}
 	}
 }
 

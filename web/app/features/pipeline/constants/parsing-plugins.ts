@@ -25,18 +25,12 @@ const PARSER_DISPLAY_NAMES = {
 
 // Example URLs for each platform
 const PARSER_EXAMPLE_URLS = {
-	[PARSER_IDS.LINKEDIN]:
-		"https://www.linkedin.com/jobs/view/1234567890/",
-	[PARSER_IDS.INDEED]:
-		"https://jp.indeed.com/viewjob?jk=1234567890abcdef",
-	[PARSER_IDS.MYNAVI]:
-		"https://tenshoku.mynavi.jp/job/123456789/",
-	[PARSER_IDS.RIKUNABI]:
-		"https://job.rikunabi.com/2025/job1234567/",
-	[PARSER_IDS.GREEN]:
-		"https://www.green.jp/resume/offers/1234567",
-	[PARSER_IDS.WANTEDLY]:
-		"https://www.wantedly.com/projects/1234567",
+	[PARSER_IDS.LINKEDIN]: "https://www.linkedin.com/jobs/view/1234567890/",
+	[PARSER_IDS.INDEED]: "https://jp.indeed.com/viewjob?jk=1234567890abcdef",
+	[PARSER_IDS.MYNAVI]: "https://tenshoku.mynavi.jp/job/123456789/",
+	[PARSER_IDS.RIKUNABI]: "https://job.rikunabi.com/2025/job1234567/",
+	[PARSER_IDS.GREEN]: "https://www.green.jp/resume/offers/1234567",
+	[PARSER_IDS.WANTEDLY]: "https://www.wantedly.com/projects/1234567",
 } as const;
 
 // URL patterns for validation

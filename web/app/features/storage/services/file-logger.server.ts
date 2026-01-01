@@ -5,34 +5,44 @@
  * - Upload events
  * - Download events
  * - Delete events
- * - Upload failures
+ * - Rename events
  *
- * Captures metadata: user, timestamp, IP address, user agent, operation type
+ * Captures metadata: user, document, timestamp, IP address, operation type
  */
 
-import crypto from "node:crypto";
 import { db } from "@itcom/db/client";
 import { fileOperationLogs } from "@itcom/db/schema";
 
 export type FileOperation =
 	| "upload"
 	| "download"
+	| "rename"
 	| "delete"
-	| "upload_failed"
-	| "upload_confirmed";
+	| "upload_confirmed"
+	| "upload_failed";
 
 export interface LogFileOperationParams {
 	/** User ID performing the operation */
 	userId: string;
-	/** Document ID (optional, may not exist yet during upload request) */
+	/** Document ID (optional for failed uploads) */
 	documentId?: string;
 	/** Type of operation */
 	operation: FileOperation;
-	/** Storage key (S3 key or local path) */
-	storageKey?: string;
-	/** HTTP request object for extracting IP and user agent */
+	/** File size in bytes (optional, for uploads) */
+	fileSize?: number;
+	/** Old value (for rename operations) */
+	oldValue?: string;
+	/** New value (for rename operations) */
+	newValue?: string;
+	/** HTTP request object for extracting IP */
 	request: Request;
-	/** Additional metadata */
+	/** Operation status */
+	status?: "success" | "failed";
+	/** Error message if failed */
+	error?: string;
+	/** Storage key (S3 key or local path) - deprecated, for backwards compatibility */
+	storageKey?: string;
+	/** Additional metadata - deprecated, for backwards compatibility */
 	metadata?: Record<string, unknown>;
 }
 
@@ -44,47 +54,55 @@ export interface LogFileOperationParams {
  *   userId: user.id,
  *   documentId: doc.id,
  *   operation: 'upload',
- *   storageKey: 's3-key-123',
  *   request,
+ *   status: 'success',
  * });
  */
 export async function logFileOperation({
 	userId,
 	documentId,
 	operation,
-	storageKey,
+	fileSize,
+	oldValue,
+	newValue,
 	request,
-	metadata,
+	status = "success",
+	error,
 }: LogFileOperationParams): Promise<void> {
 	try {
+		// Skip logging if documentId is not provided (DB requires it as NOT NULL)
+		if (!documentId) {
+			console.log(
+				`[FILE LOG] Skipping log for ${operation} - no documentId provided`,
+			);
+			return;
+		}
+
 		// Extract IP address (handle proxies)
 		const forwardedFor = request.headers.get("x-forwarded-for");
 		const realIp = request.headers.get("x-real-ip");
 		const ipAddress =
 			forwardedFor?.split(",")[0]?.trim() || realIp || "unknown";
 
-		// Extract user agent
-		const userAgent = request.headers.get("user-agent") || "unknown";
-
 		// Insert log record
 		await db.insert(fileOperationLogs).values({
-			id: crypto.randomUUID(),
 			userId,
-			documentId: documentId ?? null,
+			documentId,
 			operation,
-			storageKey: storageKey ?? null,
+			fileSize: fileSize?.toString(),
+			oldValue,
+			newValue,
 			ipAddress,
-			userAgent,
-			metadata: metadata ? JSON.stringify(metadata) : null,
-			timestamp: new Date(),
+			status,
+			error,
 		});
 
 		console.log(
 			`[FILE LOG] ${operation.toUpperCase()} by user ${userId} from ${ipAddress}`,
 		);
-	} catch (error) {
+	} catch (err) {
 		// Log errors but don't fail the main operation
-		console.error("[FILE LOG] Failed to log file operation:", error);
+		console.error("[FILE LOG] Failed to log file operation:", err);
 	}
 }
 
@@ -98,7 +116,7 @@ export async function getUserFileOperationLogs(
 ): Promise<(typeof fileOperationLogs.$inferSelect)[]> {
 	return db.query.fileOperationLogs.findMany({
 		where: (logs, { eq }) => eq(logs.userId, userId),
-		orderBy: (logs, { desc }) => [desc(logs.timestamp)],
+		orderBy: (logs, { desc }) => [desc(logs.createdAt)],
 		limit,
 	});
 }
@@ -112,7 +130,7 @@ export async function getDocumentFileOperationLogs(
 ): Promise<(typeof fileOperationLogs.$inferSelect)[]> {
 	return db.query.fileOperationLogs.findMany({
 		where: (logs, { eq }) => eq(logs.documentId, documentId),
-		orderBy: (logs, { desc }) => [desc(logs.timestamp)],
+		orderBy: (logs, { desc }) => [desc(logs.createdAt)],
 	});
 }
 
@@ -124,7 +142,7 @@ export async function getRecentFileOperationLogs(
 	limit = 100,
 ): Promise<(typeof fileOperationLogs.$inferSelect)[]> {
 	return db.query.fileOperationLogs.findMany({
-		orderBy: (logs, { desc }) => [desc(logs.timestamp)],
+		orderBy: (logs, { desc }) => [desc(logs.createdAt)],
 		limit,
 	});
 }
@@ -138,7 +156,7 @@ export async function getFileOperationStats(userId?: string): Promise<{
 	uploadCount: number;
 	downloadCount: number;
 	deleteCount: number;
-	failedUploadCount: number;
+	renameCount: number;
 }> {
 	const logs = userId
 		? await db.query.fileOperationLogs.findMany({
@@ -151,7 +169,6 @@ export async function getFileOperationStats(userId?: string): Promise<{
 		uploadCount: logs.filter((log) => log.operation === "upload").length,
 		downloadCount: logs.filter((log) => log.operation === "download").length,
 		deleteCount: logs.filter((log) => log.operation === "delete").length,
-		failedUploadCount: logs.filter((log) => log.operation === "upload_failed")
-			.length,
+		renameCount: logs.filter((log) => log.operation === "rename").length,
 	};
 }

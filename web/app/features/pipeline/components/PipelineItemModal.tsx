@@ -8,8 +8,8 @@ import {
 	DialogTitle,
 } from "~/shared/components/ui/Dialog";
 import { PARSING_PLUGINS } from "../constants/parsing-plugins";
-import type { PipelineItem, PipelineStage } from "../domain/pipeline.types";
 import type { ParsingPluginConfig } from "../domain/parsing.types";
+import type { PipelineItem, PipelineStage } from "../domain/pipeline.types";
 
 interface PipelineItemModalProps {
 	isOpen: boolean;
@@ -80,7 +80,9 @@ function ApplicationForm({
 
 	// Form state - fresh on each mount
 	const [url, setUrl] = useState("");
-	const [parserId, setParserId] = useState(parsers.length > 0 ? parsers[0].id : "");
+	const [parserId, setParserId] = useState(
+		parsers.length > 0 ? parsers[0].id : "",
+	);
 	const [company, setCompany] = useState(initialData?.company || "");
 	const [position, setPosition] = useState(initialData?.position || "");
 	const [stage, setStage] = useState(
@@ -92,7 +94,7 @@ function ApplicationForm({
 			: new Date().toISOString().split("T")[0],
 	);
 	const [nextAction, setNextAction] = useState(initialData?.nextAction || "");
-	const [urlError, setUrlError] = useState("");
+	const [_urlError, setUrlError] = useState("");
 
 	const parserFetcher = useFetcher<{
 		company: string;
@@ -109,7 +111,7 @@ function ApplicationForm({
 
 	// Get current parser configuration
 	const currentParser = parsers.find((p) => p.id === parserId);
-	const currentExampleUrl = currentParser?.exampleUrl || "";
+	const _currentExampleUrl = currentParser?.exampleUrl || "";
 
 	// Display values: prefer user input, fallback to parsed data
 	const displayCompany = company || (hasParsedData ? parsedData.company : "");
@@ -117,10 +119,13 @@ function ApplicationForm({
 		position || (hasParsedData ? parsedData.position : "");
 
 	// URL validation
-	const isUrlValid = url ? PARSING_PLUGINS.validateUrl(url, parserId as any) : true;
-	const urlValidationError = url && !isUrlValid
-		? `URL must be from ${currentParser?.displayName || "the selected site"}`
-		: "";
+	const isUrlValid = url
+		? PARSING_PLUGINS.validateUrl(url, parserId as any)
+		: true;
+	const urlValidationError =
+		url && !isUrlValid
+			? `URL must be from ${currentParser?.displayName || "the selected site"}`
+			: "";
 
 	// Check for successful submission
 	const isSubmitSuccess =
@@ -185,37 +190,36 @@ function ApplicationForm({
 
 			{!isEdit && (
 				<>
-
-			{/* Parser Selection */}
-			<div className="mb-6">
-				<label
-					htmlFor="parser"
-					className="mb-2 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
-				>
-					Select Job Site
-				</label>
-				<select
-					id="parser"
-					value={parserId}
-					onChange={(e) => {
-						setParserId(e.target.value);
-						setUrl("");
-						setUrlError("");
-					}}
-					className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
-				>
-					{parsers.map((parser) => (
-						<option key={parser.id} value={parser.id}>
-							{parser.displayName}
-						</option>
-					))}
-				</select>
-				{currentParser && (
-					<p className="mt-1.5 text-[10px] text-gray-400">
-						{currentParser.description}
-					</p>
-				)}
-			</div>
+					{/* Parser Selection */}
+					<div className="mb-6">
+						<label
+							htmlFor="parser"
+							className="mb-2 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
+						>
+							Select Job Site
+						</label>
+						<select
+							id="parser"
+							value={parserId}
+							onChange={(e) => {
+								setParserId(e.target.value);
+								setUrl("");
+								setUrlError("");
+							}}
+							className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
+						>
+							{parsers.map((parser) => (
+								<option key={parser.id} value={parser.id}>
+									{parser.displayName}
+								</option>
+							))}
+						</select>
+						{currentParser && (
+							<p className="mt-1.5 text-[10px] text-gray-400">
+								{currentParser.description}
+							</p>
+						)}
+					</div>
 
 					{/* Magic Parser Section - Only for new items */}
 					<div className="mb-6 w-full border-gray-100 border-t" />
@@ -233,7 +237,10 @@ function ApplicationForm({
 								type="url"
 								placeholder="Paste your job posting URL here..."
 								value={url}
-								onChange={(e) => { setUrl(e.target.value); setUrlError(""); }}
+								onChange={(e) => {
+									setUrl(e.target.value);
+									setUrlError("");
+								}}
 								className={`flex-1 rounded-lg border px-3 py-2 text-sm outline-none transition-all focus:ring-2 focus:ring-primary-500 ${urlValidationError ? "border-red-300 bg-red-50" : "border-gray-200 bg-gray-50"}`}
 							/>
 							<button

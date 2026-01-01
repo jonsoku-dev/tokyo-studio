@@ -1,4 +1,4 @@
-import { type InferSelectModel, relations } from "drizzle-orm";
+import { type InferSelectModel, relations, sql } from "drizzle-orm";
 import {
 	boolean,
 	customType,
@@ -9,6 +9,8 @@ import {
 	text,
 	timestamp,
 	uuid,
+	check,
+	index,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
@@ -121,6 +123,10 @@ export const pipelineItems = pgTable("pipeline_items", {
 	nextAction: text("next_action"),
 	orderIndex: integer("order_index").notNull().default(0), // Order within stage column
 	userId: uuid("user_id").references(() => users.id),
+	// Document Integration: Resume attached to this application
+	resumeId: uuid("resume_id").references(() => documents.id, {
+		onDelete: "set null",
+	}),
 	createdAt: timestamp("created_at").defaultNow(),
 	updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -129,44 +135,84 @@ export const insertPipelineItemSchema = createInsertSchema(pipelineItems);
 export const selectPipelineItemSchema = createSelectSchema(pipelineItems);
 
 // --- Documents ---
-export const documents = pgTable("documents", {
-	id: uuid("id").primaryKey().defaultRandom(),
-	title: text("title").notNull(), // User-friendly name
-	type: text("type").notNull(), // "Resume" | "CV" | "Portfolio" | "Cover Letter"
-	status: text("status").default("draft"), // "draft" | "final" | "pending" | "uploaded" | "deleted"
-	url: text("url"), // Public/Presigned URL
+export const documents = pgTable(
+	"documents",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		title: text("title").notNull(), // User-friendly name - NOT NULL constraint
+		type: text("type").notNull(), // "Resume" | "CV" | "Portfolio" | "Cover Letter"
+		status: text("status").default("draft").notNull(), // "draft" | "final" | "pending" | "uploaded" | "deleted"
+		url: text("url"), // Public/Presigned URL
 
-	// File Metadata
-	storageKey: text("storage_key"), // S3 Key / Local Path
-	s3Key: text("s3_key"), // S3 specific key
-	thumbnailS3Key: text("thumbnail_s3_key"), // S3 thumbnail key
-	originalName: text("original_name"),
-	mimeType: text("mime_type"),
-	size: text("size"), // Storing as text to avoid BigInt issues, convert to number in app
-	thumbnailUrl: text("thumbnail_url"),
-	downloadCount: text("download_count").default("0"),
+		// File Metadata
+		storageKey: text("storage_key"), // S3 Key / Local Path
+		s3Key: text("s3_key"), // S3 specific key
+		thumbnailS3Key: text("thumbnail_s3_key"), // S3 thumbnail key
+		originalName: text("original_name"),
+		mimeType: text("mime_type"),
+		size: text("size"), // Storing as text to avoid BigInt issues, convert to number in app
+		thumbnailUrl: text("thumbnail_url"),
+		downloadCount: text("download_count").default("0"),
 
-	userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
-	uploadedAt: timestamp("uploaded_at"),
-	deletedAt: timestamp("deleted_at"),
-	createdAt: timestamp("created_at").defaultNow(),
-	updatedAt: timestamp("updated_at").defaultNow(),
-});
+		userId: uuid("user_id")
+			.references(() => users.id, { onDelete: "cascade" })
+			.notNull(),
+		uploadedAt: timestamp("uploaded_at"),
+		deletedAt: timestamp("deleted_at"),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	},
+	(table) => ({
+		// CHECK constraints for enum values
+		statusCheck: check(
+			"documents_status_check",
+			sql`${table.status} IN ('draft', 'final', 'pending', 'uploaded', 'deleted')`,
+		),
+		typeCheck: check(
+			"documents_type_check",
+			sql`${table.type} IN ('Resume', 'CV', 'Portfolio', 'Cover Letter')`,
+		),
+		// Composite indexes for performance
+		userUploadedAtIdx: index("documents_user_uploaded_at_idx").on(
+			table.userId,
+			table.uploadedAt,
+		),
+		userStatusIdx: index("documents_user_status_idx").on(
+			table.userId,
+			table.status,
+		),
+	}),
+);
 
 export const insertDocumentSchema = createInsertSchema(documents);
 export const selectDocumentSchema = createSelectSchema(documents);
 
 // --- Document Versions ---
-export const documentVersions = pgTable("document_versions", {
-	id: uuid("id").primaryKey().defaultRandom(),
-	documentId: uuid("document_id")
-		.references(() => documents.id, { onDelete: "cascade" })
-		.notNull(),
-	changeType: text("change_type").notNull(), // "upload", "rename", "status_change"
-	oldValue: text("old_value"),
-	newValue: text("new_value"),
-	createdAt: timestamp("created_at").defaultNow(),
-});
+export const documentVersions = pgTable(
+	"document_versions",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		documentId: uuid("document_id")
+			.references(() => documents.id, { onDelete: "cascade" })
+			.notNull(),
+		changeType: text("change_type").notNull(), // "upload", "rename", "status_change"
+		oldValue: text("old_value"),
+		newValue: text("new_value"),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+	},
+	(table) => ({
+		// CHECK constraint for changeType enum
+		changeTypeCheck: check(
+			"document_versions_change_type_check",
+			sql`${table.changeType} IN ('upload', 'rename', 'status_change')`,
+		),
+		// Index for querying version history by document
+		documentCreatedAtIdx: index("document_versions_document_created_at_idx").on(
+			table.documentId,
+			table.createdAt,
+		),
+	}),
+);
 
 export const insertDocumentVersionSchema = createInsertSchema(documentVersions);
 export const selectDocumentVersionSchema = createSelectSchema(documentVersions);
@@ -187,6 +233,8 @@ export const mentoringSessions = pgTable("mentoring_sessions", {
 	price: integer("price").notNull(), // in cents
 	currency: text("currency").default("USD").notNull(),
 	meetingUrl: text("meeting_url"),
+	// Document Integration: Documents shared by mentee for review
+	sharedDocumentIds: jsonb("shared_document_ids").$type<string[]>().default([]),
 	lockedAt: timestamp("locked_at"),
 	expiresAt: timestamp("expires_at"),
 	reminderSentAt: timestamp("reminder_sent_at"),
@@ -435,6 +483,11 @@ export const profiles = pgTable("profiles", {
 	linkedinUrl: text("linkedin_url"),
 	githubUrl: text("github_url"),
 	userId: uuid("user_id").references(() => users.id),
+	// Document Integration: Featured portfolio document
+	portfolioDocumentId: uuid("portfolio_document_id").references(
+		() => documents.id,
+		{ onDelete: "set null" },
+	),
 	createdAt: timestamp("created_at").defaultNow(),
 	updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -876,21 +929,48 @@ export const insertUploadTokenSchema = createInsertSchema(uploadTokens);
 export const selectUploadTokenSchema = createSelectSchema(uploadTokens);
 
 // --- SPEC 006: File Operation Logging ---
-export const fileOperationLogs = pgTable("file_operation_logs", {
-	id: uuid("id").primaryKey().defaultRandom(),
-	userId: uuid("user_id")
-		.references(() => users.id, { onDelete: "cascade" })
-		.notNull(),
-	documentId: uuid("document_id").references(() => documents.id, {
-		onDelete: "set null",
+export const fileOperationLogs = pgTable(
+	"file_operation_logs",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		userId: uuid("user_id")
+			.references(() => users.id, { onDelete: "cascade" })
+			.notNull(),
+		documentId: uuid("document_id")
+			.references(() => documents.id, { onDelete: "set null" })
+			.notNull(),
+		operation: text("operation").notNull(), // "upload" | "download" | "rename" | "delete"
+		fileSize: text("file_size"), // Store as text to avoid BigInt issues
+		oldValue: text("old_value"), // For rename: old filename/title
+		newValue: text("new_value"), // For rename: new filename/title
+		ipAddress: text("ip_address").notNull(),
+		status: text("status"), // "success" | "failed"
+		error: text("error"), // Error message if status = failed
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+	},
+	(table) => ({
+		// CHECK constraint for operation enum
+		operationCheck: check(
+			"file_operation_logs_operation_check",
+			sql`${table.operation} IN ('upload', 'download', 'rename', 'delete')`,
+		),
+		// CHECK constraint for status enum
+		statusCheck: check(
+			"file_operation_logs_status_check",
+			sql`${table.status} IN ('success', 'failed')`,
+		),
+		// Index for querying by document
+		documentCreatedAtIdx: index("file_operation_logs_document_created_at_idx").on(
+			table.documentId,
+			table.createdAt,
+		),
+		// Index for querying by user
+		userCreatedAtIdx: index("file_operation_logs_user_created_at_idx").on(
+			table.userId,
+			table.createdAt,
+		),
 	}),
-	operation: text("operation").notNull(), // "upload" | "download" | "delete" | "upload_failed"
-	storageKey: text("storage_key"),
-	ipAddress: text("ip_address"),
-	userAgent: text("user_agent"),
-	metadata: jsonb("metadata"),
-	timestamp: timestamp("timestamp").defaultNow().notNull(),
-});
+);
 
 export const insertFileOperationLogSchema =
 	createInsertSchema(fileOperationLogs);
