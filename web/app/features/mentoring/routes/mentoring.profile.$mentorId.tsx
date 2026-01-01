@@ -1,4 +1,4 @@
-import { Briefcase, Building2, Star } from "lucide-react";
+import { Briefcase, Building2, Pencil, Star } from "lucide-react";
 import { useState } from "react";
 import {
 	type ActionFunctionArgs,
@@ -9,6 +9,7 @@ import { requireUserId } from "~/features/auth/utils/session.server";
 import { SHAREABLE_DOCUMENT_TYPES } from "~/features/documents/constants";
 import { documentsService } from "~/features/documents/services/documents.server";
 import { Badge } from "~/shared/components/ui/Badge";
+import { Button } from "~/shared/components/ui/Button";
 import { AvailabilityCalendar } from "../components/AvailabilityCalendar";
 import { BookingModal } from "../components/BookingModal";
 import type { AvailabilitySlot } from "../domain/mentoring.types";
@@ -30,7 +31,9 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
 	if (!mentor) throw new Response("Not Found", { status: 404 });
 
-	return { mentor, availability, userDocuments };
+	const isOwner = userId === mentorId;
+
+	return { mentor, availability, userDocuments, isOwner };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -70,7 +73,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function MentorProfilePage() {
-	const { mentor, availability, userDocuments } =
+	const { mentor, availability, userDocuments, isOwner } =
 		useLoaderData<typeof loader>();
 	const [selectedSlot, setSelectedSlot] = useState<AvailabilitySlot | null>(
 		null,
@@ -102,7 +105,17 @@ export default function MentorProfilePage() {
 									className="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg"
 								/>
 								<div className="stack-sm flex-1">
-									<h1 className="heading-2 text-gray-900">{mentor.name}</h1>
+									<div className="flex items-center justify-between">
+									    <h1 className="heading-2 text-gray-900">{mentor.name}</h1>
+                                        {isOwner && (
+                                            <Button variant="outline" size="sm" asChild>
+                                                <a href="/mentoring/settings">
+                                                    <Pencil className="mr-2 h-4 w-4" />
+                                                    Edit Profile
+                                                </a>
+                                            </Button>
+                                        )}
+                                    </div>
 									<div className="font-medium text-gray-600 text-xl">
 										{mentor.profile.jobTitle}
 									</div>

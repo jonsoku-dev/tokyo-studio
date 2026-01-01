@@ -9,14 +9,7 @@ import {
 	Star,
 	Trash2,
 	User as UserIcon,
-	Archive,
-	Lock,
 } from "lucide-react";
-import {
-	SettlementTemplateStatusSchema,
-	TEMPLATE_STATUS_CONFIG,
-	type SettlementTemplateStatus,
-} from "../constants";
 import { useState } from "react";
 import {
 	type ActionFunctionArgs,
@@ -25,6 +18,13 @@ import {
 	useFetcher,
 	useLoaderData,
 } from "react-router";
+import { requireUserId } from "../../auth/utils/session.server";
+import {
+	SettlementTemplateStatusSchema,
+	TEMPLATE_STATUS_CONFIG,
+	type SettlementTemplateStatus,
+} from "../constants";
+import { settlementService } from "../services/settlement.server";
 import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { Avatar } from "~/shared/components/ui/Avatar";
 import { Badge } from "~/shared/components/ui/Badge";
@@ -37,8 +37,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/shared/components/ui/Select";
-import { requireUserId } from "../../auth/utils/session.server";
-import { settlementService } from "../services/settlement.server";
 import type { Route } from "./+types/marketplace.$templateId";
 
 export function meta({ data }: Route.MetaArgs) {
@@ -300,7 +298,7 @@ export default function TemplateDetail() {
 										<div
 											className="flex gap-1"
 											onMouseLeave={() => setHoverRating(null)}
-											role="group"
+											role="radiogroup"
 											aria-label="Rating selection"
 										>
 											{[1, 2, 3, 4, 5].map((star) => (
@@ -364,7 +362,7 @@ export default function TemplateDetail() {
 											<div className="flex gap-1 text-yellow-500 text-xs">
 												{Array.from({ length: 5 }).map((_, i) => (
 													<Star
-														key={i}
+														key={`star-${i}`}
 														className={`h-3.5 w-3.5 ${
 															i < myReview.rating
 																? "fill-current"
@@ -456,7 +454,7 @@ export default function TemplateDetail() {
 												<div className="mb-2 flex gap-1 text-yellow-400 text-xs">
 													{Array.from({ length: 5 }).map((_, i) => (
 														<Star
-															key={i}
+															key={`review-star-${i}`}
 															className={`h-3 w-3 ${
 																i < review.rating
 																	? "fill-current"

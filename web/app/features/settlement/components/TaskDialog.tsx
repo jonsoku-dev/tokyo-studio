@@ -4,7 +4,7 @@ import type {
 	SettlementTaskTemplate,
 } from "@itcom/db/schema";
 import { ArrowLeft, ArrowRight, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Button } from "~/shared/components/ui/Button";
 import {
 	Dialog,
@@ -18,7 +18,6 @@ import { Label } from "~/shared/components/ui/Label";
 import {
 	Select,
 	SelectContent,
-	SelectItem,
 	SelectTrigger,
 	SelectValue,
 } from "~/shared/components/ui/Select";
@@ -52,7 +51,7 @@ export function TaskDialog({
 }: TaskDialogProps) {
 	const isEdit = !!initialData;
 
-	// Initial State - Requires `key` prop on parent to reset when initialData changes
+	// Initial State
 	const [title, setTitle] = useState(initialData?.title || "");
 	const [phaseId, setPhaseId] = useState(
 		initialData?.phaseId || defaultPhaseId || phases[0]?.id || "",
@@ -60,6 +59,22 @@ export function TaskDialog({
 	const [category, setCategory] = useState(
 		initialData?.category || categories[0]?.slug || "government",
 	);
+
+    // Prepare Options
+    const phaseOptions = useMemo(() => phases.map(p => ({
+        label: <span className="font-medium">{p.titleKo}</span>,
+        value: p.id
+    })), [phases]);
+
+    const categoryOptions = useMemo(() => categories.map(c => ({
+        label: (
+            <>
+                <span className="mr-2">{c.icon}</span>
+                {c.titleKo}
+            </>
+        ),
+        value: c.slug
+    })), [categories]);
 
 	// Derived Phase Data
 	const selectedPhase = phases.find((p) => p.id === phaseId);
@@ -79,17 +94,11 @@ export function TaskDialog({
 
 	if (selectedPhase) {
 		if (direction === "before") {
-			// Range for "Before" input: [max(0, -(maxDays if neg)), -minDays]
-			// Constraint: val => -val must be >= minDays AND <= maxDays
-			const validMax = Math.min(selectedPhase.maxDays, -1); // e.g. -1
-			const validMin = selectedPhase.minDays; // e.g. -99
-			// Input x (-x): -x >= validMin => x <= -validMin
-			// -x <= validMax => x >= -validMax
+			const validMax = Math.min(selectedPhase.maxDays, -1);
+			const validMin = selectedPhase.minDays;
 			minInput = Math.max(1, -validMax);
 			maxInput = Math.max(1, -validMin);
 		} else {
-			// Range for "After" input
-			// Constraint: val => val >= minDays AND <= maxDays
 			const validMin = Math.max(selectedPhase.minDays, 0);
 			const validMax = selectedPhase.maxDays;
 			minInput = validMin;
@@ -126,8 +135,6 @@ export function TaskDialog({
 			currentMax = validMax;
 		}
 
-		// Apply clamp (only if value is effectively out of bounds)
-		// We use a small timeout to avoid conflict with initial render state if needed? UseEffect is fine.
 		setDaysOffset((prev) => {
 			if (prev < currentMin) return currentMin;
 			if (prev > currentMax) return currentMax;
@@ -137,10 +144,7 @@ export function TaskDialog({
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-
-		// Calculate final days
 		const finalDays = direction === "before" ? -daysOffset : daysOffset;
-
 		onSubmit({
 			title,
 			phaseId,
@@ -178,48 +182,29 @@ export function TaskDialog({
 							<Label className="text-gray-500">시기 (Phase)</Label>
 							<Select
 								value={phaseId}
-								onValueChange={(v) => setPhaseId(v)}
+								onValueChange={setPhaseId}
 								disabled={!isEdit && !!defaultPhaseId}
+                                options={phaseOptions}
 							>
 								<SelectTrigger className="h-12 border-gray-200 bg-gray-50">
-									<SelectValue placeholder="시기 선택">
-										{phases.find((p) => p.id === phaseId)?.titleKo}
-									</SelectValue>
+									<SelectValue placeholder="시기 선택" />
 								</SelectTrigger>
-								<SelectContent>
-									{phases.map((p) => (
-										<SelectItem key={p.id} value={p.id}>
-											<span className="font-medium">{p.titleKo}</span>
-										</SelectItem>
-									))}
-								</SelectContent>
+								<SelectContent />
 							</Select>
 						</div>
 
 						{/* Category Selection */}
 						<div className="stack-xs">
 							<Label className="text-gray-500">카테고리</Label>
-							<Select value={category} onValueChange={(v) => setCategory(v)}>
+							<Select 
+                                value={category} 
+                                onValueChange={setCategory}
+                                options={categoryOptions}
+                            >
 								<SelectTrigger className="h-12 border-gray-200 bg-gray-50">
-									<SelectValue placeholder="카테고리 선택">
-										{(() => {
-											const selected = categories.find(
-												(c) => c.slug === category,
-											);
-											return selected
-												? `${selected.icon} ${selected.titleKo}`
-												: category;
-										})()}
-									</SelectValue>
+									<SelectValue placeholder="카테고리 선택" />
 								</SelectTrigger>
-								<SelectContent>
-									{categories.map((c) => (
-										<SelectItem key={c.id} value={c.slug}>
-											<span className="mr-2">{c.icon}</span>
-											{c.titleKo}
-										</SelectItem>
-									))}
-								</SelectContent>
+								<SelectContent />
 							</Select>
 						</div>
 					</div>

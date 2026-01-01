@@ -8,6 +8,7 @@ import { seedPhases } from "./seeds/phases";
 import { seedPipeline } from "./seeds/pipeline";
 import { seedRoadmap } from "./seeds/roadmap";
 import { seedSettlement } from "./seeds/settlement";
+import { seedMentoring } from "./seeds/mentoring";
 
 // Load environment variables
 config({ path: ".env" });
@@ -42,8 +43,12 @@ export async function seedDatabase() {
 		await db.delete(schema.pipelineStages);
 		await db.delete(schema.profiles);
 		await db.delete(schema.documents);
-		await db.delete(schema.mentors);
 		await db.delete(schema.tasks);
+        await db.delete(schema.mentorReviews);
+        await db.delete(schema.mentoringSessions);
+        await db.delete(schema.mentorApplications);
+        await db.delete(schema.mentorProfiles);
+		await db.delete(schema.mentors);
 		await db.delete(schema.users);
 
 		// Step 1: Auth
@@ -61,6 +66,9 @@ export async function seedDatabase() {
 
 		// Step 4: Settlement
 		await seedSettlement(db, userId);
+
+        // Step 5: Mentoring
+        await seedMentoring(db, userId);
 
 		console.log("✅ Database seeding completed successfully!");
 		console.log("📊 Test user email: test@example.com");
