@@ -47,6 +47,21 @@ export async function requireUserId(
 		const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
 		throw redirect(`/login?${searchParams}`);
 	}
+
+	// Verify user exists in DB to prevent stale sessions (e.g. after seed reset)
+	const { db } = await import("@itcom/db/client");
+	const { users } = await import("@itcom/db/schema");
+	const { eq } = await import("drizzle-orm");
+
+	const user = await db.query.users.findFirst({
+		where: eq(users.id, userId),
+		columns: { id: true },
+	});
+
+	if (!user) {
+		throw await logout(request);
+	}
+
 	return userId;
 }
 

@@ -1,4 +1,3 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import type { User } from "@itcom/db/schema";
 import {
 	LogOut,
@@ -11,6 +10,14 @@ import { Form, Link, useRouteLoaderData } from "react-router";
 import { NotificationsPopover } from "~/features/community/components/NotificationsPopover";
 import { Avatar } from "~/shared/components/ui/Avatar";
 import { Button } from "~/shared/components/ui/Button";
+import {
+	Dropdown,
+	DropdownContent,
+	DropdownItem,
+	DropdownLink,
+	DropdownSeparator,
+	DropdownTrigger,
+} from "~/shared/components/ui/Dropdown";
 
 export function Navbar() {
 	const data = useRouteLoaderData("root") as { user: User };
@@ -55,8 +62,8 @@ export function Navbar() {
 					)}
 
 					{user ? (
-						<Menu>
-							<MenuButton className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+						<Dropdown>
+							<DropdownTrigger className="flex rounded-full bg-white text-sm focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
 								<span className="sr-only">Open user menu</span>
 								<Avatar
 									src={user.avatarUrl || undefined}
@@ -64,55 +71,39 @@ export function Navbar() {
 									fallback={user.email?.[0]?.toUpperCase()}
 									className="h-9 w-9"
 								/>
-							</MenuButton>
-							<MenuItems
-								transition
-								anchor="bottom end"
-								className="z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-gray-200 transition duration-100 ease-out [--anchor-gap:8px] data-[closed]:scale-95 data-[closed]:opacity-0"
-							>
-								<div className="border-gray-100 border-b px-4 py-2">
+							</DropdownTrigger>
+							<DropdownContent anchor="bottom end" className="w-48">
+								<div className="mb-1 border-gray-100 border-b px-2 py-1.5">
 									<p className="truncate font-medium text-gray-900 text-sm">
 										{user.displayName || user.name}
 									</p>
 									<p className="truncate text-gray-500 text-xs">{user.email}</p>
 								</div>
 
-								<div className="py-1">
-									<MenuItem>
-										<Link
-											to="/profile"
-											className="block flex items-center gap-2 px-4 py-2 text-gray-700 text-sm"
-										>
-											<UserIcon className="h-4 w-4" />
-											Your Profile
-										</Link>
-									</MenuItem>
-									<MenuItem>
-										<Link
-											to="/settings/profile"
-											className="block flex items-center gap-2 px-4 py-2 text-gray-700 text-sm"
-										>
-											<Settings className="h-4 w-4" />
-											Settings
-										</Link>
-									</MenuItem>
-								</div>
+								<DropdownLink to="/profile">
+									<UserIcon className="h-4 w-4" />
+									Your Profile
+								</DropdownLink>
+								<DropdownLink to="/settings/profile">
+									<Settings className="h-4 w-4" />
+									Settings
+								</DropdownLink>
 
-								<div className="border-gray-100 border-t py-1">
-									<MenuItem>
-										<Form action="/logout" method="post" className="w-full">
-											<button
-												type="submit"
-												className="block flex w-full items-center gap-2 px-4 py-2 text-left text-red-600 text-sm"
-											>
-												<LogOut className="h-4 w-4" />
-												Sign out
-											</button>
-										</Form>
-									</MenuItem>
+								<DropdownSeparator />
+
+								<div className="p-1">
+									<Form action="/logout" method="post">
+										<DropdownItem
+											type="submit"
+											className="text-red-600 focus:bg-red-50 focus:text-red-700"
+										>
+											<LogOut className="h-4 w-4" />
+											Sign out
+										</DropdownItem>
+									</Form>
 								</div>
-							</MenuItems>
-						</Menu>
+							</DropdownContent>
+						</Dropdown>
 					) : (
 						<>
 							<Link to="/login">

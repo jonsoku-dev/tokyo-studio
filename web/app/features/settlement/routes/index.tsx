@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { data, useFetcher, useLoaderData } from "react-router";
+import { data, Link, useFetcher, useLoaderData } from "react-router";
 import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { requireUserId } from "../../auth/utils/session.server";
 import { CountdownBanner } from "../components/CountdownBanner";
@@ -14,7 +14,6 @@ import { TaskSection } from "../components/TaskSection";
 import {
 	settlementService,
 	type TaskWithCompletion,
-	type TimePhase,
 } from "../services/settlement.server";
 
 export function meta() {
@@ -24,16 +23,23 @@ export function meta() {
 export async function loader({ request }: { request: Request }) {
 	const userId = await requireUserId(request);
 
-	const [tasks, settlement, progress] = await Promise.all([
-		settlementService.getTasksWithCompletion(userId),
-		settlementService.getUserSettlement(userId),
-		settlementService.getProgress(userId),
-	]);
+	const [tasks, settlement, progress, subscriptions, phases, categories] =
+		await Promise.all([
+			settlementService.getTasksWithCompletion(userId),
+			settlementService.getUserSettlement(userId),
+			settlementService.getProgress(userId),
+			settlementService.getSubscriptions(userId),
+			settlementService.getPhases(),
+			settlementService.getCategories(),
+		]);
 
 	return data({
 		tasks,
 		arrivalDate: settlement?.arrivalDate?.toISOString() ?? null,
 		progress,
+		subscriptions,
+		phases,
+		categories,
 	});
 }
 
@@ -59,7 +65,8 @@ export async function action({ request }: { request: Request }) {
 }
 
 export default function SettlementPage() {
-	const { tasks, arrivalDate } = useLoaderData<typeof loader>();
+	const { tasks, arrivalDate, subscriptions, phases, categories } =
+		useLoaderData<typeof loader>();
 	const fetcher = useFetcher();
 
 	// Filter states
@@ -110,25 +117,25 @@ export default function SettlementPage() {
 		const completed = optimisticTasks.filter(
 			(t: TaskWithCompletion) => t.isCompleted,
 		).length;
-		const phases: TimePhase[] = [
-			"before_arrival",
-			"first_week",
-			"first_month",
-			"first_3_months",
-		];
+
+		// Dynamic Phases Grouping for Progress
 		const byPhase = phases.reduce(
 			(acc, phase) => {
-				const phaseTasks = optimisticTasks.filter(
-					(t: TaskWithCompletion) => t.timePhase === phase,
-				);
-				acc[phase] = {
+				// Logic to match task to phase (same as groupTasksByPhase or simplified)
+				// Filter tasks that fall into this phase's day range
+				const phaseTasks = optimisticTasks.filter((t: TaskWithCompletion) => {
+					const days = t.dayOffset ?? 0;
+					return days >= phase.minDays && days <= phase.maxDays;
+				});
+
+				acc[phase.id] = {
 					total: phaseTasks.length,
 					completed: phaseTasks.filter((t: TaskWithCompletion) => t.isCompleted)
 						.length,
 				};
 				return acc;
 			},
-			{} as Record<TimePhase, { total: number; completed: number }>,
+			{} as Record<string, { total: number; completed: number }>,
 		);
 		return {
 			total,
@@ -136,7 +143,7 @@ export default function SettlementPage() {
 			percentage: total > 0 ? Math.round((completed / total) * 100) : 0,
 			byPhase,
 		};
-	}, [optimisticTasks]);
+	}, [optimisticTasks, phases]);
 
 	// Apply filters (use optimistic tasks)
 	const filteredTasks = useMemo(() => {
@@ -160,21 +167,16 @@ export default function SettlementPage() {
 		getIsUrgent,
 	]);
 
-	const phases: { key: TimePhase; titleKo: string; titleEn: string }[] = [
-		{ key: "before_arrival", titleKo: "출국 전", titleEn: "Before Arrival" },
-		{ key: "first_week", titleKo: "첫째 주", titleEn: "First Week" },
-		{ key: "first_month", titleKo: "첫 달", titleEn: "First Month" },
-		{ key: "first_3_months", titleKo: "3개월 내", titleEn: "First 3 Months" },
-	];
-
 	const groupedTasks = phases.reduce(
 		(acc, phase) => {
-			acc[phase.key] = filteredTasks.filter(
-				(t: TaskWithCompletion) => t.timePhase === phase.key,
-			);
+			const phaseTasks = filteredTasks.filter((t: TaskWithCompletion) => {
+				const days = t.dayOffset ?? 0;
+				return days >= phase.minDays && days <= phase.maxDays;
+			});
+			acc[phase.id] = phaseTasks;
 			return acc;
 		},
-		{} as Record<TimePhase, TaskWithCompletion[]>,
+		{} as Record<string, TaskWithCompletion[]>,
 	);
 
 	const handleSetArrivalDate = () => {
@@ -207,14 +209,42 @@ export default function SettlementPage() {
 				title="🗼 도쿄 정착 체크리스트"
 				description="일본 생활에 꼭 필요한 절차들을 단계별로 정리했습니다."
 				actions={
-					<div className="flex gap-2 text-sm text-gray-500">
-						<span className="font-medium text-primary-600">
-							{computedProgress.completed}/{computedProgress.total}
-						</span>
-						완료 ({computedProgress.percentage}%)
+					<div className="flex items-center gap-4">
+						<div className="flex gap-2 text-gray-500 text-sm">
+							<span className="font-medium text-primary-600">
+								{computedProgress.completed}/{computedProgress.total}
+							</span>
+							완료 ({computedProgress.percentage}%)
+						</div>
+						<Link
+							to="/settlement/marketplace"
+							className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 font-bold text-sm text-white hover:bg-gray-800"
+						>
+							+ 마켓플레이스
+						</Link>
 					</div>
 				}
 			/>
+
+			{/* Active Modules Badge List */}
+			{subscriptions && subscriptions.length > 0 && (
+				<div className="flex flex-wrap gap-2">
+					{subscriptions.map((sub) => (
+						<div
+							key={sub.id}
+							className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white py-1 pr-2 pl-3 text-gray-700 text-sm"
+						>
+							<span className="h-2 w-2 rounded-full bg-green-500" />
+							<span>{sub.template.title}</span>
+							{sub.template.isOfficial && (
+								<span className="rounded bg-primary-50 px-1.5 py-0.5 text-primary-700 text-xs">
+									Official
+								</span>
+							)}
+						</div>
+					))}
+				</div>
+			)}
 
 			{/* Arrival Date Input */}
 			<div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
@@ -258,6 +288,7 @@ export default function SettlementPage() {
 				category={categoryFilter}
 				status={statusFilter}
 				urgency={urgencyFilter}
+				categories={categories}
 				onCategoryChange={setCategoryFilter}
 				onStatusChange={setStatusFilter}
 				onUrgencyChange={setUrgencyFilter}
@@ -274,17 +305,19 @@ export default function SettlementPage() {
 			{/* Task Sections */}
 			<div className="stack-md">
 				{phases.map((phase) => {
-					const phaseTasks = groupedTasks[phase.key];
-					if (hasFiltersApplied && phaseTasks.length === 0) return null;
+					const phaseTasks = groupedTasks[phase.id];
+					if (hasFiltersApplied && (!phaseTasks || phaseTasks.length === 0))
+						return null;
 					return (
 						<TaskSection
-							key={phase.key}
-							phase={phase.key}
-							titleKo={phase.titleKo}
-							titleEn={phase.titleEn}
-							tasks={phaseTasks}
-							phaseProgress={computedProgress.byPhase[phase.key]}
+							key={phase.id}
+							titleKo={phase.titleKo || phase.title} // Use DB title
+							titleEn={phase.titleEn || ""} // Use description as sub-title? Or add titleEn?
+							// For now use description or empty
+							tasks={phaseTasks || []}
+							phaseProgress={computedProgress.byPhase[phase.id]}
 							arrivalDate={arrivalDate}
+							categories={categories}
 							onToggleTask={handleToggleTask}
 						/>
 					);

@@ -61,7 +61,7 @@ export function PipelineCard({
 
 					{item.resume && (
 						<div
-							className="flex items-center gap-1 text-xs text-gray-500"
+							className="flex items-center gap-1 text-gray-500 text-xs"
 							title={item.resume.title || "Attached Resume"}
 						>
 							<svg
@@ -79,7 +79,7 @@ export function PipelineCard({
 								<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
 								<polyline points="14 2 14 8 20 8" />
 							</svg>
-							<span className="truncate max-w-[120px]">
+							<span className="max-w-[120px] truncate">
 								{item.resume.title}
 							</span>
 						</div>

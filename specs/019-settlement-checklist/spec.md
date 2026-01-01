@@ -121,6 +121,11 @@ A user with limited time wants to focus on specific types of tasks. They can fil
 - **FR-014**: System MUST display tasks in order of urgency within each time period section
 - **FR-015**: System MUST show section-level progress (e.g., "First Week: 3/5 tasks completed")
 
+- **FR-016**: System MUST allow creators to reorder tasks using drag-and-drop within a phase.
+- **FR-017**: System MUST allow moving tasks between phases via drag-and-drop, automatically updating the task's Phase ID.
+- **FR-018**: System MUST support strict Phase-based task organization in the Editor, preventing tasks from having invalid or ambiguous timing rules.
+- **FR-019**: System SHOULD provide optimistic UI updates for reordering to ensure a responsive feel.
+
 ### Key Entities
 
 - **Settlement Checklist Entry**: Represents a user's personalized settlement journey with arrival date, overall progress percentage, and creation timestamp

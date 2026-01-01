@@ -46,7 +46,7 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function Diagnosis({ loaderData }: Route.ComponentProps) {
 	return (
-		<div className="stack-lg max-w-2xl mx-auto">
+		<div className="stack-lg mx-auto max-w-2xl">
 			<PageHeader
 				title="Let's build your strategy"
 				description="Answer 3 simple questions to get a personalized roadmap."

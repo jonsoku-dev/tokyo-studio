@@ -24,6 +24,7 @@
 		"@dnd-kit/utilities": "^3.2.2",
 		"@headlessui/react": "^2.2.9",
 		"@itcom/db": "workspace:^",
+		"@radix-ui/react-slot": "^1.2.4",
 		"@react-router/node": "7.10.1",
 		"@react-router/serve": "7.10.1",
 		"@react-three/drei": "^10.7.7",

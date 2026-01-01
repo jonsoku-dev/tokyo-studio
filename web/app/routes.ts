@@ -64,6 +64,26 @@ export default [
 
 			// Settlement
 			route("settlement", "features/settlement/routes/index.tsx"),
+			route(
+				"settlement/marketplace",
+				"features/settlement/routes/marketplace.tsx",
+			),
+			route(
+				"settlement/marketplace/my",
+				"features/settlement/routes/marketplace.my.tsx",
+			),
+			route(
+				"settlement/marketplace/:templateId",
+				"features/settlement/routes/marketplace.$templateId.tsx",
+			),
+			route(
+				"settlement/editor/new",
+				"features/settlement/routes/editor.new.tsx",
+			),
+			route(
+				"settlement/editor/:templateId",
+				"features/settlement/routes/editor.$templateId.tsx",
+			),
 
 			// Mentoring Apply
 			route("mentoring/apply", "features/mentoring/routes/mentoring.apply.tsx"),

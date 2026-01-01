@@ -11,6 +11,15 @@ CREATE TABLE "account_providers" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
+CREATE TABLE "admin_audit_logs" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"admin_id" uuid NOT NULL,
+	"action" text NOT NULL,
+	"target_id" uuid NOT NULL,
+	"metadata" jsonb,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "authentication_logs" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid,
@@ -105,20 +114,33 @@ CREATE TABLE "community_posts" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
+CREATE TABLE "custom_markers" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"name" text NOT NULL,
+	"category" text NOT NULL,
+	"latitude" numeric(10, 8) NOT NULL,
+	"longitude" numeric(11, 8) NOT NULL,
+	"notes" text,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "document_versions" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"document_id" uuid NOT NULL,
 	"change_type" text NOT NULL,
 	"old_value" text,
 	"new_value" text,
-	"created_at" timestamp DEFAULT now()
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "document_versions_change_type_check" CHECK ("document_versions"."change_type" IN ('upload', 'rename', 'status_change'))
 );
 --> statement-breakpoint
 CREATE TABLE "documents" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"title" text NOT NULL,
 	"type" text NOT NULL,
-	"status" text DEFAULT 'draft',
+	"status" text DEFAULT 'draft' NOT NULL,
 	"url" text,
 	"storage_key" text,
 	"s3_key" text,
@@ -128,22 +150,77 @@ CREATE TABLE "documents" (
 	"size" text,
 	"thumbnail_url" text,
 	"download_count" text DEFAULT '0',
-	"user_id" uuid,
+	"user_id" uuid NOT NULL,
 	"uploaded_at" timestamp,
 	"deleted_at" timestamp,
-	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp DEFAULT now()
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "documents_status_check" CHECK ("documents"."status" IN ('draft', 'final', 'pending', 'uploaded', 'deleted')),
+	CONSTRAINT "documents_type_check" CHECK ("documents"."type" IN ('Resume', 'CV', 'Portfolio', 'Cover Letter'))
 );
 --> statement-breakpoint
 CREATE TABLE "file_operation_logs" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
-	"document_id" uuid,
+	"document_id" uuid NOT NULL,
 	"operation" text NOT NULL,
-	"storage_key" text,
-	"ip_address" text,
-	"user_agent" text,
-	"timestamp" timestamp DEFAULT now() NOT NULL
+	"file_size" text,
+	"old_value" text,
+	"new_value" text,
+	"ip_address" text NOT NULL,
+	"status" text,
+	"error" text,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "file_operation_logs_operation_check" CHECK ("file_operation_logs"."operation" IN ('upload', 'download', 'rename', 'delete')),
+	CONSTRAINT "file_operation_logs_status_check" CHECK ("file_operation_logs"."status" IN ('success', 'failed'))
+);
+--> statement-breakpoint
+CREATE TABLE "job_posting_cache" (
+	"url" text PRIMARY KEY NOT NULL,
+	"url_hash" text NOT NULL,
+	"data" jsonb NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "map_locations" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"category" text NOT NULL,
+	"name_en" text NOT NULL,
+	"name_ja" text NOT NULL,
+	"name_ko" text NOT NULL,
+	"address" text NOT NULL,
+	"latitude" numeric(10, 8) NOT NULL,
+	"longitude" numeric(11, 8) NOT NULL,
+	"phone" text,
+	"hours" text,
+	"station" text,
+	"area" text DEFAULT 'tokyo',
+	"is_verified" boolean DEFAULT false,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "mentor_applications" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"job_title" text NOT NULL,
+	"company" text NOT NULL,
+	"years_of_experience" integer NOT NULL,
+	"linkedin_url" text,
+	"bio" text NOT NULL,
+	"expertise" jsonb NOT NULL,
+	"languages" jsonb NOT NULL,
+	"hourly_rate" integer DEFAULT 5000 NOT NULL,
+	"verification_file_url" text NOT NULL,
+	"status" text DEFAULT 'pending' NOT NULL,
+	"rejection_reason" text,
+	"rejected_at" timestamp,
+	"requested_info_reason" text,
+	"reviewed_by" uuid,
+	"reviewed_at" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "mentor_availability" (
@@ -168,6 +245,15 @@ CREATE TABLE "mentor_availability_slots" (
 	"booking_id" uuid
 );
 --> statement-breakpoint
+CREATE TABLE "mentor_badges" (
+	"mentor_id" uuid PRIMARY KEY NOT NULL,
+	"badge_type" text NOT NULL,
+	"weighted_average_rating" numeric(3, 2),
+	"total_reviews" integer DEFAULT 0 NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "mentor_profiles" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
@@ -184,6 +270,7 @@ CREATE TABLE "mentor_profiles" (
 	"is_active" boolean DEFAULT true NOT NULL,
 	"average_rating" integer DEFAULT 0,
 	"total_reviews" integer DEFAULT 0,
+	"is_top_rated" boolean DEFAULT false NOT NULL,
 	"total_sessions" integer DEFAULT 0 NOT NULL,
 	"preferred_video_provider" text DEFAULT 'jitsi',
 	"manual_meeting_url" text,
@@ -192,15 +279,31 @@ CREATE TABLE "mentor_profiles" (
 	CONSTRAINT "mentor_profiles_user_id_unique" UNIQUE("user_id")
 );
 --> statement-breakpoint
+CREATE TABLE "mentor_review_responses" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"review_id" uuid NOT NULL,
+	"mentor_id" uuid NOT NULL,
+	"text" text NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "mentor_reviews" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"mentor_id" uuid NOT NULL,
+	"session_id" uuid NOT NULL,
 	"mentee_id" uuid NOT NULL,
-	"session_id" uuid,
+	"mentor_id" uuid NOT NULL,
 	"rating" integer NOT NULL,
-	"comment" text,
+	"text" text,
+	"is_anonymous" boolean DEFAULT false NOT NULL,
+	"mentor_response" text,
+	"mentor_responded_at" timestamp,
+	"is_hidden" boolean DEFAULT false NOT NULL,
+	"moderation_reason" text,
+	"moderated_at" timestamp,
+	"status" text DEFAULT 'published' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now()
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "mentoring_sessions" (
@@ -214,6 +317,7 @@ CREATE TABLE "mentoring_sessions" (
 	"price" integer NOT NULL,
 	"currency" text DEFAULT 'USD' NOT NULL,
 	"meeting_url" text,
+	"shared_document_ids" jsonb DEFAULT '[]'::jsonb,
 	"locked_at" timestamp,
 	"expires_at" timestamp,
 	"reminder_sent_at" timestamp,
@@ -304,9 +408,24 @@ CREATE TABLE "pipeline_items" (
 	"stage" text NOT NULL,
 	"date" text NOT NULL,
 	"next_action" text,
+	"order_index" integer DEFAULT 0 NOT NULL,
 	"user_id" uuid,
+	"resume_id" uuid,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "pipeline_stages" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" text NOT NULL,
+	"display_name" text NOT NULL,
+	"order_index" integer NOT NULL,
+	"is_active" boolean DEFAULT true NOT NULL,
+	"color" text,
+	"description" text,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "pipeline_stages_name_unique" UNIQUE("name")
 );
 --> statement-breakpoint
 CREATE TABLE "post_votes" (
@@ -341,6 +460,7 @@ CREATE TABLE "profiles" (
 	"linkedin_url" text,
 	"github_url" text,
 	"user_id" uuid,
+	"portfolio_document_id" uuid,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
 	CONSTRAINT "profiles_slug_unique" UNIQUE("slug")
@@ -364,6 +484,114 @@ CREATE TABLE "reputation_logs" (
 	"target_id" uuid NOT NULL,
 	"target_type" text NOT NULL,
 	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "review_disputes" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"review_id" uuid NOT NULL,
+	"mentor_id" uuid NOT NULL,
+	"reason" text NOT NULL,
+	"status" text DEFAULT 'pending' NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"resolved_at" timestamp,
+	"resolved_by" uuid
+);
+--> statement-breakpoint
+CREATE TABLE "review_moderation_logs" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"review_id" uuid NOT NULL,
+	"admin_id" uuid NOT NULL,
+	"action" text NOT NULL,
+	"reason" text,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "roadmap_tasks" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"template_id" uuid,
+	"title" text NOT NULL,
+	"description" text NOT NULL,
+	"category" text NOT NULL,
+	"estimated_minutes" integer DEFAULT 60 NOT NULL,
+	"priority" text DEFAULT 'normal' NOT NULL,
+	"order_index" integer DEFAULT 0 NOT NULL,
+	"kanban_column" text DEFAULT 'todo' NOT NULL,
+	"is_custom" boolean DEFAULT false NOT NULL,
+	"completed_at" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "roadmap_templates" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"title" text NOT NULL,
+	"description" text NOT NULL,
+	"category" text NOT NULL,
+	"estimated_minutes" integer DEFAULT 60 NOT NULL,
+	"priority" text DEFAULT 'normal' NOT NULL,
+	"order_index" integer DEFAULT 0 NOT NULL,
+	"target_job_families" jsonb,
+	"target_levels" jsonb,
+	"target_jp_levels" jsonb,
+	"target_cities" jsonb,
+	"is_active" boolean DEFAULT true NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "search_analytics" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"query" text NOT NULL,
+	"result_count" integer DEFAULT 0 NOT NULL,
+	"category" text,
+	"result_ids" jsonb DEFAULT '[]'::jsonb,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "settlement_subscriptions" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"template_id" uuid NOT NULL,
+	"is_active" boolean DEFAULT true NOT NULL,
+	"equipped_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "settlement_task_templates" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"template_id" uuid NOT NULL,
+	"slug" text,
+	"title_ko" text,
+	"title_ja" text,
+	"instructions_ko" text,
+	"instructions_ja" text,
+	"title" text,
+	"description" text,
+	"category" text NOT NULL,
+	"timing_rule" jsonb NOT NULL,
+	"is_required" boolean DEFAULT false NOT NULL,
+	"required_documents" jsonb DEFAULT '[]'::jsonb,
+	"estimated_minutes" integer DEFAULT 60,
+	"time_phase" text,
+	"tips" text,
+	"official_url" text,
+	"form_template_url" text,
+	"order_index" integer DEFAULT 0 NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "settlement_templates" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"author_id" uuid,
+	"title" text NOT NULL,
+	"description" text,
+	"tags" jsonb DEFAULT '[]'::jsonb,
+	"is_official" boolean DEFAULT false NOT NULL,
+	"status" text DEFAULT 'draft' NOT NULL,
+	"version" integer DEFAULT 1 NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "tasks" (
@@ -396,6 +624,13 @@ CREATE TABLE "user_badges" (
 	"display_order" integer DEFAULT 0
 );
 --> statement-breakpoint
+CREATE TABLE "user_favorites" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"location_id" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "user_integrations" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
@@ -407,6 +642,28 @@ CREATE TABLE "user_integrations" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
+CREATE TABLE "user_roadmaps" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"generated_at" timestamp DEFAULT now() NOT NULL,
+	"total_tasks" integer DEFAULT 0 NOT NULL,
+	"completed_tasks" integer DEFAULT 0 NOT NULL,
+	"current_milestone" text DEFAULT 'started',
+	"last_milestone_at" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "user_roadmaps_user_id_unique" UNIQUE("user_id")
+);
+--> statement-breakpoint
+CREATE TABLE "user_settlements" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"arrival_date" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "user_settlements_user_id_unique" UNIQUE("user_id")
+);
+--> statement-breakpoint
 CREATE TABLE "user_slug_history" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
@@ -414,6 +671,13 @@ CREATE TABLE "user_slug_history" (
 	"is_primary" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "user_slug_history_slug_unique" UNIQUE("slug")
+);
+--> statement-breakpoint
+CREATE TABLE "user_task_completions" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"task_id" uuid NOT NULL,
+	"completed_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
@@ -464,6 +728,7 @@ CREATE TABLE "vote_audit_logs" (
 );
 --> statement-breakpoint
 ALTER TABLE "account_providers" ADD CONSTRAINT "account_providers_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "admin_audit_logs" ADD CONSTRAINT "admin_audit_logs_admin_id_users_id_fk" FOREIGN KEY ("admin_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "authentication_logs" ADD CONSTRAINT "authentication_logs_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "avatar_logs" ADD CONSTRAINT "avatar_logs_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "avatar_upload_attempts" ADD CONSTRAINT "avatar_upload_attempts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -477,17 +742,23 @@ ALTER TABLE "comment_votes" ADD CONSTRAINT "comment_votes_user_id_users_id_fk" F
 ALTER TABLE "community_comments" ADD CONSTRAINT "community_comments_post_id_community_posts_id_fk" FOREIGN KEY ("post_id") REFERENCES "public"."community_posts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "community_comments" ADD CONSTRAINT "community_comments_author_id_users_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "community_posts" ADD CONSTRAINT "community_posts_author_id_users_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "custom_markers" ADD CONSTRAINT "custom_markers_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "document_versions" ADD CONSTRAINT "document_versions_document_id_documents_id_fk" FOREIGN KEY ("document_id") REFERENCES "public"."documents"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "documents" ADD CONSTRAINT "documents_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "file_operation_logs" ADD CONSTRAINT "file_operation_logs_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "file_operation_logs" ADD CONSTRAINT "file_operation_logs_document_id_documents_id_fk" FOREIGN KEY ("document_id") REFERENCES "public"."documents"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "mentor_applications" ADD CONSTRAINT "mentor_applications_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "mentor_applications" ADD CONSTRAINT "mentor_applications_reviewed_by_users_id_fk" FOREIGN KEY ("reviewed_by") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "mentor_availability" ADD CONSTRAINT "mentor_availability_mentor_id_mentors_id_fk" FOREIGN KEY ("mentor_id") REFERENCES "public"."mentors"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "mentor_availability_slots" ADD CONSTRAINT "mentor_availability_slots_mentor_id_users_id_fk" FOREIGN KEY ("mentor_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "mentor_availability_slots" ADD CONSTRAINT "mentor_availability_slots_booking_id_mentoring_sessions_id_fk" FOREIGN KEY ("booking_id") REFERENCES "public"."mentoring_sessions"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "mentor_badges" ADD CONSTRAINT "mentor_badges_mentor_id_mentors_id_fk" FOREIGN KEY ("mentor_id") REFERENCES "public"."mentors"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "mentor_profiles" ADD CONSTRAINT "mentor_profiles_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "mentor_reviews" ADD CONSTRAINT "mentor_reviews_mentor_id_users_id_fk" FOREIGN KEY ("mentor_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "mentor_review_responses" ADD CONSTRAINT "mentor_review_responses_review_id_mentor_reviews_id_fk" FOREIGN KEY ("review_id") REFERENCES "public"."mentor_reviews"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "mentor_review_responses" ADD CONSTRAINT "mentor_review_responses_mentor_id_users_id_fk" FOREIGN KEY ("mentor_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "mentor_reviews" ADD CONSTRAINT "mentor_reviews_session_id_mentoring_sessions_id_fk" FOREIGN KEY ("session_id") REFERENCES "public"."mentoring_sessions"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "mentor_reviews" ADD CONSTRAINT "mentor_reviews_mentee_id_users_id_fk" FOREIGN KEY ("mentee_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "mentor_reviews" ADD CONSTRAINT "mentor_reviews_session_id_mentoring_sessions_id_fk" FOREIGN KEY ("session_id") REFERENCES "public"."mentoring_sessions"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "mentor_reviews" ADD CONSTRAINT "mentor_reviews_mentor_id_users_id_fk" FOREIGN KEY ("mentor_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "mentoring_sessions" ADD CONSTRAINT "mentoring_sessions_mentor_id_users_id_fk" FOREIGN KEY ("mentor_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "mentoring_sessions" ADD CONSTRAINT "mentoring_sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "mentors" ADD CONSTRAINT "mentors_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -497,17 +768,42 @@ ALTER TABLE "password_reset_logs" ADD CONSTRAINT "password_reset_logs_user_id_us
 ALTER TABLE "password_reset_tokens" ADD CONSTRAINT "password_reset_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "payments" ADD CONSTRAINT "payments_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "pipeline_items" ADD CONSTRAINT "pipeline_items_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "pipeline_items" ADD CONSTRAINT "pipeline_items_resume_id_documents_id_fk" FOREIGN KEY ("resume_id") REFERENCES "public"."documents"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "post_votes" ADD CONSTRAINT "post_votes_post_id_community_posts_id_fk" FOREIGN KEY ("post_id") REFERENCES "public"."community_posts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "post_votes" ADD CONSTRAINT "post_votes_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "profile_privacy_settings" ADD CONSTRAINT "profile_privacy_settings_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "profiles" ADD CONSTRAINT "profiles_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "profiles" ADD CONSTRAINT "profiles_portfolio_document_id_documents_id_fk" FOREIGN KEY ("portfolio_document_id") REFERENCES "public"."documents"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "push_subscriptions" ADD CONSTRAINT "push_subscriptions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "reputation_logs" ADD CONSTRAINT "reputation_logs_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "review_disputes" ADD CONSTRAINT "review_disputes_review_id_mentor_reviews_id_fk" FOREIGN KEY ("review_id") REFERENCES "public"."mentor_reviews"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "review_disputes" ADD CONSTRAINT "review_disputes_mentor_id_users_id_fk" FOREIGN KEY ("mentor_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "review_disputes" ADD CONSTRAINT "review_disputes_resolved_by_users_id_fk" FOREIGN KEY ("resolved_by") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "review_moderation_logs" ADD CONSTRAINT "review_moderation_logs_review_id_mentor_reviews_id_fk" FOREIGN KEY ("review_id") REFERENCES "public"."mentor_reviews"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "review_moderation_logs" ADD CONSTRAINT "review_moderation_logs_admin_id_users_id_fk" FOREIGN KEY ("admin_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "roadmap_tasks" ADD CONSTRAINT "roadmap_tasks_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "roadmap_tasks" ADD CONSTRAINT "roadmap_tasks_template_id_roadmap_templates_id_fk" FOREIGN KEY ("template_id") REFERENCES "public"."roadmap_templates"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "settlement_subscriptions" ADD CONSTRAINT "settlement_subscriptions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "settlement_subscriptions" ADD CONSTRAINT "settlement_subscriptions_template_id_settlement_templates_id_fk" FOREIGN KEY ("template_id") REFERENCES "public"."settlement_templates"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "settlement_task_templates" ADD CONSTRAINT "settlement_task_templates_template_id_settlement_templates_id_fk" FOREIGN KEY ("template_id") REFERENCES "public"."settlement_templates"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "settlement_templates" ADD CONSTRAINT "settlement_templates_author_id_users_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "upload_tokens" ADD CONSTRAINT "upload_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_badges" ADD CONSTRAINT "user_badges_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_badges" ADD CONSTRAINT "user_badges_badge_id_badges_id_fk" FOREIGN KEY ("badge_id") REFERENCES "public"."badges"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_favorites" ADD CONSTRAINT "user_favorites_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_favorites" ADD CONSTRAINT "user_favorites_location_id_map_locations_id_fk" FOREIGN KEY ("location_id") REFERENCES "public"."map_locations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_integrations" ADD CONSTRAINT "user_integrations_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_roadmaps" ADD CONSTRAINT "user_roadmaps_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_settlements" ADD CONSTRAINT "user_settlements_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_slug_history" ADD CONSTRAINT "user_slug_history_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_task_completions" ADD CONSTRAINT "user_task_completions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_task_completions" ADD CONSTRAINT "user_task_completions_task_id_settlement_task_templates_id_fk" FOREIGN KEY ("task_id") REFERENCES "public"."settlement_task_templates"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "verification_tokens" ADD CONSTRAINT "verification_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "vote_audit_logs" ADD CONSTRAINT "vote_audit_logs_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "vote_audit_logs" ADD CONSTRAINT "vote_audit_logs_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "document_versions_document_created_at_idx" ON "document_versions" USING btree ("document_id","created_at");--> statement-breakpoint
+CREATE INDEX "documents_user_uploaded_at_idx" ON "documents" USING btree ("user_id","uploaded_at");--> statement-breakpoint
+CREATE INDEX "documents_user_status_idx" ON "documents" USING btree ("user_id","status");--> statement-breakpoint
+CREATE INDEX "file_operation_logs_document_created_at_idx" ON "file_operation_logs" USING btree ("document_id","created_at");--> statement-breakpoint
+CREATE INDEX "file_operation_logs_user_created_at_idx" ON "file_operation_logs" USING btree ("user_id","created_at");--> statement-breakpoint
+CREATE UNIQUE INDEX "settlement_subs_user_template_idx" ON "settlement_subscriptions" USING btree ("user_id","template_id");

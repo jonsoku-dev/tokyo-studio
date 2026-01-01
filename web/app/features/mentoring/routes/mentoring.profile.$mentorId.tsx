@@ -185,7 +185,7 @@ export default function MentorProfilePage() {
 										</div>
 									))
 								) : (
-									<div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-8 text-center">
+									<div className="rounded-xl border border-gray-200 border-dashed bg-gray-50 p-8 text-center">
 										<p className="text-gray-500 italic">No reviews yet.</p>
 									</div>
 								)}

@@ -71,7 +71,7 @@ export default function MySessionsPage() {
 																href={`/api/storage/download/${doc.id}`}
 																target="_blank"
 																rel="noreferrer"
-																className="inline-flex items-center gap-1 rounded bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+																className="inline-flex items-center gap-1 rounded bg-gray-100 px-2 py-1 font-medium text-gray-700 text-xs hover:bg-gray-200 hover:text-gray-900"
 															>
 																<svg
 																	className="h-3 w-3"

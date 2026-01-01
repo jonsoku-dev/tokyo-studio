@@ -102,7 +102,7 @@ export function AvailabilityCalendar({
 						className={`relative flex h-10 w-full items-center justify-center rounded-lg text-sm transition-colors ${!isSameMonth(day, monthStart) ? "text-gray-300 opacity-50" : ""}
                             ${isSelected ? "bg-primary-600 font-bold text-white shadow-sm" : ""}
                             ${!isSelected && isSameMonth(day, monthStart) ? "text-gray-700 hover:bg-gray-50" : ""}
-                            ${hasSlots && !isSelected ? "font-bold text-primary-600 ring-1 ring-primary-100 bg-primary-50" : ""} cursor-pointer`}
+                            ${hasSlots && !isSelected ? "bg-primary-50 font-bold text-primary-600 ring-1 ring-primary-100" : ""} cursor-pointer`}
 						onClick={() => setSelectedDate(cloneDay)}
 					>
 						<span>{formattedDate}</span>

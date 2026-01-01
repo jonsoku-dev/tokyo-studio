@@ -132,8 +132,8 @@ function BookingForm({
 						onClick={() => setDuration(d as 30 | 60 | 90)}
 						className={`flex flex-col items-center justify-center rounded-xl border p-4 transition-all ${
 							duration === d
-								? "border-primary-500 bg-primary-50 text-primary-700 ring-1 ring-primary-500 shadow-sm"
-								: "border-gray-200 bg-white hover:border-primary-300 hover:bg-gray-50 text-gray-600"
+								? "border-primary-500 bg-primary-50 text-primary-700 shadow-sm ring-1 ring-primary-500"
+								: "border-gray-200 bg-white text-gray-600 hover:border-primary-300 hover:bg-gray-50"
 						}`}
 					>
 						<span className="heading-5 text-gray-900">{d} min</span>
@@ -143,11 +143,11 @@ function BookingForm({
 					</button>
 				))}
 			</div>
-			<div className="rounded-lg bg-primary-50 p-3 text-primary-700 text-sm border border-primary-100">
+			<div className="rounded-lg border border-primary-100 bg-primary-50 p-3 text-primary-700 text-sm">
 				<p>
 					Session with <strong className="font-semibold">{mentor.name}</strong>
 				</p>
-				<p className="text-xs text-primary-600 mt-1">
+				<p className="mt-1 text-primary-600 text-xs">
 					{format(new Date(slot.startTime), "MMMM d, yyyy 'at' h:mm a")}
 				</p>
 			</div>

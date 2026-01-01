@@ -37,7 +37,7 @@ export default function MentoringDirectory() {
 			>
 				{/* Search Bar */}
 				<div className="relative max-w-lg pt-4">
-					<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 pt-4">
+					<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pt-4 pl-3">
 						<Search className="h-5 w-5 text-gray-400" />
 					</div>
 					<input

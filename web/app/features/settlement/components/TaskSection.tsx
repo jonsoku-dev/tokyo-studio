@@ -1,3 +1,4 @@
+import type { SettlementCategory } from "@itcom/db/schema";
 import {
 	Check,
 	ChevronDown,
@@ -8,41 +9,41 @@ import {
 	FileText,
 } from "lucide-react";
 import { useState } from "react";
-import type {
-	TaskWithCompletion,
-	TimePhase,
-} from "../services/settlement.server";
+import type { TaskWithCompletion } from "../services/settlement.server";
 
 interface TaskSectionProps {
-	phase: TimePhase;
 	titleKo: string;
 	titleEn: string;
 	tasks: TaskWithCompletion[];
 	phaseProgress: { total: number; completed: number };
 	arrivalDate: string | null;
+	categories: SettlementCategory[];
 	onToggleTask: (taskId: string) => void;
 }
 
-const phaseIcons: Record<TimePhase, string> = {
-	before_arrival: "✈️",
-	first_week: "📅",
-	first_month: "🏠",
-	first_3_months: "🎌",
+const getPhaseIcon = (title: string) => {
+	if (title.includes("출국") || title.includes("Pre")) return "✈️";
+	if (title.includes("1주") || title.includes("Week")) return "📅";
+	if (title.includes("1개월") || title.includes("Month")) return "🏠";
+	if (title.includes("3개월") || title.includes("Long")) return "🎌";
+	return "📌";
 };
 
 export function TaskSection({
-	phase,
 	titleKo,
 	titleEn,
 	tasks,
 	phaseProgress,
 	arrivalDate,
+	categories,
 	onToggleTask,
 }: TaskSectionProps) {
 	const [isExpanded, setIsExpanded] = useState(true);
 
 	const isPhaseComplete =
 		phaseProgress.completed === phaseProgress.total && phaseProgress.total > 0;
+
+	const icon = getPhaseIcon(titleKo);
 
 	return (
 		<div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
@@ -53,7 +54,7 @@ export function TaskSection({
 				className="flex w-full items-center justify-between p-5 transition-colors hover:bg-gray-50"
 			>
 				<div className="flex items-center gap-3">
-					<span className="text-2xl">{phaseIcons[phase]}</span>
+					<span className="text-2xl">{icon}</span>
 					<div className="text-left">
 						<h2 className="heading-5">{titleKo}</h2>
 						<p className="caption">{titleEn}</p>
@@ -85,6 +86,7 @@ export function TaskSection({
 							key={task.id}
 							task={task}
 							arrivalDate={arrivalDate}
+							categories={categories}
 							onToggle={() => onToggleTask(task.id)}
 						/>
 					))}
@@ -97,10 +99,11 @@ export function TaskSection({
 interface TaskCardProps {
 	task: TaskWithCompletion;
 	arrivalDate: string | null;
+	categories: SettlementCategory[];
 	onToggle: () => void;
 }
 
-function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
+function TaskCard({ task, arrivalDate, categories, onToggle }: TaskCardProps) {
 	const [isDetailOpen, setIsDetailOpen] = useState(false);
 
 	// Calculate deadline date
@@ -116,12 +119,25 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 		isUrgent = daysUntilDeadline <= 14 && daysUntilDeadline > 0;
 	}
 
-	const categoryColors: Record<string, string> = {
-		government: "bg-primary-100 text-primary-700",
-		housing: "bg-purple-100 text-purple-700",
-		finance: "bg-accent-100 text-accent-700",
-		utilities: "bg-yellow-100 text-yellow-700",
-		other: "bg-gray-100 text-gray-700",
+	// Dynamic Category Lookup
+	const categoryObj = categories.find((c) => c.slug === task.category);
+
+	// Fallback color logic (can be improved later with DB color field)
+	const getCategoryColor = (slug: string) => {
+		switch (slug) {
+			case "government":
+				return "bg-primary-100 text-primary-700";
+			case "housing":
+				return "bg-purple-100 text-purple-700";
+			case "finance":
+				return "bg-accent-100 text-accent-700";
+			case "telecom":
+				return "bg-yellow-100 text-yellow-700";
+			case "health":
+				return "bg-red-100 text-red-700";
+			default:
+				return "bg-gray-100 text-gray-700";
+		}
 	};
 
 	return (
@@ -159,12 +175,27 @@ function TaskCard({ task, arrivalDate, onToggle }: TaskCardProps) {
 							</h3>
 							<p className="caption">{task.titleJa}</p>
 						</div>
+
 						<span
-							className={`rounded px-2 py-0.5 font-medium text-xs ${categoryColors[task.category]}`}
+							className={`flex items-center gap-1 rounded px-2 py-0.5 font-medium text-xs ${getCategoryColor(task.category)}`}
 						>
-							{task.category}
+							{categoryObj ? (
+								<>
+									<span>{categoryObj.icon}</span>
+									<span>{categoryObj.titleKo}</span>
+								</>
+							) : (
+								task.category
+							)}
 						</span>
 					</div>
+
+					{/* Source Indicator */}
+					{task.templateTitle && (
+						<div className="mt-1 flex items-center gap-1 text-gray-400 text-xs">
+							<span>📦 {task.templateTitle}</span>
+						</div>
+					)}
 
 					{/* Meta Info */}
 					<div className="caption mt-2 flex flex-wrap items-center gap-3">

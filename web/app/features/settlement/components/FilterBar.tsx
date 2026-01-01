@@ -1,14 +1,7 @@
-import { Menu, Transition } from "@headlessui/react";
+import type { SettlementCategory } from "@itcom/db/schema";
 import { ChevronDown, Filter, X } from "lucide-react";
-import { Fragment } from "react";
 
-export type FilterCategory =
-	| "all"
-	| "government"
-	| "housing"
-	| "finance"
-	| "utilities"
-	| "other";
+export type FilterCategory = string;
 export type FilterStatus = "all" | "pending" | "completed";
 export type FilterUrgency = "all" | "urgent";
 
@@ -16,20 +9,12 @@ interface FilterBarProps {
 	category: FilterCategory;
 	status: FilterStatus;
 	urgency: FilterUrgency;
+	categories: SettlementCategory[];
 	onCategoryChange: (category: FilterCategory) => void;
 	onStatusChange: (status: FilterStatus) => void;
 	onUrgencyChange: (urgency: FilterUrgency) => void;
 	onReset: () => void;
 }
-
-const categoryLabels: Record<FilterCategory, string> = {
-	all: "전체 카테고리",
-	government: "🏛️ 관공서",
-	housing: "🏠 주거",
-	finance: "💰 금융",
-	utilities: "⚡ 유틸리티",
-	other: "📦 기타",
-};
 
 const statusLabels: Record<FilterStatus, string> = {
 	all: "전체 상태",
@@ -46,6 +31,7 @@ export function FilterBar({
 	category,
 	status,
 	urgency,
+	categories,
 	onCategoryChange,
 	onStatusChange,
 	onUrgencyChange,
@@ -53,6 +39,22 @@ export function FilterBar({
 }: FilterBarProps) {
 	const hasActiveFilters =
 		category !== "all" || status !== "all" || urgency !== "all";
+
+	// Create category options
+	const categoryOptions = [
+		{ value: "all", label: "전체 카테고리" },
+		...categories.map((c) => ({
+			value: c.slug,
+			label: `${c.icon} ${c.titleKo}`,
+		})),
+	];
+
+	const selectedCategoryLabel =
+		category === "all"
+			? "전체 카테고리"
+			: categories.find((c) => c.slug === category)
+				? `${categories.find((c) => c.slug === category)?.icon} ${categories.find((c) => c.slug === category)?.titleKo}`
+				: category;
 
 	return (
 		<div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
@@ -64,11 +66,8 @@ export function FilterBar({
 
 				{/* Category Filter */}
 				<FilterDropdown
-					label={categoryLabels[category]}
-					options={Object.entries(categoryLabels).map(([value, label]) => ({
-						value: value as FilterCategory,
-						label,
-					}))}
+					label={selectedCategoryLabel}
+					options={categoryOptions}
 					value={category}
 					onChange={onCategoryChange}
 				/>
@@ -118,6 +117,15 @@ interface FilterDropdownProps<T extends string> {
 	onChange: (value: T) => void;
 }
 
+import {
+	Dropdown,
+	DropdownButton,
+	DropdownContent,
+	DropdownItem,
+} from "~/shared/components/ui/Dropdown";
+
+// ... (FilterBar component code)
+
 function FilterDropdown<T extends string>({
 	label,
 	options,
@@ -127,8 +135,8 @@ function FilterDropdown<T extends string>({
 	const isActive = value !== "all";
 
 	return (
-		<Menu as="div" className="relative">
-			<Menu.Button
+		<Dropdown>
+			<DropdownButton
 				className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium text-sm transition-colors ${
 					isActive
 						? "bg-primary-100 text-primary-700"
@@ -137,35 +145,23 @@ function FilterDropdown<T extends string>({
 			>
 				{label}
 				<ChevronDown className="h-3.5 w-3.5" />
-			</Menu.Button>
+			</DropdownButton>
 
-			<Transition
-				as={Fragment}
-				enter="transition ease-out duration-100"
-				enterFrom="transform opacity-0 scale-95"
-				enterTo="transform opacity-100 scale-100"
-				leave="transition ease-in duration-75"
-				leaveFrom="transform opacity-100 scale-100"
-				leaveTo="transform opacity-0 scale-95"
-			>
-				<Menu.Items className="card-lg absolute left-0 z-10 mt-2 w-48 origin-top-left overflow-hidden ring-1 ring-black ring-opacity-5 focus:outline-none">
-					{options.map((option) => (
-						<Menu.Item key={option.value}>
-							{({ active }) => (
-								<button
-									type="button"
-									onClick={() => onChange(option.value)}
-									className={`w-full px-4 py-2.5 text-left text-sm ${
-										active ? "bg-gray-50" : ""
-									} ${option.value === value ? "font-medium text-primary-600" : "text-gray-700"}`}
-								>
-									{option.label}
-								</button>
-							)}
-						</Menu.Item>
-					))}
-				</Menu.Items>
-			</Transition>
-		</Menu>
+			<DropdownContent className="w-48">
+				{options.map((option) => (
+					<DropdownItem
+						key={option.value}
+						onClick={() => onChange(option.value)}
+						className={`w-full text-left ${
+							option.value === value
+								? "bg-gray-50 font-medium text-primary-600"
+								: "text-gray-700"
+						}`}
+					>
+						{option.label}
+					</DropdownItem>
+				))}
+			</DropdownContent>
+		</Dropdown>
 	);
 }

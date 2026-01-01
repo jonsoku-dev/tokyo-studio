@@ -1,88 +1,41 @@
-# Tasks: Settlement Checklist Marketplace
+# Settlement Checklist Tasks
 
-## Phase 1: Data Architecture & Core Migration
-The goal is to transition from a "Static Single List" to a "Dynamic Template Subscription" model.
+This document tracks the implementation of the Settlement Checklist feature.
 
-### 1.1 Database Schema Design (Drizzle)
-- [ ] **Define `settlement_templates` table**
-    - Columns: `id` (uuid), `author_id` (uuid), `title`, `description` (text), `tags` (jsonb), `is_official` (bool), `status` (enum: draft, published, archived), `version` (int), `created_at`, `updated_at`.
-    - Indexes: `author_id`, `is_official`, `status`.
-- [ ] **Define `settlement_task_templates` table**
-    - Columns: `id` (uuid), `include_template_id` (uuid, fk), `title`, `description` (md), `category` (enum), `timing_rule` (jsonb: `{type: "relative", days: -7}`), `is_required` (bool).
-    - Meaning: These are the "blueprint" tasks inside a template.
-- [ ] **Define `settlement_subscriptions` table**
-    - Columns: `id` (uuid), `user_id` (uuid), `template_id` (uuid), `is_active` (bool), `equipped_at`.
-    - Unique Constraint: `(user_id, template_id)`.
-- [ ] **Migrate `user_settlement_tasks` table**
-    - Add `subscription_id` (nullable for legacy support, eventually required).
-    - Add `task_template_id` (fk).
-    - Migration Script:
-        1. Create "Official Tokyo Basic" template in `settlement_templates`.
-        2. Move hardcoded tasks to `settlement_task_templates` linking to Official Template.
-        3. For every existing user, create a `settlement_subscriptions` entry linking them to Official Template.
-        4. Link existing user tasks to the new schema.
+## Phase 1: Core Data Models
+- [x] **Schema Design**:Define `settlement_templates`, `settlement_task_templates`, `user_settlements` tables.
+- [x] **Seed Data**: Create initial seed script for basic templates.
 
-### 1.2 Service Layer Refactor
-- [ ] **Implement `SettlementTemplateService`**
-    - `createTemplate(authorId, data)`
-    - `getTemplate(id)`
-    - `publishTemplate(id)`
-- [ ] **Refactor `SettlementService.getTasks(userId)`**
-    - Logic Change: Instead of returning static tasks, query all **Active Subscriptions** for the user.
-    - Fetch all `TaskTemplates` for those subscriptions.
-    - **Merge Logic**:
-        - Combine tasks from all templates.
-        - Calculate absolute dates based on User's Arrival Date (`timing_rule` + `arrivalDate`).
-        - Sort by calculated date.
-    - Return unified `JobTask[]` structure to the frontend.
+## Phase 2: User Dashboard (Checklist View)
+- [x] **Route**: `/settlement` (Main Dashboard).
+- [x] **Logic**:
+    - [x] Auto-subscribe to "Official" template on first visit (or arrival).
+    - [x] Fetch user's tasks.
+    - [x] Group tasks by phases (e.g., "D-7", "D-Day", "Week 1").
+    - [x] Handle "Task Completion" toggle.
 
-## Phase 2: Marketplace & Discovery (Frontend)
+### 2.1 Timeline & Progress
+- [x] **Progress Bar**: Visual indicator of completion %.
+- [x] **Arrival Date**: Edit/Set arrival date.
 
-### 2.1 Marketplace UI
-- [ ] **Create `features/settlement/routes/marketplace.tsx`**
-    - Layout: Grid view of available templates.
-    - Filter Bar: Tags (Visa, Job, Family), Sort (Popular, New).
-- [ ] **Implement `ChecklistCard` Component**
-    - Props: `template: SettlementTemplate`.
-    - Display: Title, Description (truncated), Author Avatar, Tags, "Official" Badge.
-    - Action: "Preview" button.
+### 2.2 Dashboard Refinement
+- [x] **Grouping**: Better visual separation of time-based groups.
+- [x] **Empty States**: Handle cases with no subscription.
 
-### 2.2 Template Detail & Preview
-- [ ] **Create `features/settlement/routes/marketplace.$templateId.tsx`**
-    - Header: Title, Author, "Equip" button (or "Unequip" if already owned).
-    - Content: Full description (Markdown).
-    - **Preview List**: Show the list of tasks included in this module.
-        - Visual: "Timeline Preview" (e.g., "Arrive - 7 days: Do this").
-- [ ] **Implement `Equip/Unequip` Action**
-    - Server Action: Call `SettlementService.subscribe(userId, templateId)`.
-    - Toast Feedback: "Equipped! 15 new tasks added to your timeline."
+### 2.3 Integration with Subscriptions
+- [x] Display active subscriptions.
+- [x] Show "Source Template" for each task.
 
-### 2.3 Dashboard Integration
-- [ ] **Update `features/settlement/routes/index.tsx`**
-    - Add "Manage Modules" button (links to Marketplace or simple modal).
-    - Show list of equipped modules (Active Subscriptions) in the sidebar or header.
-    - **Task Source Indicator**: In the task list, show a small icon or badge indicating which module this task came from (e.g., " 🏦 Finance Pack").
-
-## Phase 3: Creator Tools (User-Generated Content)
-
-### 3.1 Editor UI
-- [ ] **Create `features/settlement/routes/editor.new.tsx`**
-    - Form: Title, Description, Tags.
-- [ ] **Create `features/settlement/routes/editor.$templateId.tsx`**
-    - **Task Manager**: Interactive list to add/edit/delete tasks within the template.
-    - **Task Render**: Inline edit for Title. Modal for Description/Timing.
-    - **Timing Editor**: UI to select "Before Arrival", "After Arrival" and set days.
-
-### 3.2 Publishing Flow
-- [ ] **Implement "Publish" Action**
-    - Validation: Ensure at least 3 tasks exist, title is not empty.
-    - Status Change: `DRAFT` -> `PUBLISHED` (or `PENDING_REVIEW` if we implement moderation).
+## Phase 3: Creator Tools (Template Editor)
+- [x] **Editor Route**: `/settlement/editor/:templateId`.
+- [x] **Create New Template**: Form to start a blank template.
+- [x] **Task Management**: Add, Edit, Delete tasks within a template.
+- [x] **Publishing**: "Draft" vs "Published" status.
 
 ## Phase 4: Social & Engagement
-
 ### 4.1 Reviews & Ratings
-- [ ] **Schema**: Add `settlement_reviews` table (`template_id`, `user_id`, `rating`, `comment`).
-- [ ] **UI**: Add "Write Review" button on Template Detail page (only if equipped).
+- [x] **Schema**: Add `settlement_reviews` table (`template_id`, `user_id`, `rating`, `comment`).
+- [x] **UI**: Add "Write Review" button on Template Detail page (only if equipped).
 - [ ] **Aggregation**: Cron job or trigger to update `settlement_templates.rating_avg`.
 
 ### 4.2 Combinations (Loadouts)
@@ -91,7 +44,42 @@ The goal is to transition from a "Static Single List" to a "Dynamic Template Sub
     - "Click to Equip All" action.
 
 ## Phase 5: Administration
-- [ ] **Admin Dashboard (`/admin/settlement`)**
+- [x] **Admin Dashboard (`/admin/settlement`)**
     - List of all user-generated templates.
     - Actions: `Verify` (Add Official Badge), `Hide`, `Delete`.
     - Metrics: Usage stats (Install count).
+
+## Phase 6: Dynamic Phases
+- [x] **Schema**: `settlement_phases` table (min/max days)
+- [x] **Seed**: Populate standard phases & localized titles
+- [x] **Service**: `getPhases`, `groupTasksByPhase`
+- [x] **UI**: Group tasks by phases (Dashboard & Marketplace)
+
+## Phase 7: Marketplace Contribution
+- [x] **UI**: "Create New Template" button and flow
+- [x] **Route**: Ensure `editor.new` is linked and functional
+- [x] **Action**: "Publish" template availability
+
+## Phase 8: Final Polish & Zero Error
+- [x] **Refactor**: Remove legacy `TimePhase` from server logic
+- [x] **Fix**: Resolve all lint/type errors in `settlement.server.ts` and `index.tsx`
+- [x] **Seed**: Clean up duplicate keys and ensure schema compliance
+
+## Phase 9: Explicit Phase Association
+- [x] **Schema**: Add `phaseId` to `settlementTaskTemplates`
+- [x] **Seed**: Update `settlement.ts` to link tasks to phases
+- [x] **Service**: Update `groupTasksByPhase` to use `phaseId`
+- [x] **UI**: Add Phase Selector to Editor
+- [x] **Verify**: Check Dashboard & Marketplace grouping-driven phases.
+
+## Phase 10: Editor Rebuild (Clean Slate)
+- [x] **Service Refactor**: Simplify `getTemplate` and task fetching to avoid nested relation errors.
+- [x] **Editor Rewrite**: Create new `editor.$templateId.tsx` with explicit Phase-based grouping.
+- [x] **Task Management**: Implement Add/Edit tasks with forced `phaseId` selection.
+- [x] **Validation**: Verify creating a full checklist from scratch works without errors.
+
+## Phase 11: Editor Polish & DnD
+- [x] **DnD Implementation**: Add `@dnd-kit` to `editor.$templateId.tsx` for task reordering.
+- [x] **UI Polish**: Improve spacing, empty states, and add transitions/animations.
+- [x] **Design Review**: Ensure strict adherence to shared UI components and "Premium" feel.
+- [x] **Optimistic UI**: Ensure DnD updates are instant and robust.

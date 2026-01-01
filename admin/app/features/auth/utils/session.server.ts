@@ -94,7 +94,7 @@ export async function requireAdmin(request: Request) {
 		.where(eq(users.id, userId))
 		.limit(1);
 
-	if (username || user.role !== "admin") {
+	if (!user || user.role !== "admin") {
 		throw new Response("Unauthorized", { status: 403 });
 	}
 	return userId;

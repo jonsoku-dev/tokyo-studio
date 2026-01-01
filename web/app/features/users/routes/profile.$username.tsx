@@ -164,7 +164,7 @@ export default function PublicProfile({ loaderData }: Route.ComponentProps) {
 										className="group flex flex-shrink-0 items-center gap-1 rounded-md px-3 py-1.5 font-medium text-primary-600 text-xs hover:bg-primary-50"
 									>
 										View
-										<ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+										<ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
 									</a>
 								</div>
 							</div>
@@ -195,7 +195,7 @@ export default function PublicProfile({ loaderData }: Route.ComponentProps) {
 							</div>
 						</div>
 
-						<div className="mt-6 flex flex-wrap gap-4 text-sm text-gray-500">
+						<div className="mt-6 flex flex-wrap gap-4 text-gray-500 text-sm">
 							{profile.targetCity && (
 								<div className="flex items-center gap-1.5">
 									<MapPin className="h-4 w-4" />

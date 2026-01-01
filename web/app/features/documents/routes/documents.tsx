@@ -199,7 +199,7 @@ export default function Documents({ loaderData }: Route.ComponentProps) {
 			>
 				{/* Upload Expandable Area */}
 				{isUploadOpen && (
-					<div className="card slide-in-from-top-4 fade-in animate-in mt-4 border border-gray-100 p-6 duration-200">
+					<div className="card slide-in-from-top-4 fade-in mt-4 animate-in border border-gray-100 p-6 duration-200">
 						<h2 className="heading-5 mb-4">Upload Documents</h2>
 						<FileUploader
 							onUploadComplete={() => {

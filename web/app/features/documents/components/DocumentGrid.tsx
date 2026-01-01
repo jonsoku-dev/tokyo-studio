@@ -341,7 +341,7 @@ export function DocumentGrid({
 								onChange={(e) => setJumpToPage(e.target.value)}
 								onKeyDown={(e) => e.key === "Enter" && handleJumpToPage()}
 								placeholder="#"
-								className="w-16 rounded border-gray-200 py-1 px-2 text-center text-sm focus:border-primary-500 focus:ring-primary-500"
+								className="w-16 rounded border-gray-200 px-2 py-1 text-center text-sm focus:border-primary-500 focus:ring-primary-500"
 							/>
 							<button
 								type="button"

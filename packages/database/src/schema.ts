@@ -1,16 +1,17 @@
 import { type InferSelectModel, relations, sql } from "drizzle-orm";
 import {
 	boolean,
+	check,
 	customType,
+	index,
 	integer,
 	jsonb,
 	numeric,
 	pgTable,
 	text,
 	timestamp,
+	uniqueIndex,
 	uuid,
-	check,
-	index,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
@@ -377,8 +378,6 @@ export const voteAuditLogs = pgTable("vote_audit_logs", {
 export const insertReputationLogSchema = createInsertSchema(reputationLogs);
 export const selectReputationLogSchema = createSelectSchema(reputationLogs);
 
-
-
 export const commentNotifications = pgTable("comment_notifications", {
 	id: uuid("id").primaryKey().defaultRandom(),
 	userId: uuid("user_id") // Recipient
@@ -744,13 +743,15 @@ export const notificationQueueRelations = relations(
 export const jobPostingCache = pgTable("job_posting_cache", {
 	url: text("url").primaryKey(),
 	urlHash: text("url_hash").notNull(),
-	data: jsonb("data").$type<{
-		company: string;
-		position: string;
-		location: string;
-		description: string;
-		logoUrl: string | null;
-	}>().notNull(),
+	data: jsonb("data")
+		.$type<{
+			company: string;
+			position: string;
+			location: string;
+			description: string;
+			logoUrl: string | null;
+		}>()
+		.notNull(),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 	updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -975,10 +976,9 @@ export const fileOperationLogs = pgTable(
 			sql`${table.status} IN ('success', 'failed')`,
 		),
 		// Index for querying by document
-		documentCreatedAtIdx: index("file_operation_logs_document_created_at_idx").on(
-			table.documentId,
-			table.createdAt,
-		),
+		documentCreatedAtIdx: index(
+			"file_operation_logs_document_created_at_idx",
+		).on(table.documentId, table.createdAt),
 		// Index for querying by user
 		userCreatedAtIdx: index("file_operation_logs_user_created_at_idx").on(
 			table.userId,
@@ -1087,16 +1087,19 @@ export const selectMentorApplicationSchema =
 export type InsertMentorApplication = typeof mentorApplications.$inferInsert;
 export type SelectMentorApplication = typeof mentorApplications.$inferSelect;
 
-export const mentorApplicationsRelations = relations(mentorApplications, ({ one }) => ({
-	user: one(users, {
-		fields: [mentorApplications.userId],
-		references: [users.id],
+export const mentorApplicationsRelations = relations(
+	mentorApplications,
+	({ one }) => ({
+		user: one(users, {
+			fields: [mentorApplications.userId],
+			references: [users.id],
+		}),
+		reviewer: one(users, {
+			fields: [mentorApplications.reviewedBy],
+			references: [users.id],
+		}),
 	}),
-	reviewer: one(users, {
-		fields: [mentorApplications.reviewedBy],
-		references: [users.id],
-	}),
-}));
+);
 
 export const adminAuditLogs = pgTable("admin_audit_logs", {
 	id: uuid("id").primaryKey().defaultRandom(),
@@ -1225,12 +1228,10 @@ export const reviewModerationLogs = pgTable("review_moderation_logs", {
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertReviewModerationLogSchema = createInsertSchema(
-	reviewModerationLogs,
-);
-export const selectReviewModerationLogSchema = createSelectSchema(
-	reviewModerationLogs,
-);
+export const insertReviewModerationLogSchema =
+	createInsertSchema(reviewModerationLogs);
+export const selectReviewModerationLogSchema =
+	createSelectSchema(reviewModerationLogs);
 
 export const reviewDisputes = pgTable("review_disputes", {
 	id: uuid("id").primaryKey().defaultRandom(),
@@ -1369,32 +1370,6 @@ export const roadmapTasksRelations = relations(roadmapTasks, ({ one }) => ({
 // SPEC 019: Settlement Checklist
 // ============================================================
 
-// --- Settlement Tasks (Static task definitions) ---
-export const settlementTasks = pgTable("settlement_tasks", {
-	id: uuid("id").primaryKey().defaultRandom(),
-	slug: text("slug").notNull().unique(), // e.g., "register-city-hall"
-	titleKo: text("title_ko").notNull(),
-	titleJa: text("title_ja").notNull(),
-	instructionsKo: text("instructions_ko").notNull(),
-	instructionsJa: text("instructions_ja").notNull(),
-	requiredDocuments: jsonb("required_documents").$type<string[]>().default([]),
-	estimatedMinutes: integer("estimated_minutes").default(60),
-	category: text("category").notNull(), // "government" | "housing" | "finance" | "utilities" | "other"
-	timePhase: text("time_phase").notNull(), // "before_arrival" | "first_week" | "first_month" | "first_3_months"
-	deadlineType: text("deadline_type").notNull().default("relative"), // "relative" | "absolute"
-	deadlineDays: integer("deadline_days"), // Days after arrival (for relative)
-	tips: text("tips"),
-	formTemplateUrl: text("form_template_url"),
-	officialUrl: text("official_url"),
-	orderIndex: integer("order_index").notNull().default(0),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const insertSettlementTaskSchema = createInsertSchema(settlementTasks);
-export const selectSettlementTaskSchema = createSelectSchema(settlementTasks);
-export type SettlementTask = InferSelectModel<typeof settlementTasks>;
-
 // --- User Settlements (User's arrival date and progress) ---
 export const userSettlements = pgTable("user_settlements", {
 	id: uuid("id").primaryKey().defaultRandom(),
@@ -1411,40 +1386,264 @@ export const insertUserSettlementSchema = createInsertSchema(userSettlements);
 export const selectUserSettlementSchema = createSelectSchema(userSettlements);
 export type UserSettlement = InferSelectModel<typeof userSettlements>;
 
-// --- User Task Completions (Junction table) ---
+// --- Settlement Categories ---
+export const settlementCategories = pgTable("settlement_categories", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	slug: text("slug").notNull().unique(), // e.g., 'government', 'housing'
+	titleKo: text("title_ko").notNull(),
+	titleJa: text("title_ja"),
+	icon: text("icon").notNull(), // Emoji or icon name
+	orderIndex: integer("order_index").notNull().default(0),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertSettlementCategorySchema =
+	createInsertSchema(settlementCategories);
+export const selectSettlementCategorySchema =
+	createSelectSchema(settlementCategories);
+
+export type SettlementCategory = InferSelectModel<typeof settlementCategories>;
+
+// --- Settlement Relations ---
+export const userSettlementsRelations = relations(
+	userSettlements,
+	({ one }) => ({
+		user: one(users, {
+			fields: [userSettlements.userId],
+			references: [users.id],
+		}),
+	}),
+);
+
+// --- Settlement Marketplace (v2) ---
+export const settlementTemplates = pgTable("settlement_templates", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	authorId: uuid("author_id").references(() => users.id),
+	title: text("title").notNull(),
+	description: text("description"),
+	tags: jsonb("tags").$type<string[]>().default([]),
+	isOfficial: boolean("is_official").default(false).notNull(),
+	status: text("status").default("draft").notNull(), // "draft" | "published" | "archived"
+	version: integer("version").default(1).notNull(),
+
+	// Advanced Filtering
+	targetVisa: text("target_visa"), // e.g., "Engineer", "Student"
+	familyStatus: text("family_status"), // e.g., "Single", "Family"
+	region: text("region").default("Tokyo"),
+
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertSettlementTemplateSchema =
+	createInsertSchema(settlementTemplates);
+export const selectSettlementTemplateSchema =
+	createSelectSchema(settlementTemplates);
+
+export type SettlementTemplate = InferSelectModel<typeof settlementTemplates>;
+
+export const settlementTaskTemplates = pgTable("settlement_task_templates", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	templateId: uuid("template_id")
+		.references(() => settlementTemplates.id, { onDelete: "cascade" })
+		.notNull(),
+	slug: text("slug"), // For identifying similar tasks across templates
+
+	// Bilingual Content
+	titleKo: text("title_ko"),
+	titleJa: text("title_ja"),
+	instructionsKo: text("instructions_ko"),
+	instructionsJa: text("instructions_ja"),
+
+	// Fallback/Generic Content (for user generated)
+	title: text("title"),
+	description: text("description"),
+
+	category: text("category").notNull(),
+	phaseId: uuid("phase_id").references(() => settlementPhases.id), // Explicit phase linkage
+	dayOffset: integer("day_offset"), // Nullable: Floating within Phase. Positive/Negative relative to anchor.
+	isRequired: boolean("is_required").default(false).notNull(),
+
+	// Extra fields from legacy
+	requiredDocuments: jsonb("required_documents").$type<string[]>().default([]),
+	estimatedMinutes: integer("estimated_minutes").default(60),
+	timePhase: text("time_phase"), // Legacy support? Or derive from timingRule?
+	tips: text("tips"),
+	officialUrl: text("official_url"),
+	formTemplateUrl: text("form_template_url"),
+
+	orderIndex: integer("order_index").default(0).notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertSettlementTaskTemplateSchema = createInsertSchema(
+	settlementTaskTemplates,
+);
+export const selectSettlementTaskTemplateSchema = createSelectSchema(
+	settlementTaskTemplates,
+);
+
+export type SettlementTaskTemplate = InferSelectModel<
+	typeof settlementTaskTemplates
+>;
+
+export const settlementSubscriptions = pgTable(
+	"settlement_subscriptions",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		userId: uuid("user_id")
+			.references(() => users.id, { onDelete: "cascade" })
+			.notNull(),
+		templateId: uuid("template_id")
+			.references(() => settlementTemplates.id, { onDelete: "cascade" })
+			.notNull(),
+		isActive: boolean("is_active").default(true).notNull(),
+		equippedAt: timestamp("equipped_at").defaultNow().notNull(),
+	},
+	(table) => ({
+		unq: uniqueIndex("settlement_subs_user_template_idx").on(
+			table.userId,
+			table.templateId,
+		),
+	}),
+);
+
+export const insertSettlementSubscriptionSchema = createInsertSchema(
+	settlementSubscriptions,
+);
+export const selectSettlementSubscriptionSchema = createSelectSchema(
+	settlementSubscriptions,
+);
+
+export const settlementReviews = pgTable(
+	"settlement_reviews",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		templateId: uuid("template_id")
+			.references(() => settlementTemplates.id, { onDelete: "cascade" })
+			.notNull(),
+		userId: uuid("user_id")
+			.references(() => users.id, { onDelete: "cascade" })
+			.notNull(),
+		rating: integer("rating").notNull(), // 1-5
+		comment: text("comment"),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	},
+	(table) => ({
+		unq: uniqueIndex("settlement_reviews_user_template_idx").on(
+			table.userId,
+			table.templateId,
+		),
+	}),
+);
+
+export const settlementReviewsRelations = relations(
+	settlementReviews,
+	({ one }) => ({
+		template: one(settlementTemplates, {
+			fields: [settlementReviews.templateId],
+			references: [settlementTemplates.id],
+		}),
+		author: one(users, {
+			fields: [settlementReviews.userId],
+			references: [users.id],
+		}),
+	}),
+);
+
 export const userTaskCompletions = pgTable("user_task_completions", {
 	id: uuid("id").primaryKey().defaultRandom(),
 	userId: uuid("user_id")
 		.references(() => users.id, { onDelete: "cascade" })
 		.notNull(),
 	taskId: uuid("task_id")
-		.references(() => settlementTasks.id, { onDelete: "cascade" })
+		.references(() => settlementTaskTemplates.id, { onDelete: "cascade" })
 		.notNull(),
 	completedAt: timestamp("completed_at").defaultNow().notNull(),
 });
 
-export const insertUserTaskCompletionSchema = createInsertSchema(userTaskCompletions);
-export const selectUserTaskCompletionSchema = createSelectSchema(userTaskCompletions);
+export const insertUserTaskCompletionSchema =
+	createInsertSchema(userTaskCompletions);
+export const selectUserTaskCompletionSchema =
+	createSelectSchema(userTaskCompletions);
 export type UserTaskCompletion = InferSelectModel<typeof userTaskCompletions>;
 
-// --- Settlement Relations ---
-export const userSettlementsRelations = relations(userSettlements, ({ one }) => ({
-	user: one(users, {
-		fields: [userSettlements.userId],
-		references: [users.id],
+export const settlementTemplatesRelations = relations(
+	settlementTemplates,
+	({ one, many }) => ({
+		author: one(users, {
+			fields: [settlementTemplates.authorId],
+			references: [users.id],
+		}),
+		tasks: many(settlementTaskTemplates),
+		subscriptions: many(settlementSubscriptions),
 	}),
-}));
+);
 
-export const userTaskCompletionsRelations = relations(userTaskCompletions, ({ one }) => ({
-	user: one(users, {
-		fields: [userTaskCompletions.userId],
-		references: [users.id],
+export const settlementTaskTemplatesRelations = relations(
+	settlementTaskTemplates,
+	({ one }) => ({
+		template: one(settlementTemplates, {
+			fields: [settlementTaskTemplates.templateId],
+			references: [settlementTemplates.id],
+		}),
+		phase: one(settlementPhases, {
+			fields: [settlementTaskTemplates.phaseId],
+			references: [settlementPhases.id],
+		}),
 	}),
-	task: one(settlementTasks, {
-		fields: [userTaskCompletions.taskId],
-		references: [settlementTasks.id],
+);
+
+export const settlementPhases = pgTable("settlement_phases", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	title: text("title").notNull(), // Internal key or default title
+	titleKo: text("title_ko"), // Korean Display Title
+	titleJa: text("title_ja"), // Japanese Display Title
+	titleEn: text("title_en"), // English Display Title
+	description: text("description"),
+	minDays: integer("min_days").notNull(), // Inclusive start
+	maxDays: integer("max_days").notNull(), // Inclusive end
+	orderIndex: integer("order_index").notNull().default(0),
+
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertSettlementPhaseSchema = createInsertSchema(settlementPhases);
+export const selectSettlementPhaseSchema = createSelectSchema(settlementPhases);
+
+export type SettlementPhase = InferSelectModel<typeof settlementPhases>;
+
+export const settlementSubscriptionsRelations = relations(
+	settlementSubscriptions,
+	({ one }) => ({
+		user: one(users, {
+			fields: [settlementSubscriptions.userId],
+			references: [users.id],
+		}),
+		template: one(settlementTemplates, {
+			fields: [settlementSubscriptions.templateId],
+			references: [settlementTemplates.id],
+		}),
 	}),
-}));
+);
+
+export const userTaskCompletionsRelations = relations(
+	userTaskCompletions,
+	({ one }) => ({
+		user: one(users, {
+			fields: [userTaskCompletions.userId],
+			references: [users.id],
+		}),
+		task: one(settlementTaskTemplates, {
+			fields: [userTaskCompletions.taskId],
+			references: [settlementTaskTemplates.id],
+		}),
+	}),
+);
 
 // --- Map Locations (SPEC 020) ---
 export const mapLocations = pgTable("map_locations", {

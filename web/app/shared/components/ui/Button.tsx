@@ -1,10 +1,12 @@
+import { Slot } from "@radix-ui/react-slot";
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "~/shared/utils/cn";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	variant?: "primary" | "secondary" | "outline" | "ghost";
-	size?: "sm" | "md" | "lg";
+	size?: "icon" | "sm" | "md" | "lg";
 	fullWidth?: boolean;
+	asChild?: boolean;
 }
 
 export function Button({
@@ -12,9 +14,12 @@ export function Button({
 	variant = "primary",
 	size = "md",
 	fullWidth = false,
+	asChild = false,
 	children,
 	...props
 }: ButtonProps) {
+	const Comp = asChild ? Slot : "button";
+
 	const variants = {
 		primary: "btn-primary",
 		secondary: "btn-secondary",
@@ -23,13 +28,14 @@ export function Button({
 	};
 
 	const sizes = {
+		icon: "h-9 w-9 p-0 flex items-center justify-center",
 		sm: "btn-sm",
 		md: "btn-md",
 		lg: "btn-lg",
 	};
 
 	return (
-		<button
+		<Comp
 			className={cn(
 				"btn",
 				variants[variant],
@@ -40,6 +46,6 @@ export function Button({
 			{...props}
 		>
 			{children}
-		</button>
+		</Comp>
 	);
 }

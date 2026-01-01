@@ -1,41 +1,42 @@
 "use client";
 
+import {
+	Listbox,
+	ListboxButton,
+	ListboxOption,
+	ListboxOptions,
+} from "@headlessui/react";
 import { Check, ChevronDown } from "lucide-react";
-import * as React from "react";
+import type * as React from "react";
 import { cn } from "~/shared/utils/cn";
 
-// Simplified Select Implementation for compatibility
-// We will implement a simplified version using standard React state
-
-const SelectContext = React.createContext<{
-	value: string;
-	onValueChange: (value: string) => void;
-	open: boolean;
-	setOpen: (open: boolean) => void;
-} | null>(null);
-
-export interface SelectProps {
-	defaultValue?: string;
-	onValueChange?: (value: string) => void;
+export interface SelectProps<T> {
+	value?: T;
+	defaultValue?: T;
+	onValueChange?: (value: T) => void;
+	disabled?: boolean;
+	name?: string;
 	children?: React.ReactNode;
 }
 
-export function Select({ defaultValue, onValueChange, children }: SelectProps) {
-	const [value, setValue] = React.useState(defaultValue || "");
-	const [open, setOpen] = React.useState(false);
-
-	const handleValueChange = (newValue: string) => {
-		setValue(newValue);
-		onValueChange?.(newValue);
-		setOpen(false);
-	};
-
+export function Select<T>({
+	value,
+	defaultValue,
+	onValueChange,
+	disabled,
+	name,
+	children,
+}: SelectProps<T>) {
 	return (
-		<SelectContext.Provider
-			value={{ value, onValueChange: handleValueChange, open, setOpen }}
+		<Listbox
+			value={value}
+			defaultValue={defaultValue}
+			onChange={onValueChange}
+			disabled={disabled}
+			name={name}
 		>
-			<div className="relative inline-block w-full text-left">{children}</div>
-		</SelectContext.Provider>
+			<div className="relative inline-block w-full">{children}</div>
+		</Listbox>
 	);
 }
 
@@ -46,58 +47,56 @@ export function SelectTrigger({
 	className?: string;
 	children: React.ReactNode;
 }) {
-	const context = React.useContext(SelectContext);
-	if (!context) throw new Error("SelectTrigger must be used within Select");
-
 	return (
-		<button
-			type="button"
-			onClick={() => context.setOpen(!context.open)}
+		<ListboxButton
 			className={cn(
-				"flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+				"flex h-10 w-full items-center justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+				"data-[open]:border-primary-500 data-[open]:ring-2 data-[open]:ring-primary-100",
 				className,
 			)}
 		>
 			{children}
 			<ChevronDown className="h-4 w-4 opacity-50" />
-		</button>
+		</ListboxButton>
 	);
 }
 
-export function SelectValue({ placeholder }: { placeholder?: string }) {
-	const context = React.useContext(SelectContext);
-	// We need to map value to label if possible, but for now just show value or placeholder
-	// This is a limitation of this simple mock. Ideally we look up the label.
-	// BUT MentorDirectory uses simple values.
-
-	// To show label, we'd need to register options.
-	// For MVP, let's just show standard "selected" text if we can't look it up easily.
-	// Or assume children of SelectItem contain the text.
-
+export function SelectValue({
+	placeholder,
+	children,
+}: {
+	placeholder?: string;
+	children?: React.ReactNode;
+}) {
 	return (
-		<span className="block truncate">{context?.value || placeholder}</span>
+		<span className="block flex-1 truncate text-left">
+			{children || placeholder}
+		</span>
 	);
 }
 
 export function SelectContent({
 	className,
 	children,
+	anchor = "bottom start",
 }: {
 	className?: string;
 	children: React.ReactNode;
+	anchor?: "bottom start" | "bottom end" | "bottom" | "top start" | "top end";
 }) {
-	const context = React.useContext(SelectContext);
-	if (!context || !context.open) return null;
-
 	return (
-		<div
+		<ListboxOptions
+			transition
+			anchor={anchor}
 			className={cn(
-				"fade-in-80 absolute z-50 min-w-[8rem] animate-in overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md",
+				"z-50 min-w-[8rem] overflow-hidden rounded-md bg-white p-1 shadow-lg outline-none ring-1 ring-black/5",
+				"transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0",
+				"origin-top [--anchor-gap:4px]",
 				className,
 			)}
 		>
-			<div className="p-1">{children}</div>
-		</div>
+			{children}
+		</ListboxOptions>
 	);
 }
 
@@ -106,27 +105,26 @@ export function SelectItem({
 	children,
 	className,
 }: {
-	value: string;
+	value: unknown;
 	children: React.ReactNode;
 	className?: string;
 }) {
-	const context = React.useContext(SelectContext);
-	if (!context) throw new Error("SelectItem must be used within Select");
-
 	return (
-		// biome-ignore lint/a11y/useKeyWithClickEvents: Simplified implementation
-		// biome-ignore lint/a11y/noStaticElementInteractions: Simplified implementation
-		<div
-			onClick={() => context.onValueChange(value)}
+		<ListboxOption
+			value={value}
 			className={cn(
-				"relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+				"group relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none",
+				"data-[focus]:bg-gray-100 data-[focus]:text-gray-900",
+				"data-[selected]:bg-primary-50 data-[selected]:text-primary-900",
 				className,
 			)}
 		>
-			<span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-				{context.value === value && <Check className="h-4 w-4" />}
+			<span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center opacity-0 transition-opacity group-data-[selected]:opacity-100">
+				<Check className="h-4 w-4 text-primary-600" />
 			</span>
-			{children}
-		</div>
+			<span className="block truncate font-normal group-data-[selected]:font-medium">
+				{children}
+			</span>
+		</ListboxOption>
 	);
 }

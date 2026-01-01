@@ -214,7 +214,7 @@ export default function MentorApplicationPage() {
 					</div>
 
 					{/* File Upload */}
-					<div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-6 text-center">
+					<div className="rounded-lg border border-gray-300 border-dashed bg-gray-50 p-6 text-center">
 						<label
 							htmlFor="verificationFile"
 							className="mb-2 block font-medium text-gray-900 text-sm"
@@ -235,7 +235,7 @@ export default function MentorApplicationPage() {
 						/>
 					</div>
 
-					<div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
+					<div className="flex justify-end gap-3 border-gray-100 border-t pt-6">
 						<Link
 							to="/dashboard"
 							className="rounded-lg px-6 py-2 text-gray-600 transition-colors hover:bg-gray-100"

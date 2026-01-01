@@ -62,7 +62,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 				{/* Profile Picture Section */}
 				<div className="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-900/5">
 					<div className="p-6">
-						<h3 className="text-base font-semibold leading-7 text-gray-900">
+						<h3 className="font-semibold text-base text-gray-900 leading-7">
 							Profile Picture
 						</h3>
 						<div className="mt-6">
@@ -77,7 +77,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 				{/* Public Profile Info Section */}
 				<div className="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-900/5">
 					<div className="p-6">
-						<h3 className="text-base font-semibold leading-7 text-gray-900">
+						<h3 className="font-semibold text-base text-gray-900 leading-7">
 							Public Profile Info
 						</h3>
 
@@ -87,12 +87,12 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 							className="mt-6 space-y-6"
 						>
 							{fetcher.data?.error && (
-								<div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
+								<div className="rounded-md bg-red-50 p-3 text-red-600 text-sm">
 									{fetcher.data.error}
 								</div>
 							)}
 							{fetcher.data?.success && (
-								<div className="rounded-md bg-green-50 p-3 text-sm text-green-600">
+								<div className="rounded-md bg-green-50 p-3 text-green-600 text-sm">
 									Profile updated successfully!
 								</div>
 							)}
@@ -100,7 +100,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 							<div>
 								<label
 									htmlFor="bio"
-									className="block text-sm font-medium leading-6 text-gray-900"
+									className="block font-medium text-gray-900 text-sm leading-6"
 								>
 									Bio
 								</label>
@@ -109,7 +109,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 										id="bio"
 										name="bio"
 										rows={4}
-										className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
+										className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-primary-600 focus:ring-inset sm:text-sm sm:leading-6"
 										defaultValue={profile?.bio || ""}
 										placeholder="Tell us about yourself..."
 									/>
@@ -123,7 +123,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 									placeholder="john-doe"
 									defaultValue={profile?.slug || ""}
 								/>
-								<p className="text-xs text-gray-500">
+								<p className="text-gray-500 text-xs">
 									Your profile will be at /profile/your-slug
 								</p>
 							</div>
@@ -171,12 +171,12 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 								</div>
 							)}
 
-							<div className="flex items-center justify-end gap-x-4 border-t border-gray-900/10 pt-4">
+							<div className="flex items-center justify-end gap-x-4 border-gray-900/10 border-t pt-4">
 								{profile?.slug && (
 									<Link
 										to={`/profile/${profile.slug}`}
 										target="_blank"
-										className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700"
+										className="font-semibold text-gray-900 text-sm leading-6 hover:text-gray-700"
 									>
 										View Public Profile
 									</Link>
@@ -192,25 +192,25 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 				{/* Account Information Section */}
 				<div className="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-900/5">
 					<div className="p-6">
-						<h3 className="text-base font-semibold leading-7 text-gray-900">
+						<h3 className="font-semibold text-base text-gray-900 leading-7">
 							Account Information
 						</h3>
 						<dl className="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
 							<div className="sm:col-span-1">
-								<dt className="text-sm font-medium text-gray-500">Full name</dt>
-								<dd className="mt-1 text-sm text-gray-900">{user.name}</dd>
+								<dt className="font-medium text-gray-500 text-sm">Full name</dt>
+								<dd className="mt-1 text-gray-900 text-sm">{user.name}</dd>
 							</div>
 							<div className="sm:col-span-1">
-								<dt className="text-sm font-medium text-gray-500">
+								<dt className="font-medium text-gray-500 text-sm">
 									Email address
 								</dt>
-								<dd className="mt-1 text-sm text-gray-900">{user.email}</dd>
+								<dd className="mt-1 text-gray-900 text-sm">{user.email}</dd>
 							</div>
-							<div className="sm:col-span-2 space-y-2">
+							<div className="space-y-2 sm:col-span-2">
 								<div>
 									<Link
 										to="/settings/privacy"
-										className="text-sm font-medium text-primary-600 hover:text-primary-500"
+										className="font-medium text-primary-600 text-sm hover:text-primary-500"
 									>
 										Manage Privacy Settings &rarr;
 									</Link>
@@ -218,7 +218,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 								<div>
 									<Link
 										to="/mentoring/settings"
-										className="text-sm font-medium text-primary-600 hover:text-primary-500"
+										className="font-medium text-primary-600 text-sm hover:text-primary-500"
 									>
 										Manage Mentor Settings &rarr;
 									</Link>
