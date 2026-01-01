@@ -1,15 +1,15 @@
-import { data, redirect } from "react-router";
 import { useEffect } from "react";
+import { data, redirect } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { KanbanBoard, type KanbanColumnConfig } from "../components";
 import { useRoadmapQuery } from "../hooks/useRoadmapQuery";
-import { useRoadmapStore } from "../stores/roadmap.store";
 import {
 	generateRoadmap,
 	getRoadmap,
 	getUserProfile,
 	hasRoadmap,
 } from "../services/roadmap.server";
+import { useRoadmapStore } from "../stores/roadmap.store";
 import type { Route } from "./+types/index";
 
 // ============================================
@@ -52,7 +52,7 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 	useEffect(() => {
 		console.log("[Page] Initializing store with server tasks:", tasks.length);
 		storeSetTasks(tasks);
-	}, []); // Only on mount - server data is initial source
+	}, [tasks, storeSetTasks]); // Sync with server data on load or revalidation
 
 	// Initialize React Query with SSR data
 	const { data: roadmapData } = useRoadmapQuery({

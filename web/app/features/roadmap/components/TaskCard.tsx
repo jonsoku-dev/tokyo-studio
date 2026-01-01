@@ -1,18 +1,15 @@
-import type { KanbanTask } from "./kanban.types";
+import { KanbanCard } from "~/shared/components/dnd-kanban";
+import type { RoadmapTask } from "../stores/roadmap.store";
 
 interface TaskCardProps {
-	task: KanbanTask;
+	task: RoadmapTask;
 	isDragging?: boolean;
 	isOverlay?: boolean;
 }
 
 export function TaskCard({ task, isDragging, isOverlay }: TaskCardProps) {
 	return (
-		<div
-			className={`rounded-lg border border-gray-200 bg-white p-3 shadow-sm hover:shadow-md transition-shadow${isDragging ? "opacity-50" : ""}
-				${isOverlay ? "shadow-lg" : ""}
-			`}
-		>
+		<KanbanCard isDragging={isDragging} isOverlay={isOverlay}>
 			<div className="space-y-2">
 				<div className="flex items-start justify-between gap-2">
 					<h4 className="heading-5 line-clamp-2 flex-1 text-sm">
@@ -34,6 +31,6 @@ export function TaskCard({ task, isDragging, isOverlay }: TaskCardProps) {
 					)}
 				</div>
 			</div>
-		</div>
+		</KanbanCard>
 	);
 }

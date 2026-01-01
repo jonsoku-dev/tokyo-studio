@@ -94,6 +94,7 @@ export async function updateCustomMarker(input: UpdateCustomMarkerInput) {
 			return { success: false, error: "커스텀 마커를 수정할 권한이 없습니다" };
 		}
 
+		// biome-ignore lint/suspicious/noExplicitAny: Dynamic updates object
 		const updates: any = {};
 		if (input.name !== undefined) updates.name = input.name;
 		if (input.category !== undefined) updates.category = input.category;

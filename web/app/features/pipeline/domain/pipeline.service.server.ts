@@ -1,6 +1,6 @@
 import { db } from "@itcom/db/client";
-import { pipelineItems } from "@itcom/db/schema";
-import { eq } from "drizzle-orm";
+import { pipelineItems, pipelineStages } from "@itcom/db/schema";
+import { asc, eq } from "drizzle-orm";
 import type { PipelineItem, PipelineStatus } from "./pipeline.types";
 
 export const pipelineService = {
@@ -19,10 +19,15 @@ export const pipelineService = {
 		}));
 	},
 
-	updateItemStatus: async (id: string, stage: PipelineStatus) => {
+	updateItemStatus: async (id: string, stage: PipelineStatus, orderIndex?: number) => {
+		const updateData: any = { stage };
+		if (orderIndex !== undefined) {
+			updateData.orderIndex = orderIndex;
+		}
+
 		const [updated] = await db
 			.update(pipelineItems)
-			.set({ stage })
+			.set(updateData)
 			.where(eq(pipelineItems.id, id))
 			.returning();
 		return updated;
@@ -46,5 +51,14 @@ export const pipelineService = {
 			})
 			.returning();
 		return created;
+	},
+
+	getStages: async () => {
+		const stages = await db
+			.select()
+			.from(pipelineStages)
+			.where(eq(pipelineStages.isActive, true))
+			.orderBy(asc(pipelineStages.orderIndex));
+		return stages;
 	},
 };

@@ -1,11 +1,22 @@
 {
     "name": "@itcom/db",
     "version": "1.0.0",
-    "main": "./src/index.ts",
-    "types": "./src/index.ts",
+    "type": "module",
+    "main": "./src/client.ts",
+    "types": "./src/client.ts",
     "exports": {
-        "./schema": "./src/schema.ts",
-        "./client": "./src/client.ts"
+        ".": {
+            "import": "./src/client.ts",
+            "types": "./src/client.ts"
+        },
+        "./schema": {
+            "import": "./src/schema.ts",
+            "types": "./src/schema.ts"
+        },
+        "./client": {
+            "import": "./src/client.ts",
+            "types": "./src/client.ts"
+        }
     },
     "scripts": {
         "typecheck": "tsc --noEmit"

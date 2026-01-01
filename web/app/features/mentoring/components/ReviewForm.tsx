@@ -8,14 +8,11 @@ interface ReviewFormProps {
 	onSuccess?: () => void;
 }
 
-export function ReviewForm({
-	sessionId,
-	mentorName,
-	onSuccess,
-}: ReviewFormProps) {
+export function ReviewForm({ sessionId, mentorName }: ReviewFormProps) {
 	const [rating, setRating] = useState<number>(0);
 	const [hoverRating, setHoverRating] = useState<number>(0);
 	const navigation = useNavigation();
+	// biome-ignore lint/suspicious/noExplicitAny: Action data is dynamic
 	const actionData = useActionData<any>();
 	const isSubmitting = navigation.state === "submitting";
 

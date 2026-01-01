@@ -1,7 +1,7 @@
 import { authenticator } from "~/features/auth/services/auth.server";
 import { createUserSession } from "~/features/auth/utils/session.server";
 import { loaderHandler } from "~/shared/lib";
-import type { Route } from "./+types/api.kakao.callback.server";
+import type { Route } from "./+types/api.kakao.callback";
 
 export const loader = loaderHandler(async ({ request }: Route.LoaderArgs) => {
 	// @ts-expect-error

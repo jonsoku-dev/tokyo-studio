@@ -171,6 +171,7 @@ export async function getApplications(filters?: {
 	limit?: number;
 	offset?: number;
 }) {
+	// biome-ignore lint/suspicious/noExplicitAny: Drizzle conditions are complex
 	const conditions: any[] = [];
 
 	if (filters?.status) {

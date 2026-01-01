@@ -53,7 +53,7 @@ export async function logPasswordResetEvent({
 	eventType,
 	ipAddress,
 	userAgent,
-	metadata,
+	metadata: _metadata,
 }: LogPasswordResetEventParams): Promise<void> {
 	try {
 		await db.insert(passwordResetLogs).values({

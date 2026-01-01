@@ -17,6 +17,7 @@ export type GetLocationsQuery = {
 export async function getLocations(query: GetLocationsQuery) {
 	const { categories, area = "tokyo", search } = query;
 
+	// biome-ignore lint/suspicious/noExplicitAny: Drizzle conditions
 	const whereConditions: any[] = [eq(mapLocations.area, area)];
 
 	if (categories && categories.length > 0) {

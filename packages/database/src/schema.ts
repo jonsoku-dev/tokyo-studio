@@ -94,14 +94,32 @@ export const tasks = pgTable("tasks", {
 export const insertTaskSchema = createInsertSchema(tasks);
 export const selectTaskSchema = createSelectSchema(tasks);
 
+// --- Pipeline Stages (Configurable stages for the hiring pipeline) ---
+export const pipelineStages = pgTable("pipeline_stages", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	name: text("name").notNull().unique(), // "interested", "applied", "interview_1", etc.
+	displayName: text("display_name").notNull(), // "Interested", "Applied", "Interview 1", etc.
+	orderIndex: integer("order_index").notNull(), // Order in kanban board
+	isActive: boolean("is_active").notNull().default(true),
+	color: text("color"), // Optional: color for UI
+	description: text("description"),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertPipelineStageSchema = createInsertSchema(pipelineStages);
+export const selectPipelineStageSchema = createSelectSchema(pipelineStages);
+export type PipelineStage = InferSelectModel<typeof pipelineStages>;
+
 // --- Pipeline Items ---
 export const pipelineItems = pgTable("pipeline_items", {
 	id: uuid("id").primaryKey().defaultRandom(),
 	company: text("company").notNull(),
 	position: text("position").notNull(),
-	stage: text("stage").notNull(), // "applied" | "interview" | "offer" | "rejected"
+	stage: text("stage").notNull(), // References pipelineStages.name
 	date: text("date").notNull(),
 	nextAction: text("next_action"),
+	orderIndex: integer("order_index").notNull().default(0), // Order within stage column
 	userId: uuid("user_id").references(() => users.id),
 	createdAt: timestamp("created_at").defaultNow(),
 	updatedAt: timestamp("updated_at").defaultNow(),

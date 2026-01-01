@@ -3,9 +3,13 @@ import { useLoaderData } from "react-router";
 
 import { requireUserId } from "../../auth/utils/session.server";
 import { AddApplicationModal } from "../components/AddApplicationModal";
-import { KanbanBoard } from "../components/KanbanBoard";
+import { KanbanBoard } from "../components/KanbanBoardWrapper";
 import { pipelineService } from "../domain/pipeline.service.server";
-import type { PipelineItem, PipelineStatus } from "../domain/pipeline.types";
+import type {
+	PipelineItem,
+	PipelineStage,
+	PipelineStatus,
+} from "../domain/pipeline.types";
 
 export function meta() {
 	return [{ title: "Pipeline - Japan IT Job" }];
@@ -13,8 +17,11 @@ export function meta() {
 
 export async function loader({ request }: { request: Request }) {
 	const userId = await requireUserId(request);
-	const items = await pipelineService.getItems(userId);
-	return { items };
+	const [items, stages] = await Promise.all([
+		pipelineService.getItems(userId),
+		pipelineService.getStages(),
+	]);
+	return { items, stages };
 }
 
 export async function action({ request }: { request: Request }) {
@@ -50,7 +57,10 @@ export async function action({ request }: { request: Request }) {
 }
 
 export default function Pipeline() {
-	const { items } = useLoaderData<{ items: PipelineItem[] }>();
+	const { items, stages } = useLoaderData<{
+		items: PipelineItem[];
+		stages: PipelineStage[];
+	}>();
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
 	return (
@@ -66,11 +76,12 @@ export default function Pipeline() {
 				</button>
 			</div>
 
-			<KanbanBoard items={items} />
+			<KanbanBoard items={items} stages={stages} />
 
 			<AddApplicationModal
 				isOpen={isAddModalOpen}
 				onClose={() => setIsAddModalOpen(false)}
+			stages={stages}
 			/>
 		</div>
 	);

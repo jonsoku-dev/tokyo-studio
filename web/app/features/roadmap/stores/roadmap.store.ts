@@ -6,7 +6,7 @@ import type {
 } from "../services/roadmap.server";
 
 // Type for RoadmapTask (copied from schema since it's not exported)
-interface RoadmapTask {
+export interface RoadmapTask {
 	id: string;
 	userId: string;
 	templateId: string | null;
@@ -30,7 +30,11 @@ interface RoadmapStore {
 
 	// Actions
 	setTasks: (tasks: RoadmapTask[]) => void;
-	updateTaskColumn: (taskId: string, column: string, orderIndex?: number) => void;
+	updateTaskColumn: (
+		taskId: string,
+		column: string,
+		orderIndex?: number,
+	) => void;
 	calculateProgress: () => RoadmapProgress;
 	setProgress: (progress: RoadmapProgress) => void;
 	resetStore: () => void;
@@ -109,11 +113,7 @@ export const useRoadmapStore = create<RoadmapStore>()(
 			set({ tasks, progress });
 		},
 
-		updateTaskColumn: (
-			taskId: string,
-			column: string,
-			orderIndex?: number,
-		) => {
+		updateTaskColumn: (taskId: string, column: string, orderIndex?: number) => {
 			console.log(
 				"[Store] updateTaskColumn:",
 				taskId,

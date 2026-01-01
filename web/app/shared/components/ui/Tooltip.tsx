@@ -18,7 +18,9 @@ export function Tooltip({ children }: { children: React.ReactNode }) {
 	const [open, setOpen] = React.useState(false);
 	return (
 		<TooltipContext.Provider value={{ open, setOpen }}>
+			{/* biome-ignore lint/a11y/noStaticElementInteractions: Tooltip hover state management */}
 			<div
+				role="presentation"
 				className="relative flex items-center"
 				onMouseEnter={() => setOpen(true)}
 				onMouseLeave={() => setOpen(false)}
@@ -31,7 +33,7 @@ export function Tooltip({ children }: { children: React.ReactNode }) {
 
 export function TooltipTrigger({
 	children,
-	asChild,
+	asChild: _asChild,
 }: {
 	children: React.ReactNode;
 	asChild?: boolean;
@@ -41,7 +43,7 @@ export function TooltipTrigger({
 
 export function TooltipContent({
 	children,
-	side = "top",
+	side: _side = "top",
 	className,
 }: {
 	children: React.ReactNode;

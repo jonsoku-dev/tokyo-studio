@@ -4,7 +4,7 @@ import { desc, eq } from "drizzle-orm";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { storageService } from "~/features/storage/services/storage.server";
 import { actionHandler, BadRequestError, loaderHandler } from "~/shared/lib";
-import type { Route } from "./+types/api.files.server";
+import type { Route } from "./+types/api.files";
 
 export const loader = loaderHandler(async ({ request }: Route.LoaderArgs) => {
 	const userId = await requireUserId(request);

@@ -1,11 +1,18 @@
-import { Dialog, Transition } from "@headlessui/react";
 import { Loader2, RefreshCw, Sparkles, X } from "lucide-react";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { useFetcher } from "react-router";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "~/shared/components/ui/Dialog";
+import type { PipelineStage } from "../domain/pipeline.types";
 
 interface AddApplicationModalProps {
 	isOpen: boolean;
 	onClose: () => void;
+	stages: PipelineStage[];
 }
 
 /**
@@ -15,10 +22,12 @@ interface AddApplicationModalProps {
  * - Zero useEffect (pure derivation)
  * - Derived state from fetcher.data
  * - Form reset via key prop pattern (remount = fresh state)
+ * - Composition-based using shared Dialog components
  */
 export function AddApplicationModal({
 	isOpen,
 	onClose,
+	stages,
 }: AddApplicationModalProps) {
 	// Key increments on close to reset form state on next open
 	const [formKey, setFormKey] = useState(0);
@@ -29,38 +38,12 @@ export function AddApplicationModal({
 	};
 
 	return (
-		<Transition show={isOpen} as={Fragment}>
-			<Dialog as="div" className="relative z-50" onClose={handleClose}>
-				<Transition.Child
-					as={Fragment}
-					enter="ease-out duration-300"
-					enterFrom="opacity-0"
-					enterTo="opacity-100"
-					leave="ease-in duration-200"
-					leaveFrom="opacity-100"
-					leaveTo="opacity-0"
-				>
-					<div className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
-				</Transition.Child>
-
-				<div className="fixed inset-0 overflow-y-auto">
-					<div className="flex min-h-full items-center justify-center p-4 text-center">
-						<Transition.Child
-							as={Fragment}
-							enter="ease-out duration-300"
-							enterFrom="opacity-0 scale-95"
-							enterTo="opacity-100 scale-100"
-							leave="ease-in duration-200"
-							leaveFrom="opacity-100 scale-100"
-							leaveTo="opacity-0 scale-95"
-						>
-							{/* key forces remount = fresh form state */}
-							<ApplicationForm key={formKey} onClose={handleClose} />
-						</Transition.Child>
-					</div>
-				</div>
-			</Dialog>
-		</Transition>
+		<Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+			{/* key forces remount = fresh form state */}
+			<DialogContent key={formKey}>
+				<ApplicationForm onClose={handleClose} stages={stages} />
+			</DialogContent>
+		</Dialog>
 	);
 }
 
@@ -68,12 +51,18 @@ export function AddApplicationModal({
  * Inner form component - remounts on each modal open via key prop.
  * Zero useEffect - state is fresh on mount, parsed data is derived.
  */
-function ApplicationForm({ onClose }: { onClose: () => void }) {
+function ApplicationForm({
+	onClose,
+	stages,
+}: {
+	onClose: () => void;
+	stages: PipelineStage[];
+}) {
 	// Form state - fresh on each mount
 	const [url, setUrl] = useState("");
 	const [company, setCompany] = useState("");
 	const [position, setPosition] = useState("");
-	const [stage, setStage] = useState("applied");
+	const [stage, setStage] = useState(stages.length > 0 ? stages[0].name : "");
 	const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 	const [nextAction, setNextAction] = useState("");
 
@@ -132,11 +121,9 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 	};
 
 	return (
-		<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-			<div className="mb-4 flex items-center justify-between">
-				<Dialog.Title as="h3" className="heading-5 leading-6">
-					New Application
-				</Dialog.Title>
+		<>
+			<DialogHeader>
+				<DialogTitle>New Application</DialogTitle>
 				<button
 					type="button"
 					onClick={onClose}
@@ -144,9 +131,11 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 				>
 					<X className="h-5 w-5" />
 				</button>
-			</div>
+			</DialogHeader>
 
 			{/* Magic Parser Section */}
+			<div className="mb-6 w-full border-gray-100 border-t" />
+
 			<div className="mb-6">
 				<label
 					htmlFor="magicUrl"
@@ -200,8 +189,6 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 				</p>
 			</div>
 
-			<div className="mb-6 w-full border-gray-100 border-t" />
-
 			{/* Manual Form */}
 			<form onSubmit={handleSubmit} className="stack">
 				<div>
@@ -252,10 +239,11 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 							onChange={(e) => setStage(e.target.value)}
 							className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
 						>
-							<option value="applied">Applied</option>
-							<option value="interview">Interview</option>
-							<option value="offer">Offer</option>
-							<option value="rejected">Rejected</option>
+							{stages.map((s) => (
+								<option key={s.name} value={s.name}>
+									{s.displayName}
+								</option>
+							))}
 						</select>
 					</div>
 					<div>
@@ -305,6 +293,6 @@ function ApplicationForm({ onClose }: { onClose: () => void }) {
 					</button>
 				</div>
 			</form>
-		</Dialog.Panel>
+		</>
 	);
 }

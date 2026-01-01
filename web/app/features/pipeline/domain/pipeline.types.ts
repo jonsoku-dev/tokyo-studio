@@ -30,3 +30,10 @@ export const PipelineItemSchema = selectPipelineItemSchema
 
 export type PipelineItem = z.infer<typeof PipelineItemSchema>;
 export type PipelineStatus = z.infer<typeof PipelineStatusEnum>;
+
+export interface PipelineStage {
+	id: string;
+	name: string;
+	displayName: string;
+	orderIndex: number;
+}

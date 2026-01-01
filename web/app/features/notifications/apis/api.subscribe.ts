@@ -18,7 +18,8 @@ export const action = actionHandler(async ({ request }: ActionFunctionArgs) => {
 
 		console.log("Subscription payload:", subscriptionString); // 디버깅용 로그 추가
 
-		let subscription;
+		// biome-ignore lint/suspicious/noExplicitAny: Subscription data is dynamic
+		let subscription: any;
 		try {
 			subscription = JSON.parse(subscriptionString);
 		} catch (_e) {

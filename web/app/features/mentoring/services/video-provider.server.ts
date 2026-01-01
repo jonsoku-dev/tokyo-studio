@@ -20,7 +20,7 @@ export async function generateMeetingLink(params: {
 	preferredProvider: VideoProvider;
 	manualMeetingUrl?: string;
 }): Promise<GeneratedLink> {
-	const { sessionId, mentorId, preferredProvider, manualMeetingUrl } = params;
+	const { sessionId, preferredProvider, manualMeetingUrl } = params;
 
 	switch (preferredProvider) {
 		case "jitsi":

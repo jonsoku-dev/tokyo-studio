@@ -9,7 +9,7 @@ import {
 import { avatarService } from "../services/avatar.server";
 import { logAvatarChange } from "../services/avatar-logger.server";
 import { checkAvatarUploadRateLimit } from "../services/avatar-rate-limiter.server";
-import type { Route } from "./+types/api.avatar.server";
+import type { Route } from "./+types/api.avatar";
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 

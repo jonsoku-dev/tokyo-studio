@@ -54,6 +54,10 @@ class AvatarUploadRateLimiter {
 	reset(userId: string): void {
 		this.attempts.delete(userId);
 	}
+
+	getTrackedCount(): number {
+		return this.attempts.size;
+	}
 }
 
 // Singleton instance
@@ -86,7 +90,7 @@ export function getAvatarUploadStats(): {
 	windowMs: number;
 } {
 	return {
-		totalTracked: rateLimiter.attempts.size,
+		totalTracked: rateLimiter.getTrackedCount(),
 		maxPerHour: MAX_UPLOADS_PER_HOUR,
 		windowMs: RATE_LIMIT_WINDOW_MS,
 	};

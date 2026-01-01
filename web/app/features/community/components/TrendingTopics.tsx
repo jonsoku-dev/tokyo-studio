@@ -46,6 +46,7 @@ export function TrendingTopics({
 			<div className="stack-sm animate-pulse">
 				{Array.from({ length: 3 }).map((_, i) => (
 					<div
+						// biome-ignore lint/suspicious/noArrayIndexKey: Skeleton loader
 						key={i}
 						className="h-10 rounded-md bg-gray-200 dark:bg-gray-700"
 					/>
@@ -69,6 +70,7 @@ export function TrendingTopics({
 				{topics.map((topic) => (
 					<li key={topic.query}>
 						<button
+							type="button"
 							onClick={() => onSelectTopic?.(topic.query)}
 							className="group w-full rounded-md px-3 py-2 text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
 						>

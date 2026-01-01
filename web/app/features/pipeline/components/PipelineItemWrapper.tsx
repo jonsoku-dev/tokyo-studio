@@ -1,18 +1,20 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { CSSProperties, ReactNode } from "react";
-import type { RoadmapTask } from "../stores/roadmap.store";
 
-interface TaskItemWrapperProps {
-	task: RoadmapTask;
+interface PipelineItemWrapperProps {
+	itemId: string;
 	children?: (isDragging: boolean) => ReactNode;
 }
 
 /**
- * TaskItemWrapper - Wraps a task with dnd-kit's useSortable hook
- * Enables drag-and-drop functionality for individual tasks
+ * PipelineItemWrapper - Wraps an item with dnd-kit's useSortable hook
+ * Enables drag-and-drop functionality for individual items
  */
-export function TaskItemWrapper({ task, children }: TaskItemWrapperProps) {
+export function PipelineItemWrapper({
+	itemId,
+	children,
+}: PipelineItemWrapperProps) {
 	const {
 		attributes,
 		listeners,
@@ -21,7 +23,7 @@ export function TaskItemWrapper({ task, children }: TaskItemWrapperProps) {
 		transition,
 		isDragging,
 	} = useSortable({
-		id: task.id,
+		id: itemId,
 	});
 
 	const style: CSSProperties = {

@@ -74,9 +74,7 @@ export function Navbar() {
 									<p className="truncate font-medium text-gray-900 text-sm">
 										{user.displayName || user.name}
 									</p>
-									<p className="truncate text-gray-500 text-xs">
-										{user.email}
-									</p>
+									<p className="truncate text-gray-500 text-xs">{user.email}</p>
 								</div>
 
 								<div className="py-1">

@@ -41,6 +41,7 @@ export function MapPage() {
 
 				if (response.ok) {
 					// numeric 타입을 number로 변환
+					// biome-ignore lint/suspicious/noExplicitAny: API data is untyped
 					const converted = (data.locations || []).map((loc: any) => ({
 						...loc,
 						latitude: Number(loc.latitude),
@@ -76,6 +77,7 @@ export function MapPage() {
 				const data = await response.json();
 
 				if (response.ok) {
+					// biome-ignore lint/suspicious/noExplicitAny: API data is untyped
 					const converted = (data.locations || []).map((loc: any) => ({
 						...loc,
 						latitude: Number(loc.latitude),
