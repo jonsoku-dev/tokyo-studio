@@ -161,6 +161,7 @@ erDiagram
     Community ||--o{ PostFlair : defines
     Community ||--o{ UserFlair : defines
     Community ||--o{ CommunityRule : has
+    CommunityCategory ||--o{ Community : categorizes
     User ||--o{ CommunityMember : joins
     User ||--o{ Post : authors
     User ||--o{ SavedPost : saves
@@ -174,6 +175,7 @@ erDiagram
         uuid id PK
         string slug UK "korea"
         string name
+        uuid category_id FK "new"
         text description
         jsonb rules "deprecated, use CommunityRule"
         string banner_url
@@ -182,6 +184,15 @@ erDiagram
         uuid created_by FK
         datetime created_at
     }
+
+    CommunityCategory {
+        uuid id PK
+        string slug UK "tech"
+        string name "개발/테크"
+        string icon "Code2"
+        int order_index
+    }
+
 
     CommunityMember {
         uuid id PK

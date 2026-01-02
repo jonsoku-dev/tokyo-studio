@@ -1,4 +1,4 @@
-import { type RouteConfig, index, route } from "@react-router/dev/routes";
+import { index, route, type RouteConfig } from "@react-router/dev/routes";
 
 export default [
     index("features/dashboard/routes/home.tsx"),
@@ -13,6 +13,9 @@ export default [
     route("roadmap/templates/:id", "features/roadmap/routes/template.$id.tsx"),
     route("roadmap/analytics", "features/roadmap/routes/analytics.tsx"),
     route("api/roadmap/preview-targeting", "features/roadmap/apis/api.preview-targeting.ts"),
+
+    // Community Admin
+    route("communities/categories", "features/community/routes/categories.tsx"),
 
     // Admin APIs
     route(

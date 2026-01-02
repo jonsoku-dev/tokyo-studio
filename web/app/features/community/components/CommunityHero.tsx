@@ -2,45 +2,61 @@ import {
 	ContactShadows,
 	Environment,
 	Float,
+	MeshDistortMaterial,
 	PerspectiveCamera,
 	Sparkles,
 } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { motion } from "framer-motion";
+import { useRef, useState } from "react";
 import { Link } from "react-router";
-import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { Group } from "three";
 
 function ConnectedShapes() {
 	const groupRef = useRef<Group>(null);
-	
-	// Brand colors: Primary (Blue), Secondary (Indigo), Accent (Teal)
-	const colors = useMemo(() => ["#2563eb", "#7c3aed", "#0d9488"], []);
+	const [hovered, setHovered] = useState(false);
 	
 	useFrame((state) => {
 		if (groupRef.current) {
-			// Slow, smooth rotation
-			groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.2;
-			groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.15) * 0.1;
+            // Mouse Interaction: Smoothly interpolate rotation based on pointer position
+			const { pointer } = state;
+            const targetRotationY = pointer.x * 0.5; // Look left/right
+            const targetRotationX = -pointer.y * 0.3; // Look up/down
+
+            // Lerp for smooth movement (dampening)
+			groupRef.current.rotation.y = THREE.MathUtils.lerp(
+                groupRef.current.rotation.y,
+                targetRotationY + Math.sin(state.clock.elapsedTime * 0.3) * 0.1, // Add slow ambient breathing
+                0.1
+            );
+			groupRef.current.rotation.x = THREE.MathUtils.lerp(
+                groupRef.current.rotation.x,
+                targetRotationX + Math.sin(state.clock.elapsedTime * 0.2) * 0.05,
+                0.1
+            );
 		}
 	});
 
 	return (
-		<group ref={groupRef} position={[2, 0, 0]} rotation={[0, -0.5, 0]}>
-			{/* Main central shapes */}
-			<Float speed={2} rotationIntensity={0.4} floatIntensity={0.5}>
-				<mesh position={[0, 0, 0]}>
+		<group 
+            ref={groupRef} 
+            position={[2, 0, 0]} 
+            rotation={[0, -0.5, 0]}
+            onPointerOver={() => setHovered(true)}
+            onPointerOut={() => setHovered(false)}
+        >
+			{/* Main central shapes - Distorted for "Alive" feel */}
+			<Float speed={2} rotationIntensity={hovered ? 1 : 0.4} floatIntensity={hovered ? 1 : 0.5}>
+				<mesh position={[0, 0, 0]} scale={hovered ? 1.1 : 1} onPointerOver={() => document.body.style.cursor = 'pointer'} onPointerOut={() => document.body.style.cursor = 'auto'}>
 					<icosahedronGeometry args={[1.2, 0]} />
-					<meshPhysicalMaterial
+					<MeshDistortMaterial
 						color="#2563eb" // Primary Blue
+                        speed={hovered ? 4 : 2} // Faster wobble on hover
+                        distort={0.4} // Liquid effect
+                        radius={1}
 						roughness={0.2}
 						metalness={0.8}
-						clearcoat={1}
-						clearcoatRoughness={0.1}
-						transmission={0.2}
-						opacity={0.8}
-						transparent
 					/>
 				</mesh>
 			</Float>
@@ -48,8 +64,10 @@ function ConnectedShapes() {
 			<Float speed={2.5} rotationIntensity={0.5} floatIntensity={0.4}>
 				<mesh position={[-1.8, 1.2, -1]} scale={0.6}>
 					<octahedronGeometry args={[1, 0]} />
-					<meshStandardMaterial
+					<MeshDistortMaterial
 						color="#7c3aed" // Sidebar Indigo
+                        speed={3}
+                        distort={0.3}
 						roughness={0.1}
 						metalness={0.6}
 						emissive="#7c3aed"
@@ -61,8 +79,10 @@ function ConnectedShapes() {
 			<Float speed={1.8} rotationIntensity={0.6} floatIntensity={0.6}>
 				<mesh position={[1.5, -1, 0.5]} scale={0.5}>
 					<torusKnotGeometry args={[0.8, 0.3, 100, 16]} />
-					<meshStandardMaterial
+					<MeshDistortMaterial
 						color="#0d9488" // Accent Teal
+                        speed={2}
+                        distort={0.2}
 						roughness={0.2}
 						metalness={1}
 					/>
@@ -71,12 +91,13 @@ function ConnectedShapes() {
 
 			{/* Connecting lines or particles effect implies network/community */}
 			<Sparkles
-				count={40}
-				scale={8}
-				size={4}
+				count={60}
+				scale={10}
+				size={6}
 				speed={0.4}
 				opacity={0.6}
 				color="#60a5fa"
+                noise={0.2} 
 			/>
 		</group>
 	);
@@ -84,7 +105,7 @@ function ConnectedShapes() {
 
 function CommunityScene() {
 	return (
-		<Canvas>
+		<Canvas dpr={[1, 2]}>
 			<PerspectiveCamera makeDefault position={[0, 0, 8]} fov={40} />
 			<ambientLight intensity={0.6} />
 			<spotLight
@@ -159,20 +180,7 @@ export function CommunityHero() {
 							같은 목표를 가진 동료들과 경험을 나누고 함께 성장하세요.
 						</p>
 
-						<div className="flex flex-wrap gap-4">
-							<Link
-								to="#all-communities"
-								className="flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 font-bold text-primary-950 shadow-xl shadow-primary-900/20 transition-all hover:scale-105 hover:bg-gray-50 active:scale-95"
-							>
-								커뮤니티 둘러보기
-							</Link>
-							<Link
-								to="#trending"
-								className="flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 font-bold text-white backdrop-blur-md transition-colors hover:bg-white/10"
-							>
-								인기 글 보기
-							</Link>
-						</div>
+
 					</motion.div>
 				</div>
 			</div>

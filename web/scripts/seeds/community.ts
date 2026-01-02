@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import * as schema from "@itcom/db/schema";
 import { count, eq, isNull } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { COMMUNITY_CATEGORIES, seedCommunityCategories } from "./community-categories";
 
 // Default communities to seed
 const DEFAULT_COMMUNITIES = [
@@ -37,19 +38,69 @@ export async function seedCommunity(db: NodePgDatabase<typeof schema>) {
 
 	const adminUserId = "00000000-0000-0000-0000-000000000000";
 
-	// 2. Create or get default communities
+	// 1.5 Seed Categories first
+	await seedCommunityCategories(db);
+	const dbCategories = await db.select().from(schema.communityCategories);
+	const categoryMap = new Map(dbCategories.map((c) => [c.slug, c.id]));
+
+
 	console.log("  📁 Creating default communities...");
 	const communityMap = new Map<string, string>(); // slug -> id
 
-	for (const comm of DEFAULT_COMMUNITIES) {
+    // Generate communities for ALL categories
+    const communitiesList: any[] = [];
+    
+    for (const cat of COMMUNITY_CATEGORIES) {
+        // Always create a main "Hub" community for the category
+        communitiesList.push({
+            slug: cat.slug === "general" ? "general" 
+                 : cat.slug === "tech" ? "tech-general" 
+                 : cat.slug === "career" ? "career-general" 
+                 : cat.slug === "life" ? "life-general" 
+                 : `${cat.slug}-hub`,
+            name: `${cat.name} 허브`,
+            description: `${cat.name}에 대한 모든 이야기를 나누는 메인 공간입니다.`,
+            categorySlug: cat.slug,
+             iconUrl: `https://ui-avatars.com/api/?name=${cat.slug}&background=random`
+        });
+
+        // Add 3-10 random communities per category
+        const numRandom = faker.number.int({ min: 3, max: 10 });
+        for (let i = 0; i < numRandom; i++) {
+            const topic = faker.word.noun();
+            const adjective = faker.word.adjective();
+            const uniqueSlug = `${cat.slug}-${adjective}-${topic}`.toLowerCase();
+            
+             communitiesList.push({
+                slug: uniqueSlug,
+                name: `${topic} 모임`,
+                description: `${cat.name} 분야의 ${topic} 주제에 대해 이야기해보세요. (${adjective})`,
+                categorySlug: cat.slug,
+                iconUrl: `https://ui-avatars.com/api/?name=${topic}&background=random`
+            });
+        }
+    }
+    
+    // Add defaults if not covered (though logic above covers general/tech/life/career hubs)
+    // We can just rely on the hub logic above.
+    // But let's restore specific defaults if they are special.
+    // Actually, just ensuring the "main" defaults exist is good enough.
+
+	for (const comm of communitiesList) {
 		// Check if community already exists
 		const existing = await db
 			.select()
 			.from(schema.communities)
 			.where(eq(schema.communities.slug, comm.slug))
 			.limit(1);
+        
+        const categoryId = categoryMap.get(comm.categorySlug);
 
 		if (existing.length > 0) {
+            // Update category if missing
+            if (!existing[0].categoryId && categoryId) {
+                await db.update(schema.communities).set({ categoryId }).where(eq(schema.communities.id, existing[0].id));
+            }
 			communityMap.set(comm.slug, existing[0].id);
 			console.log(`    ✓ Community "${comm.slug}" already exists`);
 		} else {
@@ -61,6 +112,8 @@ export async function seedCommunity(db: NodePgDatabase<typeof schema>) {
 					description: comm.description,
 					visibility: "public",
 					createdBy: adminUserId,
+                    categoryId: categoryId,
+                    iconUrl: (comm as any).iconUrl || null, 
 				})
 				.returning();
 			communityMap.set(comm.slug, created.id);
@@ -125,7 +178,7 @@ export async function seedCommunity(db: NodePgDatabase<typeof schema>) {
 	await db.delete(schema.communityPosts);
 
 	// 5. Create Posts with community_id
-	const categories = ["general", "qna", "review"];
+	const communitySlugs = Array.from(communityMap.keys());
 	const posts: (typeof schema.communityPosts.$inferSelect)[] = [];
 
 	for (let i = 0; i < 50; i++) {
@@ -136,8 +189,8 @@ export async function seedCommunity(db: NodePgDatabase<typeof schema>) {
 			authorId = randomUser.id;
 		}
 
-		const category = faker.helpers.arrayElement(categories);
-		const communityId = communityMap.get(category);
+		const targetSlug = faker.helpers.arrayElement(communitySlugs);
+		const communityId = communityMap.get(targetSlug);
 		const createdAt = faker.date.past();
 
 		const [post] = await db
@@ -146,7 +199,7 @@ export async function seedCommunity(db: NodePgDatabase<typeof schema>) {
 				communityId: communityId!,
 				title: faker.lorem.sentence(),
 				content: faker.lorem.paragraphs(2),
-				category, // Keep for backward compat
+				category: "general", // Deprecated but required
 				postType: "text",
 				authorId: authorId,
 				upvotes: faker.number.int({ min: 0, max: 100 }),

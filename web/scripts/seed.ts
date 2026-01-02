@@ -5,6 +5,7 @@ import { Pool } from "pg";
 import { seedAuth } from "./seeds/auth";
 import { seedCategories } from "./seeds/categories";
 import { seedCommunity } from "./seeds/community";
+import { seedCommunityCategories } from "./seeds/community-categories";
 import { seedMentoring } from "./seeds/mentoring";
 import { seedPhases } from "./seeds/phases";
 import { seedPipeline } from "./seeds/pipeline";
@@ -42,6 +43,10 @@ export async function seedDatabase() {
 		await db.delete(schema.commentNotifications);
 		await db.delete(schema.communityComments);
 		await db.delete(schema.communityPosts);
+		await db.delete(schema.communityRules);
+		await db.delete(schema.communityMembers);
+		await db.delete(schema.communities);
+		await db.delete(schema.communityCategories);
 
 		await db.delete(schema.settlementReviews);
 		await db.delete(schema.settlementTaskTemplates);
@@ -60,7 +65,7 @@ export async function seedDatabase() {
 		await db.delete(schema.mentors);
 		await db.delete(schema.users);
 
-		// Step 1: Auth
+		// 1. Core Data (Users, Categories)
 		const userId = await seedAuth(db);
 
 		// Step 2: Pipeline

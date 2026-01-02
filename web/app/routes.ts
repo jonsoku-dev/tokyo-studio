@@ -193,7 +193,8 @@ export default [
 		"api/setup-reputation",
 		"features/community/apis/api.setup-reputation.ts",
 	),
-	route("api/vote", "features/community/apis/api.vote.ts"),
+    route("api/communities", "features/community/apis/api.communities.ts"),
+    route("api/vote", "features/community/apis/api.vote.ts"),
 	route("api/community/join", "features/community/apis/api.community.join.ts"),
 	route(
 		"api/notifications/subscribe",

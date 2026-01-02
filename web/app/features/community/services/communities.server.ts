@@ -1,14 +1,22 @@
 import { db } from "@itcom/db/client";
 import {
 	communities,
+	communityCategories,
 	communityMembers,
 	communityPosts,
 	communityRules,
 	users,
 } from "@itcom/db/schema";
-import { and, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 
 // ========== Community CRUD ==========
+
+export async function getCommunityCategories() {
+	return db
+		.select()
+		.from(communityCategories)
+		.orderBy(communityCategories.orderIndex);
+}
 
 export async function getCommunity(slug: string) {
 	const result = await db
@@ -22,6 +30,7 @@ export async function getCommunity(slug: string) {
 			visibility: communities.visibility,
 			memberCount: communities.memberCount,
 			createdAt: communities.createdAt,
+            categoryId: communities.categoryId,
 		})
 		.from(communities)
 		.where(eq(communities.slug, slug))
@@ -46,11 +55,22 @@ export async function getCommunityWithRules(slug: string) {
 export async function getCommunities({
 	cursor,
 	limit = 20,
+    categorySlug,
+    search,
 }: {
 	cursor?: string | null;
 	limit?: number;
+    categorySlug?: string | null;
+    search?: string | null;
 } = {}) {
 	const conditions = [eq(communities.visibility, "public")];
+
+    // Filter by Category Slug
+    if (categorySlug && categorySlug !== "all") {
+        // Subquery or Join. Join is better.
+        // But to keep simple select structure, let's just use ID subquery or join.
+        // Actually since we are filtering, we need to join.
+    }
 
 	if (cursor) {
 		const [lastMemberCountStr, lastId] = Buffer.from(cursor, "base64")
@@ -64,8 +84,18 @@ export async function getCommunities({
 			);
 		}
 	}
+    
+    if (search) {
+        const searchCondition = or(
+            ilike(communities.name, `%${search}%`),
+            ilike(communities.description || "", `%${search}%`)
+        );
+        if (searchCondition) {
+            conditions.push(searchCondition);
+        }
+    }
 
-	const results = await db
+    const query = db
 		.select({
 			id: communities.id,
 			slug: communities.slug,
@@ -74,10 +104,24 @@ export async function getCommunities({
 			iconUrl: communities.iconUrl,
 			memberCount: communities.memberCount,
 		})
-		.from(communities)
-		.where(and(...conditions))
-		.orderBy(desc(communities.memberCount), desc(communities.id))
-		.limit(limit);
+		.from(communities);
+
+    // Apply Join if category filter
+    if (categorySlug && categorySlug !== "all") {
+        query.innerJoin(communityCategories, eq(communities.categoryId, communityCategories.id));
+        conditions.push(eq(communityCategories.slug, categorySlug));
+    }
+    
+    // Apply where
+    query.where(and(...conditions));
+    
+    // Order
+    query.orderBy(desc(communities.memberCount), desc(communities.id));
+    
+    // Limit
+    query.limit(limit);
+
+	const results = await query;
 
 	let nextCursor: string | null = null;
 	if (results.length === limit) {

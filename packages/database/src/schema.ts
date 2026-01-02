@@ -270,6 +270,21 @@ export const selectMentorAvailabilitySlotSchema = createSelectSchema(
 );
 
 // --- Communities (Subreddit-style) ---
+export const communityCategories = pgTable("community_categories", {
+	id: uuid("id").primaryKey().defaultRandom(),
+	slug: text("slug").notNull().unique(), // "tech", "life", "career"
+	name: text("name").notNull(), // "개발/테크", "일본생활"
+	icon: text("icon").notNull(), // Lucide icon name or emoji
+	orderIndex: integer("order_index").default(0).notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertCommunityCategorySchema =
+	createInsertSchema(communityCategories);
+export const selectCommunityCategorySchema =
+	createSelectSchema(communityCategories);
+export type CommunityCategory = InferSelectModel<typeof communityCategories>;
+
 export const communities = pgTable(
 	"communities",
 	{
@@ -281,6 +296,10 @@ export const communities = pgTable(
 		iconUrl: text("icon_url"),
 		visibility: text("visibility").default("public").notNull(), // "public", "restricted", "private"
 		memberCount: integer("member_count").default(0).notNull(),
+		
+        // New: Category FK
+        categoryId: uuid("category_id").references(() => communityCategories.id),
+
 		createdBy: uuid("created_by").references(() => users.id),
 		createdAt: timestamp("created_at").defaultNow().notNull(),
 		updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -753,10 +772,21 @@ export const communitiesRelations = relations(communities, ({ one, many }) => ({
 		fields: [communities.createdBy],
 		references: [users.id],
 	}),
+	category: one(communityCategories, {
+		fields: [communities.categoryId],
+		references: [communityCategories.id],
+	}),
 	members: many(communityMembers),
 	rules: many(communityRules),
 	posts: many(communityPosts),
 }));
+
+export const communityCategoriesRelations = relations(
+	communityCategories,
+	({ many }) => ({
+		communities: many(communities),
+	}),
+);
 
 export const communityMembersRelations = relations(
 	communityMembers,
