@@ -1,0 +1,23 @@
+name: Notification Queue Processor
+
+on:
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  process-queue:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Process Notification Queue
+        run: |
+          curl -X POST "${{ secrets.APP_URL }}/api/notifications/process-queue" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "maxBatch=100&dryRun=false"
+        
+      - name: Log Result
+        if: always()
+        run: echo "Queue processing completed at $(date)"

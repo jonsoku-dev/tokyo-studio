@@ -17,22 +17,17 @@ sw.addEventListener("activate", (event) => {
 });
 
 // Push event - Handle incoming push notifications
-sw.addEventListener("push", (event) => {
-	console.log("[Service Worker] Push received");
+self.addEventListener("push", (event) => {
+	console.log("[Service Worker] Push event received");
 
-	let data = {};
+	// Parse data from push notification
+	const data = event.data ? event.data.json() : {};
+	console.log("[Service Worker] Push data:", data);
 
-	try {
-		data = event.data ? event.data.json() : {};
-	} catch (error) {
-		console.error("[Service Worker] Error parsing push data:", error);
-		data = {
-			title: "New Notification",
-			body: "You have a new notification",
-		};
-	}
-
+	// Notification content
 	const title = data.title || "ITCOM Notification";
+	const isGrouped = data.grouped === true;
+
 	const options = {
 		body: data.body || "You have a new update.",
 		icon: data.icon || "/icon-192x192.png",
@@ -40,14 +35,20 @@ sw.addEventListener("push", (event) => {
 		data: {
 			url: data.url || "/",
 			timestamp: Date.now(),
+			grouped: isGrouped,
 		},
+		// For grouped notifications, require interaction
+		requireInteraction: isGrouped || data.requireInteraction || false,
 		vibrate: [200, 100, 200],
-		tag: data.tag || "notification",
-		requireInteraction: false,
 		actions: data.actions || [],
+		// Grouped notifications use a special tag for management
+		tag: isGrouped ? `grouped-${data.type || "notification"}` : data.tag,
 	};
 
-	event.waitUntil(sw.registration.showNotification(title, options));
+	// Show notification
+	const showPromise = self.registration.showNotification(title, options);
+
+	event.waitUntil(showPromise);
 });
 
 // Notification click event

@@ -580,6 +580,76 @@ export const insertNotificationQueueSchema =
 export const selectNotificationQueueSchema =
 	createSelectSchema(notificationQueue);
 
+// --- Notification Event Log (Analytics) ---
+export const notificationEventLog = pgTable(
+	"notification_event_log",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		userId: uuid("user_id")
+			.references(() => users.id, { onDelete: "cascade" })
+			.notNull(),
+		notificationId: text("notification_id"), // Composite key: type:eventId
+		type: text("type").notNull(), // "community.reply", "mentoring.session_reminder", etc.
+		event: text("event").notNull(), // "sent", "delivered", "clicked", "dismissed", "failed"
+		errorMessage: text("error_message"),
+		metadata: jsonb("metadata"), // Extra context (e.g., delivery time, failure reason)
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+	},
+	(table) => ({
+		userTypeIdx: index("notification_event_log_user_type_idx").on(
+			table.userId,
+			table.type,
+		),
+		createdAtIdx: index("notification_event_log_created_at_idx").on(
+			table.createdAt,
+		),
+	}),
+);
+
+export const insertNotificationEventLogSchema = createInsertSchema(
+	notificationEventLog,
+);
+export const selectNotificationEventLogSchema = createSelectSchema(
+	notificationEventLog,
+);
+
+// --- Notification Groupings (Batching) ---
+export const notificationGroupings = pgTable(
+	"notification_groupings",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		userId: uuid("user_id")
+			.references(() => users.id, { onDelete: "cascade" })
+			.notNull(),
+		type: text("type").notNull(),
+		groupKey: text("group_key").notNull(), // e.g., "comment:parent-id"
+		notificationIds: jsonb("notification_ids")
+			.$type<string[]>()
+			.default([])
+			.notNull(),
+		count: integer("count").default(0).notNull(),
+		windowStart: timestamp("window_start").defaultNow().notNull(),
+		windowEnd: timestamp("window_end").notNull(),
+		sentAt: timestamp("sent_at"),
+		status: text("status").default("pending").notNull(), // "pending", "sent"
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+	},
+	(table) => ({
+		statusWindowIdx: index("notification_groupings_status_window_idx").on(
+			table.status,
+			table.windowEnd,
+		),
+	}),
+);
+
+export const insertNotificationGroupingsSchema = createInsertSchema(
+	notificationGroupings,
+);
+export const selectNotificationGroupingsSchema = createSelectSchema(
+	notificationGroupings,
+);
+
+
 // --- Profiles (Diagnosis) ---
 export const profiles = pgTable("profiles", {
 	id: uuid("id").primaryKey().defaultRandom(),
@@ -588,12 +658,24 @@ export const profiles = pgTable("profiles", {
 	jpLevel: text("jp_level").notNull(), // "N1", "N2", "N3", "None"
 	enLevel: text("en_level").notNull(), // "Business", "Conversational", "Basic"
 	targetCity: text("target_city").default("Tokyo"),
+	// v2.0 LLM Context Fields
+	techStack: jsonb("tech_stack").$type<string[]>().default([]),
+	hardConstraints: jsonb("hard_constraints")
+		.$type<{
+			degree?: "bachelor" | "associate" | "none";
+			visaStatus?: "none" | "student" | "working" | "spouse" | "hsp";
+		}>()
+		.default({}),
+	workValues: jsonb("work_values").$type<string[]>().default([]),
+	careerTimeline: text("career_timeline"), // "ASAP", "3M", "1Y"
+	residence: text("residence").default("KR"), // "KR", "JP", "Other"
+	concerns: jsonb("concerns").$type<string[]>().default([]),
 	bio: text("bio"),
 	slug: text("slug").unique(),
 	website: text("website"),
 	linkedinUrl: text("linkedin_url"),
 	githubUrl: text("github_url"),
-	userId: uuid("user_id").references(() => users.id),
+	userId: uuid("user_id").references(() => users.id).unique(),
 	// Document Integration: Featured portfolio document
 	portfolioDocumentId: uuid("portfolio_document_id").references(
 		() => documents.id,
@@ -1643,14 +1725,6 @@ export const settlementTaskTemplates = pgTable("settlement_task_templates", {
 	dayOffset: integer("day_offset"), // Nullable: Floating within Phase. Positive/Negative relative to anchor.
 	isRequired: boolean("is_required").default(false).notNull(),
 
-	// Extra fields from legacy
-	requiredDocuments: jsonb("required_documents").$type<string[]>().default([]),
-	estimatedMinutes: integer("estimated_minutes").default(60),
-	timePhase: text("time_phase"), // Legacy support? Or derive from timingRule?
-	tips: text("tips"),
-	officialUrl: text("official_url"),
-	formTemplateUrl: text("form_template_url"),
-
 	orderIndex: integer("order_index").default(0).notNull(),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 	updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -1900,3 +1974,126 @@ export const customMarkersRelations = relations(customMarkers, ({ one }) => ({
 		references: [users.id],
 	}),
 }));
+
+// --- House Ads (Advertisement System) ---
+export const houseAds = pgTable(
+	"house_ads",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		title: text("title").notNull(),
+		description: text("description").notNull(),
+		imageUrl: text("image_url"),
+		ctaText: text("cta_text").notNull(), // Call-to-action text
+		ctaUrl: text("cta_url").notNull(), // Target URL
+		
+		// Placement & Targeting
+		placement: text("placement").notNull(), // 'sidebar', 'feed-top', 'feed-middle', 'inline'
+		targetCategories: jsonb("target_categories").$type<string[]>(), // ['frontend', 'backend']
+		targetPages: jsonb("target_pages").$type<string[]>(), // ['dashboard', 'pipeline']
+		
+		// Ad Management
+		weight: integer("weight").default(1).notNull(), // For weighted random selection
+		status: text("status").default("active").notNull(), // 'active', 'paused', 'archived'
+		startDate: timestamp("start_date").notNull(),
+		endDate: timestamp("end_date").notNull(),
+		
+		// Analytics
+		impressions: integer("impressions").default(0).notNull(),
+		clicks: integer("clicks").default(0).notNull(),
+		
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	},
+	(table) => ({
+		placementIdx: index("house_ads_placement_idx").on(table.placement),
+		statusIdx: index("house_ads_status_idx").on(table.status),
+		dateRangeIdx: index("house_ads_date_range_idx").on(
+			table.startDate,
+			table.endDate,
+		),
+	}),
+);
+
+export const insertHouseAdSchema = createInsertSchema(houseAds);
+export const selectHouseAdSchema = createSelectSchema(houseAds);
+export type HouseAd = InferSelectModel<typeof houseAds>;
+
+// --- Widget Configurations (Dashboard Customization) - SPEC-026 ---
+export const widgetConfigurations = pgTable(
+	"widget_configurations",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		userId: uuid("user_id")
+			.references(() => users.id, { onDelete: "cascade" })
+			.notNull()
+			.unique(), // One configuration per user
+
+		// Widget layout stored as JSONB array for flexibility
+		widgets: jsonb("widgets").notNull().$type<WidgetLayout[]>(),
+
+		// Metadata
+		lastUpdatedAt: timestamp("last_updated_at").defaultNow().notNull(),
+		version: integer("version").default(1).notNull(), // For schema migrations
+
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+	},
+	(table) => ({
+		userIdx: uniqueIndex("widget_configurations_user_idx").on(table.userId),
+	}),
+);
+
+export const insertWidgetConfigurationSchema =
+	createInsertSchema(widgetConfigurations);
+export const selectWidgetConfigurationSchema =
+	createSelectSchema(widgetConfigurations);
+export type WidgetConfiguration = InferSelectModel<
+	typeof widgetConfigurations
+>;
+
+// TypeScript types for widget system
+export interface WidgetLayout {
+	id: WidgetId;
+	order: number; // 0-based index for sorting
+	visible: boolean;
+	size: "compact" | "standard" | "expanded";
+	column?: 1 | 2; // For desktop 2-column layout (undefined for mobile)
+}
+
+export type WidgetId =
+	| "journey-progress"
+	| "priority-actions"
+	| "roadmap-snapshot"
+	| "pipeline-overview"
+	| "mentor-sessions"
+	| "settlement-checklist"
+	| "community-highlights"
+	| "document-hub"
+	| "notifications-center"
+	| "mentor-application";
+
+export type JourneyStage =
+	| "newcomer"
+	| "learner"
+	| "applicant"
+	| "settlement"
+	| "contributor";
+
+// Widget metadata for UI rendering
+export interface WidgetMetadata {
+	id: WidgetId;
+	name: string;
+	description: string;
+	icon: string; // Lucide React icon name
+	defaultSize: WidgetLayout["size"];
+	minSize: WidgetLayout["size"];
+	maxSize: WidgetLayout["size"];
+	// Optional visibility condition
+	visibilityCondition?: (context: {
+		hasProfile: boolean;
+		hasApplications: boolean;
+		hasSessions: boolean;
+		hasArrivalDate: boolean;
+		hasMentorApplication: boolean;
+	}) => boolean;
+}
+

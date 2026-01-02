@@ -5,7 +5,7 @@ import { Pool } from "pg";
 import { seedAuth } from "./seeds/auth";
 import { seedCategories } from "./seeds/categories";
 import { seedCommunity } from "./seeds/community";
-import { seedCommunityCategories } from "./seeds/community-categories";
+import { seedHouseAds } from "./seeds/house-ads";
 import { seedMentoring } from "./seeds/mentoring";
 import { seedPhases } from "./seeds/phases";
 import { seedPipeline } from "./seeds/pipeline";
@@ -63,6 +63,7 @@ export async function seedDatabase() {
 		await db.delete(schema.mentorApplications);
 		await db.delete(schema.mentorProfiles);
 		await db.delete(schema.mentors);
+		await db.delete(schema.houseAds); // Clear house ads
 		await db.delete(schema.users);
 
 		// 1. Core Data (Users, Categories)
@@ -86,6 +87,9 @@ export async function seedDatabase() {
 
 		// Step 5: Mentoring
 		await seedMentoring(db, userId);
+
+		// Step 6: House Ads
+		await seedHouseAds(db);
 
 		console.log("✅ Database seeding completed successfully!");
 		console.log("📊 Test user email: test@example.com");

@@ -223,6 +223,14 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 										Manage Mentor Settings &rarr;
 									</Link>
 								</div>
+								<div>
+									<Link
+										to="/onboarding/assessment"
+										className="font-medium text-primary-600 text-sm hover:text-primary-500"
+									>
+										Update Career Assessment &rarr;
+									</Link>
+								</div>
 							</div>
 						</dl>
 					</div>

@@ -14,10 +14,10 @@ interface VoteControlProps {
 
 /**
  * VoteControl - Global Action Implemenation
- * 
+ *
  * Uses React Router's useFetcher to submit to the global '/api/vote' action.
  * React Router AUTOMATICALLY revalidates all loaders on the page after a fetcher action completes.
- * 
+ *
  * Flow:
  * 1. User clicks
  * 2. fetcher.submit() -> POST /api/vote
@@ -42,7 +42,7 @@ export function VoteControl({
 
 	// Optimistic UI (optional, but good for responsiveness)
 	// We can rely on props for the source of truth, but use formData for immediate feedback
-	const optimisticVote = isSubmitting 
+	const optimisticVote = isSubmitting
 		? Number.parseInt(fetcher.formData?.get("value") as string, 10)
 		: currentVote;
 
@@ -72,9 +72,13 @@ export function VoteControl({
 					disabled={isSubmitting}
 					className={cn(
 						"flex items-center justify-center transition-all focus:outline-none focus:ring-0",
-						horizontal ? "h-full w-9 hover:bg-gray-100" : "h-7 w-full hover:bg-gray-50",
-						(isSubmitting) && "cursor-not-allowed opacity-50",
-						isUpvoted ? "text-orange-600" : "text-gray-400 hover:text-orange-600",
+						horizontal
+							? "h-full w-9 hover:bg-gray-100"
+							: "h-7 w-full hover:bg-gray-50",
+						isSubmitting && "cursor-not-allowed opacity-50",
+						isUpvoted
+							? "text-orange-600"
+							: "text-gray-400 hover:text-orange-600",
 					)}
 					aria-label={isUpvoted ? "Remove upvote" : "Upvote"}
 					aria-pressed={isUpvoted}
@@ -86,7 +90,7 @@ export function VoteControl({
 							// Adjusted sizes for Thumbs icon (slightly smaller than Arrows to look balanced)
 							size === "sm" ? "h-3.5 w-3.5" : "h-4.5 w-4.5",
 							isUpvoted ? "fill-current" : "fill-transparent",
-							"stroke-[2px]"
+							"stroke-[2px]",
 						)}
 					/>
 				</button>
@@ -95,11 +99,11 @@ export function VoteControl({
 			{/* Score (Read-only) */}
 			<span
 				className={cn(
-					"flex min-w-[1.5rem] items-center justify-center font-bold text-sm tabular-nums cursor-default select-none",
+					"flex min-w-[1.5rem] cursor-default select-none items-center justify-center font-bold text-sm tabular-nums",
 					horizontal ? "h-full px-1.5" : "w-full py-0",
 					isUpvoted && "text-orange-600",
 					isDownvoted && "text-blue-600",
-					!isUpvoted && !isDownvoted && "text-gray-700"
+					!isUpvoted && !isDownvoted && "text-gray-700",
 				)}
 			>
 				{currentScore}
@@ -116,8 +120,10 @@ export function VoteControl({
 					disabled={isSubmitting}
 					className={cn(
 						"flex items-center justify-center transition-all focus:outline-none focus:ring-0",
-						horizontal ? "h-full w-9 hover:bg-gray-100" : "h-7 w-full hover:bg-gray-50",
-						(isSubmitting) && "cursor-not-allowed opacity-50",
+						horizontal
+							? "h-full w-9 hover:bg-gray-100"
+							: "h-7 w-full hover:bg-gray-50",
+						isSubmitting && "cursor-not-allowed opacity-50",
 						isDownvoted ? "text-blue-600" : "text-gray-400 hover:text-blue-600",
 					)}
 					aria-label={isDownvoted ? "Remove downvote" : "Downvote"}
@@ -129,7 +135,7 @@ export function VoteControl({
 							"transition-transform active:scale-90",
 							size === "sm" ? "h-3.5 w-3.5" : "h-4.5 w-4.5",
 							isDownvoted ? "fill-current" : "fill-transparent",
-							"stroke-[2px]"
+							"stroke-[2px]",
 						)}
 					/>
 				</button>

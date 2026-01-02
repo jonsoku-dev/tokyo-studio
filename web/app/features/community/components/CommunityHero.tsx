@@ -169,8 +169,8 @@ export function CommunityHero() {
 			</div>
 
 			{/* Content - Positioned with z-index to sit on top of 3D, but 3D is visible on the right */}
-			<div className="relative z-10 w-full max-w-7xl px-8 py-20 lg:px-12 lg:py-24 pointer-events-none">
-				<div className="max-w-2xl pointer-events-auto">
+			<div className="pointer-events-none relative z-10 w-full max-w-7xl px-8 py-20 lg:px-12 lg:py-24">
+				<div className="pointer-events-auto max-w-2xl">
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
@@ -179,7 +179,7 @@ export function CommunityHero() {
 						<span className="mb-4 inline-block rounded-full border border-primary-400/30 bg-primary-500/10 px-4 py-1.5 font-medium text-primary-200 text-sm backdrop-blur-md">
 							Japan IT Job Community
 						</span>
-						<h1 className="mb-6 font-bold text-4xl text-white leading-tight tracking-tight lg:text-5xl drop-shadow-lg">
+						<h1 className="mb-6 font-bold text-4xl text-white leading-tight tracking-tight drop-shadow-lg lg:text-5xl">
 							함께 성장하는 <br />
 							<span className="bg-gradient-to-r from-primary-300 via-secondary-300 to-accent-300 bg-clip-text text-transparent">
 								IT 전문가 커뮤니티

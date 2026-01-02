@@ -13,6 +13,8 @@
 		"db:push": "drizzle-kit push",
 		"db:generate": "drizzle-kit generate",
 		"db:studio": "drizzle-kit studio",
+		"notifications:process": "node -e \"require('node-fetch').default('http://localhost:5173/api/notifications/process-queue', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.CRON_SECRET, 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'maxBatch=100&dryRun=false' }).then(r => r.json()).then(console.log).catch(console.error)\"",
+		"notifications:process:dry": "node -e \"require('node-fetch').default('http://localhost:5173/api/notifications/process-queue', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.CRON_SECRET, 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'maxBatch=100&dryRun=true' }).then(r => r.json()).then(console.log).catch(console.error)\"",
 		"db:seed": "tsx scripts/seed.ts"
 	},
 	"dependencies": {
@@ -44,8 +46,11 @@
 		"framer-motion": "^12.23.26",
 		"immer": "^11.1.3",
 		"isbot": "^5.1.31",
+		"jspdf": "^3.0.4",
 		"lucide-react": "^0.562.0",
+		"modern-screenshot": "^4.6.7",
 		"nanoid": "^5.1.6",
+		"node-fetch": "^3.3.2",
 		"pdf-lib": "^1.17.1",
 		"pdfjs-dist": "^5.4.449",
 		"pg": "^8.16.3",

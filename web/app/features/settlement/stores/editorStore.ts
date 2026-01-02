@@ -74,12 +74,7 @@ export const useEditorStore = create<EditorState>()(
 					dayOffset,
 					orderIndex: maxOrder + 1,
 					description: null,
-					requiredDocuments: null,
 					isRequired: false,
-					formTemplateUrl: null,
-					timePhase: null, // Legacy types
-					officialUrl: null, // Legacy types -> Schema defines them as nullable, so null is valid.
-					tips: null, // Legacy types
 					createdAt: new Date(),
 					updatedAt: new Date(),
 					slug: null,
@@ -88,7 +83,6 @@ export const useEditorStore = create<EditorState>()(
 					titleEn: null, // Wait, Schema doesn't have titleEn for TaskTemplate?
 					instructionsKo: null,
 					instructionsJa: null,
-					estimatedMinutes: 60,
 				} as unknown as SettlementTaskTemplate); // Casting because immer draft vs actual type checks can be tricky with partials, but actually better to just fill mandatory fields.
 				state.isDirty = true;
 			}),

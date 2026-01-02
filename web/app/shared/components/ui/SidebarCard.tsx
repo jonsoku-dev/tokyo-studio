@@ -66,7 +66,7 @@ export function SidebarCard({
 	...props
 }: SidebarCardProps) {
 	const classes = cn(sidebarCardVariants({ variant }), className);
-	
+
 	if (asDiv) {
 		return (
 			<div className={classes} {...props}>
@@ -74,7 +74,7 @@ export function SidebarCard({
 			</div>
 		);
 	}
-	
+
 	return (
 		<section className={classes} {...props}>
 			{children}
@@ -213,7 +213,10 @@ export function SidebarCardFooter({
 
 	return (
 		<div
-			className={cn("border-t border-gray-100 bg-gray-50/50 px-4 py-3", className)}
+			className={cn(
+				"border-gray-100 border-t bg-gray-50/50 px-4 py-3",
+				className,
+			)}
 			{...props}
 		>
 			{children}

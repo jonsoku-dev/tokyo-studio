@@ -5,6 +5,9 @@
 @import "./styles/typography.css";
 @import "./styles/layout.css";
 
+/* Advertisement System */
+@import "./features/ads/components/core/AdCardCore.css";
+
 /*
   =============================================================================
   Japan IT Job Platform - Design System
@@ -567,5 +570,53 @@
 		@variant dark {
 			background-color: var(--color-gray-800);
 		}
+	}
+}
+
+/* =============================================================================
+   @media print - Print-specific styles for diagnosis report
+   
+   Usage: The .printable-area class marks the content to be printed.
+   Everything else (header, navigation, footer) is hidden during print.
+   ============================================================================= */
+@media print {
+	/* Reset page margins for clean A4 output */
+	@page {
+		size: A4;
+		margin: 10mm;
+	}
+
+	/* Hide everything by default */
+	body > * {
+		display: none !important;
+	}
+
+	/* Show only the printable area */
+	body > .printable-area,
+	.printable-area {
+		display: block !important;
+	}
+
+	/* Ensure printable content fills the page */
+	.printable-area {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+		background: white !important;
+		box-shadow: none !important;
+	}
+
+	/* Remove background colors for better print quality */
+	* {
+		-webkit-print-color-adjust: exact !important;
+		print-color-adjust: exact !important;
+	}
+
+	/* Hide elements with print:hidden class (Tailwind already supports this) */
+	.print\\:hidden {
+		display: none !important;
 	}
 }

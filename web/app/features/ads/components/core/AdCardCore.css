@@ -1,0 +1,263 @@
+/* ============================================================================
+   Ad Card Core - Shared Styles
+   ============================================================================ */
+
+/* ============================================================================
+   Ad Image Specifications (CSS Variables)
+   Source of Truth: web/app/features/ads/docs/ad-image-specs.md
+   ============================================================================ */
+
+:root {
+	/* Feed Placement (16:9) */
+	--ad-feed-aspect-ratio: 16 / 9;
+	--ad-feed-max-height: 280px;
+	--ad-feed-recommended-width: 1280px;
+	--ad-feed-recommended-height: 720px;
+
+	/* Sidebar Placement (4:5) */
+	--ad-sidebar-aspect-ratio: 4 / 5;
+	--ad-sidebar-max-height: 460px;
+	--ad-sidebar-recommended-width: 400px;
+	--ad-sidebar-recommended-height: 500px;
+
+	/* Inline Placement (16:9) */
+	--ad-inline-aspect-ratio: 16 / 9;
+	--ad-inline-max-height: 160px;
+	--ad-inline-recommended-width: 800px;
+	--ad-inline-recommended-height: 450px;
+
+	/* Square Placement (1:1) */
+	--ad-square-aspect-ratio: 1 / 1;
+	--ad-square-recommended-size: 600px;
+}
+
+@layer components {
+	/* Base Card */
+	.ad-card-core {
+		/* Spacing: Minimum 12px to prevent accidental clicks */
+		margin-block: var(--spacing-3, 0.75rem);
+		padding: var(--spacing-4, 1rem);
+
+		/* Visual */
+		background: var(--color-white);
+		border: 1px solid var(--color-gray-200);
+		border-radius: var(--radius-lg, 0.5rem);
+		box-shadow: var(--shadow-sm);
+
+		/* Transitions */
+		transition:
+			box-shadow 0.2s ease-out,
+			border-color 0.2s ease-out;
+
+		/* Dark mode */
+		@media (prefers-color-scheme: dark) {
+			background: var(--color-gray-900);
+			border-color: var(--color-gray-800);
+		}
+	}
+
+	/* Header */
+	.ad-card-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: var(--spacing-3, 0.75rem);
+		gap: var(--spacing-2, 0.5rem);
+	}
+
+	.ad-card-header__left {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-2, 0.5rem);
+		flex: 1;
+	}
+
+	.ad-card-header__right {
+		flex-shrink: 0;
+	}
+
+	/* Label - CRITICAL for Google Ads Policy */
+	.ad-label {
+		display: inline-block;
+		padding: 0.125rem 0.5rem;
+		font-size: 0.75rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.025em;
+		color: var(--color-gray-600);
+		background: var(--color-gray-100);
+		border-radius: var(--radius-sm, 0.25rem);
+
+		@media (prefers-color-scheme: dark) {
+			color: var(--color-gray-400);
+			background: var(--color-gray-800);
+		}
+	}
+
+	/* Title */
+	.ad-card-title {
+		margin: 0;
+		font-size: 0.875rem;
+		font-weight: 500;
+		color: var(--color-gray-700);
+
+		@media (prefers-color-scheme: dark) {
+			color: var(--color-gray-300);
+		}
+	}
+
+	/* Body */
+	.ad-card-body {
+		position: relative;
+		overflow: hidden;
+
+		/* Default minimum height to prevent CLS */
+		min-height: 150px;
+	}
+
+	/* Footer */
+	.ad-card-footer {
+		margin-top: var(--spacing-3, 0.75rem);
+		padding-top: var(--spacing-3, 0.75rem);
+		border-top: 1px solid var(--color-gray-200);
+		font-size: 0.75rem;
+		color: var(--color-gray-500);
+
+		@media (prefers-color-scheme: dark) {
+			border-top-color: var(--color-gray-800);
+			color: var(--color-gray-500);
+		}
+	}
+
+	/* ============================================================================
+     Layout Presets
+     ============================================================================ */
+
+	/* Sidebar Layout */
+	.ad-card-core--sidebar {
+		width: 100%;
+		/* Removed max-width to allow full sidebar width */
+
+		.ad-card-body {
+			min-height: 400px;
+			max-height: 500px; /* Container height including padding */
+		}
+
+		/* Constrain images in sidebar ads - uses CSS variables */
+		.ad-card-body img {
+			max-height: var(--ad-sidebar-max-height);
+			width: 100%;
+			object-fit: cover;
+			object-position: center;
+			aspect-ratio: var(--ad-sidebar-aspect-ratio);
+		}
+	}
+
+	/* Feed Layout */
+	.ad-card-core--feed {
+		width: 100%;
+		max-width: 100%;
+
+		.ad-card-body {
+			min-height: 200px;
+			max-height: 320px; /* Container height including padding */
+		}
+
+		/* Constrain images in feed ads - uses CSS variables */
+		.ad-card-body img {
+			max-height: var(--ad-feed-max-height);
+			width: 100%;
+			object-fit: cover;
+			object-position: center;
+			aspect-ratio: var(--ad-feed-aspect-ratio);
+		}
+	}
+
+	/* Inline Layout */
+	.ad-card-core--inline {
+		width: 100%;
+
+		.ad-card-body {
+			min-height: 150px;
+			max-height: 200px;
+		}
+
+		/* Constrain images in inline ads - uses CSS variables */
+		.ad-card-body img {
+			max-height: var(--ad-inline-max-height);
+			width: 100%;
+			object-fit: cover;
+			aspect-ratio: var(--ad-inline-aspect-ratio);
+		}
+	}
+
+	/* ============================================================================
+     Safety Guards
+     ============================================================================ */
+
+	/* Spacing from navigation */
+	nav + .ad-card-core,
+	[role="navigation"] + .ad-card-core {
+		margin-top: var(--spacing-6, 1.5rem);
+	}
+
+	/* Spacing from CTA buttons */
+	.ad-card-core:has(+ button[type="submit"]),
+	.ad-card-core:has(+ .cta-button) {
+		margin-bottom: var(--spacing-6, 1.5rem);
+	}
+
+	/* ============================================================================
+     States
+     ============================================================================ */
+
+	/* Loading State */
+	.ad-card-body--loading {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--color-gray-50);
+
+		@media (prefers-color-scheme: dark) {
+			background: var(--color-gray-800);
+		}
+	}
+
+	/* Empty State */
+	.ad-card-body--empty {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--color-gray-400);
+		font-size: 0.875rem;
+	}
+
+	/* Error State */
+	.ad-card-body--error {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: var(--spacing-2, 0.5rem);
+		color: var(--color-red-600);
+		font-size: 0.875rem;
+
+		@media (prefers-color-scheme: dark) {
+			color: var(--color-red-400);
+		}
+	}
+}
+
+/* ============================================================================
+   Utilities
+   ============================================================================ */
+
+@layer utilities {
+	.ad-safe-spacing {
+		margin-block: var(--spacing-3, 0.75rem);
+	}
+
+	.ad-safe-spacing-nav {
+		margin-bottom: var(--spacing-6, 1.5rem);
+	}
+}

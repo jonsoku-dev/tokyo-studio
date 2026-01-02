@@ -1,7 +1,15 @@
 import { motion } from "framer-motion";
-import { Check, ChevronLeft, Flag, MoreHorizontal, Settings, Share2 } from "lucide-react";
+import {
+	Check,
+	ChevronLeft,
+	Flag,
+	MoreHorizontal,
+	Settings,
+	Share2,
+} from "lucide-react";
 import { Link, Outlet, useFetcher, useLoaderData } from "react-router";
 import { toast } from "sonner";
+import { getHouseAd } from "~/features/ads/services/ads.server";
 import {
 	Dropdown,
 	DropdownContent,
@@ -29,14 +37,18 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 		throw new Response("Community not found", { status: 404 });
 	}
 
-	const isJoined = await hasJoined(userId, community.id);
-	const userRole = await getUserRole(userId, community.id);
+	const [isJoined, userRole, sidebarAdResponse] = await Promise.all([
+		hasJoined(userId, community.id),
+		getUserRole(userId, community.id),
+		getHouseAd("sidebar", { category: "community", page: "detail" }),
+	]);
 
 	return {
 		community,
 		isJoined,
 		userRole,
 		currentUserId: userId,
+		sidebarAd: sidebarAdResponse.success ? sidebarAdResponse.ad : null,
 	};
 }
 
@@ -51,7 +63,7 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export default function CommunityLayout() {
-	const { community, isJoined, userRole, currentUserId } =
+	const { community, isJoined, userRole, currentUserId, sidebarAd } =
 		useLoaderData<typeof loader>();
 	const fetcher = useFetcher();
 
@@ -200,7 +212,9 @@ export default function CommunityLayout() {
 									{isOwner && (
 										<>
 											<DropdownSeparator />
-											<DropdownLink to={`/communities/${community.slug}/settings`}>
+											<DropdownLink
+												to={`/communities/${community.slug}/settings`}
+											>
 												<Settings className="h-4 w-4" />
 												커뮤니티 설정
 											</DropdownLink>
@@ -238,6 +252,7 @@ export default function CommunityLayout() {
 								isJoined={optimisticJoined}
 								userRole={userRole}
 								currentUserId={currentUserId}
+								sidebarAd={sidebarAd ?? null}
 							/>
 						</div>
 					</div>

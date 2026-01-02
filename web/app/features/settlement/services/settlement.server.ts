@@ -26,8 +26,6 @@ export interface TaskWithCompletion {
 	title: string;
 	description: string;
 
-	requiredDocuments: string[];
-	estimatedMinutes: number;
 	category: string;
 	// timePhase removed - use timingRule and DB phases
 
@@ -36,9 +34,6 @@ export interface TaskWithCompletion {
 	phaseId?: string | null;
 	dayOffset: number | null; // Added
 
-	tips: string | null;
-	officialUrl: string | null;
-	formTemplateUrl: string | null;
 	orderIndex: number;
 	isCompleted: boolean;
 	completedAt: Date | null;
@@ -81,15 +76,10 @@ export const settlementService = {
 				title: task.titleKo,
 				description: task.instructionsKo,
 
-				requiredDocuments: task.requiredDocuments,
-				estimatedMinutes: task.estimatedMinutes,
 				category: task.category,
 
-				timePhase: task.timePhase,
 				dayOffset: task.deadlineDays ?? 0,
 
-				tips: task.tips,
-				officialUrl: task.officialUrl,
 				orderIndex: task.orderIndex,
 			})),
 		);
@@ -308,8 +298,6 @@ export const settlementService = {
 				title: task.title ?? "Untitled",
 				description: task.description ?? "",
 
-				requiredDocuments: (task.requiredDocuments as string[]) || [],
-				estimatedMinutes: task.estimatedMinutes ?? 60,
 				category: task.category,
 				// timePhase removed
 
@@ -318,9 +306,6 @@ export const settlementService = {
 				phaseId: task.phaseId,
 				dayOffset: task.dayOffset,
 
-				tips: task.tips,
-				officialUrl: task.officialUrl,
-				formTemplateUrl: task.formTemplateUrl,
 				orderIndex: task.orderIndex,
 
 				isCompleted: !!completion,

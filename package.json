@@ -1,4 +1,8 @@
 {
+	"scripts": {
+		"db:push": "pnpm --filter @itcom/db exec drizzle-kit push",
+		"db:studio": "pnpm --filter @itcom/db exec drizzle-kit studio"
+	},
 	"dependencies": {
 		"@googlemaps/js-api-loader": "^2.0.2",
 		"@types/google.maps": "^3.58.1"

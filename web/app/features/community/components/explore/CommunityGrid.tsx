@@ -18,7 +18,7 @@ interface CommunityGridProps {
 	nextCursor?: string | null;
 	loadMore?: () => void;
 	isLoadingMore?: boolean;
-    search?: string;
+	search?: string;
 }
 
 const containerVariants = {
@@ -42,7 +42,7 @@ export function CommunityGrid({
 	nextCursor,
 	loadMore,
 	isLoadingMore,
-    search,
+	search,
 }: CommunityGridProps) {
 	if (communities.length === 0) {
 		return <CommunityEmptyState search={search} />;
@@ -66,9 +66,13 @@ export function CommunityGrid({
 							variants={itemVariants}
 							initial="hidden"
 							animate="show"
-                            layout
+							layout
 						>
-							<CommunityCard community={community} isJoined={isJoined} isOwner={isOwner} />
+							<CommunityCard
+								community={community}
+								isJoined={isJoined}
+								isOwner={isOwner}
+							/>
 						</motion.div>
 					);
 				})}

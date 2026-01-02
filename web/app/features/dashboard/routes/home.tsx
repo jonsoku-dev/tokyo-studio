@@ -3,6 +3,7 @@ import { AnimatePresence } from "framer-motion";
 import { useLoaderData } from "react-router";
 import { requireUserId } from "../../auth/utils/session.server";
 import { applicationService } from "../../mentoring/services/application.server";
+import { profileService } from "../../onboarding/domain/profile.service.server";
 import { JobCard } from "../components/JobCard";
 import { MentorApplicationStatus } from "../components/MentorApplicationStatus";
 import { TaskCard } from "../components/TaskCard";
@@ -26,7 +27,12 @@ export async function loader({ request }: { request: Request }) {
 	const jobs = await dashboardService.getRecommendedJobs();
 	const mentorApplication =
 		await applicationService.getApplicationStatus(userId);
-	return { tasks, jobs, mentorApplication };
+
+	// Check if user has completed onboarding assessment
+	const profile = await profileService.getProfile(userId);
+	const hasProfile = profile !== undefined;
+
+	return { tasks, jobs, mentorApplication, hasProfile };
 }
 
 export async function action({ request }: { request: Request }) {
@@ -40,16 +46,39 @@ export async function action({ request }: { request: Request }) {
 }
 
 export default function Home() {
-	const { tasks, jobs, mentorApplication } = useLoaderData<{
+	const { tasks, jobs, mentorApplication, hasProfile } = useLoaderData<{
 		tasks: DashboardTask[];
 		jobs: JobRecommendation[];
 		mentorApplication?: SelectMentorApplication | null;
+		hasProfile: boolean;
 	}>();
 
 	return (
 		<div className="stack-md">
 			{/* 3D Welcome Hero */}
 			<WelcomeHero />
+
+			{/* Onboarding CTA - Show only if user hasn't completed assessment */}
+			{!hasProfile && (
+				<div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary-600 to-amber-500 p-8 text-white shadow-lg">
+					<div className="relative z-10">
+						<h2 className="heading-3 mb-2">Get Your Personalized Roadmap</h2>
+						<p className="mb-4 text-primary-50">
+							Complete a 3-minute career assessment to unlock your customized
+							action plan for landing a job in Japan.
+						</p>
+						<a
+							href="/onboarding/assessment"
+							className="inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 font-bold text-primary-600 transition-all hover:bg-gray-50 hover:shadow-md"
+						>
+							Start Assessment →
+						</a>
+					</div>
+					{/* Decorative elements */}
+					<div className="absolute top-0 right-0 -mt-20 -mr-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+					<div className="absolute bottom-0 left-0 -mb-20 -ml-20 h-64 w-64 rounded-full bg-black/10 blur-3xl" />
+				</div>
+			)}
 
 			{/* Mentor Application Status Widget */}
 			<MentorApplicationStatus application={mentorApplication} />

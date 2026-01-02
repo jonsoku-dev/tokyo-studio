@@ -1,5 +1,5 @@
-import { Compass, Search, type LucideIcon } from "lucide-react";
 import * as LucideIcons from "lucide-react";
+import { Compass, type LucideIcon, Search } from "lucide-react";
 import { Form, Link, useSearchParams } from "react-router";
 import { cn } from "~/shared/utils/cn";
 
@@ -19,7 +19,7 @@ export function CommunityFilterBar({ categories }: CommunityFilterBarProps) {
 
 	// Resolve Icon
 	const getIcon = (iconName: string): LucideIcon => {
-		// @ts-ignore - Dynamic access
+		// @ts-expect-error - Dynamic access
 		return LucideIcons[iconName] || Compass;
 	};
 
@@ -32,18 +32,18 @@ export function CommunityFilterBar({ categories }: CommunityFilterBarProps) {
 	return (
 		<div className="space-y-6">
 			{/* Search Bar */}
-			<Form method="get" className="relative group">
-				<Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-500 transition-colors" />
+			<Form method="get" className="group relative">
+				<Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-primary-500" />
 				<input
 					type="text"
 					name="q"
 					defaultValue={searchParams.get("q") ?? ""}
 					placeholder="커뮤니티 검색..."
-					className="w-full rounded-2xl border-none bg-white py-4 pl-12 pr-24 shadow-sm ring-1 ring-gray-200 transition-all placeholder:text-gray-400 focus:ring-2 focus:ring-primary-500"
+					className="w-full rounded-2xl border-none bg-white py-4 pr-24 pl-12 shadow-sm ring-1 ring-gray-200 transition-all placeholder:text-gray-400 focus:ring-2 focus:ring-primary-500"
 				/>
 				<button
 					type="submit"
-					className="absolute right-2 top-1/2 -translate-y-1/2 rounded-xl bg-primary-600 px-4 py-2 font-bold text-white text-sm shadow-md transition-all hover:bg-primary-700 hover:shadow-lg active:scale-95"
+					className="absolute top-1/2 right-2 -translate-y-1/2 rounded-xl bg-primary-600 px-4 py-2 font-bold text-sm text-white shadow-md transition-all hover:bg-primary-700 hover:shadow-lg active:scale-95"
 				>
 					검색
 				</button>
@@ -72,7 +72,7 @@ export function CommunityFilterBar({ categories }: CommunityFilterBarProps) {
 							to={cat.slug === "all" ? "." : `?category=${cat.slug}`}
 							preventScrollReset
 							className={cn(
-								"flex items-center gap-2 rounded-full px-5 py-2.5 font-bold text-sm shadow-sm transition-all whitespace-nowrap",
+								"flex items-center gap-2 whitespace-nowrap rounded-full px-5 py-2.5 font-bold text-sm shadow-sm transition-all",
 								isActive
 									? "bg-primary-600 text-white shadow-primary-500/20 ring-2 ring-primary-600"
 									: "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50 hover:text-primary-600",

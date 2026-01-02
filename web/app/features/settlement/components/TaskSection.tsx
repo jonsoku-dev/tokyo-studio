@@ -1,13 +1,5 @@
 import type { SettlementCategory } from "@itcom/db/schema";
-import {
-	Check,
-	ChevronDown,
-	ChevronRight,
-	Clock,
-	Download,
-	ExternalLink,
-	FileText,
-} from "lucide-react";
+import { Check, ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import type { TaskWithCompletion } from "../services/settlement.server";
 
@@ -199,12 +191,6 @@ function TaskCard({ task, arrivalDate, categories, onToggle }: TaskCardProps) {
 
 					{/* Meta Info */}
 					<div className="caption mt-2 flex flex-wrap items-center gap-3">
-						<span className="flex items-center gap-1">
-							<Clock className="h-3 w-3" />
-							{task.estimatedMinutes >= 60
-								? `${Math.floor(task.estimatedMinutes / 60)}시간`
-								: `${task.estimatedMinutes}분`}
-						</span>
 						{deadlineDate && (
 							<span
 								className={`flex items-center gap-1 ${isUrgent ? "font-medium text-red-600" : ""}`}
@@ -240,56 +226,8 @@ function TaskCard({ task, arrivalDate, categories, onToggle }: TaskCardProps) {
 								<p className="mt-1 text-gray-500">{task.instructionsJa}</p>
 							</div>
 
-							{/* Required Documents */}
-							{task.requiredDocuments.length > 0 && (
-								<div>
-									<h4 className="mb-1 flex items-center gap-1 font-semibold text-gray-700">
-										<FileText className="h-4 w-4" /> 필요 서류
-									</h4>
-									<ul className="list-inside list-disc text-gray-600">
-										{task.requiredDocuments.map((doc) => (
-											<li key={doc}>{doc}</li>
-										))}
-									</ul>
-								</div>
-							)}
-
-							{/* Tips */}
-							{task.tips && (
-								<div className="rounded-lg bg-yellow-50 p-3">
-									<p className="text-yellow-800">💡 {task.tips}</p>
-								</div>
-							)}
-
 							{/* Action Buttons */}
-							<div className="flex flex-wrap gap-3 pt-2">
-								{/* Form Template Download (P2) */}
-								{task.formTemplateUrl && (
-									<a
-										href={task.formTemplateUrl}
-										target="_blank"
-										rel="noopener noreferrer"
-										download
-										className="inline-flex items-center gap-2 rounded-lg bg-accent-600 px-4 py-2 font-medium text-sm text-white transition-colors hover:bg-accent-700"
-									>
-										<Download className="h-4 w-4" />
-										양식 다운로드
-									</a>
-								)}
-
-								{/* Official URL */}
-								{task.officialUrl && (
-									<a
-										href={task.officialUrl}
-										target="_blank"
-										rel="noopener noreferrer"
-										className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 font-medium text-gray-700 text-sm transition-colors hover:bg-gray-50"
-									>
-										<ExternalLink className="h-4 w-4" />
-										공식 사이트
-									</a>
-								)}
-							</div>
+							{/* Removed legacy actions */}
 						</div>
 					)}
 				</div>

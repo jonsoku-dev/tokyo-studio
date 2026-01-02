@@ -15,7 +15,11 @@ export interface CommunityCardProps {
 	isOwner?: boolean;
 }
 
-export function CommunityCard({ community, isJoined, isOwner }: CommunityCardProps) {
+export function CommunityCard({
+	community,
+	isJoined,
+	isOwner,
+}: CommunityCardProps) {
 	const fetcher = useFetcher();
 	const isSubmitting = fetcher.state !== "idle";
 
@@ -52,7 +56,7 @@ export function CommunityCard({ community, isJoined, isOwner }: CommunityCardPro
 							className="h-full w-full object-cover"
 						/>
 					) : (
-						<div className="flex h-full w-full items-center justify-center font-bold text-gray-400 text-base">
+						<div className="flex h-full w-full items-center justify-center font-bold text-base text-gray-400">
 							{community.name.charAt(0).toUpperCase()}
 						</div>
 					)}
@@ -60,16 +64,16 @@ export function CommunityCard({ community, isJoined, isOwner }: CommunityCardPro
 
 				{/* Content */}
 				<div className="min-w-0 flex-1">
-					<h3 className="truncate font-bold text-sm text-gray-900 group-hover:underline">
+					<h3 className="truncate font-bold text-gray-900 text-sm group-hover:underline">
 						{community.name}
 					</h3>
-					<div className="flex items-center gap-2 text-xs text-gray-500">
+					<div className="flex items-center gap-2 text-gray-500 text-xs">
 						<span className="font-medium">
 							{community.memberCount.toLocaleString()} members
 						</span>
 					</div>
 					{community.description && (
-						<p className="line-clamp-1 truncate text-gray-400 text-xs mt-0.5">
+						<p className="mt-0.5 line-clamp-1 truncate text-gray-400 text-xs">
 							{community.description}
 						</p>
 					)}
@@ -88,7 +92,7 @@ export function CommunityCard({ community, isJoined, isOwner }: CommunityCardPro
 						"ml-2 shrink-0 rounded-full px-3 py-1 font-bold text-xs transition-colors disabled:opacity-50",
 						joined
 							? "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-							: "bg-black text-white hover:bg-gray-800"
+							: "bg-black text-white hover:bg-gray-800",
 					)}
 				>
 					{joined ? "Joined" : "Join"}

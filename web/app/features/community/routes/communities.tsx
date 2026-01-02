@@ -1,5 +1,7 @@
 import { Search } from "lucide-react";
 import { Form, useLoaderData } from "react-router";
+import { AdSlot } from "~/features/ads/components";
+import { getHouseAd } from "~/features/ads/services/ads.server";
 
 import { getUserId } from "../../auth/utils/session.server";
 import { CommunityHero } from "../components/CommunityHero";
@@ -32,13 +34,15 @@ export async function loader({ request }: Route.LoaderArgs) {
 			search,
 			myCommunities,
 			communities: searchResults.communities,
+			feedAd: null, // No ad in search mode
 		};
 	}
 
 	// Case 2: Explore Mode (Categorized)
-	const [categories, recommended] = await Promise.all([
+	const [categories, recommended, feedAdResponse] = await Promise.all([
 		getCommunityCategories(),
 		getCommunities({ limit: 6, categorySlug: undefined }), // Top Overall
+		getHouseAd("feed-middle", { category: "community", page: "explore" }),
 	]);
 
 	const categoryGroups = await Promise.all(
@@ -61,6 +65,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 		myCommunities,
 		recommended: recommended.communities,
 		categoryGroups,
+		feedAd: feedAdResponse.success ? feedAdResponse.ad : null,
 	};
 }
 
@@ -78,20 +83,20 @@ export default function Communities() {
 
 			<div className="mx-auto mt-8 max-w-7xl px-4 lg:px-8">
 				<div className="grid gap-8 lg:grid-cols-12">
-					<div className="space-y-12 lg:col-span-12 min-w-0">
+					<div className="min-w-0 space-y-12 lg:col-span-12">
 						{/* Search Bar */}
-						<Form method="get" className="relative group mb-12">
-							<Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-500 transition-colors" />
+						<Form method="get" className="group relative mb-12">
+							<Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-primary-500" />
 							<input
 								type="text"
 								name="q"
 								defaultValue={data.search || ""}
 								placeholder="Find your community..."
-								className="w-full rounded-2xl border-none bg-white py-4 pl-12 pr-24 shadow-sm ring-1 ring-gray-200 transition-all placeholder:text-gray-400 focus:ring-2 focus:ring-primary-500"
+								className="w-full rounded-2xl border-none bg-white py-4 pr-24 pl-12 shadow-sm ring-1 ring-gray-200 transition-all placeholder:text-gray-400 focus:ring-2 focus:ring-primary-500"
 							/>
 							<button
 								type="submit"
-								className="absolute right-2 top-1/2 -translate-y-1/2 rounded-xl bg-primary-600 px-6 py-2 font-bold text-white text-sm shadow-md transition-all hover:bg-primary-700 hover:shadow-lg active:scale-95"
+								className="absolute top-1/2 right-2 -translate-y-1/2 rounded-xl bg-primary-600 px-6 py-2 font-bold text-sm text-white shadow-md transition-all hover:bg-primary-700 hover:shadow-lg active:scale-95"
 							>
 								Search
 							</button>
@@ -100,7 +105,7 @@ export default function Communities() {
 						{data.mode === "search" ? (
 							/* Search Results */
 							<div className="space-y-6">
-								<h2 className="font-bold text-gray-900 text-xl px-2 border-l-4 border-primary-500">
+								<h2 className="border-primary-500 border-l-4 px-2 font-bold text-gray-900 text-xl">
 									Search Results for "{data.search}"
 								</h2>
 								<CommunityGrid
@@ -115,7 +120,7 @@ export default function Communities() {
 								{data.recommended.length > 0 && (
 									<section className="space-y-6">
 										<div className="flex items-center justify-between px-2">
-											<h2 className="font-bold text-gray-900 text-xl border-l-4 border-primary-500 pl-3">
+											<h2 className="border-primary-500 border-l-4 pl-3 font-bold text-gray-900 text-xl">
 												Recommended for you
 											</h2>
 										</div>
@@ -123,6 +128,15 @@ export default function Communities() {
 											communities={data.recommended}
 											myCommunities={myCommunities}
 										/>
+										{/* House Ad - Feed Placement */}
+										<div className="mt-8">
+											<AdSlot
+												provider="house"
+												placement="feed-middle"
+												layout="feed"
+												ad={data.feedAd}
+											/>
+										</div>
 									</section>
 								)}
 

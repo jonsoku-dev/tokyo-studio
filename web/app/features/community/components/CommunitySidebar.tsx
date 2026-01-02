@@ -12,6 +12,8 @@ import {
 	Users,
 } from "lucide-react";
 import { Link, useFetcher, useLocation } from "react-router";
+import { AdSlot } from "~/features/ads/components";
+import type { HouseAdCreative } from "~/features/ads/components/types";
 import { OwnerBadge } from "~/shared/components/ui/OwnerBadge";
 import {
 	SidebarCard,
@@ -43,6 +45,7 @@ interface CommunitySidebarProps {
 	isJoined: boolean;
 	userRole: string | null;
 	currentUserId: string | null;
+	sidebarAd: HouseAdCreative | null;
 }
 
 export function CommunitySidebar({
@@ -50,6 +53,7 @@ export function CommunitySidebar({
 	isJoined,
 	userRole,
 	currentUserId,
+	sidebarAd,
 }: CommunitySidebarProps) {
 	const fetcher = useFetcher();
 	const location = useLocation();
@@ -84,7 +88,7 @@ export function CommunitySidebar({
 									className="h-full w-full object-cover"
 								/>
 							) : (
-								<div className="flex h-full w-full items-center justify-center font-bold text-xl text-primary-400">
+								<div className="flex h-full w-full items-center justify-center font-bold text-primary-400 text-xl">
 									{community.name.charAt(0).toUpperCase()}
 								</div>
 							)}
@@ -227,16 +231,13 @@ export function CommunitySidebar({
 				</SidebarCard>
 			)}
 
-			{/* Google Ads Slot (Mock) */}
-			<SidebarCard className="p-1" aria-label="Advertisement">
-				<div className="flex h-[200px] w-full flex-col items-center justify-center rounded-2xl bg-gray-50">
-					<span className="mb-2 font-bold text-[10px] text-gray-300 uppercase tracking-widest">
-						Sponsored
-					</span>
-					<div className="h-24 w-24 rounded-lg bg-gray-200/50" />
-					<span className="mt-3 text-gray-400 text-xs">Google Ads Space</span>
-				</div>
-			</SidebarCard>
+			{/* House Ad Slot */}
+			<AdSlot
+				provider="house"
+				placement="sidebar"
+				layout="sidebar"
+				ad={sidebarAd}
+			/>
 
 			{/* Mod Tools - Only for moderators and owner */}
 			{isModerator && (

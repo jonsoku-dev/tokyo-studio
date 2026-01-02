@@ -88,7 +88,7 @@ export const COMMUNITY_CATEGORIES = [
 		icon: "Banknote",
 		orderIndex: 22,
 	},
-    {
+	{
 		slug: "language",
 		name: "일본어 학습",
 		icon: "Languages",
@@ -96,26 +96,26 @@ export const COMMUNITY_CATEGORIES = [
 	},
 
 	// Hobbies & Interests
-    {
+	{
 		slug: "gaming",
 		name: "게임/취미",
 		icon: "Gamepad2",
 		orderIndex: 30,
 	},
-    {
+	{
 		slug: "gadgets",
 		name: "장비/데스크셋업",
 		icon: "Headphones",
 		orderIndex: 31,
 	},
-    {
+	{
 		slug: "travel",
 		name: "여행/맛집",
 		icon: "Plane",
 		orderIndex: 32,
 	},
 
-    // General
+	// General
 	{
 		slug: "general",
 		name: "자유게시판",

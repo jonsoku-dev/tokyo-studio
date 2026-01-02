@@ -11,7 +11,6 @@ import {
 } from "@itcom/db/schema";
 import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { emailService } from "~/features/auth/services/email.server";
-import { pushService } from "~/features/notifications/services/push.server";
 import type {
 	CreateBookingDTO,
 	MentorFilters,
@@ -224,12 +223,28 @@ export const mentoringService = {
 				});
 
 				// 5. Send Push Notification to Mentor
-				await pushService.sendPushNotification(mentor.id, {
-					title: "New Session Booking",
-					body: `${mentee.name} has booked a session with you on ${new Date(
-						session.date,
-					).toLocaleDateString()}`,
-					url: `/mentoring/bookings`,
+				const { notificationOrchestrator } = await import(
+					"~/features/notifications/services/orchestrator.server"
+				);
+
+				await notificationOrchestrator.trigger({
+					type: "mentoring.new_booking",
+					userId: mentor.id,
+					payload: {
+						title: "New Session Booking",
+						body: `${mentee.name} has booked a session with you on ${new Date(
+							session.date,
+						).toLocaleDateString()}`,
+						url: "/mentoring/bookings",
+						icon: "/icons/calendar.png",
+					},
+					metadata: {
+						sessionId: session.id,
+						menteeId: mentee.id,
+						menteeName: mentee.name,
+						mentorId: mentor.id,
+						eventId: session.id,
+					},
 				});
 			}
 

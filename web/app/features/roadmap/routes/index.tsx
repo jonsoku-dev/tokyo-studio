@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { data, redirect } from "react-router";
+import { data, Link, redirect } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { KanbanBoard, type KanbanColumnConfig } from "../components";
 import { useRoadmapQuery } from "../hooks/useRoadmapQuery";
@@ -18,11 +18,11 @@ import type { Route } from "./+types/index";
 export async function loader({ request }: Route.LoaderArgs) {
 	const userId = await requireUserId(request);
 
-	// Check if user has a profile (completed diagnosis)
+	// Check if user has a profile (completed onboarding assessment)
 	const profile = await getUserProfile(userId);
 
 	if (!profile) {
-		return redirect("/diagnosis");
+		return redirect("/onboarding/assessment");
 	}
 
 	// Check if user has a roadmap
@@ -104,6 +104,20 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 							<p className="sm:caption mt-1 font-medium text-xs">
 								{profile.jobFamily} · {profile.level} · 일본어 {profile.jpLevel}
 							</p>
+							<div className="mt-1 flex items-center gap-2">
+								<Link
+									to="/onboarding/result"
+									className="rounded-full bg-primary-100 px-2 py-0.5 font-medium text-primary-700 text-xs transition-colors hover:bg-primary-200"
+								>
+									진단 결과
+								</Link>
+								<Link
+									to="/onboarding/assessment"
+									className="rounded-full bg-gray-100 px-2 py-0.5 font-medium text-gray-600 text-xs transition-colors hover:bg-gray-200"
+								>
+									진단 수정
+								</Link>
+							</div>
 						</div>
 						<div className="flex items-center gap-4">
 							{/* Progress */}

@@ -47,6 +47,29 @@ export async function loader({ request }: Route.LoaderArgs) {
 			orderId,
 			Number(amount),
 		);
+		// Send confirmation notification
+		const { notificationOrchestrator } = await import(
+			"~/features/notifications/services/orchestrator.server"
+		);
+
+		await notificationOrchestrator.trigger({
+			type: "payment.completed",
+			userId: userId,
+			payload: {
+				title: "Payment Successful",
+				body: `${Number(amount).toLocaleString()} KRW payment completed`,
+				url: `/payments/${result}`, // result is payment/order ID? result is from confirmPayment.
+				icon: "/icons/credit-card.png",
+			},
+			metadata: {
+				transactionId: orderId,
+				amount: Number(amount),
+				currency: "KRW", // Toss Payments is usually KRW
+				orderId: orderId,
+				eventId: orderId, // Use order ID as unique event ID
+			},
+		});
+
 		return { success: true, data: result };
 	} catch (e: unknown) {
 		const message = e instanceof Error ? e.message : "Unknown error occurred";

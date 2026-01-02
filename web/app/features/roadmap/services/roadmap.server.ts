@@ -116,7 +116,9 @@ export async function generateRoadmap(
 	// Get user profile
 	const profile = await getUserProfile(userId);
 	if (!profile) {
-		throw new Error("User profile not found. Complete diagnosis first.");
+		throw new Error(
+			"User profile not found. Complete onboarding assessment first.",
+		);
 	}
 
 	// Get matching templates

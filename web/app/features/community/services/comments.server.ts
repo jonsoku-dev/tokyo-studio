@@ -4,10 +4,10 @@ import {
 	commentReports,
 	commentVotes,
 	communityComments,
+	communityPosts,
 	users,
 } from "@itcom/db/schema";
 import { and, asc, desc, eq, gt, lt, or, sql } from "drizzle-orm";
-import { pushService } from "~/features/notifications/services/push.server";
 
 import type { CommentWithAuthor, InsertComment } from "./types";
 
@@ -66,7 +66,7 @@ class CommentsService {
 		if (data.parentId) {
 			const parent = await db.query.communityComments.findFirst({
 				where: eq(communityComments.id, data.parentId),
-				columns: { authorId: true },
+				columns: { authorId: true, id: true },
 			});
 
 			// Notify parent author if it's not self-reply
@@ -79,11 +79,41 @@ class CommentsService {
 					type: "reply",
 				});
 
-				// Send Push Notification
-				await pushService.sendPushNotification(parent.authorId, {
-					title: "New Reply",
-					body: "Someone replied to your comment.",
-					url: `/community/${data.postId}`,
+				// Get additional data for notification
+				const post = await db.query.communityPosts.findFirst({
+					// biome-ignore lint/style/noNonNullAssertion: Guaranteed by logic
+					where: eq(communityPosts.id, data.postId!),
+					with: { community: { columns: { slug: true } } },
+				});
+
+				const author = await db.query.users.findFirst({
+					where: eq(users.id, data.authorId!),
+					columns: { name: true },
+				});
+
+				// Trigger notification via orchestrator
+				const { notificationOrchestrator } = await import(
+					"~/features/notifications/services/orchestrator.server"
+				);
+
+				await notificationOrchestrator.trigger({
+					type: "community.reply",
+					userId: parent.authorId,
+					payload: {
+						title: "New Reply",
+						body: `${author?.name || "Someone"} replied to your comment`,
+						url: `/communities/${post?.community?.slug}?highlight=${comment.id}`,
+						icon: "/icons/comment.png",
+					},
+					metadata: {
+						postId: data.postId ?? undefined,
+						commentId: comment.id,
+						parentId: parent.id,
+						actorId: data.authorId!,
+						authorName: author?.name || "Someone",
+						communitySlug: post?.community?.slug || "",
+						eventId: comment.id,
+					},
 				});
 			}
 		}
@@ -109,11 +139,40 @@ class CommentsService {
 						type: "mention",
 					});
 
-					// Send Push Notification
-					await pushService.sendPushNotification(profile.userId, {
-						title: "New Mention",
-						body: "You were mentioned in a comment.",
-						url: `/community/${data.postId}`,
+					// Get additional data for notification
+					const post = await db.query.communityPosts.findFirst({
+						// biome-ignore lint/style/noNonNullAssertion: Guaranteed by logic
+						where: eq(communityPosts.id, data.postId!),
+						with: { community: { columns: { slug: true } } },
+					});
+
+					const author = await db.query.users.findFirst({
+						where: eq(users.id, data.authorId!),
+						columns: { name: true },
+					});
+
+					// Trigger notification via orchestrator
+					const { notificationOrchestrator } = await import(
+						"~/features/notifications/services/orchestrator.server"
+					);
+
+					await notificationOrchestrator.trigger({
+						type: "community.mention",
+						userId: profile.userId,
+						payload: {
+							title: "New Mention",
+							body: `${author?.name || "Someone"} mentioned you in a comment`,
+							url: `/communities/${post?.community?.slug}?highlight=${comment.id}`,
+							icon: "/icons/at-sign.png",
+						},
+						metadata: {
+							postId: data.postId ?? undefined,
+							commentId: comment.id,
+							actorId: data.authorId!,
+							authorName: author?.name || "Someone",
+							communitySlug: post?.community?.slug || "",
+							eventId: comment.id,
+						},
 					});
 				}
 			}

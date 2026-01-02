@@ -6,7 +6,6 @@ import {
 	users,
 } from "@itcom/db/schema";
 import { and, desc, eq } from "drizzle-orm";
-import { pushService } from "~/features/notifications/services/push.server";
 
 type InsertMentorReview = typeof mentorReviews.$inferInsert;
 
@@ -102,10 +101,26 @@ export const reviewService = {
 			});
 
 			if (mentee) {
-				await pushService.sendPushNotification(data.mentorId, {
-					title: "New Review Received",
-					body: `You received a ${data.rating}-star review from ${mentee.name}!`,
-					url: `/mentoring/mentors/${data.mentorId}`,
+				const { notificationOrchestrator } = await import(
+					"~/features/notifications/services/orchestrator.server"
+				);
+
+				await notificationOrchestrator.trigger({
+					type: "mentoring.review_received",
+					userId: data.mentorId,
+					payload: {
+						title: "New Review Received",
+						body: `You received a ${data.rating}-star review from ${mentee.name}!`,
+						url: `/mentoring/mentors/${data.mentorId}`,
+						icon: "/icons/star.png",
+					},
+					metadata: {
+						menteeId: data.menteeId,
+						menteeName: mentee.name,
+						mentorId: data.mentorId,
+						rating: data.rating,
+						eventId: info.id,
+					},
 				});
 			}
 		} catch (error) {

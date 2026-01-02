@@ -12,7 +12,7 @@ interface OwnerBadgeProps {
 
 /**
  * OwnerBadge - A badge indicating ownership of a community.
- * 
+ *
  * @accessibility
  * - Uses semantic span with role="status" for screen readers
  * - Crown icon is decorative (aria-hidden)
