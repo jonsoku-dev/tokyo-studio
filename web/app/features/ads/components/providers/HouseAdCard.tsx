@@ -37,11 +37,12 @@ function HouseAdCreativeComponent({
 						src={ad.imageUrl}
 						alt={ad.title}
 						className="h-auto w-full object-contain"
-					style={{
-						aspectRatio: String(
-							AD_IMAGE_SPECS[placement as keyof typeof AD_IMAGE_SPECS]?.aspectRatio || 16 / 9
-						)
-					}}
+						style={{
+							aspectRatio: String(
+								AD_IMAGE_SPECS[placement as keyof typeof AD_IMAGE_SPECS]
+									?.aspectRatio || 16 / 9,
+							),
+						}}
 					/>
 				</div>
 			)}

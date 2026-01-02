@@ -1,5 +1,5 @@
-import { houseAds } from "@itcom/db/schema";
 import type * as schema from "@itcom/db/schema";
+import { houseAds } from "@itcom/db/schema";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 export async function seedHouseAds(db: NodePgDatabase<typeof schema>) {
@@ -13,7 +13,7 @@ export async function seedHouseAds(db: NodePgDatabase<typeof schema>) {
 		// ========================================
 		// FEED PLACEMENT - Platform Services
 		// ========================================
-		
+
 		{
 			id: "ad000000-0000-0000-0000-000000000001",
 			title: "1:1 멘토링으로 일본 취업 성공",
@@ -190,11 +190,11 @@ export async function seedHouseAds(db: NodePgDatabase<typeof schema>) {
 			startDate: now,
 			endDate: oneMonthFromNow,
 		},
-		
+
 		// ========================================
 		// FEED PLACEMENT - Corporate Hiring
 		// ========================================
-		
+
 		{
 			id: "ad000000-0000-0000-0000-000000000012",
 			title: "Mercari - Backend Engineer",
@@ -248,7 +248,8 @@ export async function seedHouseAds(db: NodePgDatabase<typeof schema>) {
 			title: "CyberAgent - DevOps Engineer",
 			description:
 				"Join AbemaTV team at CyberAgent! DevOps Engineer with Docker, Kubernetes, Terraform. Cutting-edge streaming platform.",
-			imageUrl: "/images/ads/feed/cyberagent_hiring_feed_1767362544733_16-9.png",
+			imageUrl:
+				"/images/ads/feed/cyberagent_hiring_feed_1767362544733_16-9.png",
 			ctaText: "Apply Now",
 			ctaUrl: "https://cyberagent.careers",
 			placement: "feed-middle",
@@ -275,11 +276,11 @@ export async function seedHouseAds(db: NodePgDatabase<typeof schema>) {
 			startDate: now,
 			endDate: oneMonthFromNow,
 		},
-		
+
 		// ========================================
 		// SIDEBAR PLACEMENT - Platform Services
 		// ========================================
-		
+
 		{
 			id: "ad000000-0000-0000-0000-000000000017",
 			title: "1:1 멘토링",
@@ -325,11 +326,11 @@ export async function seedHouseAds(db: NodePgDatabase<typeof schema>) {
 			startDate: now,
 			endDate: oneMonthFromNow,
 		},
-		
+
 		// ========================================
 		// SIDEBAR PLACEMENT - Corporate Hiring
 		// ========================================
-		
+
 		{
 			id: "ad000000-0000-0000-0000-000000000020",
 			title: "Mercari Hiring",
@@ -360,11 +361,11 @@ export async function seedHouseAds(db: NodePgDatabase<typeof schema>) {
 			startDate: now,
 			endDate: oneMonthFromNow,
 		},
-		
+
 		// ========================================
 		// TEXT-ONLY ADS (No images)
 		// ========================================
-		
+
 		{
 			id: "ad000000-0000-0000-0000-000000000022",
 			title: "Japan IT Job에 오신 것을 환영합니다!",
@@ -440,7 +441,13 @@ export async function seedHouseAds(db: NodePgDatabase<typeof schema>) {
 	}
 
 	console.log(`✅ Created/Updated ${ads.length} house ads`);
-	console.log(`   📊 Feed ads: ${ads.filter(a => a.placement?.startsWith('feed')).length}`);
-	console.log(`   📊 Sidebar ads: ${ads.filter(a => a.placement === 'sidebar').length}`);
-	console.log(`   📊 Inline ads: ${ads.filter(a => a.placement === 'inline').length}`);
+	console.log(
+		`   📊 Feed ads: ${ads.filter((a) => a.placement?.startsWith("feed")).length}`,
+	);
+	console.log(
+		`   📊 Sidebar ads: ${ads.filter((a) => a.placement === "sidebar").length}`,
+	);
+	console.log(
+		`   📊 Inline ads: ${ads.filter((a) => a.placement === "inline").length}`,
+	);
 }

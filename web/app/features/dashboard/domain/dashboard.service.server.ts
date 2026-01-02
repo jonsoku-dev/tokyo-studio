@@ -1,55 +1,82 @@
 import { db } from "@itcom/db/client";
-import { tasks } from "@itcom/db/schema";
-import { eq } from "drizzle-orm";
-import type { DashboardTask, JobRecommendation } from "./dashboard.types";
+import type { JourneyStage } from "@itcom/db/schema";
+import { mentoringSessions, pipelineItems, profiles } from "@itcom/db/schema";
+import { count, eq } from "drizzle-orm";
 
-const MOCK_JOBS: JobRecommendation[] = [
-	{
-		id: "j1",
-		company: "LINE Yahoo",
-		title: "Frontend Engineer (React/TypeScript)",
-		location: "Tokyo",
-		isVisaSponsored: true,
-		tags: ["JLPT N2", "Hybrid"],
-	},
-	{
-		id: "j2",
-		company: "Rakuten",
-		title: "Full Stack Developer",
-		location: "Tokyo",
-		isVisaSponsored: true,
-		tags: ["English Only", "Remote"],
-	},
-];
+/**
+ * Dashboard Service
+ * 사용자 여정 분석 및 대시보드 데이터 집계
+ */
 
-export const dashboardService = {
-	getTasks: async (): Promise<DashboardTask[]> => {
-		const dbTasks = await db.select().from(tasks).limit(10);
+/**
+ * 사용자의 여정 단계(Journey Stage) 감지
+ * 프로필, 로드맵 진행률, 지원 현황, 정착 정보를 기반으로 판단
+ */
+export async function getUserJourneyStage(
+	userId: string,
+): Promise<JourneyStage> {
+	// 1. 프로필 확인
+	const [profile] = await db
+		.select()
+		.from(profiles)
+		.where(eq(profiles.userId, userId))
+		.limit(1);
 
-		return dbTasks.map((t) => ({
-			id: t.id,
-			title: t.title,
-			description: t.description,
-			// biome-ignore lint/suspicious/noExplicitAny: Temporary cast
-			category: t.category as any, // In real app, validate enum
-			// biome-ignore lint/suspicious/noExplicitAny: Temporary cast
-			status: t.status as any,
-			// biome-ignore lint/suspicious/noExplicitAny: Temporary cast
-			priority: t.priority as any,
-			dueDate: t.dueDate || undefined,
-		}));
-	},
+	// 프로필이 없으면 Newcomer
+	if (!profile) {
+		return "newcomer";
+	}
 
-	updateTaskStatus: async (id: string, status: string) => {
-		const [updated] = await db
-			.update(tasks)
-			.set({ status })
-			.where(eq(tasks.id, id))
-			.returning();
-		return updated;
-	},
+	// 2. 지원 현황 확인
+	const [applicationCount] = await db
+		.select({ count: count() })
+		.from(pipelineItems)
+		.where(eq(pipelineItems.userId, userId));
 
-	getRecommendedJobs: async (): Promise<JobRecommendation[]> => {
-		return new Promise((resolve) => setTimeout(() => resolve(MOCK_JOBS), 500));
-	},
-};
+	if (applicationCount && applicationCount.count > 0) {
+		return "applicant";
+	}
+
+	// 3. 멘토링 세션 확인 (3회 이상이면 적극적 학습자)
+	const [sessionCount] = await db
+		.select({ count: count() })
+		.from(mentoringSessions)
+		.where(eq(mentoringSessions.userId, userId));
+
+	if (sessionCount && sessionCount.count >= 3) {
+		return "learner";
+	}
+
+	// 기본값: Learner (프로필이 있으면)
+	return "learner";
+}
+
+/**
+ * 사용자의 위젯 표시 컨텍스트 조회
+ * 각 위젯의 visibilityCondition 평가에 사용
+ */
+export async function getUserWidgetContext(userId: string) {
+	const [profile] = await db
+		.select()
+		.from(profiles)
+		.where(eq(profiles.userId, userId))
+		.limit(1);
+
+	const [applicationCount] = await db
+		.select({ count: count() })
+		.from(pipelineItems)
+		.where(eq(pipelineItems.userId, userId));
+
+	const [sessionCount] = await db
+		.select({ count: count() })
+		.from(mentoringSessions)
+		.where(eq(mentoringSessions.userId, userId));
+
+	return {
+		hasProfile: !!profile,
+		hasApplications: (applicationCount?.count ?? 0) > 0,
+		hasSessions: (sessionCount?.count ?? 0) > 0,
+		hasArrivalDate: false, // TODO: settlementChecklists 스키마 추가 후 구현
+		hasMentorApplication: false, // TODO: mentorApplications 스키마 추가 후 구현
+	};
+}

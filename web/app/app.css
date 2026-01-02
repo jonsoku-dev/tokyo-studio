@@ -588,13 +588,13 @@
 
 	/* Hide everything by default */
 	body > * {
-		display: none !important;
+		display: none;
 	}
 
 	/* Show only the printable area */
 	body > .printable-area,
 	.printable-area {
-		display: block !important;
+		display: block;
 	}
 
 	/* Ensure printable content fills the page */
@@ -605,18 +605,18 @@
 		width: 100%;
 		margin: 0;
 		padding: 0;
-		background: white !important;
-		box-shadow: none !important;
+		background: white;
+		box-shadow: none;
 	}
 
 	/* Remove background colors for better print quality */
 	* {
-		-webkit-print-color-adjust: exact !important;
-		print-color-adjust: exact !important;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
 	}
 
 	/* Hide elements with print:hidden class (Tailwind already supports this) */
 	.print\\:hidden {
-		display: none !important;
+		display: none;
 	}
 }

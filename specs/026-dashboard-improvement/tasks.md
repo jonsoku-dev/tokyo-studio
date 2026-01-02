@@ -42,14 +42,14 @@
 
 ### 1.2 Widget Configuration Service
 **File**: `web/app/features/dashboard/domain/widget-config.service.server.ts`
-- [ ] `getConfiguration(userId)` - Fetch user's widget layout
-- [ ] `saveConfiguration(userId, widgets)` - Persist layout changes
-- [ ] `getDefaultLayout(journeyStage)` - Return stage-specific defaults
-- [ ] `validateLayout(widgets)` - Ensure valid widget IDs and structure
+- [x] `getConfiguration(userId)` - Fetch user's widget layout
+- [x] `saveConfiguration(userId, widgets)` - Persist layout changes
+- [x] `getDefaultLayout(journeyStage)` - Return stage-specific defaults
+- [x] `validateLayout(widgets)` - Ensure valid widget IDs and structure
 
 **Default Layouts**:
-- [ ] Define layouts for 5 journey stages (newcomer, learner, applicant, settlement, contributor)
-- [ ] Each layout specifies order, visibility, size for all 10 widgets
+- [x] Define layouts for 5 journey stages (newcomer, learner, applicant, settlement, contributor)
+- [x] Each layout specifies order, visibility, size for all 10 widgets
 
 **Acceptance**: Service can CRUD widget configurations with proper validation
 
@@ -57,7 +57,7 @@
 
 #### DashboardGrid Component
 **File**: `web/app/features/dashboard/components/DashboardGrid.tsx`
-- [ ] Install/verify @dnd-kit packages:
+- [x] Install/verify @dnd-kit packages:
   ```bash
   pnpm add @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities @dnd-kit/modifiers
   ```

@@ -294,4 +294,7 @@ export default [
 
 	// Advertisement APIs (SPEC 024)
 	route("api/ads/serve", "features/ads/apis/ads.server.ts"),
+
+	// Dashboard APIs (SPEC 026)
+	route("api/dashboard/widgets", "features/dashboard/apis/widgets.server.ts"),
 ] satisfies RouteConfig;
