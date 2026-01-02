@@ -144,9 +144,9 @@ class CommentsService {
 		// Cursor Filter
 		if (cursor) {
 			const [timestamp, id] = cursor.split("_");
-			const decodedDate = new Date(parseInt(timestamp));
-			
-			if (!isNaN(decodedDate.getTime()) && id) {
+			const decodedDate = new Date(parseInt(timestamp, 10));
+
+			if (!Number.isNaN(decodedDate.getTime()) && id) {
 				if (sortBy === "newest") {
 					// DESC: created_at < date OR (created_at = date AND id < id)
 					queries.push(
@@ -154,9 +154,9 @@ class CommentsService {
 							lt(communityComments.createdAt, decodedDate),
 							and(
 								eq(communityComments.createdAt, decodedDate),
-								lt(communityComments.id, id)
-							)
-						)
+								lt(communityComments.id, id),
+							),
+						),
 					);
 				} else if (sortBy === "oldest") {
 					// ASC: created_at > date OR (created_at = date AND id > id)
@@ -165,15 +165,15 @@ class CommentsService {
 							gt(communityComments.createdAt, decodedDate),
 							and(
 								eq(communityComments.createdAt, decodedDate),
-								gt(communityComments.id, id)
-							)
-						)
+								gt(communityComments.id, id),
+							),
+						),
 					);
 				}
 			}
 		}
 
-	// Determine sort order
+		// Determine sort order
 		const sortOrder =
 			sortBy === "best"
 				? [desc(communityComments.score), desc(communityComments.id)] // Add ID tie-breaker even for best

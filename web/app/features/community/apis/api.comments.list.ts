@@ -19,14 +19,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	// The platform seems to require login for better experience?
 	// Let's stick to `requireUserId` for consistency with `post-detail` if it does.
 	// `post-detail` uses `requireUserId`. So we require login.
-	
+
 	const userId = await requireVerifiedUser(request).catch(() => undefined);
 
 	const url = new URL(request.url);
 	const postId = url.searchParams.get("postId");
 	const parentId = url.searchParams.get("parentId") || null;
 	const cursor = url.searchParams.get("cursor");
-	const sort = (url.searchParams.get("sort") as "best" | "newest" | "oldest") || "oldest";
+	const sort =
+		(url.searchParams.get("sort") as "best" | "newest" | "oldest") || "oldest";
 	const limit = parseInt(url.searchParams.get("limit") || "10", 10);
 
 	if (!postId) {
@@ -39,7 +40,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		sort,
 		parentId,
 		cursor,
-		limit
+		limit,
 	);
 
 	return { comments, nextCursor };

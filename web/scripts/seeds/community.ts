@@ -1,7 +1,29 @@
 import { faker } from "@faker-js/faker";
 import * as schema from "@itcom/db/schema";
-import { eq } from "drizzle-orm";
+import { count, eq, isNull } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
+
+// Default communities to seed
+const DEFAULT_COMMUNITIES = [
+	{
+		slug: "general",
+		name: "자유게시판",
+		description:
+			"일본 IT 취업과 생활에 대한 자유로운 이야기를 나누는 공간입니다.",
+	},
+	{
+		slug: "qna",
+		name: "질문답변",
+		description:
+			"취업 준비, 비자, 생활 등 궁금한 점을 질문하고 답변을 받아보세요.",
+	},
+	{
+		slug: "review",
+		name: "취업후기",
+		description:
+			"일본 IT 기업 면접 경험과 합격/불합격 후기를 공유하는 공간입니다.",
+	},
+];
 
 export async function seedCommunity(db: NodePgDatabase<typeof schema>) {
 	console.log("🌱 Seeding Community...");
@@ -13,34 +35,119 @@ export async function seedCommunity(db: NodePgDatabase<typeof schema>) {
 		return;
 	}
 
-	// 2. Clear existing community data
+	const adminUserId = "00000000-0000-0000-0000-000000000000";
+
+	// 2. Create or get default communities
+	console.log("  📁 Creating default communities...");
+	const communityMap = new Map<string, string>(); // slug -> id
+
+	for (const comm of DEFAULT_COMMUNITIES) {
+		// Check if community already exists
+		const existing = await db
+			.select()
+			.from(schema.communities)
+			.where(eq(schema.communities.slug, comm.slug))
+			.limit(1);
+
+		if (existing.length > 0) {
+			communityMap.set(comm.slug, existing[0].id);
+			console.log(`    ✓ Community "${comm.slug}" already exists`);
+		} else {
+			const [created] = await db
+				.insert(schema.communities)
+				.values({
+					slug: comm.slug,
+					name: comm.name,
+					description: comm.description,
+					visibility: "public",
+					createdBy: adminUserId,
+				})
+				.returning();
+			communityMap.set(comm.slug, created.id);
+			console.log(`    ✓ Created community "${comm.slug}"`);
+
+			// Add admin as owner
+			await db.insert(schema.communityMembers).values({
+				communityId: created.id,
+				userId: adminUserId,
+				role: "owner",
+			});
+
+			// Add sample rules
+			const rules = [
+				{
+					title: "서로 존중하기",
+					description: "다른 멤버들을 존중하고 예의를 지켜주세요.",
+				},
+				{
+					title: "관련 주제만",
+					description: "커뮤니티 주제와 관련된 내용만 게시해주세요.",
+				},
+				{ title: "광고 금지", description: "상업적 광고나 스팸은 삭제됩니다." },
+			];
+			for (let i = 0; i < rules.length; i++) {
+				await db.insert(schema.communityRules).values({
+					communityId: created.id,
+					orderIndex: i,
+					title: rules[i].title,
+					description: rules[i].description,
+				});
+			}
+		}
+	}
+
+	// 3. Migrate existing posts to use community_id (based on category)
+	console.log("  📝 Migrating posts to communities...");
+	const postsWithoutCommunity = await db
+		.select()
+		.from(schema.communityPosts)
+		.where(isNull(schema.communityPosts.communityId));
+
+	for (const post of postsWithoutCommunity) {
+		// Map category to community slug (general, qna, review)
+		const targetSlug = ["general", "qna", "review"].includes(post.category)
+			? post.category
+			: "general";
+		const communityId = communityMap.get(targetSlug);
+
+		if (communityId) {
+			await db
+				.update(schema.communityPosts)
+				.set({ communityId })
+				.where(eq(schema.communityPosts.id, post.id));
+		}
+	}
+	console.log(`    ✓ Migrated ${postsWithoutCommunity.length} posts`);
+
+	// 4. Clear and recreate posts/comments for fresh seed
+	console.log("  🗑️ Clearing existing posts & comments for fresh seed...");
 	await db.delete(schema.communityComments);
 	await db.delete(schema.communityPosts);
 
-	// 3. Create Posts
-	const categories = ["general", "qna", "review", "tips", "news"];
+	// 5. Create Posts with community_id
+	const categories = ["general", "qna", "review"];
 	const posts: (typeof schema.communityPosts.$inferSelect)[] = [];
-	const adminUserId = "00000000-0000-0000-0000-000000000000";
 
 	for (let i = 0; i < 50; i++) {
-		// First 10 posts are from Admin (Mentor) to ensure profile activity
+		// First 10 posts from Admin for profile activity
 		let authorId = adminUserId;
-		
-		// For the rest, pick a random user (excluding admin if desired, or mixed)
 		if (i >= 10) {
 			const randomUser = faker.helpers.arrayElement(users);
 			authorId = randomUser.id;
 		}
 
 		const category = faker.helpers.arrayElement(categories);
+		const communityId = communityMap.get(category);
 		const createdAt = faker.date.past();
 
 		const [post] = await db
 			.insert(schema.communityPosts)
 			.values({
+				communityId: communityId!,
 				title: faker.lorem.sentence(),
 				content: faker.lorem.paragraphs(2),
-				category,
+				category, // Keep for backward compat
+				postType: "text",
 				authorId: authorId,
 				upvotes: faker.number.int({ min: 0, max: 100 }),
 				downvotes: faker.number.int({ min: 0, max: 10 }),
@@ -53,7 +160,7 @@ export async function seedCommunity(db: NodePgDatabase<typeof schema>) {
 		posts.push(post);
 	}
 
-	// 4. Create Comments
+	// 6. Create Comments
 	for (const post of posts) {
 		const commentCount = faker.number.int({ min: 0, max: 15 });
 
@@ -75,5 +182,20 @@ export async function seedCommunity(db: NodePgDatabase<typeof schema>) {
 		}
 	}
 
-	console.log(`✅ Seeded ${posts.length} posts with comments.`);
+	// 7. Update member counts
+	for (const [_slug, communityId] of communityMap) {
+		const memberCountResult = await db
+			.select({ count: count() })
+			.from(schema.communityMembers)
+			.where(eq(schema.communityMembers.communityId, communityId));
+
+		await db
+			.update(schema.communities)
+			.set({ memberCount: memberCountResult[0]?.count || 0 })
+			.where(eq(schema.communities.id, communityId));
+	}
+
+	console.log(
+		`✅ Seeded ${posts.length} posts with comments in ${communityMap.size} communities.`,
+	);
 }

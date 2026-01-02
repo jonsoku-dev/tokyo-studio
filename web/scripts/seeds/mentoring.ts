@@ -35,7 +35,7 @@ export async function seedMentoring(
 		.returning();
 
 	// Mentors Table (Legacy/Simplified)
-	const [mentor] = await db
+	const [_mentor] = await db
 		.insert(schema.mentors)
 		.values({
 			userId: adminUserId,
@@ -148,12 +148,14 @@ export async function seedMentoring(
 		.select()
 		.from(schema.users)
 		.where(sql`${schema.users.id} != ${adminUserId}`);
-	
+
 	if (potentialMentees.length === 0) {
-		console.warn("⚠️ No potential mentees found. Skipping detailed mentoring seed.");
+		console.warn(
+			"⚠️ No potential mentees found. Skipping detailed mentoring seed.",
+		);
 	}
 
-	const menteeIds = potentialMentees.map(u => u.id);
+	const menteeIds = potentialMentees.map((u) => u.id);
 
 	// 3. Create Sessions & Reviews
 	for (const menteeId of menteeIds) {

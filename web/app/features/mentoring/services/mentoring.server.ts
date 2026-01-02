@@ -1,13 +1,13 @@
 import { db } from "@itcom/db/client";
 import {
+	communityComments,
+	communityPosts,
 	documents,
 	mentorAvailabilitySlots,
 	mentoringSessions,
 	mentorProfiles,
 	mentorReviews,
 	users,
-	communityPosts,
-	communityComments,
 } from "@itcom/db/schema";
 import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { emailService } from "~/features/auth/services/email.server";

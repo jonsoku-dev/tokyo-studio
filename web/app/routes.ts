@@ -49,14 +49,12 @@ export default [
 				"features/mentoring/routes/mentoring.profile.$mentorId.tsx",
 			),
 
-			// Community
-			route("community", "features/community/routes/community.tsx"),
+			// Community - Explore page
+			route("communities", "features/community/routes/communities.tsx"),
 			route(
-				"community/search",
+				"communities/search",
 				"features/community/routes/community.search.tsx",
 			),
-			route("community/new", "features/community/routes/new.tsx"),
-			route("community/:postId", "features/community/routes/post-detail.tsx"),
 
 			// Diagnosis Result (Page)
 			route("diagnosis/result", "features/diagnosis/routes/result.tsx"),
@@ -110,6 +108,23 @@ export default [
 			// Map
 			route("map", "features/map/routes/index.tsx"),
 		]),
+
+		// Community Detail Routes (/communities/:slug) - Full width layout
+		route(
+			"communities/:slug",
+			"features/community/routes/communities.$slug.tsx",
+			[
+				index("features/community/routes/communities.$slug._index.tsx"),
+				route(
+					"submit",
+					"features/community/routes/communities.$slug.submit.tsx",
+				),
+				route(
+					"posts/:postId",
+					"features/community/routes/communities.$slug.posts.$postId.tsx",
+				),
+			],
+		),
 	]),
 
 	// --- APIs ---
@@ -179,6 +194,7 @@ export default [
 		"features/community/apis/api.setup-reputation.ts",
 	),
 	route("api/vote", "features/community/apis/api.vote.ts"),
+	route("api/community/join", "features/community/apis/api.community.join.ts"),
 	route(
 		"api/notifications/subscribe",
 		"features/notifications/apis/api.subscribe.ts",

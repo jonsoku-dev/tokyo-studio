@@ -357,8 +357,6 @@ export default function MentorSettings() {
 						</div>
 					</div>
 
-
-
 					{/* 2. Social Media & Content */}
 					<div className="rounded-xl border border-gray-200 bg-white shadow-sm">
 						<div className="border-gray-100 border-b px-6 py-4">
@@ -406,7 +404,7 @@ export default function MentorSettings() {
 							</div>
 
 							{/* Featured Videos */}
-							<div className="stack-sm pt-4 border-t border-gray-100">
+							<div className="stack-sm border-gray-100 border-t pt-4">
 								<Label>대표 영상 (YouTube)</Label>
 								<div className="stack-sm">
 									{videoUrls.map((url, idx) => (
@@ -441,7 +439,7 @@ export default function MentorSettings() {
 										onClick={handleAddVideoUrl}
 										className="self-start"
 									>
-										<Plus className="h-4 w-4 mr-2" />
+										<Plus className="mr-2 h-4 w-4" />
 										영상 추가하기
 									</Button>
 									<input

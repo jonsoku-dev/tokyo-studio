@@ -16,6 +16,6 @@ export const NAVIGATION_ITEMS = [
 	{ name: "Pipeline", href: "/pipeline", icon: Briefcase },
 	{ name: "Documents", href: "/documents", icon: FileText },
 	{ name: "Mentoring", href: "/mentoring", icon: Users },
-	{ name: "Community", href: "/community", icon: MessageSquare },
+	{ name: "게시판", href: "/communities", icon: MessageSquare },
 	{ name: "Settle Tokyo", href: "/settlement", icon: CheckSquare },
 ] as const;

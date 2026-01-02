@@ -10,6 +10,7 @@ interface VoteControlProps {
 	initialVote?: number; // 1, -1, 0/undefined
 	size?: "sm" | "md";
 	className?: string;
+	horizontal?: boolean;
 }
 
 export function VoteControl({
@@ -19,6 +20,7 @@ export function VoteControl({
 	initialVote = 0,
 	size = "md",
 	className,
+	horizontal,
 }: VoteControlProps) {
 	const fetcher = useFetcher<{ success: boolean; score?: number }>();
 	const [vote, setVote] = useState(initialVote);
@@ -60,7 +62,7 @@ export function VoteControl({
 		<div
 			className={cn(
 				"flex flex-col items-center gap-1 rounded-lg bg-gray-50 p-1",
-				size === "sm" && "flex-row gap-2 bg-transparent p-0",
+				(size === "sm" || horizontal) && "flex-row gap-2 bg-transparent p-0",
 				className,
 			)}
 		>

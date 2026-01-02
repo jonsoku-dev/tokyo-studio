@@ -10,7 +10,7 @@ import {
 	Star,
 	ThumbsUp,
 	Twitter,
-	Youtube
+	Youtube,
 } from "lucide-react";
 import { useState } from "react";
 import {
@@ -30,8 +30,7 @@ import { mentoringService } from "../services/mentoring.server";
 
 // Helper to extract YouTube ID
 function getYouTubeId(url: string) {
-	const regExp =
-		/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+	const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
 	const match = url.match(regExp);
 	return match && match[2].length === 11 ? match[2] : null;
 }
@@ -41,15 +40,16 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 	const mentorId = params.mentorId;
 	if (!mentorId) throw new Response("Not Found", { status: 404 });
 
-	const [mentor, availability, userDocuments, communityPosts] = await Promise.all([
-		mentoringService.getMentorByUserId(mentorId),
-		mentoringService.getAvailability(mentorId),
-		// SPEC 022: Fetch user's documents for sharing
-		documentsService.getUserDocumentsByType(userId, [
-			...SHAREABLE_DOCUMENT_TYPES,
-		]),
-		mentoringService.getMentorCommunityPosts(mentorId),
-	]);
+	const [mentor, availability, userDocuments, communityPosts] =
+		await Promise.all([
+			mentoringService.getMentorByUserId(mentorId),
+			mentoringService.getAvailability(mentorId),
+			// SPEC 022: Fetch user's documents for sharing
+			documentsService.getUserDocumentsByType(userId, [
+				...SHAREABLE_DOCUMENT_TYPES,
+			]),
+			mentoringService.getMentorCommunityPosts(mentorId),
+		]);
 
 	if (!mentor) throw new Response("Not Found", { status: 404 });
 
@@ -233,7 +233,6 @@ export default function MentorProfilePage() {
 
 						{/* Featured Videos */}
 
-
 						{/* About Section */}
 						<div className="stack card-lg bg-white p-8">
 							<h2 className="heading-4 text-gray-900">멘토 소개 (About)</h2>
@@ -279,17 +278,16 @@ export default function MentorProfilePage() {
 
 						{/* Community Activity (New) */}
 
-
 						{/* Media & Community Grid */}
 						{(videos.length > 0 || communityPosts.length > 0) && (
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 								{/* Featured Videos */}
 								{videos.length > 0 && (
-									<div className="stack card-lg bg-white p-6 min-w-0">
-										<h2 className="heading-4 text-gray-900 flex items-center gap-2">
+									<div className="stack card-lg min-w-0 bg-white p-6">
+										<h2 className="heading-4 flex items-center gap-2 text-gray-900">
 											대표 영상
 										</h2>
-										<div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory">
+										<div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4">
 											{videos.map((url, idx) => {
 												const videoId = getYouTubeId(url);
 												if (!videoId) return null;
@@ -299,7 +297,7 @@ export default function MentorProfilePage() {
 												return (
 													<div
 														key={`${idx}-${videoId}`}
-														className="min-w-[240px] w-[240px] flex-none snap-start overflow-hidden rounded-xl border border-gray-200 bg-gray-50 group"
+														className="group w-[240px] min-w-[240px] flex-none snap-start overflow-hidden rounded-xl border border-gray-200 bg-gray-50"
 													>
 														{isPlaying ? (
 															<iframe
@@ -316,16 +314,16 @@ export default function MentorProfilePage() {
 															<button
 																type="button"
 																onClick={() => setPlayingVideo(videoId)}
-																className="relative w-full aspect-video block"
+																className="relative block aspect-video w-full"
 															>
 																<img
 																	src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
 																	alt="Video Thumbnail"
 																	className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 																/>
-																<div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
-																	<div className="rounded-full bg-white/90 p-2 shadow-lg backdrop-blur-sm group-hover:scale-110 transition-transform">
-																		<Play className="h-4 w-4 fill-black text-black ml-0.5" />
+																<div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover:bg-black/30">
+																	<div className="rounded-full bg-white/90 p-2 shadow-lg backdrop-blur-sm transition-transform group-hover:scale-110">
+																		<Play className="ml-0.5 h-4 w-4 fill-black text-black" />
 																	</div>
 																</div>
 															</button>
@@ -339,9 +337,9 @@ export default function MentorProfilePage() {
 
 								{/* Community Activity */}
 								{communityPosts.length > 0 && (
-									<div className="stack card-lg bg-white p-6 min-w-0">
+									<div className="stack card-lg min-w-0 bg-white p-6">
 										<div className="flex items-center justify-between">
-											<h2 className="heading-4 text-gray-900 flex items-center gap-2">
+											<h2 className="heading-4 flex items-center gap-2 text-gray-900">
 												커뮤니티 활동 (최근)
 											</h2>
 										</div>
@@ -350,12 +348,12 @@ export default function MentorProfilePage() {
 												<a
 													key={post.id}
 													href={`/community/${post.id}`}
-													className="block py-3 hover:bg-gray-50 -mx-4 px-4 transition-colors group"
+													className="group -mx-4 block px-4 py-3 transition-colors hover:bg-gray-50"
 												>
-													<div className="flex justify-between items-start gap-4">
+													<div className="flex items-start justify-between gap-4">
 														<div className="stack-xs flex-1">
 															<div className="flex items-center gap-2 text-[10px] text-gray-500">
-																<span className="font-medium text-primary-600 bg-primary-50 px-1.5 py-0.5 rounded-full">
+																<span className="rounded-full bg-primary-50 px-1.5 py-0.5 font-medium text-primary-600">
 																	{post.category}
 																</span>
 																<span>
@@ -364,11 +362,11 @@ export default function MentorProfilePage() {
 																	).toLocaleDateString()}
 																</span>
 															</div>
-															<h3 className="font-semibold text-gray-900 line-clamp-1 group-hover:text-primary-600 text-sm">
+															<h3 className="line-clamp-1 font-semibold text-gray-900 text-sm group-hover:text-primary-600">
 																{post.title}
 															</h3>
 														</div>
-														<div className="flex items-center gap-2 text-gray-400 text-xs shrink-0">
+														<div className="flex shrink-0 items-center gap-2 text-gray-400 text-xs">
 															<div className="flex items-center gap-0.5">
 																<ThumbsUp className="h-3 w-3" />
 																{post.upvotes}
@@ -445,8 +443,12 @@ export default function MentorProfilePage() {
 							<div className="mt-6 flex justify-center">
 								<div className="flex h-[600px] w-[300px] items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-center">
 									<div className="stack-xs">
-										<p className="font-medium text-gray-400 text-sm">Advertisement</p>
-										<p className="text-gray-300 text-xs">Google Ads (300x600)</p>
+										<p className="font-medium text-gray-400 text-sm">
+											Advertisement
+										</p>
+										<p className="text-gray-300 text-xs">
+											Google Ads (300x600)
+										</p>
 									</div>
 								</div>
 							</div>

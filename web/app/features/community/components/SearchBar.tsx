@@ -75,7 +75,9 @@ export function SearchBar() {
 							<code className="whitespace-nowrap rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">
 								react OR vue
 							</code>
-							<span className="text-gray-600">두 단어 중 하나라도 포함된 글</span>
+							<span className="text-gray-600">
+								두 단어 중 하나라도 포함된 글
+							</span>
 						</li>
 						<li className="flex items-start gap-2">
 							<code className="whitespace-nowrap rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">

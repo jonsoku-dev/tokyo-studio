@@ -269,21 +269,114 @@ export const selectMentorAvailabilitySlotSchema = createSelectSchema(
 	mentorAvailabilitySlots,
 );
 
-// --- Community ---
-export const communityPosts = pgTable("community_posts", {
+// --- Communities (Subreddit-style) ---
+export const communities = pgTable(
+	"communities",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		slug: text("slug").notNull().unique(), // "general", "qna", "review" - NO r/ prefix
+		name: text("name").notNull(), // Display name: "자유게시판"
+		description: text("description"),
+		bannerUrl: text("banner_url"),
+		iconUrl: text("icon_url"),
+		visibility: text("visibility").default("public").notNull(), // "public", "restricted", "private"
+		memberCount: integer("member_count").default(0).notNull(),
+		createdBy: uuid("created_by").references(() => users.id),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	},
+	(table) => ({
+		slugIdx: uniqueIndex("communities_slug_idx").on(table.slug),
+	}),
+);
+
+export const insertCommunitySchema = createInsertSchema(communities);
+export const selectCommunitySchema = createSelectSchema(communities);
+export type Community = InferSelectModel<typeof communities>;
+
+export const communityMembers = pgTable(
+	"community_members",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		communityId: uuid("community_id")
+			.references(() => communities.id, { onDelete: "cascade" })
+			.notNull(),
+		userId: uuid("user_id")
+			.references(() => users.id, { onDelete: "cascade" })
+			.notNull(),
+		role: text("role").default("member").notNull(), // "member", "moderator", "owner"
+		joinedAt: timestamp("joined_at").defaultNow().notNull(),
+	},
+	(table) => ({
+		uniqueMember: uniqueIndex("community_members_unique_idx").on(
+			table.communityId,
+			table.userId,
+		),
+		userIdx: index("community_members_user_idx").on(table.userId),
+	}),
+);
+
+export const insertCommunityMemberSchema = createInsertSchema(communityMembers);
+export const selectCommunityMemberSchema = createSelectSchema(communityMembers);
+export type CommunityMember = InferSelectModel<typeof communityMembers>;
+
+export const communityRules = pgTable("community_rules", {
 	id: uuid("id").primaryKey().defaultRandom(),
+	communityId: uuid("community_id")
+		.references(() => communities.id, { onDelete: "cascade" })
+		.notNull(),
+	orderIndex: integer("order_index").default(0).notNull(),
 	title: text("title").notNull(),
-	content: text("content").notNull(),
-	category: text("category").notNull().default("general"), // "review" | "qna" | "general"
-	authorId: uuid("author_id").references(() => users.id),
-	// Full-text search vector (managed by trigger, but defined here for querying)
-	searchVector: tsvector("search_vector"),
-	upvotes: integer("upvotes").default(0).notNull(),
-	downvotes: integer("downvotes").default(0).notNull(),
-	score: integer("score").default(0).notNull(),
-	createdAt: timestamp("created_at").defaultNow(),
-	updatedAt: timestamp("updated_at").defaultNow(),
+	description: text("description"),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const insertCommunityRuleSchema = createInsertSchema(communityRules);
+export const selectCommunityRuleSchema = createSelectSchema(communityRules);
+
+// --- Community Posts ---
+export const communityPosts = pgTable(
+	"community_posts",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		// New: Link to community (nullable for migration, will be NOT NULL after)
+		communityId: uuid("community_id").references(() => communities.id, {
+			onDelete: "cascade",
+		}),
+		title: text("title").notNull(),
+		content: text("content").notNull(),
+		category: text("category").notNull().default("general"), // DEPRECATED: "review" | "qna" | "general"
+		authorId: uuid("author_id").references(() => users.id),
+		// Post type for different content formats
+		postType: text("post_type").default("text").notNull(), // "text", "link", "image"
+		linkUrl: text("link_url"), // For link posts
+		ogTitle: text("og_title"), // OpenGraph preview
+		ogDescription: text("og_description"),
+		ogImage: text("og_image"),
+		// Status flags
+		isPinned: boolean("is_pinned").default(false).notNull(),
+		isLocked: boolean("is_locked").default(false).notNull(),
+		removedAt: timestamp("removed_at"),
+		removedBy: uuid("removed_by").references(() => users.id),
+		// Full-text search vector (managed by trigger)
+		searchVector: tsvector("search_vector"),
+		// Voting
+		upvotes: integer("upvotes").default(0).notNull(),
+		downvotes: integer("downvotes").default(0).notNull(),
+		score: integer("score").default(0).notNull(),
+		hotScore: numeric("hot_score").default("0"), // Pre-calculated for sorting
+		commentCount: integer("comment_count").default(0).notNull(),
+		createdAt: timestamp("created_at").defaultNow(),
+		updatedAt: timestamp("updated_at").defaultNow(),
+	},
+	(table) => ({
+		communityCreatedIdx: index("posts_community_created_idx").on(
+			table.communityId,
+			table.createdAt,
+		),
+		authorIdx: index("posts_author_idx").on(table.authorId),
+	}),
+);
 
 export const insertCommunityPostSchema = createInsertSchema(communityPosts);
 export const selectCommunityPostSchema = createSelectSchema(communityPosts);
@@ -651,6 +744,53 @@ export const profilePrivacySettingsRelations = relations(
 			fields: [profilePrivacySettings.userId],
 			references: [users.id],
 		}),
+	}),
+);
+
+// --- Community Relations ---
+export const communitiesRelations = relations(communities, ({ one, many }) => ({
+	createdByUser: one(users, {
+		fields: [communities.createdBy],
+		references: [users.id],
+	}),
+	members: many(communityMembers),
+	rules: many(communityRules),
+	posts: many(communityPosts),
+}));
+
+export const communityMembersRelations = relations(
+	communityMembers,
+	({ one }) => ({
+		community: one(communities, {
+			fields: [communityMembers.communityId],
+			references: [communities.id],
+		}),
+		user: one(users, {
+			fields: [communityMembers.userId],
+			references: [users.id],
+		}),
+	}),
+);
+
+export const communityRulesRelations = relations(communityRules, ({ one }) => ({
+	community: one(communities, {
+		fields: [communityRules.communityId],
+		references: [communities.id],
+	}),
+}));
+
+export const communityPostsRelations = relations(
+	communityPosts,
+	({ one, many }) => ({
+		community: one(communities, {
+			fields: [communityPosts.communityId],
+			references: [communities.id],
+		}),
+		author: one(users, {
+			fields: [communityPosts.authorId],
+			references: [users.id],
+		}),
+		comments: many(communityComments),
 	}),
 );
 

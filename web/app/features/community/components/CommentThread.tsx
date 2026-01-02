@@ -22,11 +22,17 @@ export function CommentThread({
 	sort,
 }: CommentThreadProps) {
 	// Top-level comments state
-	const [comments, setComments] = useState<CommentWithAuthor[]>(initialComments);
-	const [nextCursor, setNextCursor] = useState<string | null>(initialNextCursor);
+	const [comments, setComments] =
+		useState<CommentWithAuthor[]>(initialComments);
+	const [nextCursor, setNextCursor] = useState<string | null>(
+		initialNextCursor,
+	);
 
 	// Fetcher for loading more top-level comments
-	const fetcher = useFetcher<{ comments: CommentWithAuthor[]; nextCursor: string | null }>();
+	const fetcher = useFetcher<{
+		comments: CommentWithAuthor[];
+		nextCursor: string | null;
+	}>();
 
 	const handleLoadMore = () => {
 		if (!nextCursor) return;
@@ -84,7 +90,7 @@ export function CommentThread({
 
 				{/* Load More Button */}
 				{nextCursor && (
-					<div className="text-center pt-2">
+					<div className="pt-2 text-center">
 						<Button
 							variant="outline"
 							onClick={handleLoadMore}
@@ -116,24 +122,29 @@ function CommentNode({
 	sort: string;
 }) {
 	// Local state for replies (children)
-	const [children, setChildren] = useState<CommentWithAuthor[]>(comment.children || []);
-	const [nextCursor, setNextCursor] = useState<string | null>(null); // We need to returned initial cursor if we preloaded children? 
+	const [children, setChildren] = useState<CommentWithAuthor[]>(
+		comment.children || [],
+	);
+	const [nextCursor, setNextCursor] = useState<string | null>(null); // We need to returned initial cursor if we preloaded children?
 	// Actually current loader ONLY returns top level. So initial children is empty.
 	// But replyCount > 0.
 
 	const replyCount = comment.replyCount || 0;
 	// If 0 replies, showReplies is false.
-	// If > 0, user must click "Show Replies". 
+	// If > 0, user must click "Show Replies".
 	// Or we could auto-fetch for first few?
 	// User Requirement: "Show More Button".
 	// Let's default to collapsed (or auto-fetch if we implemented that, but we didn't).
 	// So we show "Show X Replies".
 	const [showReplies, setShowReplies] = useState(false);
-	
-	const fetcher = useFetcher<{ comments: CommentWithAuthor[]; nextCursor: string | null }>();
+
+	const fetcher = useFetcher<{
+		comments: CommentWithAuthor[];
+		nextCursor: string | null;
+	}>();
 
 	const handleLoadReplies = () => {
-		const cursor = nextCursor; 
+		const cursor = nextCursor;
 		const params = new URLSearchParams({
 			postId,
 			parentId: comment.id,
@@ -141,7 +152,7 @@ function CommentNode({
 			limit: "5",
 		});
 		if (cursor) params.set("cursor", cursor);
-		
+
 		fetcher.load(`/api/comments/list?${params.toString()}`);
 	};
 
@@ -252,15 +263,16 @@ function CommentNode({
 							sort={sort}
 						/>
 					))}
-					
+
 					{/* Load More Replies Button */}
 					{/* If we have children but also nextCursor, show "Load More" */}
-					{(nextCursor || (fetcher.state === "loading" && children.length > 0)) && (
+					{(nextCursor ||
+						(fetcher.state === "loading" && children.length > 0)) && (
 						<button
 							type="button"
 							onClick={handleLoadReplies}
 							disabled={fetcher.state === "loading"}
-							className="mt-2 text-xs font-semibold text-gray-500 hover:text-gray-700"
+							className="mt-2 font-semibold text-gray-500 text-xs hover:text-gray-700"
 						>
 							{fetcher.state === "loading" ? "로딩 중..." : "답글 더 보기"}
 						</button>
@@ -306,7 +318,9 @@ function CommentForm({
 
 	// Unidirectional Reset:
 	// When success timestamp updates, the Form component remounts, clearing all uncontrolled inputs.
-	const formKey = fetcher.data?.success ? `success-${fetcher.data.timestamp}` : "initial";
+	const formKey = fetcher.data?.success
+		? `success-${fetcher.data.timestamp}`
+		: "initial";
 
 	return (
 		<fetcher.Form

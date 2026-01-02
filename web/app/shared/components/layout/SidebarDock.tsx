@@ -23,10 +23,11 @@ export function SidebarDock() {
 			onMouseMove={(e) => mouseY.set(e.pageY)}
 			onMouseLeave={() => mouseY.set(Infinity)}
 			className={cn(
-				"fixed top-1/2 left-6 z-40 hidden -translate-y-1/2 flex-col items-center gap-4 rounded-2xl border border-gray-200 bg-white/80 py-3 shadow-2xl backdrop-blur-md md:flex dark:border-white/10 dark:bg-black/20",
-				"w-16 overflow-visible", // Fixed width, allow icons to pop out
+				"fixed top-1/2 left-6 z-40 hidden -translate-y-1/2 flex-col items-center gap-2 rounded-2xl border border-gray-200 bg-white/80 py-3 shadow-2xl backdrop-blur-md md:flex dark:border-white/10 dark:bg-black/20",
+				"w-16 overflow-visible",
 			)}
 		>
+			{/* Main Navigation */}
 			{NAVIGATION_ITEMS.map((item) => (
 				<DockIcon key={item.name} mouseY={mouseY} item={item} />
 			))}
@@ -48,7 +49,7 @@ function DockIcon({
 		return val - bounds.y - bounds.height / 2;
 	});
 
-	const widthSync = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
+	const widthSync = useTransform(distance, [-150, 0, 150], [40, 72, 40]);
 	const width = useSpring(widthSync, {
 		mass: 0.1,
 		stiffness: 150,
@@ -56,7 +57,6 @@ function DockIcon({
 	});
 
 	const location = useLocation();
-	// Check if this route is active (simple includes check for nested routes could be better, but exact match for now)
 	const isActive =
 		location.pathname === item.href ||
 		(item.href !== "/" && location.pathname.startsWith(item.href));
@@ -79,7 +79,7 @@ function DockIcon({
 					</motion.div>
 				</Link>
 			</TooltipTrigger>
-			<TooltipContent side="bottom" className="mt-2">
+			<TooltipContent side="right" className="ml-2">
 				<p>{item.name}</p>
 			</TooltipContent>
 		</Tooltip>
