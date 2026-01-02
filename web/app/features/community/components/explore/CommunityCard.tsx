@@ -1,4 +1,5 @@
 import { Link, useFetcher } from "react-router";
+import { OwnerBadge } from "~/shared/components/ui/OwnerBadge";
 import { cn } from "~/shared/utils/cn";
 
 export interface CommunityCardProps {
@@ -11,9 +12,10 @@ export interface CommunityCardProps {
 		iconUrl: string | null;
 	};
 	isJoined?: boolean;
+	isOwner?: boolean;
 }
 
-export function CommunityCard({ community, isJoined }: CommunityCardProps) {
+export function CommunityCard({ community, isJoined, isOwner }: CommunityCardProps) {
 	const fetcher = useFetcher();
 	const isSubmitting = fetcher.state !== "idle";
 
@@ -74,20 +76,24 @@ export function CommunityCard({ community, isJoined }: CommunityCardProps) {
 				</div>
 			</div>
 
-			{/* Action Button */}
-			<button
-				type="button"
-				onClick={handleJoinToggle}
-				disabled={isSubmitting}
-				className={cn(
-					"ml-2 shrink-0 rounded-full px-3 py-1 font-bold text-xs transition-colors disabled:opacity-50",
-					joined
-						? "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-						: "bg-black text-white hover:bg-gray-800"
-				)}
-			>
-				{joined ? "Joined" : "Join"}
-			</button>
+			{/* Action Button or Owner Badge */}
+			{isOwner ? (
+				<OwnerBadge size="sm" className="ml-2 shrink-0" />
+			) : (
+				<button
+					type="button"
+					onClick={handleJoinToggle}
+					disabled={isSubmitting}
+					className={cn(
+						"ml-2 shrink-0 rounded-full px-3 py-1 font-bold text-xs transition-colors disabled:opacity-50",
+						joined
+							? "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+							: "bg-black text-white hover:bg-gray-800"
+					)}
+				>
+					{joined ? "Joined" : "Join"}
+				</button>
+			)}
 		</Link>
 	);
 }

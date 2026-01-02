@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { Form, Link, useLoaderData, useSearchParams } from "react-router";
+import { Form, useLoaderData } from "react-router";
 
 import { getUserId } from "../../auth/utils/session.server";
 import { CommunityHero } from "../components/CommunityHero";
@@ -52,7 +52,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 				communities: data.communities,
 				nextCursor: data.nextCursor,
 			};
-		})
+		}),
 	);
 
 	return {
@@ -80,7 +80,7 @@ export default function Communities() {
 				<div className="grid gap-8 lg:grid-cols-12">
 					<div className="space-y-12 lg:col-span-12 min-w-0">
 						{/* Search Bar */}
-						<Form method="get" className="relative group max-w-2xl mx-auto mb-12">
+						<Form method="get" className="relative group mb-12">
 							<Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-500 transition-colors" />
 							<input
 								type="text"
@@ -127,18 +127,20 @@ export default function Communities() {
 								)}
 
 								{/* Category Sections */}
-								{data.categoryGroups.map(({ category, communities, nextCursor }) => {
-									if (communities.length === 0) return null;
-									return (
-										<CategorySection
-											key={category.id}
-											category={category}
-											initialCommunities={communities}
-											initialNextCursor={nextCursor}
-											myCommunities={myCommunities}
-										/>
-									);
-								})}
+								{data.categoryGroups.map(
+									({ category, communities, nextCursor }) => {
+										if (communities.length === 0) return null;
+										return (
+											<CategorySection
+												key={category.id}
+												category={category}
+												initialCommunities={communities}
+												initialNextCursor={nextCursor}
+												myCommunities={myCommunities}
+											/>
+										);
+									},
+								)}
 							</div>
 						)}
 					</div>
@@ -147,4 +149,3 @@ export default function Communities() {
 		</div>
 	);
 }
-

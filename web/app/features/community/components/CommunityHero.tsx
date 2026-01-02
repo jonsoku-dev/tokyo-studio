@@ -9,65 +9,77 @@ import {
 import { Canvas, useFrame } from "@react-three/fiber";
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
-import { Link } from "react-router";
-import * as THREE from "three";
 import type { Group } from "three";
+import * as THREE from "three";
 
 function ConnectedShapes() {
 	const groupRef = useRef<Group>(null);
 	const [hovered, setHovered] = useState(false);
-	
+
 	useFrame((state) => {
 		if (groupRef.current) {
-            // Mouse Interaction: Smoothly interpolate rotation based on pointer position
+			// Mouse Interaction: Smoothly interpolate rotation based on pointer position
 			const { pointer } = state;
-            const targetRotationY = pointer.x * 0.5; // Look left/right
-            const targetRotationX = -pointer.y * 0.3; // Look up/down
+			const targetRotationY = pointer.x * 0.5; // Look left/right
+			const targetRotationX = -pointer.y * 0.3; // Look up/down
 
-            // Lerp for smooth movement (dampening)
+			// Lerp for smooth movement (dampening)
 			groupRef.current.rotation.y = THREE.MathUtils.lerp(
-                groupRef.current.rotation.y,
-                targetRotationY + Math.sin(state.clock.elapsedTime * 0.3) * 0.1, // Add slow ambient breathing
-                0.1
-            );
+				groupRef.current.rotation.y,
+				targetRotationY + Math.sin(state.clock.elapsedTime * 0.3) * 0.1, // Add slow ambient breathing
+				0.1,
+			);
 			groupRef.current.rotation.x = THREE.MathUtils.lerp(
-                groupRef.current.rotation.x,
-                targetRotationX + Math.sin(state.clock.elapsedTime * 0.2) * 0.05,
-                0.1
-            );
+				groupRef.current.rotation.x,
+				targetRotationX + Math.sin(state.clock.elapsedTime * 0.2) * 0.05,
+				0.1,
+			);
 		}
 	});
 
 	return (
-		<group 
-            ref={groupRef} 
-            position={[2, 0, 0]} 
-            rotation={[0, -0.5, 0]}
-            onPointerOver={() => setHovered(true)}
-            onPointerOut={() => setHovered(false)}
-        >
+		<group
+			ref={groupRef}
+			position={[2, 0, 0]}
+			rotation={[0, -0.5, 0]}
+			onPointerOver={() => setHovered(true)}
+			onPointerOut={() => setHovered(false)}
+		>
 			{/* Main central shapes - Distorted for "Alive" feel */}
-			<Float speed={2} rotationIntensity={hovered ? 1 : 0.4} floatIntensity={hovered ? 1 : 0.5}>
-				<mesh position={[0, 0, 0]} scale={hovered ? 1.1 : 1} onPointerOver={() => document.body.style.cursor = 'pointer'} onPointerOut={() => document.body.style.cursor = 'auto'}>
+			<Float
+				speed={2}
+				rotationIntensity={hovered ? 1 : 0.4}
+				floatIntensity={hovered ? 1 : 0.5}
+			>
+				<mesh
+					position={[0, 0, 0]}
+					scale={hovered ? 1.1 : 1}
+					onPointerOver={() => {
+						document.body.style.cursor = "pointer";
+					}}
+					onPointerOut={() => {
+						document.body.style.cursor = "auto";
+					}}
+				>
 					<icosahedronGeometry args={[1.2, 0]} />
 					<MeshDistortMaterial
 						color="#2563eb" // Primary Blue
-                        speed={hovered ? 4 : 2} // Faster wobble on hover
-                        distort={0.4} // Liquid effect
-                        radius={1}
+						speed={hovered ? 4 : 2} // Faster wobble on hover
+						distort={0.4} // Liquid effect
+						radius={1}
 						roughness={0.2}
 						metalness={0.8}
 					/>
 				</mesh>
 			</Float>
-            
+
 			<Float speed={2.5} rotationIntensity={0.5} floatIntensity={0.4}>
 				<mesh position={[-1.8, 1.2, -1]} scale={0.6}>
 					<octahedronGeometry args={[1, 0]} />
 					<MeshDistortMaterial
 						color="#7c3aed" // Sidebar Indigo
-                        speed={3}
-                        distort={0.3}
+						speed={3}
+						distort={0.3}
 						roughness={0.1}
 						metalness={0.6}
 						emissive="#7c3aed"
@@ -81,8 +93,8 @@ function ConnectedShapes() {
 					<torusKnotGeometry args={[0.8, 0.3, 100, 16]} />
 					<MeshDistortMaterial
 						color="#0d9488" // Accent Teal
-                        speed={2}
-                        distort={0.2}
+						speed={2}
+						distort={0.2}
 						roughness={0.2}
 						metalness={1}
 					/>
@@ -97,7 +109,7 @@ function ConnectedShapes() {
 				speed={0.4}
 				opacity={0.6}
 				color="#60a5fa"
-                noise={0.2} 
+				noise={0.2}
 			/>
 		</group>
 	);
@@ -116,11 +128,11 @@ function CommunityScene() {
 				castShadow
 			/>
 			<pointLight position={[-10, -10, -10]} intensity={1} color="#4f46e5" />
-			
+
 			<Environment preset="city" />
-			
+
 			<ConnectedShapes />
-			
+
 			<ContactShadows
 				resolution={512}
 				scale={20}
@@ -147,8 +159,7 @@ export function CommunityHero() {
 					backgroundImage:
 						"linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)",
 					backgroundSize: "60px 60px",
-					maskImage:
-						"linear-gradient(to right, black 20%, transparent 100%)",
+					maskImage: "linear-gradient(to right, black 20%, transparent 100%)",
 				}}
 			/>
 
@@ -179,8 +190,6 @@ export function CommunityHero() {
 							<br className="hidden sm:block" />
 							같은 목표를 가진 동료들과 경험을 나누고 함께 성장하세요.
 						</p>
-
-
 					</motion.div>
 				</div>
 			</div>

@@ -3,6 +3,7 @@ import { ko } from "date-fns/locale";
 import { motion } from "framer-motion";
 import { MessageCircle, PenSquare, TrendingUp } from "lucide-react";
 import { Link, useLoaderData, useSearchParams } from "react-router";
+import { getUserId } from "~/features/auth/utils/session.server";
 import { cn } from "~/shared/utils/cn";
 import { VoteControl } from "../components/VoteControl";
 import {
@@ -19,13 +20,14 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 	const { slug } = params;
 	const url = new URL(request.url);
 	const sortBy = (url.searchParams.get("sort") as SortBy) || "new";
+	const userId = await getUserId(request);
 
 	const community = await getCommunity(slug);
 	if (!community) {
 		throw new Response("Community not found", { status: 404 });
 	}
 
-	const posts = await getCommunityPosts(community.id, sortBy);
+	const posts = await getCommunityPosts(community.id, sortBy, userId);
 
 	return { posts, sortBy, communitySlug: slug };
 }
@@ -131,8 +133,8 @@ export default function CommunityFeed() {
 									<VoteControl
 										id={post.id}
 										type="post"
-										initialScore={post.score}
-										initialVote={0}
+										currentScore={post.score}
+										currentVote={post.userVote ?? 0}
 									/>
 								</div>
 
@@ -198,8 +200,8 @@ export default function CommunityFeed() {
 											<VoteControl
 												id={post.id}
 												type="post"
-												initialScore={post.score}
-												initialVote={0}
+												currentScore={post.score}
+												currentVote={post.userVote ?? 0}
 												horizontal
 											/>
 										</div>

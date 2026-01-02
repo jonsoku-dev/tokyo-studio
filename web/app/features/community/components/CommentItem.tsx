@@ -125,8 +125,8 @@ export function CommentItem({
 						<VoteControl
 							id={comment.id}
 							type="comment"
-							initialScore={comment.score || 0}
-							initialVote={comment.userVote}
+							currentScore={comment.score || 0}
+							currentVote={comment.userVote ?? 0}
 							size="sm"
 						/>
 

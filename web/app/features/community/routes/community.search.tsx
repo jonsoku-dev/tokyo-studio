@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import DOMPurify from "dompurify";
 import type { LoaderFunctionArgs } from "react-router";
 import { Link, useLoaderData } from "react-router";
 import { SearchBar } from "~/features/community/components/SearchBar";
@@ -6,6 +7,33 @@ import { SearchFilters } from "~/features/community/components/SearchFilters";
 import { searchPosts } from "~/features/community/services/search.server";
 import { Avatar } from "~/shared/components/ui/Avatar";
 import { Badge } from "~/shared/components/ui/Badge";
+
+/**
+ * Safely sanitize HTML content using DOMPurify.
+ * Allows only safe tags like mark, b, strong, em, i.
+ */
+function sanitizeHtml(dirty: string): string {
+	return DOMPurify.sanitize(dirty, {
+		ALLOWED_TAGS: ["mark", "b", "strong", "em", "i"],
+		ALLOWED_ATTR: ["class"],
+	});
+}
+
+/**
+ * Highlight search query matches in text.
+ */
+function highlightMatches(text: string, query: string): string {
+	if (!query) return sanitizeHtml(text);
+	const regex = new RegExp(
+		`(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+		"gi",
+	);
+	const highlighted = text.replace(
+		regex,
+		'<mark class="bg-primary-100 text-primary-800 rounded-sm px-0.5">$1</mark>',
+	);
+	return sanitizeHtml(highlighted);
+}
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const url = new URL(request.url);
@@ -76,12 +104,9 @@ export default function SearchPage() {
 							<div className="mb-3 flex items-start justify-between gap-4">
 								<h2 className="line-clamp-1 font-bold text-gray-900 text-lg transition-colors group-hover:text-primary-600">
 									<span
+										// biome-ignore lint/security/noDangerouslySetInnerHtml: Sanitized with DOMPurify
 										dangerouslySetInnerHTML={{
-											__html: post.title.replace(
-												new RegExp(query || "", "gi"),
-												(match) =>
-													`<mark class="bg-primary-100 text-primary-800 rounded-sm px-0.5">${match}</mark>`,
-											),
+											__html: highlightMatches(post.title, query),
 										}}
 									/>
 								</h2>
@@ -89,15 +114,15 @@ export default function SearchPage() {
 									variant="secondary"
 									className="shrink-0 bg-gray-100 text-gray-600 capitalize transition-colors group-hover:bg-primary-50 group-hover:text-primary-600"
 								>
-									r/{post.category}
+									@{post.category}
 								</Badge>
 							</div>
 
 							{/* Excerpt with highlights */}
 							<div
 								className="mb-4 line-clamp-2 text-gray-600 text-sm leading-relaxed"
-								// biome-ignore lint/security/noDangerouslySetInnerHtml: Sanitized by Postres ts_headline but caution needed
-								dangerouslySetInnerHTML={{ __html: post.excerpt }}
+								// biome-ignore lint/security/noDangerouslySetInnerHtml: Sanitized with DOMPurify
+								dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.excerpt) }}
 							/>
 
 							<div className="flex items-center justify-between text-gray-500 text-xs">

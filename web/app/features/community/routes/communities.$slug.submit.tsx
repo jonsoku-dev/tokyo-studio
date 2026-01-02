@@ -68,12 +68,12 @@ export default function SubmitPost() {
 	const isSubmitting = fetcher.state !== "idle";
 
 	return (
-		<div className="mx-auto max-w-3xl py-6 sm:py-12">
+		<div className="mx-auto">
 			<div className="mb-6 flex items-center justify-between">
 				<h1 className="font-bold text-2xl text-gray-900 tracking-tight">
 					게시글 작성
 					<span className="ml-2 font-normal text-gray-500 text-sm">
-						in r/{community.slug}
+						in @{community.slug}
 					</span>
 				</h1>
 			</div>

@@ -64,8 +64,8 @@ export default function PostDetail() {
 						<VoteControl
 							id={post.id}
 							type="post"
-							initialScore={post.score || 0}
-							initialVote={post.userVote}
+							currentScore={post.score || 0}
+							currentVote={post.userVote ?? 0}
 						/>
 					</div>
 
@@ -78,7 +78,7 @@ export default function PostDetail() {
 									to={`/communities/${post.category || "general"}`}
 									className="flex items-center gap-1.5 rounded-full bg-gray-100 px-2 py-0.5 font-bold text-gray-900 transition-colors hover:bg-gray-200"
 								>
-									r/{post.category || "general"}
+									@{post.category || "general"}
 								</Link>
 								<span>•</span>
 								<div className="flex items-center gap-1">
@@ -132,8 +132,8 @@ export default function PostDetail() {
 								<VoteControl
 									id={post.id}
 									type="post"
-									initialScore={post.score || 0}
-									initialVote={post.userVote}
+									currentScore={post.score || 0}
+									currentVote={post.userVote ?? 0}
 									horizontal
 								/>
 							</div>

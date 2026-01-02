@@ -1,6 +1,16 @@
 import { motion } from "framer-motion";
-import { Check, ChevronLeft, MoreHorizontal, Share2 } from "lucide-react";
+import { Check, ChevronLeft, Flag, MoreHorizontal, Settings, Share2 } from "lucide-react";
 import { Link, Outlet, useFetcher, useLoaderData } from "react-router";
+import { toast } from "sonner";
+import {
+	Dropdown,
+	DropdownContent,
+	DropdownCustomTrigger,
+	DropdownItem,
+	DropdownLink,
+	DropdownSeparator,
+} from "~/shared/components/ui/Dropdown";
+import { OwnerBadge } from "~/shared/components/ui/OwnerBadge";
 import { getUserId } from "../../auth/utils/session.server";
 import { CommunitySidebar } from "../components/CommunitySidebar";
 import {
@@ -35,7 +45,7 @@ export function meta({ data }: Route.MetaArgs) {
 		return [{ title: "커뮤니티를 찾을 수 없습니다" }];
 	}
 	return [
-		{ title: `r/${data.community.slug} - ${data.community.name}` },
+		{ title: `${data.community.name} - Japan IT Job` },
 		{ name: "description", content: data.community.description || "" },
 	];
 }
@@ -49,23 +59,35 @@ export default function CommunityLayout() {
 	const optimisticJoined = fetcher.formData
 		? fetcher.formData.get("intent") === "join"
 		: isJoined;
+	const isOwner = userRole === "owner";
+
+	const handleShare = async () => {
+		try {
+			await navigator.clipboard.writeText(window.location.href);
+			toast.success("링크가 복사되었습니다!");
+		} catch {
+			toast.error("링크 복사에 실패했습니다.");
+		}
+	};
 
 	return (
 		<div className="min-h-screen bg-gray-50 pb-20">
-			{/* Banner Region */}
-			<div className="relative h-48 w-full overflow-hidden md:h-64 lg:h-80">
+			{/* Banner Region - Compact, clean design */}
+			<div className="relative h-32 w-full overflow-hidden md:h-40 lg:h-48">
 				{community.bannerUrl ? (
 					<motion.div
-						initial={{ scale: 1.05 }}
+						initial={{ scale: 1.02 }}
 						animate={{ scale: 1 }}
-						transition={{ duration: 1.5, ease: "easeOut" }}
+						transition={{ duration: 1, ease: "easeOut" }}
 						className="absolute inset-0 bg-center bg-cover"
 						style={{ backgroundImage: `url(${community.bannerUrl})` }}
 					/>
 				) : (
-					<div className="absolute inset-0 bg-gradient-to-r from-primary-600 via-indigo-600 to-primary-800" />
+					<>
+						<div className="absolute inset-0 bg-gradient-to-br from-primary-500 via-primary-600 to-indigo-700" />
+						<div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
+					</>
 				)}
-				<div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 to-transparent" />
 			</div>
 
 			{/* Sticky Header */}
@@ -102,7 +124,7 @@ export default function CommunityLayout() {
 										{community.name}
 									</h1>
 									<p className="font-medium text-gray-500 text-xs">
-										r/{community.slug}
+										@{community.slug}
 									</p>
 								</div>
 							</div>
@@ -110,63 +132,98 @@ export default function CommunityLayout() {
 
 						{/* Right: Actions */}
 						<div className="flex items-center gap-3">
-							{currentUserId && (
-								<fetcher.Form method="post" action="/api/community/join">
-									<input
-										type="hidden"
-										name="communityId"
-										value={community.id}
-									/>
-									<input
-										type="hidden"
-										name="intent"
-										value={optimisticJoined ? "leave" : "join"}
-									/>
-									<button
-										type="submit"
-										disabled={isPending}
-										className={`group relative overflow-hidden rounded-full px-5 py-1.5 font-semibold text-sm transition-all duration-300 ${
-											optimisticJoined
-												? "border border-gray-200 bg-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50"
-												: "bg-primary-600 text-white shadow-md shadow-primary-500/20 hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/30"
-										}`}
-									>
-										<span className="relative z-10 flex items-center gap-1.5">
-											{isPending ? (
-												<span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-											) : optimisticJoined ? (
-												<>
-													<span>Joined</span>
-													<Check className="h-3.5 w-3.5" />
-												</>
-											) : (
-												"Join Community"
-											)}
-										</span>
-									</button>
-								</fetcher.Form>
-							)}
+							{currentUserId &&
+								(isOwner ? (
+									<OwnerBadge size="sm" />
+								) : (
+									<fetcher.Form method="post" action="/api/community/join">
+										<input
+											type="hidden"
+											name="communityId"
+											value={community.id}
+										/>
+										<input
+											type="hidden"
+											name="intent"
+											value={optimisticJoined ? "leave" : "join"}
+										/>
+										<button
+											type="submit"
+											disabled={isPending}
+											className={`group relative overflow-hidden rounded-full px-5 py-1.5 font-semibold text-sm transition-all duration-300 ${
+												optimisticJoined
+													? "border border-gray-200 bg-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50"
+													: "bg-primary-600 text-white shadow-md shadow-primary-500/20 hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/30"
+											}`}
+										>
+											<span className="relative z-10 flex items-center gap-1.5">
+												{isPending ? (
+													<span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+												) : optimisticJoined ? (
+													<>
+														<span>Joined</span>
+														<Check className="h-3.5 w-3.5" />
+													</>
+												) : optimisticJoined ? (
+													<>
+														<span>Joined</span>
+														<Check className="h-3.5 w-3.5" />
+													</>
+												) : (
+													"Join Community"
+												)}
+											</span>
+										</button>
+									</fetcher.Form>
+								))}
+							{/* Share Button */}
 							<button
 								type="button"
+								onClick={handleShare}
 								className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600"
 								aria-label="Share Community"
 							>
 								<Share2 className="h-4 w-4" />
 							</button>
-							<button
-								type="button"
-								className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 lg:hidden"
-								aria-label="Community Menu"
-							>
-								<MoreHorizontal className="h-4 w-4" />
-							</button>
+
+							{/* Mobile Menu */}
+							<Dropdown>
+								<DropdownCustomTrigger className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 lg:hidden">
+									<MoreHorizontal className="h-4 w-4" />
+									<span className="sr-only">Community Menu</span>
+								</DropdownCustomTrigger>
+								<DropdownContent anchor="bottom end">
+									<DropdownItem onClick={handleShare}>
+										<Share2 className="h-4 w-4" />
+										공유하기
+									</DropdownItem>
+									{isOwner && (
+										<>
+											<DropdownSeparator />
+											<DropdownLink to={`/communities/${community.slug}/settings`}>
+												<Settings className="h-4 w-4" />
+												커뮤니티 설정
+											</DropdownLink>
+										</>
+									)}
+									{!isOwner && currentUserId && (
+										<>
+											<DropdownSeparator />
+											<DropdownItem>
+												<Flag className="h-4 w-4 text-red-500" />
+												신고하기
+											</DropdownItem>
+										</>
+									)}
+								</DropdownContent>
+							</Dropdown>
 						</div>
 					</div>
 				</div>
 			</header>
 
 			{/* Main Content Layout */}
-			<div className="mx-auto max-w-7xl px-4 py-8 lg:px-6">
+			<div className="mx-auto py-8">
 				<div className="grid gap-8 lg:grid-cols-12">
 					{/* Left Content Area (Feed/Detail) */}
 					<main className="min-w-0 lg:col-span-8" id="main-content">

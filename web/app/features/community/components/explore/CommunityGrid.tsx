@@ -14,7 +14,7 @@ interface Community {
 
 interface CommunityGridProps {
 	communities: Community[];
-	myCommunities: { id: string }[];
+	myCommunities: { id: string; role?: string | null }[];
 	nextCursor?: string | null;
 	loadMore?: () => void;
 	isLoadingMore?: boolean;
@@ -57,7 +57,9 @@ export function CommunityGrid({
 				className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
 			>
 				{communities.map((community) => {
-					const isJoined = myCommunities.some((c) => c.id === community.id);
+					const membership = myCommunities.find((c) => c.id === community.id);
+					const isJoined = !!membership;
+					const isOwner = membership?.role === "owner";
 					return (
 						<motion.div
 							key={community.id}
@@ -66,7 +68,7 @@ export function CommunityGrid({
 							animate="show"
                             layout
 						>
-							<CommunityCard community={community} isJoined={isJoined} />
+							<CommunityCard community={community} isJoined={isJoined} isOwner={isOwner} />
 						</motion.div>
 					);
 				})}

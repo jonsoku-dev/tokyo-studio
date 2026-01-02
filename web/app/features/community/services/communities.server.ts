@@ -5,6 +5,7 @@ import {
 	communityMembers,
 	communityPosts,
 	communityRules,
+	postVotes,
 	users,
 } from "@itcom/db/schema";
 import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
@@ -274,6 +275,7 @@ export type SortBy = "new" | "hot" | "top";
 export async function getCommunityPosts(
 	communityId: string,
 	sortBy: SortBy = "new",
+	userId?: string | null,
 	limit = 25,
 ) {
 	const orderBy =
@@ -303,9 +305,19 @@ export async function getCommunityPosts(
 				name: users.name,
 				avatarUrl: users.avatarUrl,
 			},
+			userVote: userId ? postVotes.voteType : sql<number | null>`NULL`,
 		})
 		.from(communityPosts)
 		.leftJoin(users, eq(communityPosts.authorId, users.id))
+		.leftJoin(
+			postVotes,
+			userId
+				? and(
+						eq(postVotes.postId, communityPosts.id),
+						eq(postVotes.userId, userId),
+					)
+				: sql`false`,
+		)
 		.where(eq(communityPosts.communityId, communityId))
 		.orderBy(desc(communityPosts.isPinned), orderBy)
 		.limit(limit);
