@@ -60,6 +60,7 @@ jobs:
         working-directory: web
         env:
           ENABLE_EXPERIMENTAL_COREPACK: "1"
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
 
       - name: Deploy to Vercel (Preview)
         if: github.event.inputs.environment != 'production' && github.ref != 'refs/heads/main'
