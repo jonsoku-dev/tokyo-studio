@@ -112,7 +112,7 @@ function SceneManager() {
 
 export function Global3DBackground() {
 	return (
-		<div className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-gradient-to-b from-gray-50/50 to-white/50">
+		<div className="pointer-events-none fixed inset-0 z-[-10] overflow-hidden bg-gradient-to-b from-gray-50/50 to-white/50">
 			<Canvas
 				camera={{ position: [0, 2, 5], fov: 60 }}
 				dpr={[1, 1.5]} // Performance limit
