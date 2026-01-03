@@ -4,5 +4,10 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+	plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+	ssr: {
+		// Bundle these packages instead of externalizing them
+		// Required for Vercel Serverless to find workspace packages
+		noExternal: ["@itcom/db"],
+	},
 });
