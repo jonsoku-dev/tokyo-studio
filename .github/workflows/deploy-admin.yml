@@ -55,6 +55,8 @@ jobs:
       - name: Build Project Artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: admin
+        env:
+          ENABLE_EXPERIMENTAL_COREPACK: "1"
 
       - name: Deploy to Vercel (Preview)
         if: github.event.inputs.environment != 'production' && github.ref != 'refs/heads/main'
