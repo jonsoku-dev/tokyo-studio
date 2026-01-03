@@ -35,6 +35,7 @@
 		"@tanstack/react-query": "^5.90.14",
 		"@tanstack/react-query-devtools": "^5.91.2",
 		"@tosspayments/payment-widget-sdk": "^0.12.1",
+		"@vercel/analytics": "^1.6.1",
 		"@vercel/react-router": "^1.2.4",
 		"bcryptjs": "^3.0.3",
 		"cheerio": "^1.1.2",
