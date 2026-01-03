@@ -10,7 +10,7 @@ import {
 	addFavorite,
 	getUserFavorites,
 	removeFavorite,
-} from "./api.favorites.server";
+} from "./api.favorites";
 
 export const loader = loaderHandler(async ({ request }: LoaderFunctionArgs) => {
 	// 사용자 ID 가져오기 (실제 구현 시 세션에서 가져옴)

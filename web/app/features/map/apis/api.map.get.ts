@@ -3,7 +3,7 @@ import { loaderHandler } from "~/shared/lib";
 import {
 	getLocationSuggestions,
 	getLocations,
-} from "./api.map.locations.server";
+} from "./api.map.locations";
 
 export const loader = loaderHandler(async ({ request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url);

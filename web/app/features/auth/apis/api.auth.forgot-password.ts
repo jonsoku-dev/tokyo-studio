@@ -1,15 +1,15 @@
 import type { ActionFunctionArgs } from "react-router";
-import { passwordResetService } from "~/features/auth/services/password-reset.server";
+import { passwordResetService } from "../services/password-reset.server";
 import {
 	checkPasswordResetRateLimit,
 	getRateLimitErrorMessage,
 	recordPasswordResetAttempt,
-} from "~/features/auth/services/password-reset-limiter.server";
+} from "../services/password-reset-limiter.server";
 import {
 	getIpAddress,
 	getUserAgent,
 	logPasswordResetEvent,
-} from "~/features/auth/services/password-reset-logger.server";
+} from "../services/password-reset-logger.server";
 import { actionHandler, BadRequestError, RateLimitError } from "~/shared/lib";
 
 /**

@@ -1,5 +1,5 @@
 import { redirect } from "react-router";
-import { authenticator } from "~/features/auth/services/auth.server";
+import { authenticator } from "../services/auth.server";
 import { actionHandler, loaderHandler } from "~/shared/lib";
 import type { Route } from "./+types/api.line.server";
 

@@ -6,13 +6,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
 	plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
 	ssr: {
-		// Externalize server-only packages
+		// Bundle these packages into the server build for Vercel
 		noExternal: ["@itcom/db"],
-	},
-	build: {
-		// Ensure server modules are not bundled into client
-		rollupOptions: {
-			external: [/\.server\.(ts|tsx)$/],
-		},
 	},
 });

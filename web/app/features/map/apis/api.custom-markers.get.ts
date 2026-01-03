@@ -11,7 +11,7 @@ import {
 	deleteCustomMarker,
 	getUserCustomMarkers,
 	updateCustomMarker,
-} from "./api.custom-markers.server";
+} from "./api.custom-markers";
 
 export const loader = loaderHandler(async ({ request }: LoaderFunctionArgs) => {
 	const userId = request.headers.get("X-User-Id");
