@@ -15,7 +15,7 @@ export function Shell({ children, showSidebar = true }: ShellProps) {
 	const isSuccess = fetcher.data?.success;
 
 	return (
-		<div className="flex min-h-screen flex-col bg-surface">
+		<div className="flex min-h-screen flex-col">
 			{isUnverified && !isSuccess && (
 				<div className="bg-primary-500 px-4 py-2 text-center font-medium text-sm text-white">
 					Please verify your email address to access all features. Don't see the

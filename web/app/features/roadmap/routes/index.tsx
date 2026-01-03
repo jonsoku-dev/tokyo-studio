@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { data, Link, redirect } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
+import { PageHeader } from "~/shared/components/layout/PageHeader";
 import { KanbanBoard, type KanbanColumnConfig } from "../components";
 import { useRoadmapQuery } from "../hooks/useRoadmapQuery";
 import {
@@ -92,86 +93,94 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 	];
 
 	return (
-		<div>
-			{/* Header */}
-			<div className="sticky top-0 z-10 border-gray-200 border-b bg-white">
-				<div className="px-4 py-4 sm:py-6">
-					<div className="flex items-center justify-between">
-						<div>
-							<h1 className="sm:heading-3 text-xl tracking-tight">
-								나의 로드맵
-							</h1>
-							<p className="sm:caption mt-1 font-medium text-xs">
-								{profile.jobFamily} · {profile.level} · 일본어 {profile.jpLevel}
-							</p>
-							<div className="mt-1 flex items-center gap-2">
-								<Link
-									to="/onboarding/result"
-									className="rounded-full bg-primary-100 px-2 py-0.5 font-medium text-primary-700 text-xs transition-colors hover:bg-primary-200"
-								>
-									진단 결과
-								</Link>
-								<Link
-									to="/onboarding/assessment"
-									className="rounded-full bg-gray-100 px-2 py-0.5 font-medium text-gray-600 text-xs transition-colors hover:bg-gray-200"
-								>
-									진단 수정
-								</Link>
-							</div>
-						</div>
-						<div className="flex items-center gap-4">
-							{/* Progress */}
-							<div className="hidden text-right sm:block">
-								<p className="caption font-medium">전체 진행률</p>
-								<p className="heading-4 text-indigo-600">
-									{displayProgress.percent}%
-								</p>
-							</div>
-							<div className="h-2.5 w-24 overflow-hidden rounded-full bg-gray-100 sm:w-32">
-								<div
-									className="h-full rounded-full bg-indigo-600 transition-all duration-500 ease-out"
-									style={{ width: `${displayProgress.percent}%` }}
-								/>
-							</div>
-						</div>
-					</div>
-
-					{/* Category Progress */}
-					<div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-						{(
-							["Learning", "Application", "Preparation", "Settlement"] as const
-						).map((cat) => (
-							<div
-								key={cat}
-								className="rounded-lg border border-gray-100/50 bg-gray-50/50 p-2.5"
+		<div className="flex flex-col gap-6">
+			{/* Sticky Header Wrapper */}
+			<div className="sticky top-0 z-10 -mx-4 -mt-4 bg-white/95 px-4 pt-4 backdrop-blur-sm sm:-mx-6 sm:-mt-6 sm:px-6 sm:pt-6 lg:-mx-8 lg:-mt-8 lg:px-8 lg:pt-8">
+				<PageHeader
+					title="나의 로드맵"
+					description={`${profile.jobFamily} · ${profile.level} · 일본어 ${profile.jpLevel}`}
+					actions={
+						<div className="flex items-center gap-2">
+							<Link
+								to="/onboarding/result"
+								className="rounded-full bg-primary-50 px-3 py-1 font-medium text-primary-700 text-sm transition-colors hover:bg-primary-100"
 							>
-								<div className="mb-1.5 flex items-center justify-between">
-									<span className="font-semibold text-gray-600 text-xs">
-										{cat}
-									</span>
-									<span className="font-medium text-[10px] text-gray-400">
-										{displayProgress.byCategory[cat].completed}/
-										{displayProgress.byCategory[cat].total}
-									</span>
-								</div>
-								<div className="h-1 w-full rounded-full bg-gray-200/50">
-									<div
-										className="h-1 rounded-full bg-indigo-500 text-[0px]"
-										style={{
-											width: `${displayProgress.byCategory[cat].percent}%`,
-										}}
-									>
-										.
+								진단 결과
+							</Link>
+							<Link
+								to="/onboarding/assessment"
+								className="rounded-full bg-gray-100 px-3 py-1 font-medium text-gray-600 text-sm transition-colors hover:bg-gray-200"
+							>
+								진단 수정
+							</Link>
+						</div>
+					}
+					className="border-none pb-4"
+				>
+					{/* Dashboard / Stats Area */}
+					<div className="rounded-xl border border-gray-200 bg-gray-50/50 p-4">
+						<div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-8">
+							{/* Overall Progress */}
+							<div className="flex shrink-0 items-center gap-4 lg:w-64">
+								<div className="flex-1">
+									<div className="mb-2 flex items-baseline justify-between">
+										<p className="font-semibold text-gray-700 text-sm">
+											전체 진행률
+										</p>
+										<p className="font-bold text-indigo-600 text-lg">
+											{displayProgress.percent}%
+										</p>
+									</div>
+									<div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-200">
+										<div
+											className="h-full rounded-full bg-indigo-600 transition-all duration-500 ease-out"
+											style={{ width: `${displayProgress.percent}%` }}
+										/>
 									</div>
 								</div>
+								<div className="hidden h-10 w-px bg-gray-200 lg:block" />
 							</div>
-						))}
+
+							{/* Category Progress */}
+							<div className="grid flex-1 grid-cols-2 gap-4 sm:grid-cols-4">
+								{(
+									[
+										"Learning",
+										"Application",
+										"Preparation",
+										"Settlement",
+									] as const
+								).map((cat) => (
+									<div key={cat} className="group">
+										<div className="mb-2 flex items-center justify-between">
+											<span className="font-medium text-gray-600 text-xs transition-colors group-hover:text-gray-900">
+												{cat}
+											</span>
+											<span className="font-medium text-[10px] text-gray-400">
+												{displayProgress.byCategory[cat].completed}/
+												{displayProgress.byCategory[cat].total}
+											</span>
+										</div>
+										<div className="h-1.5 w-full rounded-full bg-gray-200/50">
+											<div
+												className="h-1.5 rounded-full bg-indigo-500 transition-all duration-300 group-hover:bg-indigo-600"
+												style={{
+													width: `${displayProgress.byCategory[cat].percent}%`,
+												}}
+											/>
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
 					</div>
-				</div>
+				</PageHeader>
 			</div>
 
 			{/* Kanban Board */}
-			<KanbanBoard tasks={displayTasks} columns={columns} />
+			<div className="min-h-[500px]">
+				<KanbanBoard tasks={displayTasks} columns={columns} />
+			</div>
 		</div>
 	);
 }

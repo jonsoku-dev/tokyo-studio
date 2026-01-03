@@ -9,13 +9,13 @@ export function StepValues() {
 	return (
 		<div className="space-y-8">
 			<div className="space-y-1">
-				<h2 className="heading-4 text-gray-900">
-					직장을 선택할 때 가장 중요한 기준은?
-				</h2>
-				<p className="text-gray-500 text-sm">최대 3개까지 선택해 주세요.</p>
+				<h2 className="heading-4 text-gray-900">직장 선택의 핵심 가치</h2>
+				<p className="body-sm text-gray-500">
+					본인에게 가장 중요한 3가지 가치를 선택해주세요.
+				</p>
 			</div>
 
-			<div className="grid grid-cols-2 gap-3 sm:grid-cols-2">
+			<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
 				{WORK_VALUES.map((val) => {
 					const isSelected = formData.workValues.includes(val.value);
 					return (
@@ -24,10 +24,10 @@ export function StepValues() {
 							type="button"
 							onClick={() => toggleWorkValue(val.value)}
 							className={clsx(
-								"relative flex flex-col items-start rounded-xl border p-4 text-left transition-all",
+								"relative flex flex-col items-start rounded-xl border p-4 text-left transition-all duration-200",
 								isSelected
-									? "border-primary-500 bg-primary-50 ring-1 ring-primary-500"
-									: "border-gray-200 hover:border-gray-300 hover:bg-gray-50",
+									? "border-primary-500 bg-primary-50 shadow-sm ring-1 ring-primary-500"
+									: "border-gray-200 bg-white hover:border-primary-200 hover:shadow-md",
 							)}
 						>
 							<div className="flex w-full items-center justify-between">
@@ -39,16 +39,31 @@ export function StepValues() {
 								>
 									{val.label}
 								</span>
-								{isSelected && <Check className="h-4 w-4 text-primary-600" />}
+								{isSelected && (
+									<div className="rounded-full bg-primary-100 p-0.5">
+										<Check className="h-3 w-3 text-primary-600" />
+									</div>
+								)}
 							</div>
-							<span className="mt-1 text-gray-500 text-xs">{val.desc}</span>
+							<span className="mt-1.5 text-gray-500 text-xs leading-relaxed">
+								{val.desc}
+							</span>
 						</button>
 					);
 				})}
 			</div>
 
-			<div className="text-right text-gray-500 text-xs">
-				{formData.workValues.length} / 3 선택됨
+			<div className="flex justify-end">
+				<span
+					className={clsx(
+						"font-medium text-xs",
+						formData.workValues.length === 3
+							? "text-primary-600"
+							: "text-gray-400",
+					)}
+				>
+					{formData.workValues.length} / 3 선택됨
+				</span>
 			</div>
 		</div>
 	);

@@ -76,11 +76,11 @@ export function AssessmentWizard({ defaultValues }: AssessmentWizardProps) {
 	};
 
 	return (
-		<div className="mx-auto w-full max-w-2xl">
+		<div className="mx-auto w-full max-w-3xl">
 			{/* Progress Bar */}
 			<AssessmentProgress />
 
-			<div className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-responsive shadow-sm">
+			<div className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-responsive shadow-lg">
 				<AnimatePresence mode="wait">
 					{step === 1 && <StepCareer />}
 					{step === 2 && <StepLanguage />}
@@ -90,21 +90,25 @@ export function AssessmentWizard({ defaultValues }: AssessmentWizardProps) {
 					{step === 6 && <StepPreferences />}
 				</AnimatePresence>
 
-				<div className="mt-8 flex justify-between border-gray-100 border-t pt-6">
+				<div className="mt-8 flex justify-between border-gray-100 border-t pt-8">
 					<Button
 						variant="ghost"
 						onClick={prevStep}
 						disabled={step === 1 || isSubmitting}
 						className={clsx(step === 1 && "invisible")}
 					>
-						이전
+						이전 단계
 					</Button>
-					<Button onClick={handleNext} disabled={isSubmitting}>
+					<Button
+						onClick={handleNext}
+						disabled={isSubmitting}
+						className="min-w-[120px]"
+					>
 						{step === totalSteps
 							? isSubmitting
-								? "계획 생성 중..."
-								: "진단 완료하기"
-							: "다음 단계"}
+								? "분석 중..."
+								: "결과 확인하기"
+							: "다음으로"}
 					</Button>
 				</div>
 			</div>

@@ -1,11 +1,6 @@
+import { clsx } from "clsx";
 import { motion } from "framer-motion";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "~/shared/components/ui/Select";
+import { Check } from "lucide-react";
 import {
 	CITIES,
 	EN_LEVELS,
@@ -27,73 +22,80 @@ export function StepPreferences() {
 			className="space-y-8"
 		>
 			<div className="space-y-1">
-				<h2 className="heading-4 text-gray-900">
-					선호하시는 근무 지역은 어디인가요?
-				</h2>
-				<p className="text-gray-500 text-sm">
-					원하시는 지역을 기반으로 회사를 추천해 드립니다.
+				<h2 className="heading-4 text-gray-900">희망 근무지 설정</h2>
+				<p className="body-sm text-gray-500">
+					라이프스타일에 맞는 최적의 근무지를 선택해주세요.
 				</p>
 			</div>
 
 			<div className="space-y-4">
-				<label
-					htmlFor="target-city-select"
-					className="block font-medium text-gray-900 text-sm"
-				>
-					희망 도시
-				</label>
-				<Select
-					value={formData.targetCity}
-					onValueChange={(val) => updateField("targetCity", val)}
-				>
-					<SelectTrigger id="target-city-select">
-						<SelectValue placeholder="희망 도시를 선택해주세요" />
-					</SelectTrigger>
-					<SelectContent>
-						{CITIES.map((city) => (
-							<SelectItem key={city.value} value={city.value}>
-								{city.label}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
+				<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+					{CITIES.map((city) => (
+						<button
+							key={city.value}
+							type="button"
+							onClick={() => updateField("targetCity", city.value)}
+							className={clsx(
+								"relative flex flex-col items-start rounded-xl border p-4 text-left transition-all duration-200",
+								formData.targetCity === city.value
+									? "border-primary-500 bg-primary-50 shadow-sm ring-1 ring-primary-500"
+									: "border-gray-200 bg-white hover:border-primary-200 hover:shadow-md",
+							)}
+						>
+							<div className="flex w-full items-center justify-between">
+								<span
+									className={clsx(
+										"font-semibold text-sm",
+										formData.targetCity === city.value
+											? "text-primary-700"
+											: "text-gray-900",
+									)}
+								>
+									{city.label}
+								</span>
+								{formData.targetCity === city.value && (
+									<div className="rounded-full bg-primary-100 p-0.5">
+										<Check className="h-3 w-3 text-primary-600" />
+									</div>
+								)}
+							</div>
+							<span className="mt-1.5 text-gray-500 text-xs leading-relaxed">
+								{city.desc}
+							</span>
+						</button>
+					))}
+				</div>
 			</div>
 
-			<div className="rounded-xl border border-gray-100 bg-gray-50 p-5">
-				<h3 className="mb-3 font-semibold text-gray-900 text-sm">
-					입력 정보 요약
-				</h3>
-				<dl className="space-y-2 text-sm">
-					<div className="flex justify-between">
-						<dt className="text-gray-500">직무/레벨</dt>
-						<dd className="font-medium text-gray-900">
+			<div className="rounded-2xl border border-gray-200 bg-gray-50/50 p-6 backdrop-blur-sm">
+				<h3 className="mb-4 font-semibold text-gray-900 text-sm">진단 요약</h3>
+				<dl className="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+					<div>
+						<dt className="text-gray-500 text-xs">희망 직무</dt>
+						<dd className="mt-1 font-medium text-gray-900 text-sm">
 							{JOB_FAMILIES.find((j) => j.value === formData.jobFamily)
-								?.label || formData.jobFamily}{" "}
-							(
-							{LEVELS.find((l) => l.value === formData.level)?.label ||
-								formData.level}
-							)
+								?.label || formData.jobFamily}
 						</dd>
 					</div>
-					<div className="flex justify-between">
-						<dt className="text-gray-500">일본어</dt>
-						<dd className="font-medium text-gray-900">
+					<div>
+						<dt className="text-gray-500 text-xs">현재 레벨</dt>
+						<dd className="mt-1 font-medium text-gray-900 text-sm">
+							{LEVELS.find((l) => l.value === formData.level)?.label ||
+								formData.level}
+						</dd>
+					</div>
+					<div>
+						<dt className="text-gray-500 text-xs">일본어 능력</dt>
+						<dd className="mt-1 font-medium text-gray-900 text-sm">
 							{JP_LEVELS.find((l) => l.value === formData.jpLevel)?.label ||
 								formData.jpLevel}
 						</dd>
 					</div>
-					<div className="flex justify-between">
-						<dt className="text-gray-500">영어</dt>
-						<dd className="font-medium text-gray-900">
+					<div>
+						<dt className="text-gray-500 text-xs">영어 능력</dt>
+						<dd className="mt-1 font-medium text-gray-900 text-sm">
 							{EN_LEVELS.find((l) => l.value === formData.enLevel)?.label ||
 								formData.enLevel}
-						</dd>
-					</div>
-					<div className="flex justify-between">
-						<dt className="text-gray-500">희망 도시</dt>
-						<dd className="font-medium text-gray-900">
-							{CITIES.find((c) => c.value === formData.targetCity)?.label ||
-								formData.targetCity}
 						</dd>
 					</div>
 				</dl>

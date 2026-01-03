@@ -168,11 +168,13 @@
 
 	body {
 		font-family: var(--font-sans);
-		background-color: var(--color-white);
+		/* background-color: var(--color-white); */
+		background-color: transparent;
 		color: var(--color-gray-950);
 
 		@variant dark {
-			background-color: var(--color-gray-950);
+			/* background-color: var(--color-gray-950); */
+			background-color: transparent;
 			color: var(--color-gray-50);
 		}
 	}
@@ -618,6 +620,4 @@
 		-webkit-print-color-adjust: exact;
 		print-color-adjust: exact;
 	}
-
-
 }

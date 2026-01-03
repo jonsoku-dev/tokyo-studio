@@ -1,8 +1,12 @@
+import { RotateCcw } from "lucide-react";
 import type { LoaderFunctionArgs } from "react-router";
-import { useLoaderData } from "react-router";
+import { useFetcher, useLoaderData } from "react-router";
 import { requireUserId } from "~/features/auth/utils/session.server";
+import { PageHeader } from "~/shared/components/layout/PageHeader";
+import { Button } from "~/shared/components/ui/Button";
 import { loaderHandler } from "~/shared/lib";
 import { DashboardGrid } from "../components/DashboardGrid";
+import { WidgetGallery } from "../components/WidgetGallery";
 import * as dashboardService from "../domain/dashboard.service.server";
 import * as widgetConfigService from "../domain/widget-config.service.server";
 import * as widgetDataService from "../domain/widget-data.service.server";
@@ -120,6 +124,7 @@ export const loader = loaderHandler(async ({ request }: LoaderFunctionArgs) => {
  */
 export default function Home() {
 	const data = useLoaderData<typeof loader>();
+	const fetcher = useFetcher();
 
 	// loaderHandler returns ApiResponse, so we need to check success
 	if (!data.success) {
@@ -132,13 +137,38 @@ export default function Home() {
 		);
 	}
 
+	const handleReset = () => {
+		fetcher.submit(
+			{ action: "reset" },
+			{ method: "post", action: "/api/dashboard/widgets" },
+		);
+	};
+
+	// Generate a simple key to force re-mount when widgets structure changes (e.g. reset)
+	const widgetsKey = JSON.stringify(data.data.widgets.map((w) => w.id));
+
 	return (
 		<div className="relative min-h-screen">
 			<div className="relative z-10">
-				<DashboardGrid
-					initialWidgets={data.data.widgets}
-					widgetData={data.data.widgetData}
-				/>
+				<PageHeader
+					title="대시보드"
+					description="일본 취업의 모든 것이 한눈에"
+					actions={
+						<div className="flex gap-2">
+							<WidgetGallery />
+							<Button variant="outline" size="sm" onClick={handleReset}>
+								<RotateCcw className="mr-2 h-4 w-4" />
+								초기화
+							</Button>
+						</div>
+					}
+				>
+					<DashboardGrid
+						key={widgetsKey}
+						initialWidgets={data.data.widgets}
+						widgetData={data.data.widgetData}
+					/>
+				</PageHeader>
 			</div>
 		</div>
 	);

@@ -72,8 +72,8 @@ export default function OnboardingAssessment({
 	return (
 		<div className="stack-lg mx-auto max-w-2xl">
 			<PageHeader
-				title="나만의 커리어 전략 수립"
-				description="3가지 간단한 질문에 답하고 맞춤형 로드맵을 받아보세요."
+				title="커리어 심층 진단"
+				description="정확한 커리어 로드맵 설계를 위해 몇 가지 핵심 질문에 답변해주세요."
 				className="text-center"
 			/>
 			<AssessmentWizard defaultValues={loaderData.existingProfile} />

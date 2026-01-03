@@ -16,14 +16,10 @@ import {
 	sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import type { WidgetLayout } from "@itcom/db/schema";
-import { RotateCcw } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { useFetcher, useRevalidator } from "react-router";
-import { Button } from "~/shared/components/ui/Button";
 import { useDashboardStore } from "../stores/dashboard.store";
 import type { WidgetData } from "../types/widget-data.types";
 import { SaveChangesBar } from "./SaveChangesBar";
-import { Simple3DIcon } from "./Simple3DIcon";
 import { SortableWidget } from "./SortableWidget";
 import { WidgetCard } from "./WidgetCard";
 import { WidgetGallery } from "./WidgetGallery";
@@ -45,8 +41,6 @@ export function DashboardGrid({
 	initialWidgets,
 	widgetData,
 }: DashboardGridProps) {
-	const fetcher = useFetcher();
-	const revalidator = useRevalidator();
 	const isInitialized = useRef(false);
 
 	// Zustand store
@@ -125,38 +119,9 @@ export function DashboardGrid({
 		[hideWidget],
 	);
 
-	/**
-	 * 초기화 (서버 기본값으로)
-	 */
-	const handleReset = useCallback(() => {
-		fetcher.submit(
-			{ action: "reset" },
-			{ method: "post", action: "/api/dashboard/widgets" },
-		);
-		isInitialized.current = false;
-		revalidator.revalidate();
-	}, [fetcher, revalidator]);
-
 	return (
 		<>
 			<div className="space-y-6 pb-20">
-				{/* 헤더 */}
-				<div className="flex items-center justify-between">
-					<div className="flex items-center gap-2">
-						<Simple3DIcon />
-						<h1 className="font-bold text-2xl tracking-tight text-gray-900">
-							대시보드
-						</h1>
-					</div>
-					<div className="flex gap-2">
-						<WidgetGallery />
-						<Button variant="outline" size="sm" onClick={handleReset}>
-							<RotateCcw className="mr-2 h-4 w-4" />
-							초기화
-						</Button>
-					</div>
-				</div>
-
 				{/* 그리드 */}
 				<DndContext
 					sensors={sensors}
@@ -188,7 +153,7 @@ export function DashboardGrid({
 								widget={widgets.find((w) => w.id === activeId)!}
 								widgetData={widgetData}
 								isDragging
-								className="opacity-90 rotate-2 pointer-events-none"
+								className="pointer-events-none rotate-2 opacity-90"
 							/>
 						) : null}
 					</DragOverlay>
