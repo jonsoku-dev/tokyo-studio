@@ -52,6 +52,9 @@ jobs:
         run: vercel pull --yes --environment=${{ github.event.inputs.environment || 'production' }} --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: web
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Build Project Artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: web
