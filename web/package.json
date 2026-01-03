@@ -16,7 +16,8 @@
 		"db:studio": "drizzle-kit studio",
 		"notifications:process": "node -e \"require('node-fetch').default('http://localhost:5173/api/notifications/process-queue', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.CRON_SECRET, 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'maxBatch=100&dryRun=false' }).then(r => r.json()).then(console.log).catch(console.error)\"",
 		"notifications:process:dry": "node -e \"require('node-fetch').default('http://localhost:5173/api/notifications/process-queue', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.CRON_SECRET, 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'maxBatch=100&dryRun=true' }).then(r => r.json()).then(console.log).catch(console.error)\"",
-		"db:seed": "tsx scripts/seed.ts"
+		"db:seed": "tsx scripts/seed.ts",
+		"db:seed:community": "tsx scripts/seed-community.ts"
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.958.0",
