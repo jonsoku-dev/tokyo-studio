@@ -37,9 +37,13 @@ export function Shell({ children, showSidebar = true }: ShellProps) {
 				</div>
 			)}
 			<Navbar />
-			<div className="container-wide flex flex-1">
+			<div
+				className={`container-wide flex-1 ${
+					showSidebar ? "grid md:grid-cols-[auto_1fr]" : ""
+				}`}
+			>
 				{showSidebar && <SidebarDock />}
-				<main className="min-w-0 flex-1 p-responsive md:px-0 md:pl-24">
+				<main className="min-w-0 flex-1 p-responsive">
 					{children || <Outlet />}
 				</main>
 			</div>

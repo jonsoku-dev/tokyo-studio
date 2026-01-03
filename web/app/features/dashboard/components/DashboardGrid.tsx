@@ -148,9 +148,9 @@ export function DashboardGrid({
 
 					{/* 드래그 오버레이 (Cursor Follower) */}
 					<DragOverlay dropAnimation={null}>
-						{activeId ? (
+						{activeId && widgets.find((w) => w.id === activeId) ? (
 							<WidgetCard
-								widget={widgets.find((w) => w.id === activeId)!}
+								widget={widgets.find((w) => w.id === activeId) as WidgetLayout}
 								widgetData={widgetData}
 								isDragging
 								className="pointer-events-none rotate-2 opacity-90"

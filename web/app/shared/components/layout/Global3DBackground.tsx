@@ -24,7 +24,7 @@ function GridWave({
 	frequency = 0.5,
 	amplitude = 0.2,
 }: GridWaveProps) {
-	const meshRef = useRef<THREE.Mesh>(null!);
+	const meshRef = useRef<THREE.Mesh>(null);
 	// 60x60 segments for smooth but low-poly looking wave
 	// Lower segment count creates "low-poly" look
 	const geometry = useMemo(() => new THREE.PlaneGeometry(20, 10, 40, 20), []);
@@ -34,7 +34,7 @@ function GridWave({
 		return geometry.attributes.position.array.slice();
 	}, [geometry]);
 
-	const { clock, camera } = useThree();
+	const { camera } = useThree();
 
 	useFrame((state) => {
 		if (!meshRef.current) return;

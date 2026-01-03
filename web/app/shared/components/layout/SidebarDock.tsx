@@ -19,19 +19,20 @@ export function SidebarDock() {
 	const mouseY = useMotionValue(Infinity);
 
 	return (
-		<motion.div
-			onMouseMove={(e) => mouseY.set(e.pageY)}
-			onMouseLeave={() => mouseY.set(Infinity)}
-			className={cn(
-				"fixed top-1/2 left-6 z-40 hidden -translate-y-1/2 flex-col items-center gap-2 rounded-2xl border border-gray-200 bg-white/80 py-3 shadow-2xl backdrop-blur-md md:flex dark:border-white/10 dark:bg-black/20",
-				"w-16 overflow-visible",
-			)}
-		>
-			{/* Main Navigation */}
-			{NAVIGATION_ITEMS.map((item) => (
-				<DockIcon key={item.name} mouseY={mouseY} item={item} />
-			))}
-		</motion.div>
+		<aside className="sticky top-0 z-40 hidden h-screen w-24 flex-col items-center justify-center md:flex">
+			<motion.div
+				onMouseMove={(e) => mouseY.set(e.pageY)}
+				onMouseLeave={() => mouseY.set(Infinity)}
+				className={cn(
+					"flex w-16 flex-col items-center gap-2 overflow-visible rounded-2xl border border-gray-200 bg-white/80 py-3 shadow-2xl backdrop-blur-md dark:border-white/10 dark:bg-black/20",
+				)}
+			>
+				{/* Main Navigation */}
+				{NAVIGATION_ITEMS.map((item) => (
+					<DockIcon key={item.name} mouseY={mouseY} item={item} />
+				))}
+			</motion.div>
+		</aside>
 	);
 }
 
@@ -79,7 +80,7 @@ function DockIcon({
 					</motion.div>
 				</Link>
 			</TooltipTrigger>
-			<TooltipContent side="right" className="ml-2">
+			<TooltipContent side="bottom" sideOffset={10}>
 				<p>{item.name}</p>
 			</TooltipContent>
 		</Tooltip>
