@@ -1,6 +1,5 @@
 import type { WidgetId, WidgetLayout } from "@itcom/db/schema";
 import { EyeOff, Maximize2, Minimize2, Settings2 } from "lucide-react";
-import { useFetcher } from "react-router";
 import {
 	Dropdown,
 	DropdownButton,
@@ -13,62 +12,54 @@ import { getWidgetMetadata } from "../config/widget-metadata";
 interface WidgetActionsProps {
 	widgetId: WidgetId;
 	currentSize: WidgetLayout["size"];
+	onResize?: (widgetId: string, newSize: WidgetLayout["size"]) => void;
+	onHide?: (widgetId: string) => void;
 }
 
 /**
  * Widget Actions Menu
  * 위젯별 설정 드롭다운 (크기 조절, 숨기기)
+ * 콜백을 통해 즉시 UI 업데이트
  */
-export function WidgetActions({ widgetId, currentSize }: WidgetActionsProps) {
-	const fetcher = useFetcher();
+export function WidgetActions({
+	widgetId,
+	currentSize,
+	onResize,
+	onHide,
+}: WidgetActionsProps) {
 	const metadata = getWidgetMetadata(widgetId);
 
 	/**
 	 * 크기 변경
 	 */
 	const handleResize = (newSize: WidgetLayout["size"]) => {
-		fetcher.submit(
-			{
-				action: "resize",
-				widgetId,
-				size: newSize,
-			},
-			{
-				method: "post",
-				action: "/api/dashboard/widgets",
-			},
-		);
+		if (onResize) {
+			onResize(widgetId, newSize);
+		}
 	};
 
 	/**
 	 * 위젯 숨기기
 	 */
 	const handleHide = () => {
-		fetcher.submit(
-			{
-				action: "hide",
-				widgetId,
-			},
-			{
-				method: "post",
-				action: "/api/dashboard/widgets",
-			},
-		);
+		if (onHide) {
+			onHide(widgetId);
+		}
 	};
 
-	// 가능한 크기 옵션
+	// 가능한 크기 옵션 (작게 제거)
 	const sizeOptions: Array<{
 		value: WidgetLayout["size"];
 		label: string;
 		icon: typeof Maximize2;
 	}> = [
-		{ value: "compact", label: "작게", icon: Minimize2 },
 		{ value: "standard", label: "보통", icon: Settings2 },
 		{ value: "expanded", label: "크게", icon: Maximize2 },
 	];
 
 	// 현재 위젯이 허용하는 크기 필터링
 	const availableSizes = sizeOptions.filter((option) => {
+		// compact는 UI에서 제외되었으므로 standard부터 시작한다고 가정
 		const sizeOrder = ["compact", "standard", "expanded"];
 		const minIndex = sizeOrder.indexOf(metadata.minSize);
 		const maxIndex = sizeOrder.indexOf(metadata.maxSize);
@@ -90,17 +81,16 @@ export function WidgetActions({ widgetId, currentSize }: WidgetActionsProps) {
 				</div>
 				{availableSizes.map((option) => {
 					const Icon = option.icon;
+					const isActive = currentSize === option.value;
 					return (
 						<DropdownItem
 							key={option.value}
-							disabled={currentSize === option.value}
+							disabled={isActive}
 							onClick={() => handleResize(option.value)}
 						>
 							<Icon className="mr-2 h-4 w-4" />
 							{option.label}
-							{currentSize === option.value && (
-								<span className="ml-auto text-primary-600">✓</span>
-							)}
+							{isActive && <span className="ml-auto text-primary-600">✓</span>}
 						</DropdownItem>
 					);
 				})}

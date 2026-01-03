@@ -13,7 +13,6 @@ import { Button } from "~/shared/components/ui/Button";
 import {
 	Dropdown,
 	DropdownContent,
-	DropdownItem,
 	DropdownLink,
 	DropdownSeparator,
 	DropdownTrigger,
@@ -93,13 +92,13 @@ export function Navbar() {
 
 								<div className="p-1">
 									<Form action="/logout" method="post">
-										<DropdownItem
+										<button
 											type="submit"
-											className="text-red-600 focus:bg-red-50 focus:text-red-700"
+											className="group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-red-600 text-sm outline-none transition-colors hover:bg-red-50 hover:text-red-700"
 										>
 											<LogOut className="h-4 w-4" />
 											Sign out
-										</DropdownItem>
+										</button>
 									</Form>
 								</div>
 							</DropdownContent>

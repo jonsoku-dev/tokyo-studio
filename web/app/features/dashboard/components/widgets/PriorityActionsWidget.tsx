@@ -1,9 +1,11 @@
 import type { WidgetLayout } from "@itcom/db/schema";
 import { AlertCircle, CheckCircle2, Clock } from "lucide-react";
 import { Link } from "react-router";
+import type { WidgetData } from "../../types/widget-data.types";
 
 interface PriorityActionsWidgetProps {
 	size: WidgetLayout["size"];
+	widgetData: WidgetData;
 }
 
 // 우선순위 배지 색상
@@ -30,34 +32,30 @@ const priorityStyles = {
 
 /**
  * Priority Actions Widget (P1)
- * 오늘 완료해야 할 가장 중요한 작업 3개
+ * 오늘 완료해야 할 가장 중요한 작업
  */
 export default function PriorityActionsWidget({
 	size: _size,
+	widgetData,
 }: PriorityActionsWidgetProps) {
-	// TODO: 실제 데이터 fetch
+	const { pendingTasks, upcomingInterviews } = widgetData.priority;
+
+	// 통합된 액션 리스트 생성
 	const actions = [
-		{
-			id: "1",
-			title: "이력서 1차 피드백 반영",
+		...pendingTasks.map((task) => ({
+			id: task.id,
+			title: task.title,
 			dueDate: "오늘",
-			priority: "critical" as const,
-			type: "resume" as const,
-		},
-		{
-			id: "2",
-			title: "ABC 주식회사 1차 면접 준비",
-			dueDate: "내일",
 			priority: "high" as const,
-			type: "interview" as const,
-		},
-		{
-			id: "3",
-			title: "일본어 JLPT N2 접수",
-			dueDate: "3일 후",
-			priority: "medium" as const,
 			type: "task" as const,
-		},
+		})),
+		...upcomingInterviews.map((interview) => ({
+			id: interview.id,
+			title: `${interview.company} ${interview.position} 면접`,
+			dueDate: interview.nextAction || "예정됨",
+			priority: "critical" as const,
+			type: "interview" as const,
+		})),
 	];
 
 	const maxItems = _size === "compact" ? 2 : 3;
@@ -72,7 +70,7 @@ export default function PriorityActionsWidget({
 				return (
 					<Link
 						key={action.id}
-						to={getActionLink(action.type)}
+						to={getActionLink(action.type, action.id)}
 						className="group block rounded-lg border border-gray-200 p-3 transition-all hover:border-primary-300 hover:bg-primary-50/30"
 					>
 						<div className="flex items-start gap-3">
@@ -140,12 +138,12 @@ export default function PriorityActionsWidget({
 /**
  * 액션 타입에 따른 링크 생성
  */
-function getActionLink(type: string): string {
+function getActionLink(type: string, id: string): string {
 	switch (type) {
 		case "resume":
-			return "/documents";
+			return `/documents/${id}`;
 		case "interview":
-			return "/pipeline";
+			return `/pipeline/${id}`;
 		case "task":
 			return "/roadmap";
 		default:

@@ -5,6 +5,7 @@ import { loaderHandler } from "~/shared/lib";
 import { DashboardGrid } from "../components/DashboardGrid";
 import * as dashboardService from "../domain/dashboard.service.server";
 import * as widgetConfigService from "../domain/widget-config.service.server";
+import * as widgetDataService from "../domain/widget-data.service.server";
 
 export function meta() {
 	return [
@@ -15,7 +16,7 @@ export function meta() {
 
 /**
  * Dashboard Home Page Loader
- * 사용자의 위젯 설정을 불러옵니다
+ * 사용자의 위젯 설정과 데이터를 불러옵니다
  */
 export const loader = loaderHandler(async ({ request }: LoaderFunctionArgs) => {
 	const userId = await requireUserId(request);
@@ -31,8 +32,85 @@ export const loader = loaderHandler(async ({ request }: LoaderFunctionArgs) => {
 		config = await widgetConfigService.getConfiguration(userId);
 	}
 
+	// 모든 위젯 데이터 병렬 조회
+	const [
+		pipelineData,
+		mentorSessionsData,
+		communityData,
+		documentData,
+		journeyData,
+		priorityData,
+		roadmapData,
+		mentorApplicationData,
+		// Phase 3A
+		profileCompletionData,
+		careerDiagnosisData,
+		interviewPrepData,
+		weeklyCalendarData,
+		// Phase 3B
+		nearbyLocationsData,
+		jobPostingTrackerData,
+		achievementsData,
+		skillRadarData,
+		// Phase 3C
+		japaneseStudyData,
+		reputationStatsData,
+		quickSearchData,
+		subscriptionStatusData,
+	] = await Promise.all([
+		widgetDataService.getPipelineOverviewData(userId),
+		widgetDataService.getMentorSessionsData(userId),
+		widgetDataService.getCommunityHighlightsData(userId),
+		widgetDataService.getDocumentHubData(userId),
+		widgetDataService.getJourneyProgressData(userId),
+		widgetDataService.getPriorityActionsData(userId),
+		widgetDataService.getRoadmapSnapshotData(userId),
+		widgetDataService.getMentorApplicationData(userId),
+		// Phase 3A
+		widgetDataService.getProfileCompletionData(userId),
+		widgetDataService.getCareerDiagnosisData(userId),
+		widgetDataService.getInterviewPrepData(userId),
+		widgetDataService.getWeeklyCalendarData(userId),
+		// Phase 3B
+		widgetDataService.getNearbyLocationsData(userId),
+		widgetDataService.getJobPostingTrackerData(userId),
+		widgetDataService.getAchievementsData(userId),
+		widgetDataService.getSkillRadarData(userId),
+		// Phase 3C
+		widgetDataService.getJapaneseStudyData(userId),
+		widgetDataService.getReputationStatsData(userId),
+		widgetDataService.getQuickSearchData(userId),
+		widgetDataService.getSubscriptionStatusData(userId),
+	]);
+
 	return {
 		widgets: config?.widgets || [],
+		widgetData: {
+			// Phase 1 & 2
+			pipeline: pipelineData,
+			mentorSessions: mentorSessionsData,
+			community: communityData,
+			documents: documentData,
+			journey: journeyData,
+			priority: priorityData,
+			roadmap: roadmapData,
+			mentorApplication: mentorApplicationData,
+			// Phase 3A
+			profileCompletion: profileCompletionData,
+			careerDiagnosis: careerDiagnosisData,
+			interviewPrep: interviewPrepData,
+			weeklyCalendar: weeklyCalendarData,
+			// Phase 3B
+			nearbyLocations: nearbyLocationsData,
+			jobPostingTracker: jobPostingTrackerData,
+			achievements: achievementsData,
+			skillRadar: skillRadarData,
+			// Phase 3C
+			japaneseStudy: japaneseStudyData,
+			reputationStats: reputationStatsData,
+			quickSearch: quickSearchData,
+			subscriptionStatus: subscriptionStatusData,
+		},
 	};
 });
 
@@ -56,7 +134,10 @@ export default function Home() {
 
 	return (
 		<div className="">
-			<DashboardGrid initialWidgets={data.data.widgets} />
+			<DashboardGrid
+				initialWidgets={data.data.widgets}
+				widgetData={data.data.widgetData}
+			/>
 		</div>
 	);
 }

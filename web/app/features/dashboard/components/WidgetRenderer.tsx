@@ -1,5 +1,6 @@
 import type { WidgetId, WidgetLayout } from "@itcom/db/schema";
 import { lazy, Suspense } from "react";
+import type { WidgetData } from "../types/widget-data.types";
 import { WidgetSkeleton } from "./shared/WidgetSkeleton";
 
 /**
@@ -10,10 +11,17 @@ import { WidgetSkeleton } from "./shared/WidgetSkeleton";
  * 1. widgets/ 폴더에 위젯 컴포넌트 생성
  * 2. widgetComponents 객체에 lazy import 추가
  */
-const widgetComponents = {
+const widgetComponents: Record<
+	string,
+	React.LazyExoticComponent<
+		React.ComponentType<{ size: WidgetLayout["size"]; widgetData: WidgetData }>
+	>
+> = {
+	// Phase 1
 	"journey-progress": lazy(() => import("./widgets/JourneyProgressWidget")),
 	"priority-actions": lazy(() => import("./widgets/PriorityActionsWidget")),
 	"roadmap-snapshot": lazy(() => import("./widgets/RoadmapSnapshotWidget")),
+	// Phase 2
 	"pipeline-overview": lazy(() => import("./widgets/PipelineOverviewWidget")),
 	"mentor-sessions": lazy(() => import("./widgets/MentorSessionsWidget")),
 	"settlement-checklist": lazy(
@@ -25,18 +33,40 @@ const widgetComponents = {
 	"document-hub": lazy(() => import("./widgets/DocumentHubWidget")),
 	"notifications-center": lazy(() => import("./widgets/NotificationsWidget")),
 	"mentor-application": lazy(() => import("./widgets/MentorApplicationWidget")),
+	// Phase 3A
+	"profile-completion": lazy(() => import("./widgets/ProfileCompletionWidget")),
+	"career-diagnosis-summary": lazy(
+		() => import("./widgets/CareerDiagnosisSummaryWidget"),
+	),
+	"interview-prep": lazy(() => import("./widgets/InterviewPrepWidget")),
+	"weekly-calendar": lazy(() => import("./widgets/WeeklyCalendarWidget")),
+	// Phase 3B
+	"nearby-locations": lazy(() => import("./widgets/NearbyLocationsWidget")),
+	"job-posting-tracker": lazy(
+		() => import("./widgets/JobPostingTrackerWidget"),
+	),
+	achievements: lazy(() => import("./widgets/AchievementsWidget")),
+	"skill-radar": lazy(() => import("./widgets/SkillRadarWidget")),
+	// Phase 3C
+	"japanese-study": lazy(() => import("./widgets/JapaneseStudyWidget")),
+	"reputation-stats": lazy(() => import("./widgets/ReputationStatsWidget")),
+	"quick-search": lazy(() => import("./widgets/QuickSearchWidget")),
+	"subscription-status": lazy(
+		() => import("./widgets/SubscriptionStatusWidget"),
+	),
 };
 
 interface WidgetRendererProps {
 	id: WidgetId;
 	size: WidgetLayout["size"];
+	widgetData: WidgetData;
 }
 
 /**
  * Widget Renderer
  * ID와 크기에 따라 적절한 위젯 컴포넌트를 렌더링
  */
-export function WidgetRenderer({ id, size }: WidgetRendererProps) {
+export function WidgetRenderer({ id, size, widgetData }: WidgetRendererProps) {
 	const Component = widgetComponents[id];
 
 	if (!Component) {
@@ -49,7 +79,7 @@ export function WidgetRenderer({ id, size }: WidgetRendererProps) {
 
 	return (
 		<Suspense fallback={<WidgetSkeleton size={size} />}>
-			<Component size={size} />
+			<Component size={size} widgetData={widgetData} />
 		</Suspense>
 	);
 }

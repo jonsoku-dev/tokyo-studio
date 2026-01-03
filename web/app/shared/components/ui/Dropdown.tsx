@@ -3,7 +3,6 @@ import {
 	MenuButton,
 	type MenuButtonProps,
 	MenuItem,
-	type MenuItemProps,
 	MenuItems,
 	type MenuItemsProps,
 } from "@headlessui/react";
@@ -85,28 +84,33 @@ export function DropdownContent({
 	);
 }
 
-// Omit 'children' from MenuItemProps to avoid union type conflict with render prop
-interface DropdownItemProps extends Omit<MenuItemProps<"button">, "children"> {
-	children: ReactNode;
+// Separate onClick from MenuItemProps to handle it on the inner button
+interface DropdownItemProps {
+	children: React.ReactNode;
 	className?: string;
+	disabled?: boolean;
+	onClick?: () => void;
 }
 
 export function DropdownItem({
 	className,
 	children,
-	...props
+	disabled,
+	onClick,
 }: DropdownItemProps) {
 	return (
-		<MenuItem>
+		<MenuItem disabled={disabled}>
 			{({ focus }) => (
 				<button
 					type="button"
+					onClick={onClick}
+					disabled={disabled}
 					className={cn(
 						"group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors",
 						focus ? "bg-gray-100 text-gray-900" : "text-gray-700",
+						disabled && "cursor-not-allowed opacity-50",
 						className,
 					)}
-					{...props}
 				>
 					{children}
 				</button>

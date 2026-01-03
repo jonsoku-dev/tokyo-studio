@@ -2060,16 +2060,33 @@ export interface WidgetLayout {
 }
 
 export type WidgetId =
+	// Phase 1 (P1)
 	| "journey-progress"
 	| "priority-actions"
 	| "roadmap-snapshot"
+	// Phase 2 (P2)
 	| "pipeline-overview"
 	| "mentor-sessions"
 	| "settlement-checklist"
 	| "community-highlights"
 	| "document-hub"
 	| "notifications-center"
-	| "mentor-application";
+	| "mentor-application"
+	// Phase 3A (High Priority)
+	| "profile-completion"
+	| "career-diagnosis-summary"
+	| "interview-prep"
+	| "weekly-calendar"
+	// Phase 3B (Medium Priority)
+	| "nearby-locations"
+	| "job-posting-tracker"
+	| "achievements"
+	| "skill-radar"
+	// Phase 3C (Lower Priority)
+	| "japanese-study"
+	| "reputation-stats"
+	| "quick-search"
+	| "subscription-status";
 
 export type JourneyStage =
 	| "newcomer"

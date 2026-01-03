@@ -1,9 +1,11 @@
 import type { WidgetLayout } from "@itcom/db/schema";
 import { Target, TrendingUp } from "lucide-react";
 import { Link } from "react-router";
+import type { WidgetData } from "../../types/widget-data.types";
 
 interface JourneyProgressWidgetProps {
 	size: WidgetLayout["size"];
+	widgetData: WidgetData;
 }
 
 /**
@@ -12,11 +14,10 @@ interface JourneyProgressWidgetProps {
  */
 export default function JourneyProgressWidget({
 	size: _size,
+	widgetData,
 }: JourneyProgressWidgetProps) {
-	// TODO: 실제 데이터 fetch
-	const progress = 67; // 67%
-	const stage = "적극 지원자";
-	const nextMilestone = "면접 3회 통과";
+	const { progress, stage, completedTasks, applicationCount, sessionCount } =
+		widgetData.journey;
 
 	return (
 		<div className="space-y-4">
@@ -67,7 +68,9 @@ export default function JourneyProgressWidget({
 							<p className="mb-0.5 font-medium text-accent-700 text-xs">
 								다음 목표
 							</p>
-							<p className="text-gray-900 text-sm">{nextMilestone}</p>
+							<p className="text-gray-900 text-sm">
+								{applicationCount > 0 ? "면접 3회 통과" : "첫 지원서 제출하기"}
+							</p>
 						</div>
 					</div>
 				</div>
@@ -77,15 +80,17 @@ export default function JourneyProgressWidget({
 			{_size === "expanded" && (
 				<div className="grid grid-cols-3 gap-3 border-gray-100 border-t pt-2">
 					<div className="text-center">
-						<p className="font-bold text-2xl text-gray-900">12</p>
+						<p className="font-bold text-2xl text-gray-900">{completedTasks}</p>
 						<p className="mt-1 text-gray-500 text-xs">완료한 작업</p>
 					</div>
 					<div className="text-center">
-						<p className="font-bold text-2xl text-gray-900">5</p>
+						<p className="font-bold text-2xl text-gray-900">
+							{applicationCount}
+						</p>
 						<p className="mt-1 text-gray-500 text-xs">지원 기업</p>
 					</div>
 					<div className="text-center">
-						<p className="font-bold text-2xl text-gray-900">3</p>
+						<p className="font-bold text-2xl text-gray-900">{sessionCount}</p>
 						<p className="mt-1 text-gray-500 text-xs">멘토링 세션</p>
 					</div>
 				</div>

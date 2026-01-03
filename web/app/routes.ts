@@ -297,4 +297,8 @@ export default [
 
 	// Dashboard APIs (SPEC 026)
 	route("api/dashboard/widgets", "features/dashboard/apis/widgets.server.ts"),
+	route(
+		"api/dashboard/widget-data",
+		"features/dashboard/apis/widget-data.server.ts",
+	),
 ] satisfies RouteConfig;

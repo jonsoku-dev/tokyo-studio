@@ -433,6 +433,7 @@ export function validateLayout(widgets: unknown): widgets is WidgetLayout[] {
 	}
 
 	const validWidgetIds = new Set([
+		// Phase 1 & 2
 		"journey-progress",
 		"priority-actions",
 		"roadmap-snapshot",
@@ -443,6 +444,21 @@ export function validateLayout(widgets: unknown): widgets is WidgetLayout[] {
 		"document-hub",
 		"notifications-center",
 		"mentor-application",
+		// Phase 3A
+		"profile-completion",
+		"career-diagnosis-summary",
+		"interview-prep",
+		"weekly-calendar",
+		// Phase 3B
+		"nearby-locations",
+		"job-posting-tracker",
+		"achievements",
+		"skill-radar",
+		// Phase 3C
+		"japanese-study",
+		"reputation-stats",
+		"quick-search",
+		"subscription-status",
 	]);
 
 	const validSizes = new Set(["compact", "standard", "expanded"]);
