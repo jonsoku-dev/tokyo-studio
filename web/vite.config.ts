@@ -6,7 +6,8 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
 	plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
 	ssr: {
-		// Bundle these packages into the server build for Vercel
-		noExternal: ["@itcom/db"],
+		// Bundle ALL dependencies into the server build for Vercel serverless
+		// This is required because Vercel doesn't have access to node_modules at runtime
+		noExternal: true,
 	},
 });
