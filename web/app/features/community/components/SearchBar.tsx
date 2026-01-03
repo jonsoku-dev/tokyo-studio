@@ -53,7 +53,7 @@ export function SearchBar() {
 
 			{/* Search Help Popover */}
 			{showHelp && (
-				<div className="absolute top-full right-0 z-50 mt-1 w-80 rounded-lg border bg-white p-4 shadow-lg">
+				<div className="absolute top-full right-0 z-50 mt-1 w-80 rounded-lg border bg-white p-responsive shadow-lg">
 					<div className="mb-3 flex items-center justify-between">
 						<h3 className="heading-5">검색 팁</h3>
 						<button

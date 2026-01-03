@@ -80,7 +80,7 @@ export function AssessmentWizard({ defaultValues }: AssessmentWizardProps) {
 			{/* Progress Bar */}
 			<AssessmentProgress />
 
-			<div className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+			<div className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-responsive shadow-sm">
 				<AnimatePresence mode="wait">
 					{step === 1 && <StepCareer />}
 					{step === 2 && <StepLanguage />}

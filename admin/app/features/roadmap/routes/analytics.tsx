@@ -3,13 +3,13 @@
  * /admin/roadmap/analytics
  */
 import { data } from "react-router";
+import { requireAdmin } from "~/features/auth/utils/session.server";
 import {
 	getCategoryBreakdown,
 	getRoadmapFunnel,
 	getUsersAtStage,
 } from "../services/admin-roadmap.server";
 import type { Route } from "./+types/analytics";
-import { requireAdmin } from "~/features/auth/utils/session.server";
 
 // ============================================
 // Loader
@@ -61,7 +61,7 @@ export default function AnalyticsPage({ loaderData }: Route.ComponentProps) {
 	const maxFunnel = Math.max(funnel.generated, 1);
 
 	return (
-		<div className="p-6">
+		<div className="p-responsive">
 			{/* Header */}
 			<div className="mb-6">
 				<h1 className="text-2xl font-bold text-gray-900">Roadmap Analytics</h1>
@@ -70,9 +70,9 @@ export default function AnalyticsPage({ loaderData }: Route.ComponentProps) {
 				</p>
 			</div>
 
-			<div className="grid grid-cols-2 gap-6">
+			<div className="grid grid-cols-2 gap-responsive">
 				{/* Funnel Chart */}
-				<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+				<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-responsive">
 					<h2 className="text-lg font-semibold text-gray-900 mb-4">
 						Completion Funnel
 					</h2>
@@ -116,7 +116,7 @@ export default function AnalyticsPage({ loaderData }: Route.ComponentProps) {
 				</div>
 
 				{/* Category Breakdown */}
-				<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+				<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-responsive">
 					<h2 className="text-lg font-semibold text-gray-900 mb-4">
 						Category Breakdown
 					</h2>
@@ -163,7 +163,7 @@ export default function AnalyticsPage({ loaderData }: Route.ComponentProps) {
 				</div>
 
 				{/* Summary Stats */}
-				<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 col-span-2">
+				<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-responsive col-span-2">
 					<h2 className="text-lg font-semibold text-gray-900 mb-4">
 						Summary Statistics
 					</h2>
@@ -206,7 +206,7 @@ export default function AnalyticsPage({ loaderData }: Route.ComponentProps) {
 				</div>
 
 				{/* Sample Users */}
-				<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 col-span-2">
+				<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-responsive col-span-2">
 					<h2 className="text-lg font-semibold text-gray-900 mb-4">
 						Recent Users with Roadmaps
 					</h2>

@@ -77,7 +77,7 @@ export function MentorApplicationStatus({
 	const Icon = config.icon;
 
 	return (
-		<div className={`rounded-xl border p-4 ${config.color} stack-sm`}>
+		<div className={`rounded-xl border p-responsive ${config.color} stack-sm`}>
 			<div className="flex items-start justify-between">
 				<div className="flex items-start gap-3">
 					<Icon

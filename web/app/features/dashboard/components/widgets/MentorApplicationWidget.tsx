@@ -29,7 +29,7 @@ export default function MentorApplicationWidget({
 		// 미지원 상태
 		return (
 			<div className="space-y-4">
-				<div className="rounded-lg border border-primary-300 border-dashed bg-primary-50/50 p-4 text-center">
+				<div className="rounded-lg border border-primary-300 border-dashed bg-primary-50/50 p-responsive text-center">
 					<GraduationCap className="mx-auto mb-2 h-10 w-10 text-primary-600" />
 					<h4 className="mb-1 font-semibold text-gray-900">
 						멘토가 되어보세요!

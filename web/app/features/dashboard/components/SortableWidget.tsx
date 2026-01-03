@@ -1,12 +1,9 @@
-import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { WidgetLayout } from "@itcom/db/schema";
-import { GripVertical } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
 import { getWidgetMetadata } from "../config/widget-metadata";
 import type { WidgetData } from "../types/widget-data.types";
-import { WidgetActions } from "./WidgetActions";
 import { WidgetCard } from "./WidgetCard";
-import { WidgetRenderer } from "./WidgetRenderer";
 
 interface SortableWidgetProps {
 	widget: WidgetLayout;
@@ -34,7 +31,7 @@ export function SortableWidget({
 		isDragging,
 	} = useSortable({ id: widget.id });
 
-	const metadata = getWidgetMetadata(widget.id);
+	const _metadata = getWidgetMetadata(widget.id);
 
 	// Transform 스타일 적용
 	const style = {

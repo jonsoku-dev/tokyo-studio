@@ -72,7 +72,7 @@ export default function Checkout({ loaderData }: Route.ComponentProps) {
 	return (
 		<div>
 			<PageHeader title="Checkout" className="mb-8 text-center" />
-			<div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+			<div className="rounded-xl border border-gray-200 bg-white p-responsive shadow-sm">
 				<div id="payment-widget" />
 				<div id="agreement" />
 

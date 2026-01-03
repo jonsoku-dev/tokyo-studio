@@ -120,7 +120,7 @@ export default function SettlementChecklistWidget({
 
 			{/* 빈 상태 */}
 			{checklistItems.length === 0 && (
-				<div className="py-8 text-center text-gray-400">
+				<div className="py-responsive text-center text-gray-400">
 					<ClipboardList className="mx-auto mb-2 h-8 w-8" />
 					<p className="text-sm">체크리스트가 비어있습니다</p>
 				</div>

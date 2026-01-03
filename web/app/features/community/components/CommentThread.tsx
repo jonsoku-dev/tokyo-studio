@@ -64,14 +64,14 @@ export function CommentThread({
 	return (
 		<div className="stack-lg">
 			{/* Root Comment Form */}
-			<div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+			<div className="rounded-lg border border-gray-100 bg-gray-50 p-responsive">
 				<CommentForm postId={postId} />
 			</div>
 
 			{/* List */}
 			<div className="stack-md">
 				{comments.length === 0 && (
-					<div className="py-8 text-center text-gray-500">
+					<div className="py-responsive text-center text-gray-500">
 						<MessageCircle className="mx-auto mb-2 h-8 w-8 opacity-50" />
 						아직 댓글이 없습니다. 첫 번째 댓글을 남겨보세요!
 					</div>

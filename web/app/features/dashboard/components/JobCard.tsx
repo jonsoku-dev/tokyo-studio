@@ -14,7 +14,7 @@ export function JobCard({ job, index }: JobCardProps) {
 			animate={{ opacity: 1, x: 0 }}
 			transition={{ delay: index * 0.1, duration: 0.3 }}
 			whileHover={{ y: -2, boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)" }}
-			className="group flex cursor-pointer gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all"
+			className="group flex cursor-pointer gap-4 rounded-xl border border-gray-200 bg-white p-responsive shadow-sm transition-all"
 		>
 			<div className="flex min-w-[40px] flex-col items-center gap-1 pt-1">
 				<div className="center body-sm h-10 w-10 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 text-indigo-600 shadow-inner">

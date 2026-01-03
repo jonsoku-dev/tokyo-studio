@@ -1,7 +1,7 @@
 import { actionHandler } from "~/shared/lib";
 import { groupProcessor } from "../services/group-processor.server";
 import { queueProcessor } from "../services/queue-processor.server";
-import type { Route } from "./+types/api.notifications.process-queue.server";
+import type { Route } from "./+types/api.notifications.process-queue";
 
 export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 	// Check authorization header for CRON_SECRET

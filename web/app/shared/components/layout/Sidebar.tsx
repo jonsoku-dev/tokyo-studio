@@ -11,7 +11,7 @@ export function Sidebar({ className }: SidebarProps) {
 	const location = useLocation();
 
 	return (
-		<nav className={cn("flex flex-col gap-6", className)}>
+		<nav className={cn("flex flex-col gap-responsive", className)}>
 			{/* Main Navigation */}
 			<div className="space-y-1">
 				{NAVIGATION_ITEMS.map((item) => {

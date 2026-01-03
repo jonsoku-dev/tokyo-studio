@@ -43,7 +43,7 @@ export function NotificationPermissionPrompt() {
 	if (!vapidKey) return null; // Can't subscribe without key
 
 	return (
-		<div className="fade-in slide-in-from-bottom-4 fixed right-4 bottom-4 z-50 w-full max-w-sm animate-in rounded-xl border border-gray-200 bg-white p-4 shadow-lg">
+		<div className="fade-in slide-in-from-bottom-4 fixed right-4 bottom-4 z-50 w-full max-w-sm animate-in rounded-xl border border-gray-200 bg-white p-responsive shadow-lg">
 			<div className="flex items-start gap-3">
 				<div className="rounded-lg bg-primary-100 p-2 text-primary-600">
 					<Bell className="h-5 w-5" />

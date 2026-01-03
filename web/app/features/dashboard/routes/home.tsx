@@ -125,7 +125,7 @@ export default function Home() {
 	if (!data.success) {
 		return (
 			<div className="">
-				<div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+				<div className="rounded-lg border border-red-200 bg-red-50 p-responsive text-red-700">
 					대시보드를 불러오는 중 오류가 발생했습니다.
 				</div>
 			</div>

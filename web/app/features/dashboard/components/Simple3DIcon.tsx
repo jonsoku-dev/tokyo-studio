@@ -15,6 +15,7 @@ function RotatingShape(props: ThreeElements["mesh"]) {
 	});
 
 	return (
+		// biome-ignore lint/a11y/noStaticElementInteractions: Three.js mesh interaction
 		<mesh
 			{...props}
 			ref={meshRef}

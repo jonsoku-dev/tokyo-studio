@@ -5,6 +5,7 @@ import {
 	route,
 } from "@react-router/dev/routes";
 
+// Force type generation update
 export default [
 	// --- PUBLIC LAYOUT (No authentication required) ---
 	layout("shared/layouts/PublicLayout.tsx", [
@@ -27,7 +28,6 @@ export default [
 	// --- PROTECTED LAYOUT (Authentication required) ---
 	layout("shared/layouts/ProtectedLayout.tsx", [
 		// Standard Page Layout (Centered Container - 1280px)
-		layout("shared/layouts/ContainerLayout.tsx", [
 			// Features
 			index("features/dashboard/routes/home.tsx"),
 			route("roadmap", "features/roadmap/routes/index.tsx"),
@@ -109,7 +109,6 @@ export default [
 
 			// Map
 			route("map", "features/map/routes/index.tsx"),
-		]),
 
 		// Community Detail Routes (/communities/:slug) - Full width layout
 		route(
@@ -142,15 +141,9 @@ export default [
 		"features/auth/apis/api.github.callback.ts",
 	),
 	route("api/auth/kakao", "features/auth/apis/api.kakao.ts"),
-	route(
-		"api/auth/kakao/callback",
-		"features/auth/apis/api.kakao.callback.ts",
-	),
+	route("api/auth/kakao/callback", "features/auth/apis/api.kakao.callback.ts"),
 	route("api/auth/line", "features/auth/apis/api.line.ts"),
-	route(
-		"api/auth/line/callback",
-		"features/auth/apis/api.line.callback.ts",
-	),
+	route("api/auth/line/callback", "features/auth/apis/api.line.callback.ts"),
 	route(
 		"api/auth/forgot-password",
 		"features/auth/apis/api.auth.forgot-password.ts",
@@ -159,19 +152,13 @@ export default [
 		"api/auth/resend-verification",
 		"features/auth/apis/api.auth.resend-verification.ts",
 	),
-	route(
-		"api/auth/reset-password",
-		"features/auth/apis/api.reset-password.ts",
-	),
+	route("api/auth/reset-password", "features/auth/apis/api.reset-password.ts"),
 	route("api/users/me/avatar", "features/users/apis/api.avatar.ts"),
 	route("api/users/me/profile", "features/users/apis/api.profile.ts"),
 	route("api/users/me/privacy", "features/users/apis/api.privacy.ts"),
 
 	// Storage APIs
-	route(
-		"api/storage/presigned",
-		"features/storage/apis/api.presigned.ts",
-	),
+	route("api/storage/presigned", "features/storage/apis/api.presigned.ts"),
 	route("api/storage/upload", "features/storage/apis/api.upload.ts"),
 	route("api/storage/confirm", "features/storage/apis/api.confirm.ts"),
 	route(
@@ -185,10 +172,7 @@ export default [
 	),
 
 	// Community APIs
-	route(
-		"api/comments/list",
-		"features/community/apis/api.comments.list.ts",
-	),
+	route("api/comments/list", "features/community/apis/api.comments.list.ts"),
 	route("api/comments", "features/community/apis/api.comments.ts"),
 	route(
 		"api/comments/:commentId",
@@ -198,33 +182,21 @@ export default [
 		"api/comments/:commentId/report",
 		"features/community/apis/api.report.ts",
 	),
-	route(
-		"api/notifications",
-		"features/community/apis/api.notifications.ts",
-	),
+	route("api/notifications", "features/community/apis/api.notifications.ts"),
 	route("api/search", "features/community/apis/api.search.ts"),
 	route(
 		"api/search/suggestions",
 		"features/community/apis/api.search.suggestions.ts",
 	),
-	route(
-		"api/setup-search",
-		"features/community/apis/api.setup-search.ts",
-	),
-	route(
-		"api/setup-voting",
-		"features/community/apis/api.setup-voting.ts",
-	),
+	route("api/setup-search", "features/community/apis/api.setup-search.ts"),
+	route("api/setup-voting", "features/community/apis/api.setup-voting.ts"),
 	route(
 		"api/setup-reputation",
 		"features/community/apis/api.setup-reputation.ts",
 	),
 	route("api/communities", "features/community/apis/api.communities.ts"),
 	route("api/vote", "features/community/apis/api.vote.ts"),
-	route(
-		"api/community/join",
-		"features/community/apis/api.community.join.ts",
-	),
+	route("api/community/join", "features/community/apis/api.community.join.ts"),
 	route(
 		"api/notifications/subscribe",
 		"features/notifications/apis/api.subscribe.ts",
@@ -264,10 +236,7 @@ export default [
 		"api/roadmap/tasks/update",
 		"features/roadmap/apis/api.roadmap.update-task.ts",
 	),
-	route(
-		"api/roadmap/tasks/:id",
-		"features/roadmap/apis/api.task.$id.ts",
-	),
+	route("api/roadmap/tasks/:id", "features/roadmap/apis/api.task.$id.ts"),
 
 	// Pipeline APIs (SPEC 018)
 	route("api/jobs/parse", "features/pipeline/apis/api.job-parser.ts"),
@@ -297,8 +266,5 @@ export default [
 
 	// Dashboard APIs (SPEC 026)
 	route("api/dashboard/widgets", "features/dashboard/apis/widgets.ts"),
-	route(
-		"api/dashboard/widget-data",
-		"features/dashboard/apis/widget-data.ts",
-	),
+	route("api/dashboard/widget-data", "features/dashboard/apis/widget-data.ts"),
 ] satisfies RouteConfig;

@@ -26,7 +26,7 @@ export function DocumentPreview({
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
 			<DialogContent className="flex h-[85vh] max-w-5xl flex-col overflow-hidden p-0">
-				<DialogHeader className="m-0 flex items-center justify-between border-gray-200 border-b p-4">
+				<DialogHeader className="m-0 flex items-center justify-between border-gray-200 border-b p-responsive">
 					<DialogTitle>{document.title}</DialogTitle>
 					<Button
 						variant="ghost"

@@ -81,7 +81,6 @@ export async function requireVerifiedUser(request: Request) {
 	return userId;
 }
 
-
 export async function requireAdmin(request: Request) {
 	const userId = await requireUserId(request);
 	const { db } = await import("@itcom/db/client");

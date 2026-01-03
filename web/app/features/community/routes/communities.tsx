@@ -77,11 +77,11 @@ export default function Communities() {
 	return (
 		<div className="min-h-screen bg-gray-50 pb-20">
 			{/* Hero Section */}
-			<div className="px-4 pt-4 lg:px-8">
+			<div className="px-responsive pt-4">
 				<CommunityHero />
 			</div>
 
-			<div className="mx-auto mt-8 max-w-7xl px-4 lg:px-8">
+			<div className="px-responsive">
 				<div className="grid gap-8 lg:grid-cols-12">
 					<div className="min-w-0 space-y-12 lg:col-span-12">
 						{/* Search Bar */}

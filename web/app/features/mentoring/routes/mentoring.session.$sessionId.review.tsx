@@ -95,8 +95,8 @@ export default function ReviewSessionPage() {
 	const [hoverRating, setHoverRating] = useState(0);
 
 	return (
-		<div className="center fixed inset-0 z-50 bg-black/80 p-4 backdrop-blur-sm">
-			<div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0A0A0A] p-6 shadow-2xl">
+		<div className="center fixed inset-0 z-50 bg-black/80 p-responsive backdrop-blur-sm">
+			<div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0A0A0A] p-responsive shadow-2xl">
 				<h2 className="heading-3 mb-2">Rate your session</h2>
 				<p className="mb-6 text-gray-400">
 					How was your session with{" "}

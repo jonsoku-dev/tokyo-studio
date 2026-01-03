@@ -171,9 +171,7 @@ export default function RoadmapPage({ loaderData }: Route.ComponentProps) {
 			</div>
 
 			{/* Kanban Board */}
-			<div className="px-4 py-8">
-				<KanbanBoard tasks={displayTasks} columns={columns} />
-			</div>
+			<KanbanBoard tasks={displayTasks} columns={columns} />
 		</div>
 	);
 }

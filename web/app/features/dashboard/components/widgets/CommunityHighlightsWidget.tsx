@@ -73,7 +73,7 @@ export default function CommunityHighlightsWidget({
 					))}
 				</div>
 			) : (
-				<div className="py-8 text-center text-gray-400">
+				<div className="py-responsive text-center text-gray-400">
 					<MessageSquare className="mx-auto mb-2 h-8 w-8" />
 					<p className="text-sm">아직 게시글이 없습니다</p>
 					<Link

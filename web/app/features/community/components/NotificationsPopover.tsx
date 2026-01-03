@@ -53,7 +53,7 @@ export function NotificationsPopover() {
 
 			{/* Width 24rem = 384px, typical for notification panels */}
 			<PopoverContent className="w-96 p-0">
-				<div className="flex items-center justify-between border-gray-100 border-b px-4 py-3">
+				<div className="flex items-center justify-between border-gray-100 border-b px-responsive py-3">
 					<h3 className="font-semibold text-gray-900 text-sm">Notifications</h3>
 					{unreadCount > 0 && (
 						<span className="rounded-full bg-primary-50 px-2 py-0.5 font-medium text-primary-600 text-xs">

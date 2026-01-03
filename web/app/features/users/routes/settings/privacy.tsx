@@ -34,7 +34,7 @@ export default function PrivacySettings({ loaderData }: Route.ComponentProps) {
 			<PageHeader title="Privacy Settings" className="mb-6" />
 
 			<div className="overflow-hidden rounded-lg bg-white shadow">
-				<div className="stack-md p-6">
+				<div className="stack-md p-responsive">
 					<div className="flex items-center justify-between">
 						<div>
 							<h3 className="font-medium text-gray-900 text-lg leading-6">

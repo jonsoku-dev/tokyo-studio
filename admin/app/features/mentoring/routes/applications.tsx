@@ -85,12 +85,12 @@ export default function AdminApplicationsPage({
 	const isSubmitting = navigation.state === "submitting";
 
 	return (
-		<div className="p-8">
+		<div className="p-responsive">
 			<h2 className="text-2xl font-bold mb-6 text-gray-900">
 				Mentor Applications
 			</h2>
 
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+			<div className="grid grid-cols-1 gap-responsive lg:grid-cols-3">
 				{/* List */}
 				<div className="lg:col-span-1 space-y-4">
 					{applications.map((app) => (
@@ -121,7 +121,7 @@ export default function AdminApplicationsPage({
 						</Link>
 					))}
 					{applications.length === 0 && (
-						<p className="text-gray-500 text-center py-8">
+						<p className="text-gray-500 text-center py-responsive">
 							No applications found.
 						</p>
 					)}
@@ -130,7 +130,7 @@ export default function AdminApplicationsPage({
 				{/* Detail */}
 				<div className="lg:col-span-2">
 					{selectedApp ? (
-						<div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+						<div className="bg-white border border-gray-200 rounded-xl p-responsive shadow-sm">
 							<div className="flex justify-between items-start mb-6">
 								<div>
 									<h2 className="text-xl font-bold text-gray-900">

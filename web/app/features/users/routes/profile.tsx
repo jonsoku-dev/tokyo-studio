@@ -61,7 +61,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 			<div className="space-y-6">
 				{/* Profile Picture Section */}
 				<div className="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-900/5">
-					<div className="p-6">
+					<div className="p-responsive">
 						<h3 className="font-semibold text-base text-gray-900 leading-7">
 							Profile Picture
 						</h3>
@@ -76,7 +76,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 
 				{/* Public Profile Info Section */}
 				<div className="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-900/5">
-					<div className="p-6">
+					<div className="p-responsive">
 						<h3 className="font-semibold text-base text-gray-900 leading-7">
 							Public Profile Info
 						</h3>
@@ -128,7 +128,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 								</p>
 							</div>
 
-							<div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+							<div className="grid grid-cols-1 gap-responsive sm:grid-cols-2">
 								<Input
 									label="Website"
 									name="website"
@@ -191,7 +191,7 @@ export default function ProfileSettings({ loaderData }: Route.ComponentProps) {
 
 				{/* Account Information Section */}
 				<div className="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-900/5">
-					<div className="p-6">
+					<div className="p-responsive">
 						<h3 className="font-semibold text-base text-gray-900 leading-7">
 							Account Information
 						</h3>

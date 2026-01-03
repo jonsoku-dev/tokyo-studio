@@ -24,7 +24,7 @@ export function TaskCard({ task }: TaskCardProps) {
 			whileHover={{ scale: 1.01, boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
 			transition={{ duration: 0.2 }}
 			className={clsx(
-				"flex gap-4 rounded-xl border bg-white p-4 shadow-sm transition-colors",
+				"flex gap-4 rounded-xl border bg-white p-responsive shadow-sm transition-colors",
 				isCompleted
 					? "border-gray-100 bg-gray-50/50"
 					: "border-gray-200 hover:border-primary-200",

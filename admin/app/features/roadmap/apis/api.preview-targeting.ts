@@ -5,8 +5,8 @@
 import { data } from "react-router";
 
 import { requireAdmin } from "~/features/auth/utils/session.server";
-import type { Route } from "./+types/api.preview-targeting";
 import { previewTargeting } from "../services/admin-roadmap.server";
+import type { Route } from "./+types/api.preview-targeting";
 
 export async function action({ request }: Route.ActionArgs) {
 	await requireAdmin(request);

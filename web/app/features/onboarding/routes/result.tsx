@@ -62,7 +62,7 @@ export default function OnboardingResult({ loaderData }: Route.ComponentProps) {
 	};
 
 	return (
-		<div className="min-h-screen bg-gray-100 px-4 py-12 font-sans sm:px-6 lg:px-8">
+		<div className="bg-gray-100 font-sans">
 			{/* A4 Paper Container - Aspect Ratio 210mm x 297mm approx 1:1.414 */}
 			<div className="mx-auto flex min-h-[297mm] w-full max-w-[210mm] flex-col bg-white shadow-xl">
 				<div className="stack-lg flex-1 p-12 md:p-16">
@@ -95,7 +95,7 @@ export default function OnboardingResult({ loaderData }: Route.ComponentProps) {
 							<User className="h-5 w-5 text-primary-600" />
 							지원자 프로필
 						</h2>
-						<div className="grid grid-cols-2 gap-6 rounded-lg border border-gray-200 bg-gray-50 p-6 md:grid-cols-4">
+						<div className="grid grid-cols-2 gap-responsive rounded-lg border border-gray-200 bg-gray-50 p-responsive md:grid-cols-4">
 							<div className="stack-xs">
 								<div className="font-semibold text-gray-500 text-xs uppercase">
 									직군
@@ -136,7 +136,7 @@ export default function OnboardingResult({ loaderData }: Route.ComponentProps) {
 								<Brain className="h-5 w-5 text-primary-600" />
 								진단 결과 요약
 							</h2>
-							<div className="stack-sm flex h-full flex-col justify-center rounded-lg border border-primary-100 bg-primary-50 p-6">
+							<div className="stack-sm flex h-full flex-col justify-center rounded-lg border border-primary-100 bg-primary-50 p-responsive">
 								<div className="font-semibold text-primary-600 text-sm uppercase">
 									추천 전략
 								</div>
@@ -172,7 +172,7 @@ export default function OnboardingResult({ loaderData }: Route.ComponentProps) {
 							{items.map((item, idx) => (
 								<div
 									key={item.title}
-									className="group -mx-4 flex items-start gap-6 rounded-lg px-4 py-6 transition-colors hover:bg-gray-50"
+									className="group -mx-4 flex items-start gap-4 rounded-lg px-4 py-6 transition-colors hover:bg-gray-50 md:gap-6"
 								>
 									<div className="mt-1 flex-shrink-0 font-bold font-mono text-2xl text-primary-500 opacity-60">
 										0{idx + 1}
@@ -200,7 +200,7 @@ export default function OnboardingResult({ loaderData }: Route.ComponentProps) {
 					</section>
 
 					{/* Stamp Area */}
-					<div className="relative mt-auto flex items-center justify-end gap-6 pt-16">
+					<div className="relative mt-auto flex items-center justify-end gap-4 pt-16 md:gap-6">
 						<div className="stack-xs text-right">
 							<div className="font-medium text-gray-400 text-xs uppercase tracking-widest">
 								Authorized by
@@ -223,7 +223,7 @@ export default function OnboardingResult({ loaderData }: Route.ComponentProps) {
 				</div>
 
 				{/* Footer Actions (Screen Only) */}
-				<div className="mt-auto flex flex-col items-center justify-between gap-4 border-gray-200 border-t bg-gray-50 p-6 sm:flex-row print:hidden">
+				<div className="mt-auto flex flex-col items-center justify-between gap-4 border-gray-200 border-t bg-gray-50 p-responsive sm:flex-row print:hidden">
 					<div className="cluster">
 						<Button variant="outline" onClick={() => window.print()}>
 							<Download className="h-4 w-4" /> 인쇄하기

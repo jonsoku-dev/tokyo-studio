@@ -289,7 +289,7 @@ export default function TemplateEditor() {
 			)}
 
 			{/* Template Info Card */}
-			<div className="flex items-start justify-between rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+			<div className="flex items-start justify-between rounded-2xl border border-gray-100 bg-white p-responsive shadow-sm">
 				<div>
 					<h2 className="heading-4 mb-2">{store.template?.title}</h2>
 					<p className="text-gray-600">

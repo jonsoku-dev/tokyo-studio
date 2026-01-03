@@ -112,7 +112,7 @@ export default function WeeklyCalendarWidget({
 					})}
 				</div>
 			) : (
-				<div className="rounded-lg border border-gray-200 border-dashed py-8 text-center">
+				<div className="rounded-lg border border-gray-200 border-dashed py-responsive text-center">
 					<Calendar className="mx-auto mb-2 h-8 w-8 text-gray-300" />
 					<p className="text-gray-500 text-sm">이번 주 일정이 없습니다</p>
 				</div>

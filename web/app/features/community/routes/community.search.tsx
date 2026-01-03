@@ -60,7 +60,7 @@ export default function SearchPage() {
 	const { results, query } = useLoaderData<typeof loader>();
 
 	return (
-		<div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
+		<div className="mx-auto max-w-7xl px-responsive py-responsive">
 			{/* Header Section */}
 			<div className="mb-10 text-center">
 				<h1 className="mb-2 font-bold text-3xl text-gray-900 tracking-tight">
@@ -99,7 +99,7 @@ export default function SearchPage() {
 						<Link
 							key={post.id}
 							to={`/communities/${post.category || "general"}/posts/${post.id}`}
-							className="group block rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary-100 hover:shadow-lg hover:shadow-primary-500/5"
+							className="group block rounded-2xl border border-gray-100 bg-white p-responsive shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary-100 hover:shadow-lg hover:shadow-primary-500/5"
 						>
 							<div className="mb-3 flex items-start justify-between gap-4">
 								<h2 className="line-clamp-1 font-bold text-gray-900 text-lg transition-colors group-hover:text-primary-600">

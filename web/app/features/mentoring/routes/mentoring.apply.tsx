@@ -137,7 +137,7 @@ export default function MentorApplicationPage() {
 
 			<div className="card-lg bg-white shadow-xl">
 				{actionData?.error && (
-					<div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+					<div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-responsive text-red-700">
 						<p className="font-bold">Error</p>
 						<p>{actionData.error}</p>
 					</div>
@@ -145,7 +145,7 @@ export default function MentorApplicationPage() {
 
 				<Form method="post" encType="multipart/form-data" className="stack-md">
 					{/* Professional Info */}
-					<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+					<div className="grid grid-cols-1 gap-responsive md:grid-cols-2">
 						<Input
 							label="Job Title"
 							id="jobTitle"
@@ -162,7 +162,7 @@ export default function MentorApplicationPage() {
 						/>
 					</div>
 
-					<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+					<div className="grid grid-cols-1 gap-responsive md:grid-cols-2">
 						<Input
 							label="Years of Experience"
 							id="yearsOfExperience"
@@ -214,7 +214,7 @@ export default function MentorApplicationPage() {
 					</div>
 
 					{/* File Upload */}
-					<div className="rounded-lg border border-gray-300 border-dashed bg-gray-50 p-6 text-center">
+					<div className="rounded-lg border border-gray-300 border-dashed bg-gray-50 p-responsive text-center">
 						<label
 							htmlFor="verificationFile"
 							className="mb-2 block font-medium text-gray-900 text-sm"

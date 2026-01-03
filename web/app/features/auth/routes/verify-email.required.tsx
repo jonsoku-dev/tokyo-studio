@@ -80,7 +80,7 @@ export default function VerifyEmailRequired() {
 	const isSubmitting = navigation.state === "submitting";
 
 	return (
-		<div className="center min-h-screen bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+		<div className="center min-h-screen bg-gray-50 px-responsive py-responsive">
 			<div className="stack-lg w-full max-w-md">
 				{/* Warning Icon */}
 				<div className="center mx-auto h-16 w-16 rounded-full bg-yellow-100">
@@ -112,7 +112,7 @@ export default function VerifyEmailRequired() {
 				</div>
 
 				{/* Main Content */}
-				<div className="rounded-lg bg-white p-6 shadow">
+				<div className="rounded-lg bg-white p-responsive shadow">
 					<div className="stack">
 						<p className="text-gray-700">
 							To protect our community, you need to verify your email address

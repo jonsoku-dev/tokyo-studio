@@ -76,7 +76,7 @@ export default function RoadmapSnapshotWidget({
 						</div>
 					))
 				) : (
-					<p className="py-4 text-center text-gray-400 text-sm">
+					<p className="py-responsive text-center text-gray-400 text-sm">
 						등록된 작업이 없습니다
 					</p>
 				)}

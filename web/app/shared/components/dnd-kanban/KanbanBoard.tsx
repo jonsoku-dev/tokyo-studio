@@ -380,8 +380,8 @@ export function KanbanBoard<
 	// Determine layout class based on layout prop
 	const layoutClass =
 		layout === "scroll"
-			? "overflow-x-auto flex gap-6"
-			: "grid grid-cols-1 gap-6 md:grid-cols-3";
+			? "overflow-x-auto flex gap-responsive"
+			: "grid grid-cols-1 gap-responsive md:grid-cols-3";
 
 	return (
 		<>

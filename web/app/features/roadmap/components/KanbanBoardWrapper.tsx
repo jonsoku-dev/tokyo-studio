@@ -38,7 +38,7 @@ function ClientOnly({
 // Skeleton for SSR fallback
 function KanbanBoardSkeleton({ columns }: { columns: KanbanColumnConfig[] }) {
 	return (
-		<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+		<div className="grid grid-cols-1 gap-responsive md:grid-cols-3">
 			{columns.map((col) => (
 				<div
 					key={col.id}

@@ -138,7 +138,7 @@ export function WidgetGallery() {
 													type="button"
 													onClick={() => !isAdded && handleAddWidget(widgetId)}
 													disabled={isAdded}
-													className={`group relative rounded-xl border p-4 text-left transition-all ${
+													className={`group relative rounded-xl border p-responsive text-left transition-all ${
 														isAdded
 															? "cursor-not-allowed border-gray-200 bg-gray-50 opacity-60"
 															: "border-gray-200 hover:border-primary-300 hover:bg-primary-50/50 hover:shadow-md"
@@ -184,7 +184,7 @@ export function WidgetGallery() {
 					</div>
 
 					{hiddenCount === 0 && (
-						<div className="mt-4 rounded-lg bg-green-50 p-6 text-center">
+						<div className="mt-4 rounded-lg bg-green-50 p-responsive text-center">
 							<div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
 								<CheckCircle2 className="h-6 w-6 text-green-600" />
 							</div>

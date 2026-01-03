@@ -120,8 +120,8 @@ export default function MentorProfilePage() {
 					{/* Left Column: Profile Info */}
 					<div className="stack-lg min-w-0">
 						{/* Header Card */}
-						<div className="card-lg bg-white p-8">
-							<div className="flex flex-col items-start gap-6 md:flex-row">
+						<div className="card-lg bg-white p-responsive">
+							<div className="flex flex-col items-start gap-4 md:flex-row md:gap-6">
 								<img
 									src={
 										mentor.avatarUrl ||
@@ -234,7 +234,7 @@ export default function MentorProfilePage() {
 						{/* Featured Videos */}
 
 						{/* About Section */}
-						<div className="stack card-lg bg-white p-8">
+						<div className="stack card-lg bg-white p-responsive">
 							<h2 className="heading-4 text-gray-900">멘토 소개 (About)</h2>
 							<p className="whitespace-pre-wrap text-gray-600 leading-relaxed">
 								{mentor.profile.bio}
@@ -242,7 +242,7 @@ export default function MentorProfilePage() {
 						</div>
 
 						{/* Expertise */}
-						<div className="stack card-lg bg-white p-8">
+						<div className="stack card-lg bg-white p-responsive">
 							<h2 className="heading-4 text-gray-900">전문 분야</h2>
 							<div className="cluster-sm">
 								{mentor.profile.specialties?.map((skill: string) => (
@@ -260,7 +260,7 @@ export default function MentorProfilePage() {
 						{/* Languages */}
 						{mentor.profile.languages &&
 							mentor.profile.languages.length > 0 && (
-								<div className="stack card-lg bg-white p-8">
+								<div className="stack card-lg bg-white p-responsive">
 									<h2 className="heading-4 text-gray-900">사용 언어</h2>
 									<div className="cluster-sm">
 										{mentor.profile.languages.map((lang: string) => (
@@ -280,10 +280,10 @@ export default function MentorProfilePage() {
 
 						{/* Media & Community Grid */}
 						{(videos.length > 0 || communityPosts.length > 0) && (
-							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+							<div className="grid grid-cols-1 gap-responsive md:grid-cols-2">
 								{/* Featured Videos */}
 								{videos.length > 0 && (
-									<div className="stack card-lg min-w-0 bg-white p-6">
+									<div className="stack card-lg min-w-0 bg-white p-responsive">
 										<h2 className="heading-4 flex items-center gap-2 text-gray-900">
 											대표 영상
 										</h2>
@@ -337,7 +337,7 @@ export default function MentorProfilePage() {
 
 								{/* Community Activity */}
 								{communityPosts.length > 0 && (
-									<div className="stack card-lg min-w-0 bg-white p-6">
+									<div className="stack card-lg min-w-0 bg-white p-responsive">
 										<div className="flex items-center justify-between">
 											<h2 className="heading-4 flex items-center gap-2 text-gray-900">
 												커뮤니티 활동 (최근)
@@ -413,7 +413,7 @@ export default function MentorProfilePage() {
 										</div>
 									))
 								) : (
-									<div className="rounded-xl border border-gray-200 border-dashed bg-gray-50 p-8 text-center">
+									<div className="rounded-xl border border-gray-200 border-dashed bg-gray-50 p-responsive text-center">
 										<p className="text-gray-500 italic">
 											아직 작성된 리뷰가 없습니다.
 										</p>

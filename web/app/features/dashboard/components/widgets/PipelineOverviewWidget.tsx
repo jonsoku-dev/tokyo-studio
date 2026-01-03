@@ -107,7 +107,7 @@ export default function PipelineOverviewWidget({
 
 			{/* 빈 상태 */}
 			{applications.length === 0 && (
-				<div className="py-8 text-center text-gray-400">
+				<div className="py-responsive text-center text-gray-400">
 					<Briefcase className="mx-auto mb-2 h-8 w-8" />
 					<p className="text-sm">아직 지원한 회사가 없습니다</p>
 					<Link

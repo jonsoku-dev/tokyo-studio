@@ -231,14 +231,14 @@ export default function MentorSettings() {
 
 					{/* 1. Public Profile Section */}
 					<div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-						<div className="border-gray-100 border-b px-6 py-4">
+						<div className="border-gray-100 border-b px-responsive py-responsive">
 							<h2 className="heading-5 text-gray-900">공개 프로필</h2>
 							<p className="text-gray-500 text-sm">
 								멘티들에게 보여질 기본 정보를 입력해주세요.
 							</p>
 						</div>
-						<div className="stack-md p-6">
-							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+						<div className="stack-md p-responsive">
+							<div className="grid grid-cols-1 gap-responsive md:grid-cols-2">
 								<div className="stack-sm">
 									<Label htmlFor="title">직함 (Title)</Label>
 									<Input
@@ -359,13 +359,13 @@ export default function MentorSettings() {
 
 					{/* 2. Social Media & Content */}
 					<div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-						<div className="border-gray-100 border-b px-6 py-4">
+						<div className="border-gray-100 border-b px-responsive py-responsive">
 							<h2 className="heading-5 text-gray-900">소셜 미디어 & 콘텐츠</h2>
 							<p className="text-gray-500 text-sm">
 								외부 활동을 공유하여 멘티들에게 신뢰를 줄 수 있습니다.
 							</p>
 						</div>
-						<div className="stack-md p-6">
+						<div className="stack-md p-responsive">
 							{/* Social Handles */}
 							<div className="stack-sm">
 								<Label>소셜 미디어 링크</Label>
@@ -458,14 +458,14 @@ export default function MentorSettings() {
 
 					{/* 3. Session Configuration */}
 					<div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-						<div className="border-gray-100 border-b px-6 py-4">
+						<div className="border-gray-100 border-b px-responsive py-responsive">
 							<h2 className="heading-5 text-gray-900">세션 설정</h2>
 							<p className="text-gray-500 text-sm">
 								시간당 비용과 결제 통화를 설정합니다.
 							</p>
 						</div>
-						<div className="p-6">
-							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+						<div className="p-responsive">
+							<div className="grid grid-cols-1 gap-responsive md:grid-cols-2">
 								<div className="stack-sm">
 									<Label>통화 (Currency)</Label>
 									<Select
@@ -500,13 +500,13 @@ export default function MentorSettings() {
 
 					{/* 5. Video Conferencing */}
 					<div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-						<div className="border-gray-100 border-b px-6 py-4">
+						<div className="border-gray-100 border-b px-responsive py-responsive">
 							<h2 className="heading-5 text-gray-900">화상 미팅 설정</h2>
 							<p className="text-gray-500 text-sm">
 								멘토링 진행 시 사용할 화상 미팅 도구를 선택해주세요.
 							</p>
 						</div>
-						<div className="stack-md p-6">
+						<div className="stack-md p-responsive">
 							<div className="stack-sm">
 								<Label>플랫폼 선택</Label>
 								<Select
@@ -609,13 +609,13 @@ function AvailabilityEditor({
 	return (
 		<div className="rounded-xl border border-gray-200 bg-white shadow-sm">
 			<input type="hidden" name="availability" value={JSON.stringify(slots)} />
-			<div className="border-gray-100 border-b px-6 py-4">
+			<div className="border-gray-100 border-b px-responsive py-responsive">
 				<h2 className="heading-5 text-gray-900">가능 시간 설정</h2>
 				<p className="text-gray-500 text-sm">
 					멘토링이 가능한 요일과 시간을 설정합니다. (반복 일정)
 				</p>
 			</div>
-			<div className="stack-md p-6">
+			<div className="stack-md p-responsive">
 				{/* 1. Add Form */}
 				<div className="flex flex-col gap-4 rounded-lg bg-gray-50 p-4 md:flex-row md:items-end">
 					<div className="stack-xs flex-1">
@@ -654,7 +654,7 @@ function AvailabilityEditor({
 				<div className="stack-sm">
 					<Label>설정된 시간 ({slots.length})</Label>
 					{slots.length === 0 ? (
-						<div className="rounded-lg border border-gray-200 border-dashed p-8 text-center text-gray-400 text-sm">
+						<div className="rounded-lg border border-gray-200 border-dashed p-responsive text-center text-gray-400 text-sm">
 							등록된 시간이 없습니다. 위에서 시간을 추가해주세요.
 						</div>
 					) : (

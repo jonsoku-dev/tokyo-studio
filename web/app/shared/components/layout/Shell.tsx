@@ -39,7 +39,7 @@ export function Shell({ children, showSidebar = true }: ShellProps) {
 			<Navbar />
 			<div className="container-wide flex flex-1">
 				{showSidebar && <SidebarDock />}
-				<main className="min-w-0 flex-1 px-4 py-6 md:px-0 md:pl-24">
+				<main className="min-w-0 flex-1 p-responsive md:px-0 md:pl-24">
 					{children || <Outlet />}
 				</main>
 			</div>

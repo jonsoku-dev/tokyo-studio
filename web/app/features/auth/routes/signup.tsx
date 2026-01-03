@@ -32,8 +32,8 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function Signup({ actionData }: Route.ComponentProps) {
 	return (
-		<div className="flex min-h-screen items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-			<div className="stack-lg w-full max-w-md rounded-xl border border-gray-100 bg-white p-8 shadow-lg">
+		<div className="flex min-h-screen items-center justify-center px-responsive py-responsive">
+			<div className="stack-lg w-full max-w-md rounded-xl border border-gray-100 bg-white p-responsive shadow-lg">
 				<div className="mb-6 text-center">
 					<h1 className="heading-3">Create an account</h1>
 					<p className="body-sm mt-2">

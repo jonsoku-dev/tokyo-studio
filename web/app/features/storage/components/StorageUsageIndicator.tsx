@@ -51,7 +51,7 @@ export function StorageUsageIndicator({
 		}, [storageUsed, storageLimit]);
 
 	return (
-		<div className="rounded-lg bg-gray-50 p-4">
+		<div className="rounded-lg bg-gray-50 p-responsive">
 			<div className="mb-2 flex items-center justify-between">
 				<span className="font-medium text-gray-700 text-sm">Storage Used</span>
 				<span className="body-sm">

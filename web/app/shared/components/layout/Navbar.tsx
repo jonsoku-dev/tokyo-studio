@@ -6,6 +6,7 @@ import {
 	Settings,
 	User as UserIcon,
 } from "lucide-react";
+import { useState } from "react";
 import { Form, Link, useRouteLoaderData } from "react-router";
 import { NotificationsPopover } from "~/features/community/components/NotificationsPopover";
 import { Avatar } from "~/shared/components/ui/Avatar";
@@ -17,16 +18,22 @@ import {
 	DropdownSeparator,
 	DropdownTrigger,
 } from "~/shared/components/ui/Dropdown";
+import { MobileSidebar } from "./MobileSidebar";
 
 export function Navbar() {
 	const data = useRouteLoaderData("root") as { user: User };
 	const user = data?.user;
+	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 	return (
 		<header className="sticky top-0 z-50 h-14 border-gray-200 border-b bg-white">
 			<div className="container-wide flex h-full items-center justify-between">
 				<div className="flex items-center gap-4">
-					<button type="button" className="btn btn-ghost btn-icon md:hidden">
+					<button
+						type="button"
+						className="btn btn-ghost btn-icon md:hidden"
+						onClick={() => setMobileMenuOpen(true)}
+					>
 						<MenuIcon className="h-6 w-6 text-gray-700" />
 					</button>
 					<Link to="/" className="flex items-center gap-2">
@@ -132,6 +139,8 @@ export function Navbar() {
 					)}
 				</div>
 			</div>
+
+			<MobileSidebar open={mobileMenuOpen} onOpenChange={setMobileMenuOpen} />
 		</header>
 	);
 }

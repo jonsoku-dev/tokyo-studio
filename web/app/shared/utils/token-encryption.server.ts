@@ -14,7 +14,9 @@ import crypto from "node:crypto";
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 16; // For AES, this is always 16 bytes
 const _AUTH_TAG_LENGTH = 16;
-const ENCRYPTION_KEY = process.env.TOKEN_ENCRYPTION_KEY || "d2c02ad841db1cc33eabcc8b8b62520b13ec5befab1cd59e6d384697f1565401";
+const ENCRYPTION_KEY =
+	process.env.TOKEN_ENCRYPTION_KEY ||
+	"d2c02ad841db1cc33eabcc8b8b62520b13ec5befab1cd59e6d384697f1565401";
 
 // Validate encryption key on module load
 if (!ENCRYPTION_KEY) {

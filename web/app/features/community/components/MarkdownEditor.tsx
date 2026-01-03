@@ -61,7 +61,7 @@ export function MarkdownEditor({
 				className={clsx(
 					"min-h-[200px] w-full overflow-hidden rounded-md border transition-all",
 					isPreview
-						? "border-gray-200 bg-gray-50 p-4"
+						? "border-gray-200 bg-gray-50 p-responsive"
 						: "border-gray-300 bg-white focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500",
 				)}
 			>

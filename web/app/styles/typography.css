@@ -13,11 +13,15 @@
 	   ------------------------------------------------------------------------- */
 	.heading-1 {
 		font-family: var(--font-display);
-		font-size: var(--text-4xl);
+		font-size: var(--text-3xl);
 		font-weight: var(--font-weight-bold);
 		line-height: var(--leading-tight);
 		letter-spacing: var(--tracking-tight);
 		color: var(--color-gray-900);
+
+		@media (min-width: 768px) {
+			font-size: var(--text-4xl);
+		}
 
 		@variant dark {
 			color: var(--color-gray-50);
@@ -26,10 +30,14 @@
 
 	.heading-2 {
 		font-family: var(--font-display);
-		font-size: var(--text-3xl);
+		font-size: var(--text-2xl);
 		font-weight: var(--font-weight-semibold);
 		line-height: var(--leading-tight);
 		color: var(--color-gray-900);
+
+		@media (min-width: 768px) {
+			font-size: var(--text-3xl);
+		}
 
 		@variant dark {
 			color: var(--color-gray-50);
@@ -38,10 +46,14 @@
 
 	.heading-3 {
 		font-family: var(--font-display);
-		font-size: var(--text-2xl);
+		font-size: var(--text-xl);
 		font-weight: var(--font-weight-semibold);
 		line-height: var(--leading-snug);
 		color: var(--color-gray-900);
+
+		@media (min-width: 768px) {
+			font-size: var(--text-2xl);
+		}
 
 		@variant dark {
 			color: var(--color-gray-100);

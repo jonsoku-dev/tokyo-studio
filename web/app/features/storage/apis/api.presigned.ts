@@ -1,7 +1,7 @@
 import { requireUserId } from "~/features/auth/utils/session.server";
 import { storageService } from "~/features/storage/services/storage.server";
 import { BadRequestError, loaderHandler } from "~/shared/lib";
-import type { Route } from "./+types/api.presigned.server";
+import type { Route } from "./+types/api.presigned";
 
 export const loader = loaderHandler(async ({ request }: Route.LoaderArgs) => {
 	const userId = await requireUserId(request);

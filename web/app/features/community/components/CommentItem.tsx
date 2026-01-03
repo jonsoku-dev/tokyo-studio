@@ -193,8 +193,8 @@ function ReportAction({ commentId }: { commentId: string }) {
 
 	if (isOpen) {
 		return (
-			<div className="center fixed inset-0 z-50 bg-black/50 p-4">
-				<div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-lg">
+			<div className="center fixed inset-0 z-50 bg-black/50 p-responsive">
+				<div className="w-full max-w-sm rounded-lg bg-white p-responsive shadow-lg">
 					<h3 className="heading-5 mb-4">Report Comment</h3>
 					{isSubmitted ? (
 						<div className="py-4 text-center font-medium text-accent-600">

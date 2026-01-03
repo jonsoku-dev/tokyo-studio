@@ -34,7 +34,7 @@ export default function ResetPassword({ loaderData }: Route.ComponentProps) {
 	if (!valid) {
 		return (
 			<div className="flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-12">
-				<div className="w-full max-w-md rounded-xl border border-gray-100 bg-white p-8 text-center shadow-lg">
+				<div className="w-full max-w-md rounded-xl border border-gray-100 bg-white p-responsive text-center shadow-lg">
 					<h2 className="heading-3 mb-2">Invalid or Expired Link</h2>
 					<p className="mb-6 text-gray-600">
 						{error || "This password reset link is invalid or has expired."}
@@ -48,8 +48,8 @@ export default function ResetPassword({ loaderData }: Route.ComponentProps) {
 	}
 
 	return (
-		<div className="flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-			<div className="stack-lg w-full max-w-md rounded-xl border border-gray-100 bg-white p-8 shadow-lg">
+		<div className="flex min-h-[calc(100vh-200px)] items-center justify-center px-responsive py-responsive">
+			<div className="stack-lg w-full max-w-md rounded-xl border border-gray-100 bg-white p-responsive shadow-lg">
 				<div className="text-center">
 					<h2 className="heading-2 mt-2">Set new password</h2>
 					<p className="caption mt-2">Please enter your new password below.</p>

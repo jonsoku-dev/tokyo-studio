@@ -59,7 +59,7 @@ export function FileDropzone({ onFileSelect, currentFile }: FileDropzoneProps) {
 			<div
 				{...getRootProps()}
 				className={clsx(
-					"relative flex min-h-[200px] cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 text-center transition-all",
+					"relative flex min-h-[200px] cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-responsive text-center transition-all",
 					isDragActive
 						? "border-primary-500 bg-primary-50"
 						: "border-gray-300 hover:border-primary-400 hover:bg-gray-50",

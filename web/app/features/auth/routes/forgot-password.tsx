@@ -17,8 +17,8 @@ export default function ForgotPassword(_props: Route.ComponentProps) {
 	const isApiSubmitting = state === "submitting";
 
 	return (
-		<div className="flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-			<div className="stack-lg w-full max-w-md rounded-xl border border-gray-100 bg-white p-8 shadow-lg">
+		<div className="flex min-h-[calc(100vh-200px)] items-center justify-center px-responsive py-responsive">
+			<div className="stack-lg w-full max-w-md rounded-xl border border-gray-100 bg-white p-responsive shadow-lg">
 				<div className="text-center">
 					<h2 className="heading-2 mt-2">Reset your password</h2>
 					<p className="caption mt-2">

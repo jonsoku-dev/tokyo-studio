@@ -113,7 +113,7 @@ export default function NotificationSettings() {
 
 			<Form method="POST" className="stack-lg">
 				{/* Notification Types */}
-				<div className="stack rounded-lg border border-gray-200 bg-white p-6">
+				<div className="stack rounded-lg border border-gray-200 bg-white p-responsive">
 					<h2 className="heading-5">Notification Types</h2>
 
 					<Toggle
@@ -160,7 +160,7 @@ export default function NotificationSettings() {
 				</div>
 
 				{/* Quiet Hours */}
-				<div className="stack rounded-lg border border-gray-200 bg-white p-6">
+				<div className="stack rounded-lg border border-gray-200 bg-white p-responsive">
 					<div className="flex items-center gap-2">
 						<Moon className="h-5 w-5 text-gray-700" />
 						<h2 className="heading-5">Quiet Hours</h2>

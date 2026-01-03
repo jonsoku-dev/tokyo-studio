@@ -132,7 +132,7 @@ export function AvailabilityCalendar({
 	const activeSlots = selectedDateKey ? slotsByDate[selectedDateKey] || [] : [];
 
 	return (
-		<div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+		<div className="rounded-xl border border-gray-200 bg-white p-responsive shadow-sm">
 			{renderHeader()}
 			{renderDays()}
 			{renderCells()}
@@ -162,7 +162,7 @@ export function AvailabilityCalendar({
 						))}
 					</div>
 				) : (
-					<p className="caption py-4 text-center text-gray-400">
+					<p className="caption py-responsive text-center text-gray-400">
 						선택하신 날짜에 가능한 시간이 없습니다.
 					</p>
 				)}

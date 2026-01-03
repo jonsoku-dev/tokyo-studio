@@ -115,14 +115,14 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 	return (
 		<div className="fixed inset-0 z-50 flex flex-col bg-black/90">
 			{/* Header */}
-			<div className="flex items-center justify-between bg-gray-900 p-4 text-white shadow-lg">
+			<div className="flex items-center justify-between bg-gray-900 p-responsive text-white shadow-lg">
 				{/* Filename */}
 				<h2 className="heading-5 max-w-md truncate" title={filename}>
 					{filename}
 				</h2>
 
 				{/* Controls */}
-				<div className="flex items-center gap-6">
+				<div className="flex items-center gap-responsive">
 					{/* Zoom Controls */}
 					<div className="flex items-center gap-2 rounded-lg bg-gray-800 px-3 py-2">
 						<button
@@ -290,7 +290,7 @@ export function PDFViewer({ documentUrl, filename, onClose }: PDFViewerProps) {
 			</div>
 
 			{/* PDF Document */}
-			<div className="center flex-1 overflow-auto bg-gray-800 p-8">
+			<div className="center flex-1 overflow-auto bg-gray-800 p-responsive">
 				{error ? (
 					<div className="text-center">
 						<div className="mb-4 text-red-500 text-xl">⚠️ {error}</div>

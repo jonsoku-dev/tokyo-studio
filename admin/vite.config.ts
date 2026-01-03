@@ -8,8 +8,6 @@ export default defineConfig({
 	ssr: {
 		// Bundle these packages instead of externalizing them
 		// Required for Vercel Serverless to find all dependencies at runtime
-		noExternal: [
-			"@itcom/db"
-		],
+		noExternal: ["@itcom/db"],
 	},
 });

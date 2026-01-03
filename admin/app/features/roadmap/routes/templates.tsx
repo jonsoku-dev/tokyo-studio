@@ -3,12 +3,12 @@
  * /admin/roadmap/templates
  */
 import { data, Link, useFetcher } from "react-router";
+import { requireAdmin } from "~/features/auth/utils/session.server";
 import {
 	deleteTemplate,
 	listTemplates,
 	updateTemplate,
 } from "../services/admin-roadmap.server";
-import { requireAdmin } from "~/features/auth/utils/session.server";
 import type { Route } from "./+types/templates";
 
 // ============================================
@@ -75,7 +75,7 @@ export default function TemplateListPage({ loaderData }: Route.ComponentProps) {
 	};
 
 	return (
-		<div className="p-6">
+		<div className="p-responsive">
 			{/* Header */}
 			<div className="flex items-center justify-between mb-6">
 				<div>
@@ -144,25 +144,25 @@ export default function TemplateListPage({ loaderData }: Route.ComponentProps) {
 				<table className="min-w-full divide-y divide-gray-200">
 					<thead className="bg-gray-50">
 						<tr>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+							<th className="px-responsive py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 								#
 							</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+							<th className="px-responsive py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 								Title
 							</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+							<th className="px-responsive py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 								Category
 							</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+							<th className="px-responsive py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 								Priority
 							</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+							<th className="px-responsive py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 								Time (min)
 							</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+							<th className="px-responsive py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 								Status
 							</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+							<th className="px-responsive py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 								Actions
 							</th>
 						</tr>
@@ -173,10 +173,10 @@ export default function TemplateListPage({ loaderData }: Route.ComponentProps) {
 								key={template.id}
 								className={`${!template.isActive ? "opacity-50" : ""}`}
 							>
-								<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+								<td className="px-responsive py-4 whitespace-nowrap text-sm text-gray-500">
 									{index + 1}
 								</td>
-								<td className="px-6 py-4">
+								<td className="px-responsive py-4">
 									<div className="text-sm font-medium text-gray-900">
 										{template.title}
 									</div>
@@ -184,24 +184,24 @@ export default function TemplateListPage({ loaderData }: Route.ComponentProps) {
 										{template.description}
 									</div>
 								</td>
-								<td className="px-6 py-4 whitespace-nowrap">
+								<td className="px-responsive py-4 whitespace-nowrap">
 									<span
 										className={`px-2 py-1 text-xs rounded-full ${categoryColors[template.category] || "bg-gray-100 text-gray-800"}`}
 									>
 										{template.category}
 									</span>
 								</td>
-								<td className="px-6 py-4 whitespace-nowrap">
+								<td className="px-responsive py-4 whitespace-nowrap">
 									<span
 										className={`px-2 py-1 text-xs rounded-full ${priorityBadges[template.priority] || "bg-gray-100"}`}
 									>
 										{template.priority}
 									</span>
 								</td>
-								<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+								<td className="px-responsive py-4 whitespace-nowrap text-sm text-gray-500">
 									{template.estimatedMinutes}
 								</td>
-								<td className="px-6 py-4 whitespace-nowrap">
+								<td className="px-responsive py-4 whitespace-nowrap">
 									<span
 										className={`px-2 py-1 text-xs rounded-full ${template.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
 									>

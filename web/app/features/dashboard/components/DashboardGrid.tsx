@@ -1,9 +1,9 @@
 import {
 	closestCenter,
 	DndContext,
+	type DragEndEvent,
 	DragOverlay,
 	type DragStartEvent,
-	type DragEndEvent,
 	KeyboardSensor,
 	PointerSensor,
 	useSensor,
@@ -11,9 +11,9 @@ import {
 } from "@dnd-kit/core";
 import {
 	arrayMove,
+	rectSortingStrategy,
 	SortableContext,
 	sortableKeyboardCoordinates,
-	rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import type { WidgetLayout } from "@itcom/db/schema";
 import { RotateCcw } from "lucide-react";
@@ -23,10 +23,10 @@ import { Button } from "~/shared/components/ui/Button";
 import { useDashboardStore } from "../stores/dashboard.store";
 import type { WidgetData } from "../types/widget-data.types";
 import { SaveChangesBar } from "./SaveChangesBar";
-import { SortableWidget } from "./SortableWidget";
-import { WidgetGallery } from "./WidgetGallery";
-import { WidgetCard } from "./WidgetCard";
 import { Simple3DIcon } from "./Simple3DIcon";
+import { SortableWidget } from "./SortableWidget";
+import { WidgetCard } from "./WidgetCard";
+import { WidgetGallery } from "./WidgetGallery";
 
 interface DashboardGridProps {
 	initialWidgets: WidgetLayout[];
@@ -168,7 +168,7 @@ export function DashboardGrid({
 						items={visibleWidgets.map((w) => w.id)}
 						strategy={rectSortingStrategy}
 					>
-						<div className="grid gap-6 lg:grid-cols-2">
+						<div className="grid gap-responsive md:grid-cols-2">
 							{visibleWidgets.map((widget) => (
 								<SortableWidget
 									key={widget.id}

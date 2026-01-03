@@ -47,7 +47,7 @@ export function WelcomeHero() {
 			</div>
 
 			{/* Content overlay */}
-			<div className="pointer-events-none relative z-10 max-w-lg px-8">
+			<div className="pointer-events-none relative z-10 max-w-lg px-responsive">
 				<h1 className="heading-2 mb-2 text-white">Welcome back, Jongseok!</h1>
 				<p className="text-gray-300 text-lg">
 					You're on track. 2 tasks pending and 3 new job matches found today.

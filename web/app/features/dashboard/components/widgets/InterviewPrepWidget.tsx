@@ -58,7 +58,7 @@ export default function InterviewPrepWidget({
 		<div className="space-y-4">
 			{/* 다음 면접 카드 */}
 			{nextInterview && (
-				<div className="rounded-xl bg-gradient-to-br from-primary-50 to-accent-50 p-4">
+				<div className="rounded-xl bg-gradient-to-br from-primary-50 to-accent-50 p-responsive">
 					<div className="mb-3 flex items-start justify-between">
 						<div className="flex items-center gap-3">
 							<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-sm">

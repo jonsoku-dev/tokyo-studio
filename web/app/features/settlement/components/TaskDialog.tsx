@@ -184,7 +184,7 @@ export function TaskDialog({
 						/>
 					</div>
 
-					<div className="grid grid-cols-2 gap-6">
+					<div className="grid grid-cols-2 gap-responsive">
 						{/* Phase Selection */}
 						<div className="stack-xs">
 							<Label className="text-gray-500">시기 (Phase)</Label>

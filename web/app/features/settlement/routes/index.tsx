@@ -247,7 +247,7 @@ export default function SettlementPage() {
 			)}
 
 			{/* Arrival Date Input */}
-			<div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+			<div className="rounded-2xl border border-gray-100 bg-white p-responsive shadow-sm">
 				<label
 					htmlFor="arrivalDate"
 					className="body-sm mb-2 block text-gray-700"

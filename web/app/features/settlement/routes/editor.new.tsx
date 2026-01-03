@@ -95,13 +95,13 @@ export default function CreateTemplate() {
 				<fetcher.Form method="post" className="stack-lg">
 					{/* Section 1: Basic Information */}
 					<div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-						<div className="border-gray-100 border-b px-6 py-4">
+						<div className="border-gray-100 border-b px-responsive py-responsive">
 							<h2 className="heading-5 text-gray-900">기본 정보</h2>
 							<p className="text-gray-500 text-sm">
 								체크리스트의 제목과 설명을 입력해주세요.
 							</p>
 						</div>
-						<div className="stack-md p-6">
+						<div className="stack-md p-responsive">
 							<div className="stack-sm">
 								<Label htmlFor="title">제목</Label>
 								<Input
@@ -127,15 +127,15 @@ export default function CreateTemplate() {
 
 					{/* Section 2: Target Audience */}
 					<div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-						<div className="border-gray-100 border-b px-6 py-4">
+						<div className="border-gray-100 border-b px-responsive py-responsive">
 							<h2 className="heading-5 text-gray-900">대상 독자 설정</h2>
 							<p className="text-gray-500 text-sm">
 								이 체크리스트가 가장 도움이 될 대상을 설정해주세요. (필터링에
 								사용됩니다)
 							</p>
 						</div>
-						<div className="p-6">
-							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+						<div className="p-responsive">
+							<div className="grid grid-cols-1 gap-responsive md:grid-cols-2">
 								<div className="stack-sm">
 									<Label>대상 비자</Label>
 									<Select name="targetVisa" options={VISA_OPTIONS}>

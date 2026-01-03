@@ -271,4 +271,88 @@
 		display: flex;
 		align-items: center;
 	}
+	/* -------------------------------------------------------------------------
+	   RESPONSIVE SPACING - Centralized spacing management
+	   ------------------------------------------------------------------------- */
+	.p-responsive {
+		padding: --spacing(4);
+		@media (min-width: 640px) {
+			padding: --spacing(6);
+		}
+		@media (min-width: 1024px) {
+			padding: --spacing(8);
+		}
+	}
+
+	.px-responsive {
+		padding-left: --spacing(4);
+		padding-right: --spacing(4);
+		@media (min-width: 640px) {
+			padding-left: --spacing(6);
+			padding-right: --spacing(6);
+		}
+		@media (min-width: 1024px) {
+			padding-left: --spacing(8);
+			padding-right: --spacing(8);
+		}
+	}
+
+	.py-responsive {
+		padding-top: --spacing(4);
+		padding-bottom: --spacing(4);
+		@media (min-width: 640px) {
+			padding-top: --spacing(6);
+			padding-bottom: --spacing(6);
+		}
+		@media (min-width: 1024px) {
+			padding-top: --spacing(8);
+			padding-bottom: --spacing(8);
+		}
+	}
+
+	.gap-responsive {
+		gap: --spacing(4);
+		@media (min-width: 640px) {
+			gap: --spacing(6);
+		}
+		@media (min-width: 1024px) {
+			gap: --spacing(8);
+		}
+	}
+
+	.m-responsive {
+		margin: --spacing(4);
+		@media (min-width: 640px) {
+			margin: --spacing(6);
+		}
+		@media (min-width: 1024px) {
+			margin: --spacing(8);
+		}
+	}
+
+	.mx-responsive {
+		margin-left: --spacing(4);
+		margin-right: --spacing(4);
+		@media (min-width: 640px) {
+			margin-left: --spacing(6);
+			margin-right: --spacing(6);
+		}
+		@media (min-width: 1024px) {
+			margin-left: --spacing(8);
+			margin-right: --spacing(8);
+		}
+	}
+
+	.my-responsive {
+		margin-top: --spacing(4);
+		margin-bottom: --spacing(4);
+		@media (min-width: 640px) {
+			margin-top: --spacing(6);
+			margin-bottom: --spacing(6);
+		}
+		@media (min-width: 1024px) {
+			margin-top: --spacing(8);
+			margin-bottom: --spacing(8);
+		}
+	}
 }

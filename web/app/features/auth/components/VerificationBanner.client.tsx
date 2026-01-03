@@ -41,7 +41,7 @@ export function VerificationBanner({
 
 	return (
 		<div className="border-yellow-200 border-b bg-yellow-50">
-			<div className="container-wide px-4 py-3 sm:px-6 lg:px-8">
+			<div className="container-wide px-responsive py-3">
 				<div className="flex flex-wrap items-center justify-between">
 					<div className="flex w-0 flex-1 items-center">
 						{/* Warning Icon */}

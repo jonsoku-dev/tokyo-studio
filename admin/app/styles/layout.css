@@ -1,0 +1,83 @@
+@layer utilities {
+	.p-responsive {
+		padding: 16px;
+		@media (min-width: 768px) {
+			padding: 24px;
+		}
+		@media (min-width: 1024px) {
+			padding: 32px;
+		}
+	}
+
+	.px-responsive {
+		padding-left: 16px;
+		padding-right: 16px;
+		@media (min-width: 768px) {
+			padding-left: 24px;
+			padding-right: 24px;
+		}
+		@media (min-width: 1024px) {
+			padding-left: 32px;
+			padding-right: 32px;
+		}
+	}
+
+	.py-responsive {
+		padding-top: 16px;
+		padding-bottom: 16px;
+		@media (min-width: 768px) {
+			padding-top: 24px;
+			padding-bottom: 24px;
+		}
+		@media (min-width: 1024px) {
+			padding-top: 32px;
+			padding-bottom: 32px;
+		}
+	}
+
+	.gap-responsive {
+		gap: 16px;
+		@media (min-width: 768px) {
+			gap: 24px;
+		}
+		@media (min-width: 1024px) {
+			gap: 32px;
+		}
+	}
+
+	.m-responsive {
+		margin: 16px;
+		@media (min-width: 768px) {
+			margin: 24px;
+		}
+		@media (min-width: 1024px) {
+			margin: 32px;
+		}
+	}
+
+	.mx-responsive {
+		margin-left: 16px;
+		margin-right: 16px;
+		@media (min-width: 768px) {
+			margin-left: 24px;
+			margin-right: 24px;
+		}
+		@media (min-width: 1024px) {
+			margin-left: 32px;
+			margin-right: 32px;
+		}
+	}
+
+	.my-responsive {
+		margin-top: 16px;
+		margin-bottom: 16px;
+		@media (min-width: 768px) {
+			margin-top: 24px;
+			margin-bottom: 24px;
+		}
+		@media (min-width: 1024px) {
+			margin-top: 32px;
+			margin-bottom: 32px;
+		}
+	}
+}

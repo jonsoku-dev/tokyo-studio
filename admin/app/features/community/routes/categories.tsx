@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
+import { useState } from "react";
 import {
 	type ActionFunctionArgs,
 	Form,
@@ -71,7 +71,7 @@ export default function CategoriesPage() {
 	};
 
 	return (
-		<div className="p-8">
+		<div className="p-responsive">
 			<div className="mb-8 flex items-center justify-between">
 				<h1 className="font-bold text-2xl text-gray-900">
 					Community Categories
@@ -91,18 +91,18 @@ export default function CategoriesPage() {
 				<table className="w-full text-left font-medium text-gray-600 text-sm">
 					<thead className="bg-gray-50 text-gray-500 uppercase">
 						<tr>
-							<th className="px-6 py-3">Order</th>
-							<th className="px-6 py-3">Icon</th>
-							<th className="px-6 py-3">Name</th>
-							<th className="px-6 py-3">Slug</th>
-							<th className="px-6 py-3 text-right">Actions</th>
+							<th className="px-responsive py-3">Order</th>
+							<th className="px-responsive py-3">Icon</th>
+							<th className="px-responsive py-3">Name</th>
+							<th className="px-responsive py-3">Slug</th>
+							<th className="px-responsive py-3 text-right">Actions</th>
 						</tr>
 					</thead>
 					<tbody className="divide-y divide-gray-100">
 						{categories.map((category) => (
 							<tr key={category.id} className="hover:bg-gray-50/50">
-								<td className="px-6 py-4">{category.orderIndex}</td>
-								<td className="px-6 py-4">
+								<td className="px-responsive py-4">{category.orderIndex}</td>
+								<td className="px-responsive py-4">
 									<div className="flex h-8 w-8 items-center justify-center rounded bg-gray-100 text-lg">
 										{/* Just render text for now, assuming simple use. Future: Dynamic Icon */}
 										{category.icon.startsWith("http") ? (
@@ -116,13 +116,13 @@ export default function CategoriesPage() {
 										)}
 									</div>
 								</td>
-								<td className="px-6 py-4 font-bold text-gray-900">
+								<td className="px-responsive py-4 font-bold text-gray-900">
 									{category.name}
 								</td>
-								<td className="px-6 py-4 font-mono text-gray-500 text-xs">
+								<td className="px-responsive py-4 font-mono text-gray-500 text-xs">
 									{category.slug}
 								</td>
-								<td className="px-6 py-4 text-right">
+								<td className="px-responsive py-4 text-right">
 									<div className="flex justify-end gap-2">
 										<button
 											type="button"
@@ -136,7 +136,7 @@ export default function CategoriesPage() {
 											onSubmit={(e) => {
 												if (
 													!confirm(
-														"Are you sure? This might break existing communities."
+														"Are you sure? This might break existing communities.",
 													)
 												) {
 													e.preventDefault();
@@ -164,7 +164,7 @@ export default function CategoriesPage() {
 			{/* Modal */}
 			{isModalOpen && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-					<div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+					<div className="w-full max-w-md rounded-2xl bg-white p-responsive shadow-xl">
 						<div className="mb-4 flex items-center justify-between">
 							<h2 className="font-bold text-lg">
 								{editingCategory ? "Edit Category" : "New Category"}

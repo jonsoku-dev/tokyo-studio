@@ -126,7 +126,7 @@ export default function PriorityActionsWidget({
 
 			{/* 빈 상태 */}
 			{actions.length === 0 && (
-				<div className="py-8 text-center text-gray-400">
+				<div className="py-responsive text-center text-gray-400">
 					<CheckCircle2 className="mx-auto mb-2 h-8 w-8" />
 					<p className="text-sm">모든 작업을 완료했습니다! 🎉</p>
 				</div>

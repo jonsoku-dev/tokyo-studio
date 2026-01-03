@@ -183,7 +183,7 @@ export default function Documents({ loaderData }: Route.ComponentProps) {
 				title="Documents"
 				description="Manage your career documents with version control."
 				actions={
-					<div className="flex items-center gap-6">
+					<div className="flex items-center gap-responsive">
 						<div className="hidden sm:block">
 							<p className="mb-2 text-right font-medium text-gray-500 text-xs">
 								Storage
@@ -199,7 +199,7 @@ export default function Documents({ loaderData }: Route.ComponentProps) {
 			>
 				{/* Upload Expandable Area */}
 				{isUploadOpen && (
-					<div className="card slide-in-from-top-4 fade-in mt-4 animate-in border border-gray-100 p-6 duration-200">
+					<div className="card slide-in-from-top-4 fade-in mt-4 animate-in border border-gray-100 p-responsive duration-200">
 						<h2 className="heading-5 mb-4">Upload Documents</h2>
 						<FileUploader
 							onUploadComplete={() => {
@@ -212,7 +212,7 @@ export default function Documents({ loaderData }: Route.ComponentProps) {
 			</PageHeader>
 
 			{/* Search & Filter Toolbar */}
-			<div className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:flex-row">
+			<div className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-responsive shadow-sm sm:flex-row">
 				<div className="relative flex-1">
 					<Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
 					<form

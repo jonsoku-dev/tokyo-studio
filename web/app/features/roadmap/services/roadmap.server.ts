@@ -139,7 +139,9 @@ export async function generateRoadmap(
 	}));
 
 	// Insert tasks
-	await db.insert(roadmapTasks).values(taskInserts);
+	if (taskInserts.length > 0) {
+		await db.insert(roadmapTasks).values(taskInserts);
+	}
 
 	// Create user roadmap entry
 	await db.insert(userRoadmaps).values({

@@ -80,7 +80,7 @@ export default function SettlementMarketplace() {
 				onReset={resetFilters}
 			/>
 
-			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+			<div className="grid gap-responsive md:grid-cols-2 lg:grid-cols-3">
 				{templates.length === 0 ? (
 					<div className="col-span-full py-12 text-center text-gray-500">
 						조건에 맞는 체크리스트가 없습니다.
@@ -92,7 +92,7 @@ export default function SettlementMarketplace() {
 							to={`/settlement/marketplace/${template.id}`}
 							className="group block overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all hover:border-primary-200 hover:shadow-md"
 						>
-							<div className="p-6">
+							<div className="p-responsive">
 								<div className="mb-4 flex items-start justify-between">
 									<div className="flex flex-wrap items-center gap-2">
 										{template.isOfficial && (

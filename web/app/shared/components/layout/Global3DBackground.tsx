@@ -27,11 +27,8 @@ function GridWave({
 	const meshRef = useRef<THREE.Mesh>(null!);
 	// 60x60 segments for smooth but low-poly looking wave
 	// Lower segment count creates "low-poly" look
-	const geometry = useMemo(
-		() => new THREE.PlaneGeometry(20, 10, 40, 20),
-		[],
-	);
-	
+	const geometry = useMemo(() => new THREE.PlaneGeometry(20, 10, 40, 20), []);
+
 	// Store original positions for wave calculation
 	const originalPositions = useMemo(() => {
 		return geometry.attributes.position.array.slice();
@@ -57,12 +54,12 @@ function GridWave({
 		for (let i = 0; i < originalPositions.length; i += 3) {
 			const x = originalPositions[i];
 			const y = originalPositions[i + 1];
-			
+
 			// Simple sine wave based on x position and time
 			// Making it "diagonal" by using x + y
-			const z = 
-				Math.sin(x * frequency + time) * 
-				Math.cos(y * frequency + time) * 
+			const z =
+				Math.sin(x * frequency + time) *
+				Math.cos(y * frequency + time) *
 				amplitude;
 
 			array[i + 2] = z;
@@ -120,7 +117,7 @@ export function Global3DBackground() {
 			>
 				{/* Fog for fading out edges */}
 				<fog attach="fog" args={["#ffffff", 5, 12]} />
-				
+
 				<SceneManager />
 				<GridWave color="#818cf8" opacity={0.4} />
 			</Canvas>

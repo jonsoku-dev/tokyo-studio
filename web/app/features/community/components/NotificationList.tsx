@@ -15,7 +15,7 @@ export function NotificationList({ notifications }: NotificationListProps) {
 
 	if (notifications.length === 0) {
 		return (
-			<div className="py-8 text-center text-gray-500">
+			<div className="py-responsive text-center text-gray-500">
 				<Bell className="mx-auto mb-2 h-8 w-8 opacity-50" />
 				No notifications
 			</div>

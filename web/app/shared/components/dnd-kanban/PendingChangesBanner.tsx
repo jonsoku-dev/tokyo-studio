@@ -15,7 +15,7 @@ export function PendingChangesBanner({
 }: PendingChangesBannerProps) {
 	return (
 		<div
-			className={`fixed right-0 bottom-0 left-0 z-50 border-t p-4 shadow-lg ${
+			className={`fixed right-0 bottom-0 left-0 z-50 border-t p-responsive shadow-lg ${
 				error ? "border-red-200 bg-red-50" : "border-amber-200 bg-amber-50"
 			}`}
 		>

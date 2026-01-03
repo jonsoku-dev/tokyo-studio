@@ -50,7 +50,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 					<Meta />
 					<Links />
 				</head>
-				<body suppressHydrationWarning>
+				<body suppressHydrationWarning className="antialiased">
 					{children}
 					<ScrollRestoration />
 					<Scripts />
@@ -109,7 +109,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 	}
 
 	return (
-		<main className="container mx-auto p-4 pt-16">
+		<main className="container mx-auto p-responsive pt-16">
 			<h1>{message}</h1>
 			<p>{details}</p>
 			{stack && (

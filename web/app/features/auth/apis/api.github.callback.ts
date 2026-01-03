@@ -1,7 +1,7 @@
+import { loaderHandler } from "~/shared/lib";
 import { authenticator } from "../services/auth.server";
 import { createUserSession } from "../utils/session.server";
-import { loaderHandler } from "~/shared/lib";
-import type { Route } from "./+types/api.github.callback.server";
+import type { Route } from "./+types/api.github.callback";
 
 export const loader = loaderHandler(async ({ request }: Route.LoaderArgs) => {
 	// @ts-expect-error

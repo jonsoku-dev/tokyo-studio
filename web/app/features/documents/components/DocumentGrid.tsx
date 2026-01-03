@@ -81,7 +81,7 @@ export function DocumentGrid({
 
 	return (
 		<>
-			<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+			<div className="grid grid-cols-1 gap-responsive sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 				{documents.map((doc) => (
 					<div
 						key={doc.id}
@@ -144,7 +144,7 @@ export function DocumentGrid({
 						</button>
 
 						{/* Content Area */}
-						<div className="flex flex-1 flex-col gap-2 p-4">
+						<div className="flex flex-1 flex-col gap-2 p-responsive">
 							{/* Header: Title & Menu */}
 							<div className="flex items-start justify-between gap-2">
 								<div className="min-w-0 flex-1">

@@ -1,9 +1,6 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { loaderHandler } from "~/shared/lib";
-import {
-	getLocationSuggestions,
-	getLocations,
-} from "./api.map.locations";
+import { getLocationSuggestions, getLocations } from "./api.map.locations";
 
 export const loader = loaderHandler(async ({ request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url);

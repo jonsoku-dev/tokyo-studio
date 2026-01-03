@@ -1,12 +1,8 @@
-import { data, type ActionFunctionArgs } from "react-router";
-import { z } from "zod";
-import { eq } from "drizzle-orm";
 import { db } from "@itcom/db/client";
-import {
-	mentorReviews,
-	reviewModerationLogs,
-	users,
-} from "@itcom/db/schema";
+import { mentorReviews, reviewModerationLogs, users } from "@itcom/db/schema";
+import { eq } from "drizzle-orm";
+import { type ActionFunctionArgs, data } from "react-router";
+import { z } from "zod";
 import { requireUserId } from "~/features/auth/utils/session.server";
 
 /**
@@ -105,9 +101,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		return data(
 			{
 				error:
-					error instanceof Error
-						? error.message
-						: "Failed to moderate review",
+					error instanceof Error ? error.message : "Failed to moderate review",
 			},
 			{ status: 500 },
 		);

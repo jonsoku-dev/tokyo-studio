@@ -71,7 +71,7 @@ export function WidgetRenderer({ id, size, widgetData }: WidgetRendererProps) {
 
 	if (!Component) {
 		return (
-			<div className="py-8 text-center text-gray-400">
+			<div className="py-responsive text-center text-gray-400">
 				<p>알 수 없는 위젯: {id}</p>
 			</div>
 		);

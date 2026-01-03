@@ -29,7 +29,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
 
 			{/* Content area */}
 			<div className="fixed inset-0 overflow-y-auto">
-				<div className="flex min-h-full items-center justify-center p-4 text-center">
+				<div className="flex min-h-full items-center justify-center p-responsive text-center">
 					{children}
 				</div>
 			</div>
@@ -46,7 +46,7 @@ export function DialogContent({ className, children }: DialogContentProps) {
 	return (
 		<DialogPanel
 			className={cn(
-				"w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition duration-300 data-closed:scale-95 data-closed:opacity-0",
+				"w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-responsive text-left align-middle shadow-xl transition duration-300 data-closed:scale-95 data-closed:opacity-0",
 				className,
 			)}
 		>

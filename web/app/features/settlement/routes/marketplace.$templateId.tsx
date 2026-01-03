@@ -204,11 +204,11 @@ export default function TemplateDetail() {
 				<div className="stack-md lg:col-span-2">
 					{/* Task List Card */}
 					<div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
-						<div className="flex items-center justify-between border-gray-50 border-b px-6 py-4">
+						<div className="flex items-center justify-between border-gray-50 border-b px-responsive py-responsive">
 							<h2 className="heading-5">포함된 태스크</h2>
 							<Badge variant="secondary">{tasks.length}개</Badge>
 						</div>
-						<div className="p-6">
+						<div className="p-responsive">
 							<div className="divide-y divide-gray-50">
 								{phases.length > 0 ? (
 									phases.map((phase) => {
@@ -259,7 +259,7 @@ export default function TemplateDetail() {
 										);
 									})
 								) : (
-									<div className="py-8 text-center text-gray-400 text-sm">
+									<div className="py-responsive text-center text-gray-400 text-sm">
 										태스크가 없습니다.
 									</div>
 								)}
@@ -269,7 +269,7 @@ export default function TemplateDetail() {
 
 					{/* Reviews Card */}
 					<div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
-						<div className="flex items-center justify-between border-gray-50 border-b px-6 py-4">
+						<div className="flex items-center justify-between border-gray-50 border-b px-responsive py-responsive">
 							<h2 className="heading-5">Reviews</h2>
 							<div className="flex gap-1 text-yellow-400">
 								{[1, 2, 3, 4, 5].map((s) => (
@@ -282,7 +282,7 @@ export default function TemplateDetail() {
 								))}
 							</div>
 						</div>
-						<div className="p-6">
+						<div className="p-responsive">
 							{/* Form Section */}
 							{showReviewForm ? (
 								<fetcher.Form
@@ -418,7 +418,7 @@ export default function TemplateDetail() {
 
 							<div className="divide-y divide-gray-50">
 								{reviews.length === 0 ? (
-									<div className="py-8 text-center text-gray-400 text-sm">
+									<div className="py-responsive text-center text-gray-400 text-sm">
 										아직 리뷰가 없습니다.
 									</div>
 								) : (
@@ -488,7 +488,7 @@ export default function TemplateDetail() {
 									제작자 관리
 								</h3>
 							</div>
-							<div className="stack-sm p-6">
+							<div className="stack-sm p-responsive">
 								<fetcher.Form method="post">
 									<input type="hidden" name="intent" value="update-status" />
 									<Label className="mb-1.5 block text-gray-500 text-xs">
@@ -579,7 +579,7 @@ export default function TemplateDetail() {
 					)}
 
 					{/* Author Card */}
-					<div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+					<div className="rounded-2xl border border-gray-100 bg-white p-responsive shadow-sm">
 						<h3 className="mb-4 font-semibold text-gray-400 text-xs uppercase tracking-wider">
 							Created By
 						</h3>
@@ -600,7 +600,7 @@ export default function TemplateDetail() {
 					</div>
 
 					{/* Info Card */}
-					<div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+					<div className="rounded-2xl border border-gray-100 bg-white p-responsive shadow-sm">
 						<h3 className="mb-4 font-semibold text-gray-400 text-xs uppercase tracking-wider">
 							Information
 						</h3>

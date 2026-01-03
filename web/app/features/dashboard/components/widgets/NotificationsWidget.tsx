@@ -138,7 +138,7 @@ export default function NotificationsWidget({
 					})}
 				</div>
 			) : (
-				<div className="py-6 text-center text-gray-400">
+				<div className="py-responsive text-center text-gray-400">
 					<Bell className="mx-auto mb-2 h-8 w-8" />
 					<p className="text-sm">새 알림이 없습니다</p>
 				</div>

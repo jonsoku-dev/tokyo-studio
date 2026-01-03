@@ -14,6 +14,11 @@
 		"typecheck": "pnpm -r typecheck",
 		"lint": "pnpm --filter web lint",
 		"db:push": "pnpm --filter @itcom/db exec drizzle-kit push",
-		"db:studio": "pnpm --filter @itcom/db exec drizzle-kit studio"
+		"db:studio": "pnpm --filter @itcom/db exec drizzle-kit studio",
+		"deploy:web": "./scripts/deploy.sh web",
+		"deploy:admin": "./scripts/deploy.sh admin",
+		"deploy:all": "./scripts/deploy.sh all",
+		"deploy:web:preview": "./scripts/deploy.sh web --preview",
+		"deploy:admin:preview": "./scripts/deploy.sh admin --preview"
 	}
 }

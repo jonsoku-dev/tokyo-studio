@@ -84,7 +84,7 @@ export function TemplateForm({ template }: TemplateFormProps) {
 		<Form method="post" className="space-y-8">
 			{/* Basic Info Section */}
 			<section className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-				<div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+				<div className="px-responsive py-4 border-b border-gray-100 bg-gray-50/50">
 					<h2 className="text-lg font-semibold text-gray-900">
 						Basic Information
 					</h2>
@@ -93,7 +93,7 @@ export function TemplateForm({ template }: TemplateFormProps) {
 					</p>
 				</div>
 
-				<div className="p-6 space-y-6">
+				<div className="p-responsive space-y-6">
 					{/* Title */}
 					<Field>
 						<Label className="block text-sm font-medium text-gray-700 mb-1">
@@ -126,7 +126,7 @@ export function TemplateForm({ template }: TemplateFormProps) {
 						/>
 					</Field>
 
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-responsive">
 						{/* Category (Listbox) */}
 						<Field>
 							<Label className="block text-sm font-medium text-gray-700 mb-1">
@@ -287,7 +287,7 @@ export function TemplateForm({ template }: TemplateFormProps) {
 
 			{/* Targeting Section */}
 			<section className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-				<div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+				<div className="px-responsive py-4 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
 					<div>
 						<h2 className="text-lg font-semibold text-gray-900">
 							Target Segments
@@ -306,7 +306,7 @@ export function TemplateForm({ template }: TemplateFormProps) {
 					</button>
 				</div>
 
-				<div className="p-6 space-y-8">
+				<div className="p-responsive space-y-8">
 					{/* Preview Feedback */}
 					{previewFetcher.data && (
 						<div className="rounded-lg bg-blue-50 p-4 border border-blue-100">

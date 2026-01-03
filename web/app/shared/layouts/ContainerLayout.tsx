@@ -3,7 +3,7 @@ import { Container } from "~/shared/components/ui/Container";
 
 export default function ContainerLayout() {
 	return (
-		<Container variant="page" className="py-8">
+		<Container variant="page" className="py-responsive">
 			<Outlet />
 		</Container>
 	);

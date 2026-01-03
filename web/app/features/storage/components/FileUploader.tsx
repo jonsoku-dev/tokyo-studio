@@ -148,7 +148,7 @@ export function FileUploader({ onUploadComplete }: FileUploaderProps) {
 			<div
 				{...getRootProps()}
 				className={cn(
-					"cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors",
+					"cursor-pointer rounded-lg border-2 border-dashed p-responsive text-center transition-colors",
 					isDragActive
 						? "border-primary-500 bg-primary-50"
 						: "border-gray-300 hover:border-primary-400 hover:bg-gray-50",
@@ -171,7 +171,7 @@ export function FileUploader({ onUploadComplete }: FileUploaderProps) {
 			{uploadingFiles.length > 0 && (
 				<div className="divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white">
 					{uploadingFiles.map((item, idx) => (
-						<div key={`${item.file.name}-${idx}`} className="p-4">
+						<div key={`${item.file.name}-${idx}`} className="p-responsive">
 							<div className="mb-1 flex items-center justify-between">
 								<div className="flex min-w-0 items-center">
 									<FileIcon className="mr-2 h-4 w-4 flex-shrink-0 text-gray-400" />

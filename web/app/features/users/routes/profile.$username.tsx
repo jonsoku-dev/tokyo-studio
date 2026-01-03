@@ -109,7 +109,7 @@ export default function PublicProfile({ loaderData }: Route.ComponentProps) {
 			{/* Standard Profile Header */}
 			<div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
 				<div className="h-32 bg-gradient-to-r from-primary-100 to-amber-100" />
-				<div className="px-8 pb-8">
+				<div className="px-responsive pb-8">
 					<div className="relative -mt-12 mb-6 flex items-end justify-between">
 						<div className="relative">
 							<div className="h-24 w-24 overflow-hidden rounded-full border-4 border-white bg-white shadow-sm">
@@ -178,7 +178,7 @@ export default function PublicProfile({ loaderData }: Route.ComponentProps) {
 						)}
 
 						{/* Activity Stats */}
-						<div className="mt-6 grid grid-cols-3 gap-4 rounded-lg bg-gray-50 p-4">
+						<div className="mt-6 grid grid-cols-3 gap-4 rounded-lg bg-gray-50 p-responsive">
 							<div className="text-center">
 								<div className="heading-3">{activityStats.communityPosts}</div>
 								<div className="caption mt-1">Posts</div>
@@ -249,20 +249,20 @@ export default function PublicProfile({ loaderData }: Route.ComponentProps) {
 			{/* Mentor Section */}
 
 			{!mentorProfile && (
-				<div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+				<div className="mt-8 grid grid-cols-1 gap-responsive md:grid-cols-3">
 					<div className="space-y-6 md:col-span-2">
-						<section className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
+						<section className="rounded-lg border border-gray-100 bg-white p-responsive shadow-sm">
 							<h2 className="heading-5 mb-4">Activity</h2>
-							<div className="rounded-lg border border-gray-200 border-dashed bg-gray-50 py-8 text-center text-gray-500">
+							<div className="rounded-lg border border-gray-200 border-dashed bg-gray-50 py-responsive text-center text-gray-500">
 								No public activity to show yet.
 							</div>
 						</section>
 					</div>
 
 					<div className="space-y-6">
-						<section className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
+						<section className="rounded-lg border border-gray-100 bg-white p-responsive shadow-sm">
 							<h2 className="heading-5 mb-4">Badges</h2>
-							<div className="rounded-lg border border-gray-200 border-dashed bg-gray-50 py-8 text-center text-gray-500">
+							<div className="rounded-lg border border-gray-200 border-dashed bg-gray-50 py-responsive text-center text-gray-500">
 								No badges earned yet.
 							</div>
 						</section>

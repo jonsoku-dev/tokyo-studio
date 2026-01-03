@@ -34,7 +34,7 @@ export function KanbanColumn({
 		<SortableContext items={[]}>
 			<div
 				ref={setNodeRef}
-				className={`flex min-h-[500px] flex-col rounded-2xl bg-gray-50/50 p-4 transition-colors ${scrollLayoutClass} ${
+				className={`flex min-h-[500px] flex-col rounded-2xl bg-gray-50/50 py-4 transition-colors ${scrollLayoutClass} ${
 					isOver ? "bg-indigo-50/50 ring-2 ring-indigo-200" : ""
 				}`}
 			>

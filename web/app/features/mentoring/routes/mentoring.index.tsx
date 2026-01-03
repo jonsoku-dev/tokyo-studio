@@ -66,7 +66,7 @@ export default function MentoringDirectory() {
 					</div>
 
 					{mentors.length > 0 ? (
-						<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+						<div className="grid gap-responsive sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
 							{mentors.map((mentor) => (
 								<MentorCard key={mentor.id} mentor={mentor} />
 							))}

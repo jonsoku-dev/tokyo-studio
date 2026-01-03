@@ -16,7 +16,7 @@ export function CountdownBanner({ arrivalDate }: CountdownBannerProps) {
 
 	if (isArrived) {
 		return (
-			<div className="rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-white shadow-lg">
+			<div className="rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 p-responsive text-white shadow-lg">
 				<div className="flex items-center justify-between">
 					<div>
 						<p className="font-medium text-accent-100 text-sm">
@@ -38,7 +38,7 @@ export function CountdownBanner({ arrivalDate }: CountdownBannerProps) {
 
 	return (
 		<div
-			className={`rounded-2xl p-6 text-white shadow-lg ${
+			className={`rounded-2xl p-responsive text-white shadow-lg ${
 				isUrgent
 					? "bg-gradient-to-r from-red-500 to-primary-500"
 					: "bg-gradient-to-r from-indigo-500 to-purple-600"

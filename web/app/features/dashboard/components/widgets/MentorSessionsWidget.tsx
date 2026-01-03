@@ -82,7 +82,7 @@ export default function MentorSessionsWidget({
 					))}
 				</div>
 			) : (
-				<div className="rounded-lg border border-gray-300 border-dashed p-6 text-center">
+				<div className="rounded-lg border border-gray-300 border-dashed p-responsive text-center">
 					<Calendar className="mx-auto mb-2 h-8 w-8 text-gray-300" />
 					<p className="text-gray-500 text-sm">예정된 멘토링이 없습니다</p>
 					<Link

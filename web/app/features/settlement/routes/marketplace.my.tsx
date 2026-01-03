@@ -96,7 +96,7 @@ export default function MyTemplatesPage() {
 					</Button>
 				</div>
 			) : (
-				<div className="grid gap-6">
+				<div className="grid gap-responsive">
 					{templates.map((template) => {
 						const status =
 							(template.status as SettlementTemplateStatus) || "draft";
@@ -106,7 +106,7 @@ export default function MyTemplatesPage() {
 						return (
 							<div
 								key={template.id}
-								className="group relative flex flex-col gap-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:border-primary-100 hover:shadow-md md:flex-row md:items-start md:justify-between"
+								className="group relative flex flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-responsive shadow-sm transition-all hover:border-primary-100 hover:shadow-md md:flex-row md:items-start md:justify-between md:gap-6"
 							>
 								{/* Main Content */}
 								<div className="stack-sm flex-1">

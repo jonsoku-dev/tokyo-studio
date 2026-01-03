@@ -1,12 +1,12 @@
-import { eq } from "drizzle-orm";
 import { db } from "@itcom/db/client";
 import {
+	adminAuditLogs,
 	type InsertMentorApplication,
 	mentorApplications,
 	mentorProfiles,
-    users,
-    adminAuditLogs
+	users,
 } from "@itcom/db/schema";
+import { eq } from "drizzle-orm";
 
 export const applicationService = {
 	async getApplications() {
@@ -76,10 +76,10 @@ export const applicationService = {
 						experienceYears: app.yearsOfExperience,
 						linkedinUrl: app.linkedinUrl || undefined,
 						// Default values
-						hourlyRate: 3000, 
+						hourlyRate: 3000,
 						currency: "JPY",
-                        specialties: app.expertise,
-						languages: app.languages, 
+						specialties: app.expertise,
+						languages: app.languages,
 					} as any);
 				}
 			}

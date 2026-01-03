@@ -3,9 +3,9 @@
  * /admin/roadmap/templates/:id
  */
 import { data, redirect } from "react-router";
+import { requireAdmin } from "~/features/auth/utils/session.server";
 import { TemplateForm } from "../components/TemplateForm";
 import { getTemplate, updateTemplate } from "../services/admin-roadmap.server";
-import { requireAdmin } from "~/features/auth/utils/session.server";
 import type { Route } from "./+types/template.$id";
 
 // ============================================
@@ -62,7 +62,7 @@ export default function TemplateEditPage({ loaderData }: Route.ComponentProps) {
 	const { template } = loaderData;
 
 	return (
-		<div className="p-6">
+		<div className="p-responsive">
 			<div className="max-w-3xl mx-auto">
 				<h1 className="text-2xl font-bold text-gray-900 mb-6">
 					Edit Template: {template.title}

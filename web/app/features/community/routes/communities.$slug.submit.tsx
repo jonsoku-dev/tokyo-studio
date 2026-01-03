@@ -81,10 +81,10 @@ export default function SubmitPost() {
 			<div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-gray-200/50 shadow-xl">
 				{/* Progress/Status Indicator (Optional, can be added later) */}
 
-				<fetcher.Form method="post" className="space-y-6 p-6 sm:p-8">
+				<fetcher.Form method="post" className="space-y-6 p-responsive">
 					{fetcher.data?.error && (
 						<div
-							className="flex items-center gap-2 rounded-xl border border-red-100 bg-red-50 p-4 font-medium text-red-600 text-sm"
+							className="flex items-center gap-2 rounded-xl border border-red-100 bg-red-50 p-responsive font-medium text-red-600 text-sm"
 							role="alert"
 						>
 							<Info className="h-4 w-4" />
@@ -143,7 +143,7 @@ export default function SubmitPost() {
 							value={content}
 							onChange={(e) => setContent(e.target.value)}
 							placeholder="자유롭게 이야기를 나누어보세요. (마크다운을 지원합니다)"
-							className="h-[400px] w-full resize-none rounded-xl border-gray-200 p-4 text-base leading-relaxed shadow-sm transition-all placeholder:text-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+							className="h-[400px] w-full resize-none rounded-xl border-gray-200 p-responsive text-base leading-relaxed shadow-sm transition-all placeholder:text-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
 							required
 						/>
 					</div>

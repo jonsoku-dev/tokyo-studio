@@ -169,7 +169,7 @@ export function CommunityHero() {
 			</div>
 
 			{/* Content - Positioned with z-index to sit on top of 3D, but 3D is visible on the right */}
-			<div className="pointer-events-none relative z-10 w-full max-w-7xl px-8 py-20 lg:px-12 lg:py-24">
+			<div className="pointer-events-none relative z-10 w-full max-w-7xl px-responsive py-20 lg:py-24">
 				<div className="pointer-events-auto max-w-2xl">
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}

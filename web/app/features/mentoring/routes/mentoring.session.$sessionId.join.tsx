@@ -63,8 +63,8 @@ export default function JoinRoute() {
 
 export function ErrorBoundary({ error }: { error: unknown }) {
 	return (
-		<div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4">
-			<div className="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-md">
+		<div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-responsive">
+			<div className="w-full max-w-md rounded-lg bg-white p-responsive text-center shadow-md">
 				<h1 className="heading-3 mb-4 text-red-600">Cannot Join Session</h1>
 				<p className="mb-6 text-gray-700">
 					{error instanceof Response

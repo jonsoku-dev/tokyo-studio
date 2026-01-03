@@ -67,7 +67,7 @@ export default function DocumentHubWidget({
 						</Link>
 					))
 				) : (
-					<p className="py-4 text-center text-gray-400 text-sm">
+					<p className="py-responsive text-center text-gray-400 text-sm">
 						아직 업로드된 서류가 없습니다
 					</p>
 				)}

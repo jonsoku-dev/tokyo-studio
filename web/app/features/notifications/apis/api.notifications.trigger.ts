@@ -2,7 +2,7 @@ import { requireUserId } from "~/features/auth/utils/session.server";
 import { actionHandler } from "~/shared/lib";
 import { notificationOrchestrator } from "../services/orchestrator.server";
 import type { NotificationEvent } from "../types";
-import type { Route } from "./+types/api.notifications.trigger.server";
+import type { Route } from "./+types/api.notifications.trigger";
 
 export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 	const _userId = await requireUserId(request); // Authentication check

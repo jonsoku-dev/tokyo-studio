@@ -7,7 +7,7 @@ interface CommunityEmptyStateProps {
 
 export function CommunityEmptyState({ search }: CommunityEmptyStateProps) {
 	return (
-		<div className="flex min-h-[400px] flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white p-8 text-center shadow-sm">
+		<div className="flex min-h-[400px] flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white p-responsive text-center shadow-sm">
 			<div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gray-50 shadow-inner">
 				<SearchX className="h-10 w-10 text-gray-300" />
 			</div>

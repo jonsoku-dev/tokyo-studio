@@ -54,29 +54,29 @@ export default function AdminSettlementTemplates() {
 	const fetcher = useFetcher();
 
 	return (
-		<div className="p-8">
+		<div className="p-responsive">
 			<h1 className="text-2xl font-bold mb-6">Settlement Templates</h1>
 
 			<div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
 				<table className="w-full text-left border-collapse">
 					<thead className="bg-gray-50 border-b border-gray-200">
 						<tr>
-							<th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
+							<th className="px-responsive py-3 text-xs font-semibold text-gray-500 uppercase">
 								Title
 							</th>
-							<th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
+							<th className="px-responsive py-3 text-xs font-semibold text-gray-500 uppercase">
 								Author
 							</th>
-							<th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
+							<th className="px-responsive py-3 text-xs font-semibold text-gray-500 uppercase">
 								Status
 							</th>
-							<th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
+							<th className="px-responsive py-3 text-xs font-semibold text-gray-500 uppercase">
 								Official
 							</th>
-							<th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
+							<th className="px-responsive py-3 text-xs font-semibold text-gray-500 uppercase">
 								Created
 							</th>
-							<th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
+							<th className="px-responsive py-3 text-xs font-semibold text-gray-500 uppercase">
 								Actions
 							</th>
 						</tr>
@@ -84,7 +84,7 @@ export default function AdminSettlementTemplates() {
 					<tbody className="divide-y divide-gray-100">
 						{templates.map((template) => (
 							<tr key={template.id} className="hover:bg-gray-50">
-								<td className="px-6 py-4">
+								<td className="px-responsive py-4">
 									<div className="font-medium text-gray-900">
 										{template.title}
 									</div>
@@ -92,12 +92,12 @@ export default function AdminSettlementTemplates() {
 										{template.description}
 									</div>
 								</td>
-								<td className="px-6 py-4 text-sm text-gray-600">
+								<td className="px-responsive py-4 text-sm text-gray-600">
 									{template.author?.displayName ||
 										template.author?.name ||
 										"Unknown"}
 								</td>
-								<td className="px-6 py-4">
+								<td className="px-responsive py-4">
 									<span
 										className={`px-2 py-1 rounded text-xs font-medium ${
 											template.status === "published"
@@ -108,7 +108,7 @@ export default function AdminSettlementTemplates() {
 										{template.status}
 									</span>
 								</td>
-								<td className="px-6 py-4">
+								<td className="px-responsive py-4">
 									{template.isOfficial ? (
 										<span className="text-blue-600 font-bold text-xs">
 											OFFICIAL
@@ -117,10 +117,10 @@ export default function AdminSettlementTemplates() {
 										<span className="text-gray-400 text-xs">-</span>
 									)}
 								</td>
-								<td className="px-6 py-4 text-sm text-gray-500">
+								<td className="px-responsive py-4 text-sm text-gray-500">
 									{new Date(template.createdAt).toLocaleDateString()}
 								</td>
-								<td className="px-6 py-4">
+								<td className="px-responsive py-4">
 									<div className="flex gap-2">
 										<fetcher.Form method="post">
 											<input

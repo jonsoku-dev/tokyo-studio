@@ -60,7 +60,7 @@ export default function MySessions() {
 						{sessions.map((session) => (
 							<div
 								key={session.id}
-								className="flex flex-col justify-between gap-4 p-6 hover:bg-gray-50 md:flex-row md:items-center"
+								className="flex flex-col justify-between gap-4 p-responsive hover:bg-gray-50 md:flex-row md:items-center"
 							>
 								<div className="flex items-center gap-4">
 									<div className="center h-10 w-10 overflow-hidden rounded-full bg-gray-200">

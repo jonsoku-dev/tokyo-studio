@@ -123,7 +123,7 @@ function BookingForm({
 	};
 
 	const renderDurationStep = () => (
-		<div className="stack py-4">
+		<div className="stack py-responsive">
 			<div className="grid grid-cols-3 gap-3">
 				{[30, 60, 90].map((d) => (
 					<button
@@ -155,7 +155,7 @@ function BookingForm({
 	);
 
 	const renderDetailsStep = () => (
-		<div className="stack py-4">
+		<div className="stack py-responsive">
 			<div className="stack-sm">
 				<label
 					htmlFor="booking-topic"
@@ -175,7 +175,7 @@ function BookingForm({
 
 			{/* SPEC 022: Document sharing */}
 			{userDocuments.length > 0 && (
-				<div className="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+				<div className="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-responsive">
 					<DocumentSelector
 						documents={userDocuments}
 						selectedIds={sharedDocumentIds}
@@ -191,8 +191,8 @@ function BookingForm({
 	);
 
 	const renderPaymentStep = () => (
-		<div className="stack py-4">
-			<div className="rounded-xl border border-gray-200 bg-white p-4">
+		<div className="stack py-responsive">
+			<div className="rounded-xl border border-gray-200 bg-white p-responsive">
 				<div className="mb-4 flex items-center justify-between border-gray-100 border-b pb-4">
 					<span className="text-gray-500">총 결제 금액</span>
 					<span className="heading-3 text-gray-900">
@@ -234,7 +234,7 @@ function BookingForm({
 	);
 
 	const renderSuccessStep = () => (
-		<div className="flex flex-col items-center justify-center py-8 text-center">
+		<div className="flex flex-col items-center justify-center py-responsive text-center">
 			<div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600">
 				<Check className="h-8 w-8" />
 			</div>

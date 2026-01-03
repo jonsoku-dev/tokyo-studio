@@ -1,7 +1,7 @@
 import { actionHandler, BadRequestError } from "~/shared/lib";
 import { requireUserId } from "../../auth/utils/session.server";
 import { joinCommunity, leaveCommunity } from "../services/communities.server";
-import type { Route } from "./+types/api.community.join.server";
+import type { Route } from "./+types/api.community.join";
 
 export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 	const userId = await requireUserId(request);

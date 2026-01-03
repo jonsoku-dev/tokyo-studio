@@ -1,7 +1,8 @@
-import { motion } from "framer-motion";
 import type { WidgetLayout } from "@itcom/db/schema";
+import { motion } from "framer-motion";
 import { GripVertical } from "lucide-react";
 import { forwardRef } from "react";
+import { cn } from "~/shared/utils/cn";
 import { getWidgetMetadata } from "../config/widget-metadata";
 import type { WidgetData } from "../types/widget-data.types";
 import { WidgetActions } from "./WidgetActions";
@@ -44,7 +45,7 @@ export const WidgetCard = forwardRef<HTMLDivElement, WidgetCardProps>(
 		const sizeClasses = {
 			compact: "", // 1칸
 			standard: "", // 1칸
-			expanded: "lg:col-span-2", // 2칸 (데스크톱에서만)
+			expanded: "md:col-span-2", // 2칸 (데스크톱에서만)
 		};
 
 		return (
@@ -55,41 +56,44 @@ export const WidgetCard = forwardRef<HTMLDivElement, WidgetCardProps>(
 				initial={{ opacity: 0, y: 10, scale: 0.95 }}
 				animate={{ opacity: 1, y: 0, scale: 1 }}
 				transition={{ duration: 0.3 }}
-				whileHover={{ 
+				whileHover={{
 					scale: isDragging ? 1.02 : 1.01,
 					y: isDragging ? 0 : -2,
-					boxShadow: "0 10px 30px -10px rgba(0, 0, 0, 0.1)"
+					boxShadow: "0 10px 30px -10px rgba(0, 0, 0, 0.1)",
 				}}
 				whileTap={{ scale: 0.98 }}
-				className={`
-          card relative flex flex-col overflow-hidden bg-white
-          ${sizeClasses[widget.size]}
-          ${isDragging ? "shadow-2xl ring-2 ring-indigo-500/20 rotate-1 scale-[1.02] z-50" : "shadow-sm border border-gray-100/80"}
-          ${className}
-        `}
+				className={cn(
+					"card relative flex flex-col overflow-hidden bg-white gap-4",
+					sizeClasses[widget.size],
+					isDragging
+						? "z-50 rotate-1 scale-[1.02] shadow-2xl ring-2 ring-indigo-500/20"
+						: "border border-gray-100/80 shadow-sm",
+					className,
+				)}
 			>
 				{/* 드래그 핸들 헤더 */}
 				<div
-					className={`
-            flex items-center gap-2 border-b border-gray-100/50 px-4 py-2.5
-            ${isDragging ? "bg-indigo-50/50" : "bg-white"}
-          `}
+					className={cn(
+						"flex items-center gap-2 border-b border-gray-100/50 pb-2",
+						isDragging ? "bg-indigo-50/50" : "bg-white",
+					)}
 				>
 					{/* 드래그 아이콘 */}
 					<button
 						type="button"
-						className={`
-              cursor-grab touch-none rounded p-1 transition-colors
-              ${isDragging ? "cursor-grabbing text-indigo-500 bg-indigo-50" : "text-gray-300 hover:bg-gray-100 hover:text-gray-500"}
-              active:cursor-grabbing
-            `}
+						className={cn(
+							"cursor-grab touch-none rounded p-1 transition-colors active:cursor-grabbing",
+							isDragging
+								? "cursor-grabbing bg-indigo-50 text-indigo-500"
+								: "text-gray-300 hover:bg-gray-100 hover:text-gray-500",
+						)}
 						{...dragHandleProps}
 					>
 						<GripVertical className="h-4 w-4" />
 					</button>
 
 					{/* 위젯 제목 - Primary Color Emphasis */}
-					<h3 className="flex-1 font-semibold text-gray-800 text-sm tracking-tight flex items-center gap-2">
+					<h3 className="flex flex-1 items-center gap-2 font-semibold text-gray-800 text-sm tracking-tight">
 						{metadata.name}
 					</h3>
 
@@ -102,8 +106,8 @@ export const WidgetCard = forwardRef<HTMLDivElement, WidgetCardProps>(
 					/>
 				</div>
 
-				{/* 위젯 컨텐츠 - 패딩 축소 (compact feel) */}
-				<div className="flex-1 p-4">
+				{/* 위젯 컨텐츠 - 패딩 제거 (card 클래스가 이미 처리) */}
+				<div className="flex-1">
 					<WidgetRenderer
 						id={widget.id}
 						size={widget.size}

@@ -104,7 +104,7 @@ export default function CommunityLayout() {
 
 			{/* Sticky Header */}
 			<header className="sticky top-0 z-40 border-gray-200 border-b bg-white/80 shadow-sm backdrop-blur-md transition-all">
-				<div className="mx-auto max-w-7xl px-4 lg:px-6">
+				<div className="mx-auto max-w-7xl px-responsive">
 					<div className="flex h-16 items-center justify-between">
 						{/* Left: Branding & Back */}
 						<div className="flex items-center gap-4">

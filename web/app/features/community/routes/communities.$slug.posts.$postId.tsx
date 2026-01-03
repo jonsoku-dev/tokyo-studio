@@ -58,7 +58,7 @@ export default function PostDetail() {
 		<div className="space-y-6">
 			{/* Post Article */}
 			<article className="rounded-3xl border border-gray-100 bg-white p-2 shadow-gray-200/50 shadow-sm">
-				<div className="flex gap-4 p-4 sm:p-6">
+				<div className="flex gap-4 p-responsive">
 					{/* Desktop Vote Control */}
 					<div className="hidden flex-col items-center gap-2 pt-2 sm:flex">
 						<VoteControl
@@ -169,7 +169,7 @@ export default function PostDetail() {
 
 			{/* Comments Section */}
 			<section
-				className="rounded-3xl border border-gray-100 bg-white p-6 shadow-gray-200/50 shadow-sm"
+				className="rounded-3xl border border-gray-100 bg-white p-responsive shadow-gray-200/50 shadow-sm"
 				aria-labelledby="comments-heading"
 			>
 				<div className="mb-8 flex items-center justify-between border-gray-100 border-b pb-4">

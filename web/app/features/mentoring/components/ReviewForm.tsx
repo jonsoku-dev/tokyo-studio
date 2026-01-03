@@ -25,7 +25,7 @@ export function ReviewForm({ sessionId, mentorName }: ReviewFormProps) {
 	};
 
 	return (
-		<div className="mx-auto max-w-2xl rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+		<div className="mx-auto max-w-2xl rounded-xl border border-gray-200 bg-white p-responsive shadow-sm">
 			<h2 className="heading-3 mb-2">Share Your Experience</h2>
 			<p className="mb-6 text-gray-600">
 				Help us improve by sharing your feedback about your session with{" "}
@@ -33,13 +33,13 @@ export function ReviewForm({ sessionId, mentorName }: ReviewFormProps) {
 			</p>
 
 			{actionData?.error && (
-				<div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+				<div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-responsive text-red-700">
 					{actionData.error}
 				</div>
 			)}
 
 			{actionData?.success && (
-				<div className="mb-6 rounded-lg border border-accent-200 bg-accent-50 p-4 text-accent-700">
+				<div className="mb-6 rounded-lg border border-accent-200 bg-accent-50 p-responsive text-accent-700">
 					Thank you for your review! It helps mentors improve.
 				</div>
 			)}

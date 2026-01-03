@@ -10,7 +10,7 @@ export function ProgressBar({
 	percentage,
 }: ProgressBarProps) {
 	return (
-		<div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+		<div className="rounded-2xl border border-gray-100 bg-white p-responsive shadow-sm">
 			<div className="mb-3 flex items-center justify-between">
 				<span className="body-sm text-gray-700">전체 진행률 / 全体進捗</span>
 				<span className="heading-3 text-primary-600">{percentage}%</span>

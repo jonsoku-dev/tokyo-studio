@@ -3,8 +3,8 @@
  * /admin/roadmap/templates/new
  */
 import { data, redirect } from "react-router";
-import { TemplateForm } from "../components/TemplateForm";
 import { requireAdmin } from "~/features/auth/utils/session.server";
+import { TemplateForm } from "../components/TemplateForm";
 import { createTemplate } from "../services/admin-roadmap.server";
 import type { Route } from "./+types/template.new";
 
@@ -42,11 +42,7 @@ export async function action({ request }: Route.ActionArgs) {
 	const targetCities = formData.getAll("targetCities") as string[];
 
 	// Validation (re-adding this as it was likely an oversight in the provided diff's truncation)
-	if (
-		!title ||
-		!description ||
-		!category
-	) {
+	if (!title || !description || !category) {
 		return data(
 			{ error: "Title, description, and category are required" },
 			{ status: 400 },
@@ -87,7 +83,7 @@ function parseJsonArray(value: FormDataEntryValue | null): string[] | null {
 // ============================================
 export default function TemplateNewPage() {
 	return (
-		<div className="p-6">
+		<div className="p-responsive">
 			<div className="max-w-3xl mx-auto">
 				<h1 className="text-2xl font-bold text-gray-900 mb-6">
 					Create New Template

@@ -1,7 +1,7 @@
 import { redirect } from "react-router";
-import { authenticator } from "../services/auth.server";
 import { actionHandler, loaderHandler } from "~/shared/lib";
-import type { Route } from "./+types/api.kakao.server";
+import { authenticator } from "../services/auth.server";
+import type { Route } from "./+types/api.kakao";
 
 export const loader = loaderHandler(
 	async ({ request: _request }: Route.LoaderArgs) => {

@@ -37,12 +37,12 @@ function ClientOnly({
 // Skeleton for SSR fallback - Grid layout (matches Roadmap)
 function KanbanBoardSkeleton() {
 	return (
-		<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+		<div className="flex gap-responsive overflow-x-auto pb-4">
 			{Array.from({ length: 3 }).map((_, colIndex) => (
 				<div
 					// biome-ignore lint/suspicious/noArrayIndexKey: Skeleton content
 					key={colIndex}
-					className="min-h-[500px] rounded-2xl bg-gray-50/50 p-4"
+					className="min-h-[500px] w-80 flex-shrink-0 rounded-2xl bg-gray-50/50 p-4"
 				>
 					<div className="mb-4 flex items-center justify-between">
 						<div className="h-5 w-24 animate-pulse rounded bg-gray-200" />
