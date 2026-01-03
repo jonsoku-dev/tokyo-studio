@@ -133,11 +133,13 @@ export default function Home() {
 	}
 
 	return (
-		<div className="">
-			<DashboardGrid
-				initialWidgets={data.data.widgets}
-				widgetData={data.data.widgetData}
-			/>
+		<div className="relative min-h-screen">
+			<div className="relative z-10">
+				<DashboardGrid
+					initialWidgets={data.data.widgets}
+					widgetData={data.data.widgetData}
+				/>
+			</div>
 		</div>
 	);
 }

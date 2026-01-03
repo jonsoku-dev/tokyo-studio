@@ -63,6 +63,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 import { VerificationBanner } from "~/features/auth/components/VerificationBanner";
 import { getUserFromRequest } from "~/features/auth/services/require-verified-email.server";
 import { NotificationPermissionPrompt } from "~/features/notifications/components/NotificationPermissionPrompt";
+import { Global3DBackground } from "~/shared/components/layout/Global3DBackground";
 
 export async function loader({ request }: Route.LoaderArgs) {
 	const user = await getUserFromRequest(request);
@@ -80,6 +81,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
 
 	return (
 		<>
+			<Global3DBackground />
 			{user && <VerificationBanner user={user} />}
 			<Outlet />
 			<NotificationPermissionPrompt />
