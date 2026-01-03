@@ -9,10 +9,7 @@ export default defineConfig({
 		// Bundle these packages instead of externalizing them
 		// Required for Vercel Serverless to find all dependencies at runtime
 		noExternal: [
-			"@itcom/db",
-			"react-router",
-			"@react-router/node",
-			"@react-router/serve",
+			"@itcom/db"
 		],
 	},
 });
