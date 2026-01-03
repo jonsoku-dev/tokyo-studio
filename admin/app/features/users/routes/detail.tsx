@@ -2,14 +2,8 @@
 import { db } from "@itcom/db/client";
 import { users, payments, mentoringSessions, profiles, mentors } from "@itcom/db/schema";
 import { eq, desc } from "drizzle-orm";
-import {
-	requireAdmin,
-	requireUserId,
-} from "~/features/auth/utils/session.server";
-import { resetUserRoadmap } from "~/features/roadmap/services/admin-roadmap.server";
 import type { Route } from "./+types/detail";
-import { Form, redirect } from "react-router";
-// import { Button } from "~/shared/components/ui/Button"; // Removed to fix build error
+import { Form } from "react-router";
 
 export function meta() {
 	return [{ title: "User Detail - Admin" }];
@@ -67,6 +61,10 @@ export async function action({ request, params }: Route.ActionArgs) {
     }
 
     if (intent === "reset_roadmap") {
+        // Dynamic import to avoid client bundle inclusion
+        const { requireAdmin } = await import("~/features/auth/utils/session.server");
+        const { resetUserRoadmap } = await import("~/features/roadmap/services/admin-roadmap.server");
+        
         const adminId = await requireAdmin(request);
 		const reason = "Manual Reset by Admin via Dashboard";
 		await resetUserRoadmap(userId, adminId, reason);
