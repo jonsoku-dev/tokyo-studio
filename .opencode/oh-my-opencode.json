@@ -1,0 +1,40 @@
+{
+    "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+    "google_auth": false,
+    "agents": {
+        "Sisyphus": {
+            "model": "google/antigravity-claude-opus-4-5-thinking-medium",
+            "temperature": 0.3
+        },
+        "OpenCode-Builder": {
+            "model": "google/antigravity-claude-opus-4-5-thinking-high"
+        },
+        "Planner-Sisyphus": {
+            "model": "google/antigravity-claude-sonnet-4-5-thinking-medium"
+        },
+        "oracle": {
+            "model": "google/antigravity-claude-sonnet-4-5-thinking-low",
+            "description": "지식 기반 질의응답 - 코드베이스 분석, 아키텍처 설명"
+        },
+        "librarian": {
+            "model": "google/antigravity-gemini-3-flash",
+            "description": "코드 검색 및 탐색 - 파일 찾기, 참조 추적"
+        },
+        "explore": {
+            "model": "google/antigravity-gemini-3-pro-low",
+            "description": "탐색적 분석 - 새로운 기능 조사, 가능성 탐구"
+        },
+        "frontend-ui-ux-engineer": {
+            "model": "google/antigravity-gemini-3-pro-high",
+            "description": "프리미엄 UI/UX 개발 - React, Tailwind CSS v4, 인터랙션 디자인"
+        },
+        "document-writer": {
+            "model": "google/antigravity-gemini-3-flash",
+            "description": "문서 작성 - README, API 문서, 기술 명세서"
+        },
+        "multimodal-looker": {
+            "model": "google/antigravity-gemini-3-flash",
+            "description": "멀티모달 분석 - 이미지, 스크린샷, UI 목업 분석"
+        }
+    }
+}

@@ -54,7 +54,7 @@ export function CommunityGrid({
 				variants={containerVariants}
 				initial="hidden"
 				animate="show"
-				className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+				className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
 			>
 				{communities.map((community) => {
 					const membership = myCommunities.find((c) => c.id === community.id);

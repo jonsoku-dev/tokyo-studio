@@ -82,12 +82,38 @@ export async function seedPipeline(
 		null,
 	];
 
+	const motivations = [
+		"Great company culture and tech stack",
+		"Looking for a challenge in a global environment",
+		"Interested in their recent AI initiatives",
+		"Strong engineering team and mentorship",
+		"Competitive compensation and benefits",
+	];
+
+	const strategies = [
+		"Emphasize full-stack capabilities",
+		"Highlight experience with large-scale systems",
+		"Focus on bilingual communication skills",
+		"Showcase recent open source contributions",
+		"Demonstrate leadership potential",
+	];
+
+	const outcomeReasons = [
+		"Skills mismatch",
+		"Cultural fit",
+		"Found a better offer",
+		"Hiring freeze",
+		"Salary expectations not met",
+	];
+
 	const stageOrderMap: Record<string, number> = {};
 
 	const pipelineData = Array.from({ length: 9 }, (_, i) => {
 		const stageForItem = stages[i % stages.length];
 		const currentOrder = stageOrderMap[stageForItem] ?? 0;
 		stageOrderMap[stageForItem] = currentOrder + 1;
+
+		const isTerminated = ["rejected", "withdrawn", "offer"].includes(stageForItem);
 
 		return {
 			company: companies[i % companies.length],
@@ -99,6 +125,15 @@ export async function seedPipeline(
 			nextAction: nextActions[i % nextActions.length],
 			orderIndex: currentOrder,
 			userId,
+			motivation: motivations[i % motivations.length],
+			interestLevel: i % 3 === 0 ? "high" : i % 3 === 1 ? "medium" : "low",
+			confidenceLevel: i % 3 === 0 ? "confident" : i % 3 === 1 ? "neutral" : "uncertain",
+			resumeVersionNote: `v${(i % 3) + 1}.0 - ${positions[i % positions.length]} Focus`,
+			positioningStrategy: strategies[i % strategies.length],
+			emphasizedStrengths: ["React", "TypeScript", "Communication"].slice(0, (i % 3) + 1),
+			outcomeReason: isTerminated ? outcomeReasons[i % outcomeReasons.length] : null,
+			lessonsLearned: isTerminated ? "Need to prepare more for system design" : null,
+			nextTimeChange: isTerminated ? "Practice mock interviews" : null,
 		};
 	});
 

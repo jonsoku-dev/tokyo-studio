@@ -128,12 +128,56 @@ export const pipelineItems = pgTable("pipeline_items", {
 	resumeId: uuid("resume_id").references(() => documents.id, {
 		onDelete: "set null",
 	}),
+
+	// === SPEC-027 Phase 1: Intent & Context ===
+	motivation: text("motivation"), // Why the user applied (up to 500 chars)
+	interestLevel: text("interest_level"), // "high" | "medium" | "low"
+	confidenceLevel: text("confidence_level"), // "confident" | "neutral" | "uncertain"
+
+	// === SPEC-027 Phase 1: Strategy Snapshot ===
+	resumeVersionNote: text("resume_version_note"), // Description of resume version used
+	positioningStrategy: text("positioning_strategy"), // Positioning strategy notes
+	emphasizedStrengths: jsonb("emphasized_strengths").$type<string[]>().default([]), // Strengths emphasized
+
+	// === SPEC-027 Phase 1: Outcome Reflection ===
+	outcomeReason: text("outcome_reason"), // Perceived reason for outcome (subjective)
+	lessonsLearned: text("lessons_learned"), // What was learned
+	nextTimeChange: text("next_time_change"), // What to change next time
+
 	createdAt: timestamp("created_at").defaultNow(),
 	updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const insertPipelineItemSchema = createInsertSchema(pipelineItems);
 export const selectPipelineItemSchema = createSelectSchema(pipelineItems);
+export type PipelineItem = InferSelectModel<typeof pipelineItems>;
+
+// --- Application Steps (SPEC-027 Phase 1: Process Log) ---
+export const applicationSteps = pgTable(
+	"application_steps",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		applicationId: uuid("application_id")
+			.references(() => pipelineItems.id, { onDelete: "cascade" })
+			.notNull(),
+		stepType: text("step_type").notNull(), // "interview" | "assignment" | "offer" | "other"
+		date: text("date").notNull(), // YYYY-MM-DD
+		summary: text("summary").notNull(), // Brief summary of the step
+		selfEvaluation: text("self_evaluation"), // Optional self-evaluation
+		createdAt: timestamp("created_at").defaultNow(),
+		updatedAt: timestamp("updated_at").defaultNow(),
+	},
+	(table) => ({
+		applicationIdIdx: index("application_steps_application_id_idx").on(
+			table.applicationId,
+		),
+	}),
+);
+
+export const insertApplicationStepSchema = createInsertSchema(applicationSteps);
+export const selectApplicationStepSchema = createSelectSchema(applicationSteps);
+export type ApplicationStep = InferSelectModel<typeof applicationSteps>;
+
 
 // --- Documents ---
 export const documents = pgTable(
@@ -816,16 +860,31 @@ export const documentVersionsRelations = relations(
 	}),
 );
 
-export const pipelineItemsRelations = relations(pipelineItems, ({ one }) => ({
-	user: one(users, {
-		fields: [pipelineItems.userId],
-		references: [users.id],
+export const pipelineItemsRelations = relations(
+	pipelineItems,
+	({ one, many }) => ({
+		user: one(users, {
+			fields: [pipelineItems.userId],
+			references: [users.id],
+		}),
+		resume: one(documents, {
+			fields: [pipelineItems.resumeId],
+			references: [documents.id],
+		}),
+		// SPEC-027: Process Log steps
+		steps: many(applicationSteps),
 	}),
-	resume: one(documents, {
-		fields: [pipelineItems.resumeId],
-		references: [documents.id],
+);
+
+export const applicationStepsRelations = relations(
+	applicationSteps,
+	({ one }) => ({
+		application: one(pipelineItems, {
+			fields: [applicationSteps.applicationId],
+			references: [pipelineItems.id],
+		}),
 	}),
-}));
+);
 
 export const profilesRelations = relations(profiles, ({ one }) => ({
 	user: one(users, {

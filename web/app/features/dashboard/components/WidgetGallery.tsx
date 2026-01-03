@@ -1,7 +1,6 @@
 import type { WidgetId } from "@itcom/db/schema";
 import { CheckCircle2, Grid3x3, Plus } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
-import { useFetcher } from "react-router";
 import { Button } from "~/shared/components/ui/Button";
 import {
 	Dialog,

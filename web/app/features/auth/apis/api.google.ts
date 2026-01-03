@@ -12,4 +12,3 @@ export const loader = loaderHandler(
 export const action = actionHandler(async ({ request }: Route.ActionArgs) => {
 	return authenticator.authenticate("google", request);
 });
-		

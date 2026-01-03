@@ -13,4 +13,21 @@ const pool = new Pool({
 	ssl: isProduction ? { rejectUnauthorized: false } : false,
 });
 
-export const db = drizzle(pool, { schema });
+// Add error handler and logging
+pool.on("error", (err) => {
+	console.error("[DB Pool Error]", err);
+});
+
+pool.on("connect", () => {
+	console.log("[DB Pool] Client connected");
+});
+
+export const db = drizzle(pool, {
+	schema,
+	logger: {
+		logQuery: (query, params) => {
+			console.log("[Drizzle Query]", query);
+			console.log("[Drizzle Params]", params);
+		},
+	},
+});

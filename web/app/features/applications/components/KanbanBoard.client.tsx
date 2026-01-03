@@ -14,6 +14,7 @@ interface KanbanBoardProps {
 	stages: PipelineStage[];
 	onEditItem: (item: PipelineItem) => void;
 	onDeleteItem: (item: PipelineItem) => void;
+	onViewDetails?: (item: PipelineItem) => void;
 }
 
 /**
@@ -25,6 +26,7 @@ export function KanbanBoard({
 	stages,
 	onEditItem,
 	onDeleteItem,
+	onViewDetails,
 }: KanbanBoardProps) {
 	const updateItemMutation = useUpdatePipelineItemMutation();
 	const pipelineStore = usePipelineStore();
@@ -98,6 +100,7 @@ export function KanbanBoard({
 					item={item}
 					onEdit={() => onEditItem(item)}
 					onDelete={() => onDeleteItem(item)}
+					onClick={() => onViewDetails?.(item)}
 				/>
 			)}
 			renderItemWrapper={(item) => (
@@ -110,6 +113,7 @@ export function KanbanBoard({
 							attributes={attributes}
 							onEdit={() => onEditItem(item)}
 							onDelete={() => onDeleteItem(item)}
+							onClick={() => onViewDetails?.(item)}
 						/>
 					)}
 				</PipelineItemWrapper>

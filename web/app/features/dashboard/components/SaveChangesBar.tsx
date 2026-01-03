@@ -42,9 +42,9 @@ export function SaveChangesBar() {
 	}
 
 	return (
-		<div className="pointer-events-none fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-8">
+		<div className="pointer-events-none fixed right-0 bottom-0 left-0 z-50 flex justify-center pb-8">
 			{hasChanges && (
-				<div className="pointer-events-auto flex animate-in slide-in-from-bottom-4 fade-in items-center gap-3 rounded-full bg-gray-900/95 px-5 py-3 text-white shadow-2xl backdrop-blur-sm duration-300">
+				<div className="slide-in-from-bottom-4 fade-in pointer-events-auto flex animate-in items-center gap-3 rounded-full bg-gray-900/95 px-5 py-3 text-white shadow-2xl backdrop-blur-sm duration-300">
 					<span className="mr-2 font-medium text-sm">변경사항이 있습니다</span>
 
 					<div className="flex items-center gap-2">
@@ -63,7 +63,7 @@ export function SaveChangesBar() {
 							size="sm"
 							onClick={handleSave}
 							disabled={isSaving}
-							className="h-8 rounded-full border-none bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-none"
+							className="h-8 rounded-full border-none bg-indigo-600 font-medium text-white shadow-none hover:bg-indigo-500"
 						>
 							<SaveIcon className="mr-1.5 h-4 w-4" />
 							저장하기

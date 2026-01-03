@@ -1,5 +1,5 @@
 import type { WidgetId, WidgetLayout } from "@itcom/db/schema";
-import { EyeOff, Maximize2, Minimize2, Settings2 } from "lucide-react";
+import { EyeOff, Maximize2, Settings2 } from "lucide-react";
 import {
 	Dropdown,
 	DropdownButton,

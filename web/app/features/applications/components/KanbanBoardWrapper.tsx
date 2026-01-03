@@ -11,6 +11,7 @@ interface KanbanBoardWrapperProps {
 	stages: PipelineStage[];
 	onEditItem: (item: PipelineItem) => void;
 	onDeleteItem: (item: PipelineItem) => void;
+	onViewDetails?: (item: PipelineItem) => void;
 }
 
 // ClientOnly wrapper - only renders children on client
@@ -71,6 +72,7 @@ export function KanbanBoard({
 	stages,
 	onEditItem,
 	onDeleteItem,
+	onViewDetails,
 }: KanbanBoardWrapperProps) {
 	return (
 		<ClientOnly fallback={<KanbanBoardSkeleton />}>
@@ -81,6 +83,7 @@ export function KanbanBoard({
 						stages={stages}
 						onEditItem={onEditItem}
 						onDeleteItem={onDeleteItem}
+						onViewDetails={onViewDetails}
 					/>
 				</Suspense>
 			)}

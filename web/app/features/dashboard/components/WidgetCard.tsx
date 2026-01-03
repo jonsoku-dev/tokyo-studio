@@ -63,7 +63,7 @@ export const WidgetCard = forwardRef<HTMLDivElement, WidgetCardProps>(
 				}}
 				whileTap={{ scale: 0.98 }}
 				className={cn(
-					"card relative flex flex-col overflow-hidden bg-white gap-4",
+					"card relative flex flex-col gap-4 overflow-hidden bg-white",
 					sizeClasses[widget.size],
 					isDragging
 						? "z-50 rotate-1 scale-[1.02] shadow-2xl ring-2 ring-indigo-500/20"
@@ -74,7 +74,7 @@ export const WidgetCard = forwardRef<HTMLDivElement, WidgetCardProps>(
 				{/* 드래그 핸들 헤더 */}
 				<div
 					className={cn(
-						"flex items-center gap-2 border-b border-gray-100/50 pb-2",
+						"flex items-center gap-2 border-gray-100/50 border-b pb-2",
 						isDragging ? "bg-indigo-50/50" : "bg-white",
 					)}
 				>

@@ -246,6 +246,11 @@ export default [
 		"api/applications/parsers",
 		"features/applications/apis/api.pipeline.parsers.ts",
 	),
+	// SPEC-027: Application Steps API
+	route(
+		"api/applications/steps",
+		"features/applications/apis/api.application-steps.ts",
+	),
 
 	// Map APIs (SPEC 020)
 	route("api/map", "features/map/apis/api.map.get.ts"),

@@ -1,5 +1,5 @@
 import type { useSortable } from "@dnd-kit/sortable";
-import { GripVertical, Pencil, Trash2 } from "lucide-react";
+import { GripVertical, Pencil, Star, Trash2 } from "lucide-react";
 import { KanbanCard } from "~/shared/components/dnd-kanban";
 import type { PipelineItem } from "../domain/pipeline.types";
 
@@ -11,6 +11,7 @@ interface PipelineCardProps {
 	attributes?: ReturnType<typeof useSortable>["attributes"];
 	onEdit?: (item: PipelineItem) => void;
 	onDelete?: (item: PipelineItem) => void;
+	onClick?: (item: PipelineItem) => void;
 }
 
 export function PipelineCard({
@@ -21,6 +22,7 @@ export function PipelineCard({
 	attributes,
 	onEdit,
 	onDelete,
+	onClick,
 }: PipelineCardProps) {
 	return (
 		<KanbanCard isDragging={isDragging} isOverlay={isOverlay}>
@@ -37,10 +39,22 @@ export function PipelineCard({
 				</button>
 
 				{/* Content */}
-				<div className="flex-1 space-y-2">
+				<button
+					type="button"
+					className="w-full flex-1 cursor-pointer appearance-none space-y-2 border-none bg-transparent p-0 text-left"
+					onClick={() => onClick?.(item)}
+				>
 					<div className="flex items-start justify-between gap-2">
 						<div className="min-w-0 flex-1">
-							<h4 className="heading-5 truncate text-sm">{item.company}</h4>
+							<div className="flex items-center gap-1.5">
+								<h4 className="heading-5 truncate text-sm">{item.company}</h4>
+								{item.interestLevel === "high" && (
+									<Star
+										className="h-3.5 w-3.5 shrink-0 fill-amber-400 text-amber-400"
+										aria-label="관심도 높음"
+									/>
+								)}
+							</div>
 							<p className="truncate text-gray-600 text-xs">{item.position}</p>
 						</div>
 					</div>
@@ -84,7 +98,7 @@ export function PipelineCard({
 							</span>
 						</div>
 					)}
-				</div>
+				</button>
 
 				{/* Action Buttons (Visible on Hover) */}
 				<div className="flex flex-col gap-1 opacity-0 transition-opacity group-hover:opacity-100">

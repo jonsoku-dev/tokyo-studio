@@ -72,7 +72,7 @@ export function MobileSidebar({ open, onOpenChange }: MobileSidebarProps) {
 						})}
 					</nav>
 
-					<div className="mt-8 border-t border-gray-100 pt-6">
+					<div className="mt-8 border-gray-100 border-t pt-6">
 						<h3 className="px-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">
 							Resources
 						</h3>
