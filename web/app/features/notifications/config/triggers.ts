@@ -97,7 +97,7 @@ export const notificationTriggers: Record<string, TriggerConfig> = {
 		template: (data: NotificationMetadata): NotificationPayload => ({
 			title: "Application Deadline Tomorrow",
 			body: `${data.company} - ${data.position}`,
-			url: `/pipeline?highlight=${data.itemId}`,
+			url: `/applications?highlight=${data.itemId}`,
 			icon: "/icons/briefcase.png",
 		}),
 		skipQuietHours: true,

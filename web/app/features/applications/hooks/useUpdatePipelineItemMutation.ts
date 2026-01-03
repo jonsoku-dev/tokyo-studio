@@ -11,7 +11,7 @@ interface UpdateItemParams {
  * API call to update pipeline item status
  */
 async function updateItemAPI(params: UpdateItemParams) {
-	const response = await fetch("/api/pipeline/items/update", {
+	const response = await fetch("/api/applications/items/update", {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
@@ -35,7 +35,7 @@ async function updateItemAPI(params: UpdateItemParams) {
  * Hook for updating pipeline item status
  *
  * Unidirectional data flow:
- * - Server update via PATCH /api/pipeline/items/update
+ * - Server update via PATCH /api/applications/items/update
  * - Batch updates with Promise.all() for parallel processing
  * - No polling or sequential waiting
  * - Error handling with toast notifications

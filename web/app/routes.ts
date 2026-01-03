@@ -28,87 +28,81 @@ export default [
 	// --- PROTECTED LAYOUT (Authentication required) ---
 	layout("shared/layouts/ProtectedLayout.tsx", [
 		// Standard Page Layout (Centered Container - 1280px)
-			// Features
-			index("features/dashboard/routes/home.tsx"),
-			route("roadmap", "features/roadmap/routes/index.tsx"),
-			route("pipeline", "features/pipeline/routes/pipeline.tsx"),
-			route("documents", "features/documents/routes/documents.tsx"),
+		// Features
+		index("features/dashboard/routes/home.tsx"),
+		route("roadmap", "features/roadmap/routes/index.tsx"),
+		route("applications", "features/applications/routes/applications.tsx"),
+		route("documents", "features/documents/routes/documents.tsx"),
 
-			// Mentoring (Directory & Profile & Booking)
-			route("mentoring", "features/mentoring/routes/mentoring.index.tsx"),
-			route(
-				"mentoring/bookings",
-				"features/mentoring/routes/mentoring.bookings.tsx",
-			),
-			route(
-				"mentoring/session/:sessionId/review",
-				"features/mentoring/routes/mentoring.session.$sessionId.review.tsx",
-			),
-			route(
-				"mentoring/mentors/:mentorId",
-				"features/mentoring/routes/mentoring.profile.$mentorId.tsx",
-			),
+		// Mentoring (Directory & Profile & Booking)
+		route("mentoring", "features/mentoring/routes/mentoring.index.tsx"),
+		route(
+			"mentoring/bookings",
+			"features/mentoring/routes/mentoring.bookings.tsx",
+		),
+		route(
+			"mentoring/session/:sessionId/review",
+			"features/mentoring/routes/mentoring.session.$sessionId.review.tsx",
+		),
+		route(
+			"mentoring/mentors/:mentorId",
+			"features/mentoring/routes/mentoring.profile.$mentorId.tsx",
+		),
 
-			// Community - Explore page
-			route("communities", "features/community/routes/communities.tsx"),
-			route(
-				"communities/search",
-				"features/community/routes/community.search.tsx",
-			),
+		// Community - Explore page
+		route("communities", "features/community/routes/communities.tsx"),
+		route(
+			"communities/search",
+			"features/community/routes/community.search.tsx",
+		),
 
-			// Onboarding Routes
-			route(
-				"onboarding/assessment",
-				"features/onboarding/routes/assessment.tsx",
-			),
-			route("onboarding/result", "features/onboarding/routes/result.tsx"),
+		// Onboarding Routes
+		route("onboarding/assessment", "features/onboarding/routes/assessment.tsx"),
+		route("onboarding/result", "features/onboarding/routes/result.tsx"),
 
-			route("payment/success", "features/payment/routes/success.tsx"),
+		route("payment/success", "features/payment/routes/success.tsx"),
 
-			// Settlement
-			route("settlement", "features/settlement/routes/index.tsx"),
-			route(
-				"settlement/marketplace",
-				"features/settlement/routes/marketplace.tsx",
-			),
-			route(
-				"settlement/marketplace/my",
-				"features/settlement/routes/marketplace.my.tsx",
-			),
-			route(
-				"settlement/marketplace/:templateId",
-				"features/settlement/routes/marketplace.$templateId.tsx",
-			),
-			route(
-				"settlement/editor/new",
-				"features/settlement/routes/editor.new.tsx",
-			),
-			route(
-				"settlement/editor/:templateId",
-				"features/settlement/routes/editor.$templateId.tsx",
-			),
+		// Settlement
+		route("settlement", "features/settlement/routes/index.tsx"),
+		route(
+			"settlement/marketplace",
+			"features/settlement/routes/marketplace.tsx",
+		),
+		route(
+			"settlement/marketplace/my",
+			"features/settlement/routes/marketplace.my.tsx",
+		),
+		route(
+			"settlement/marketplace/:templateId",
+			"features/settlement/routes/marketplace.$templateId.tsx",
+		),
+		route("settlement/editor/new", "features/settlement/routes/editor.new.tsx"),
+		route(
+			"settlement/editor/:templateId",
+			"features/settlement/routes/editor.$templateId.tsx",
+		),
 
-			// Mentoring Apply
-			route("mentoring/apply", "features/mentoring/routes/mentoring.apply.tsx"),
+		// Mentoring Apply
+		route("mentoring/apply", "features/mentoring/routes/mentoring.apply.tsx"),
 
-			// Settings
-			route(
-				"mentoring/settings",
-				"features/mentoring/routes/mentoring.settings.tsx",
-			),
-			route("settings/profile", "features/users/routes/profile.tsx"),
-			route("settings/privacy", "features/users/routes/settings/privacy.tsx"),
-			route(
-				"settings/notifications",
-				"features/notifications/routes/settings.tsx",
-			),
-			route("profile/:username", "features/users/routes/profile.$username.tsx"),
+		// Settings
+		route(
+			"mentoring/settings",
+			"features/mentoring/routes/mentoring.settings.tsx",
+		),
+		route("settings/profile", "features/users/routes/profile.tsx"),
+		route("settings/privacy", "features/users/routes/settings/privacy.tsx"),
+		route(
+			"settings/notifications",
+			"features/notifications/routes/settings.tsx",
+		),
+		route("profile/:username", "features/users/routes/profile.$username.tsx"),
 
-			// Payment Checkout
-			route("payment/checkout", "features/payment/routes/checkout.tsx"),
+		// Payment Checkout
+		route("payment/checkout", "features/payment/routes/checkout.tsx"),
 
-			// Map
-			route("map", "features/map/routes/index.tsx"),
+		// Map
+		route("map", "features/map/routes/index.tsx"),
 
 		// Community Detail Routes (/communities/:slug) - Full width layout
 		route(
@@ -238,19 +232,19 @@ export default [
 	),
 	route("api/roadmap/tasks/:id", "features/roadmap/apis/api.task.$id.ts"),
 
-	// Pipeline APIs (SPEC 018)
-	route("api/jobs/parse", "features/pipeline/apis/api.job-parser.ts"),
+	// Application APIs (SPEC 018)
+	route("api/jobs/parse", "features/applications/apis/api.job-parser.ts"),
 	route(
-		"api/pipeline/items/update",
-		"features/pipeline/apis/api.pipeline.update-item.ts",
+		"api/applications/items/update",
+		"features/applications/apis/api.pipeline.update-item.ts",
 	),
 	route(
-		"api/pipeline/stages",
-		"features/pipeline/apis/api.pipeline.get-stages.ts",
+		"api/applications/stages",
+		"features/applications/apis/api.pipeline.get-stages.ts",
 	),
 	route(
-		"api/pipeline/parsers",
-		"features/pipeline/apis/api.pipeline.parsers.ts",
+		"api/applications/parsers",
+		"features/applications/apis/api.pipeline.parsers.ts",
 	),
 
 	// Map APIs (SPEC 020)

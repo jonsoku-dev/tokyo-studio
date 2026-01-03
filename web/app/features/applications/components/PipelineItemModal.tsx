@@ -187,7 +187,7 @@ function ApplicationForm({
 				// SPEC 022: Resume attachment
 				resumeId: resumeId || "",
 			},
-			{ method: "POST", action: "/pipeline" },
+			{ method: "POST", action: "/applications" },
 		);
 	};
 
@@ -195,7 +195,7 @@ function ApplicationForm({
 		<>
 			<DialogHeader>
 				<DialogTitle>
-					{isEdit ? "Edit Application" : "New Application"}
+					{isEdit ? "지원 내역 수정" : "새 지원 내역 추가"}
 				</DialogTitle>
 				<button
 					type="button"
@@ -214,7 +214,7 @@ function ApplicationForm({
 							htmlFor="parser"
 							className="mb-2 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
 						>
-							Select Job Site
+							채용 사이트 선택
 						</label>
 						<select
 							id="parser"
@@ -247,13 +247,13 @@ function ApplicationForm({
 							htmlFor="magicUrl"
 							className="mb-2 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
 						>
-							Magic Paste (URL)
+							Magic Paste (URL 자동 분석)
 						</label>
 						<div className="flex gap-2">
 							<input
 								id="magicUrl"
 								type="url"
-								placeholder="Paste your job posting URL here..."
+								placeholder="채용 공고 URL을 붙여넣으세요..."
 								value={url}
 								onChange={(e) => {
 									setUrl(e.target.value);
@@ -272,7 +272,7 @@ function ApplicationForm({
 								) : (
 									<Sparkles className="h-4 w-4" />
 								)}
-								Magic
+								분석
 							</button>
 							{/* Refresh button for cache bypass */}
 							{hasParsedData && (
@@ -294,7 +294,8 @@ function ApplicationForm({
 							</p>
 						)}
 						<p className="mt-1.5 text-[10px] text-gray-400">
-							Supports LinkedIn, Indeed, マイナビ転職, リクナビ, Green, Wantedly
+							지원 사이트: LinkedIn, Indeed, 마이나비, 리쿠나비, Green, Wantedly
+							등
 						</p>
 					</div>
 				</>
@@ -307,7 +308,7 @@ function ApplicationForm({
 						htmlFor="company"
 						className="mb-1.5 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
 					>
-						Company
+						기업명
 					</label>
 					<input
 						id="company"
@@ -324,7 +325,7 @@ function ApplicationForm({
 						htmlFor="position"
 						className="mb-1.5 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
 					>
-						Position
+						포지션
 					</label>
 					<input
 						id="position"
@@ -342,7 +343,7 @@ function ApplicationForm({
 							htmlFor="stage"
 							className="mb-1.5 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
 						>
-							Stage
+							현재 단계
 						</label>
 						<select
 							id="stage"
@@ -362,7 +363,7 @@ function ApplicationForm({
 							htmlFor="date"
 							className="mb-1.5 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
 						>
-							Date
+							날짜
 						</label>
 						<input
 							id="date"
@@ -380,14 +381,14 @@ function ApplicationForm({
 						htmlFor="nextAction"
 						className="mb-1.5 block font-semibold text-gray-500 text-xs uppercase tracking-wider"
 					>
-						Next Action
+						다음 할 일
 					</label>
 					<input
 						id="nextAction"
 						type="text"
 						value={nextAction}
 						onChange={(e) => setNextAction(e.target.value)}
-						placeholder="e.g. Follow up in 3 days"
+						placeholder="예: 3일 뒤 팔로우업 메일 보내기"
 						className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
 					/>
 				</div>
@@ -399,9 +400,9 @@ function ApplicationForm({
 						selectedId={resumeId}
 						mode="single"
 						onChange={(selected) => setResumeId(selected as string | null)}
-						label="Attach Resume"
-						placeholder="Select a resume to attach..."
-						hint="Optional: Link your resume to this application"
+						label="이력서 연결"
+						placeholder="연결할 이력서를 선택하세요..."
+						hint="선택 사항: 이 지원 내역과 관련된 이력서를 연결합니다"
 					/>
 				)}
 
@@ -416,10 +417,10 @@ function ApplicationForm({
 						className="w-full rounded-xl bg-primary-600 py-3 font-bold text-white shadow-md transition-all hover:bg-primary-700 active:scale-95 disabled:opacity-50"
 					>
 						{actionFetcher.state !== "idle"
-							? "Submitting..."
+							? "저장 중..."
 							: isEdit
-								? "Save Changes"
-								: "Add Application"}
+								? "변경사항 저장"
+								: "추가하기"}
 					</button>
 				</div>
 			</form>

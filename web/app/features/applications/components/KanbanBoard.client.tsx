@@ -62,10 +62,25 @@ export function KanbanBoard({
 		}
 	};
 
+	// Stage localization map
+	const STAGE_NAME_MAP: Record<string, string> = {
+		interested: "관심",
+		applied: "서류 제출",
+		assignment: "과제 전형",
+		interview_1: "1차 면접",
+		interview_2: "2차 면접",
+		interview_3: "최종 면접",
+		offer: "합격/오퍼",
+		visa_coe: "비자 신청",
+		joined: "입사 완료",
+		rejected: "불합격",
+		withdrawn: "지원 취소",
+	};
+
 	// Update column counts based on database stages
 	const columnsWithCounts = stages.map((stage) => ({
 		id: stage.name,
-		title: stage.displayName,
+		title: STAGE_NAME_MAP[stage.name] || stage.displayName,
 		count: initialItems.filter((item) => item.stage === stage.name).length,
 	}));
 

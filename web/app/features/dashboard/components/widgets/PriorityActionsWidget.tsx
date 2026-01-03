@@ -143,7 +143,7 @@ function getActionLink(type: string, id: string): string {
 		case "resume":
 			return `/documents/${id}`;
 		case "interview":
-			return `/pipeline/${id}`;
+			return `/applications/${id}`;
 		case "task":
 			return "/roadmap";
 		default:

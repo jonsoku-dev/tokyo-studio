@@ -30,7 +30,7 @@ export function DeletePipelineItemModal({
 	const handleDelete = () => {
 		fetcher.submit(
 			{ intent: "delete", itemId: item.id },
-			{ method: "POST", action: "/api/pipeline/items/update" },
+			{ method: "POST", action: "/api/applications/items/update" },
 		);
 	};
 
@@ -38,7 +38,7 @@ export function DeletePipelineItemModal({
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Delete Application</DialogTitle>
+					<DialogTitle>지원 내역 삭제</DialogTitle>
 				</DialogHeader>
 
 				<div className="flex flex-col items-center gap-4 py-4 text-center">
@@ -46,13 +46,13 @@ export function DeletePipelineItemModal({
 						<AlertTriangle className="h-6 w-6" />
 					</div>
 					<div className="space-y-1">
-						<p className="font-medium text-lg">Are you sure?</p>
+						<p className="font-medium text-lg">정말 삭제하시겠습니까?</p>
 						<p className="text-gray-500 text-sm">
-							This will permanently delete the application for{" "}
 							<span className="font-semibold text-gray-900">
 								{item.company}
 							</span>{" "}
-							- <span className="text-gray-700">{item.position}</span>.
+							- <span className="text-gray-700">{item.position}</span> 지원
+							내역이 영구적으로 삭제됩니다.
 						</p>
 					</div>
 				</div>
@@ -64,7 +64,7 @@ export function DeletePipelineItemModal({
 						disabled={isSubmitting}
 						className="flex-1 rounded-lg border border-gray-200 py-2.5 font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
 					>
-						Cancel
+						취소
 					</button>
 					<button
 						type="button"
@@ -72,7 +72,7 @@ export function DeletePipelineItemModal({
 						disabled={isSubmitting}
 						className="flex-1 rounded-lg bg-red-600 py-2.5 font-medium text-white hover:bg-red-700 disabled:opacity-50"
 					>
-						{isSubmitting ? "Deleting..." : "Delete"}
+						{isSubmitting ? "삭제 중..." : "삭제"}
 					</button>
 				</div>
 			</DialogContent>

@@ -1,12 +1,16 @@
+import { HelpCircle, Plus } from "lucide-react";
 import { useState } from "react";
 import { useLoaderData } from "react-router";
 import { PageHeader } from "~/shared/components/layout/PageHeader";
+import { Button } from "~/shared/components/ui/Button";
 import { requireUserId } from "../../auth/utils/session.server";
 import { RESUME_DOCUMENT_TYPES } from "../../documents/constants";
 import { documentsService } from "../../documents/services/documents.server";
+import { ApplicationsHelpModal } from "../components/ApplicationsHelpModal";
 import { DeletePipelineItemModal } from "../components/DeletePipelineItemModal";
 import { KanbanBoard } from "../components/KanbanBoardWrapper";
 import { PipelineItemModal } from "../components/PipelineItemModal";
+import { StatisticsSection } from "../components/StatisticsSection";
 import { PARSING_PLUGINS } from "../constants/parsing-plugins";
 import type { ParsingPluginConfig } from "../domain/parsing.types";
 import { pipelineService } from "../domain/pipeline.service.server";
@@ -17,7 +21,7 @@ import type {
 } from "../domain/pipeline.types";
 
 export function meta() {
-	return [{ title: "Pipeline - Japan IT Job" }];
+	return [{ title: "지원 관리 - Japan IT Job" }];
 }
 
 export async function loader({ request }: { request: Request }) {
@@ -103,6 +107,7 @@ export default function Pipeline() {
 	const [selectedItem, setSelectedItem] = useState<PipelineItem | null>(null);
 	const [isItemModalOpen, setIsItemModalOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
 	// Handlers
 	const handleAddItem = () => {
@@ -131,19 +136,29 @@ export default function Pipeline() {
 	};
 
 	return (
-		<div className="stack">
+		<div className="stack-lg">
 			<PageHeader
-				title="Pipeline"
+				title="지원 관리"
+				description="입사 지원 현황을 한눈에 파악하고 효율적으로 관리하세요."
 				actions={
-					<button
-						type="button"
-						onClick={handleAddItem}
-						className="rounded-md bg-primary-600 px-4 py-2 font-medium text-sm text-white shadow-sm transition-colors hover:bg-primary-700"
-					>
-						Add Application
-					</button>
+					<div className="flex gap-2">
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => setIsHelpModalOpen(true)}
+						>
+							<HelpCircle className="mr-2 h-4 w-4" />
+							가이드
+						</Button>
+						<Button onClick={handleAddItem} size="sm">
+							<Plus className="mr-2 h-4 w-4" />
+							지원 내역 추가
+						</Button>
+					</div>
 				}
 			/>
+
+			<StatisticsSection items={items} />
 
 			<KanbanBoard
 				items={items}
@@ -170,6 +185,11 @@ export default function Pipeline() {
 					item={selectedItem}
 				/>
 			)}
+
+			<ApplicationsHelpModal
+				isOpen={isHelpModalOpen}
+				onClose={() => setIsHelpModalOpen(false)}
+			/>
 		</div>
 	);
 }

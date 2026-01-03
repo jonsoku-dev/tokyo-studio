@@ -60,7 +60,7 @@ export default function PipelineOverviewWidget({
 					return (
 						<Link
 							key={app.id}
-							to={`/pipeline/${app.id}`}
+							to={`/applications/${app.id}`}
 							className="group block rounded-lg border border-gray-200 p-3 transition-all hover:border-primary-300 hover:bg-primary-50/30"
 						>
 							<div className="flex items-start gap-3">

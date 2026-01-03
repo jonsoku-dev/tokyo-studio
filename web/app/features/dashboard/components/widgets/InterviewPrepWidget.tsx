@@ -44,7 +44,7 @@ export default function InterviewPrepWidget({
 				<div>
 					<p className="text-gray-500 text-sm">예정된 면접이 없습니다</p>
 					<Link
-						to="/pipeline"
+						to="/applications"
 						className="mt-2 inline-block font-medium text-primary-600 text-sm hover:text-primary-700"
 					>
 						지원 현황 보기 →

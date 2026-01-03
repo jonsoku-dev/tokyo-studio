@@ -1,6 +1,6 @@
+import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { WidgetLayout } from "@itcom/db/schema";
-import { useSortable } from "@dnd-kit/sortable";
 import { getWidgetMetadata } from "../config/widget-metadata";
 import type { WidgetData } from "../types/widget-data.types";
 import { WidgetCard } from "./WidgetCard";
