@@ -42,18 +42,18 @@ jobs:
           node-version: '22.17.1'
           cache: 'pnpm'
 
-      - name: Install Vercel CLI
-        run: pnpm add -g vercel@latest
-
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Install Vercel CLI
+        run: pnpm add -g vercel@latest
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=${{ github.event.inputs.environment || 'production' }} --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: web
 
-      - name: Build Project
-        run: vercel build ${{ (github.event.inputs.environment == 'production' || github.ref == 'refs/heads/main') && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build with React Router
+        run: pnpm run build
         working-directory: web
         env:
           VERCEL: "1"
